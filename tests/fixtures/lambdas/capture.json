@@ -1,0 +1,136 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 7,
+  "workspace": {
+    "procedures": [
+      {
+        "id": "make_operation",
+        "name": "make_operation",
+        "parameters": [],
+        "returnTypes": null
+      }
+    ],
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_function",
+          "id": "make_operation-definition",
+          "x": 40,
+          "y": 40,
+          "extraState": {
+            "functionId": "make_operation",
+            "signature": {
+              "id": "make_operation",
+              "name": "make_operation",
+              "parameters": []
+            }
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "py_return_value",
+                "id": "lambda-return",
+                "inputs": {
+                  "VALUE": {
+                    "block": {
+                      "type": "py_lambda",
+                      "id": "lambda-expression",
+                      "extraState": {
+                        "id": "lambda-scope",
+                        "parameters": [
+                          {
+                            "id": "lambda-left",
+                            "name": "left"
+                          },
+                          {
+                            "id": "lambda-right",
+                            "name": "right"
+                          }
+                        ]
+                      },
+                      "inputs": {
+                        "BODY": {
+                          "block": {
+                            "type": "py_get",
+                            "id": "capture-read",
+                            "fields": {
+                              "SYMBOL": "score"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_program",
+          "x": 40,
+          "y": 260,
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "id": "lambda-output",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "py_dynamic_call_value",
+                      "extraState": {
+                        "argumentCount": 2
+                      },
+                      "inputs": {
+                        "CALLABLE": {
+                          "block": {
+                            "type": "py_call_value",
+                            "extraState": {
+                              "functionId": "make_operation",
+                              "signature": {
+                                "id": "make_operation",
+                                "name": "make_operation",
+                                "parameters": []
+                              }
+                            },
+                            "inputs": {}
+                          }
+                        },
+                        "ARG0": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "10"
+                            }
+                          }
+                        },
+                        "ARG1": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "3"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "variables": [
+      {
+        "name": "score",
+        "id": "score",
+        "type": "py:module"
+      }
+    ]
+  }
+}

@@ -8,9 +8,15 @@ importers:
 
   .:
     dependencies:
+      '@blockly/block-shareable-procedures':
+        specifier: 13.3.0
+        version: 13.3.0(blockly@13.3.0(jsdom@29.1.1))
       blockly:
         specifier: 13.3.0
         version: 13.3.0(jsdom@29.1.1)
+      fflate:
+        specifier: 0.8.3
+        version: 0.8.3
       pyodide:
         specifier: 314.0.7
         version: 314.0.7
@@ -47,6 +53,11 @@ packages:
 
   '@asamuzakjp/nwsapi@2.3.9':
     resolution: {integrity: sha512-n8GuYSrI9bF7FFZ/SjhwevlHc8xaVlb/7HmHelnc/PZXBD2ZR49NnN9sMMuDdEGPeeRQ5d0hqlSlEpgCX3Wl0Q==}
+
+  '@blockly/block-shareable-procedures@13.3.0':
+    resolution: {integrity: sha512-uLwbynCSv3kEj+rgReh11xpT5dy5cKsUmyDHtAt9S5VDNi+wnuqUFeAedR0sj62jPkiyxuspQgTVjl0CtlcV4A==}
+    peerDependencies:
+      blockly: ^13.2.0
 
   '@bramus/specificity@2.4.3':
     resolution: {integrity: sha512-0GEz8qJWokkUVYQYRukmkSHIFNoBH8QTreeHrAFbvz1XFYc3Y+puhMs8PQ5x8GNugiC2l5jvDBXKLbBIByeSBw==}
@@ -418,6 +429,9 @@ packages:
       picomatch:
         optional: true
 
+  fflate@0.8.3:
+    resolution: {integrity: sha512-tbZNuJrLwGUp3zshBtdy4W+ORxZuIh8a5ilyIEQDC5rY1f3U20JMry0Ll3WBzU58EZKsEuJFXhb5gwv8CsPvgA==}
+
   fsevents@2.3.3:
     resolution: {integrity: sha512-5xoDfX+fL7faATnagmWPpbFtwh/R77WmMMqqHGS65C3vvB0YHrgF+B1YmZ3441tMj5n63k0212XNoJwzlhffQw==}
     engines: {node: ^8.16.0 || ^10.6.0 || >=11.0.0}
@@ -772,6 +786,10 @@ snapshots:
 
   '@asamuzakjp/nwsapi@2.3.9': {}
 
+  '@blockly/block-shareable-procedures@13.3.0(blockly@13.3.0(jsdom@29.1.1))':
+    dependencies:
+      blockly: 13.3.0(jsdom@29.1.1)
+
   '@bramus/specificity@2.4.3':
     dependencies:
       css-tree: 3.2.1
@@ -991,6 +1009,8 @@ snapshots:
   fdir@6.5.0(picomatch@4.0.7):
     optionalDependencies:
       picomatch: 4.0.7
+
+  fflate@0.8.3: {}
 
   fsevents@2.3.3:
     optional: true

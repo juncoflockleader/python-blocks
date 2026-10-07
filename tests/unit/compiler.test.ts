@@ -21,7 +21,7 @@ describe('blocks to Python', () => {
     const ws = workspace();
     Blockly.serialization.workspaces.load(squareProject, ws);
     const movement = ws.getAllBlocks(false).find(block => block.type === 'pen_move')!;
-    movement.getInputTargetBlock('STEPS')!.setFieldValue(60, 'NUM');
+    movement.getInputTargetBlock('STEPS')!.setFieldValue('60', 'VALUE');
     expect(generatePython(ws)).toContain('pen.move(60)');
     expect(generatePython(ws)).not.toContain('pen.move(100)');
   });
@@ -32,6 +32,8 @@ describe('blocks to Python', () => {
     const text = ws.newBlock('text');
     text.setFieldValue("Hello 'Python'\npen.move(999)", 'TEXT');
     print.getInput('TEXT')!.connection!.connect(text.outputConnection!);
+    const root = ws.newBlock('py_program');
+    root.getInput('BODY')!.connection!.connect(print.previousConnection!);
     const code = generatePython(ws);
     expect(code.trim().split('\n')).toHaveLength(1);
     expect(code).toContain('\\n');

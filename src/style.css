@@ -26,9 +26,40 @@ h1 em { font-style: normal; color: #7c9153; }
 .project-name strong { font-size: 13px; font-weight: 600; }
 .project-name small { display: block; font-size: 10px; color: #7a8573; margin-top: 4px; }
 .actions { display: flex; gap: 8px; }
+.actions { flex-wrap: wrap; justify-content: flex-end; }
+.project-notice { font-size: 12px; color: #59684d; margin: -5px 0 16px; }
+.diagnostics-panel { border: 1px solid #e5cfaa; background: #fff8ed; border-radius: 10px; padding: 8px 16px; margin-bottom: 16px; font-size: 12px; }
+.diagnostics-panel ul { margin: 4px 0; padding-left: 18px; }
+.diagnostics-panel button { border: 0; background: transparent; color: #684620; text-align: left; text-decoration: underline; cursor: pointer; padding: 4px; }
+dialog { max-width: min(640px, 90vw); border: 1px solid #cbd4b4; border-radius: 12px; color: #26382f; }
+dialog::backdrop { background: #26382f66; }
+dialog li { padding: 8px; }
+dialog li span { display: block; margin-bottom: 4px; }
+dialog li button { margin-right: 8px; }
+:is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) { width: 600px; max-height: 85vh; overflow: auto; padding: 24px; }
+:is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) h2 { font-size: 20px; }
+:is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) p { font-size: 13px; line-height: 1.5; }
+:is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) fieldset { border: 1px solid #d8decb; border-radius: 8px; padding: 16px; margin-block: 18px; }
+:is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) legend { padding-inline: 6px; font-weight: 600; }
+:is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) label { display: grid; grid-template-columns: 135px minmax(0, 1fr); gap: 12px; align-items: center; margin-block: 10px; font-size: 13px; }
+:is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) input, :is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) select { min-width: 0; padding: 8px; border: 1px solid #cbd4b4; border-radius: 5px; font: inherit; }
+:is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) ol { padding-left: 22px; }
+:is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) li { display: flex; gap: 5px; padding-inline: 0; }
+:is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) li input { flex: 1; width: 100px; }
+:is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) li button { margin: 0; }
+#language-error, #events-error { color: #a13824; }
+summary { cursor: pointer; font-size: 12px; }
 .button { border: 1px solid #d8decb; border-radius: 7px; padding: 10px 14px; font-size: 11px; cursor: pointer; font-weight: 600; white-space: nowrap; }
 .button:hover { filter: brightness(.96); }
 .button:disabled { opacity: .45; cursor: default; }
+.blocks-panel .panel-heading { height: auto; min-height: 52px; padding-block: 10px; flex-wrap: wrap; }
+.blocks-panel .panel-note { display: none; }
+#handler-order li span { flex: 1; margin-bottom: 0; }
+.event-input { margin-top: 18px; padding: 16px; background: #fafbf6; border: 1px solid #dce1d2; border-radius: 12px; }
+.event-input p { font-size: 12px; }
+.event-input label { display: grid; grid-template-columns: 110px minmax(0, 1fr); align-items: start; gap: 12px; margin-block: 10px; font-size: 13px; }
+.event-input input, .event-input textarea { width: 100%; padding: 8px; font: inherit; border: 1px solid #cbd4b4; border-radius: 5px; }
+#function-async { justify-self: start; }
 .secondary { background: #fafbf6; color: #59684d; }
 .primary { background: #c7df8c; border-color: #b5ce74; color: #2b4123; padding-inline: 22px; }
 .workspace-grid { display: grid; grid-template-columns: minmax(400px, 1.45fr) minmax(320px, 1fr); gap: 18px; }
@@ -40,6 +71,8 @@ h2 { font-size: 12px; font-weight: 600; margin: 0; }
 .blocks-panel { display: flex; flex-direction: column; min-height: 614px; }
 #blockly { flex: 1; min-height: 500px; width: 100%; }
 .panel-footer { border-top: 1px solid #e4e7dd; height: 32px; display: flex; align-items: center; gap: 8px; padding: 0 16px; font-size: 10px; color: #849076; }
+.panel-footer .button { padding: 3px 10px; }
+#language-undo { margin-left: auto; }
 .small-dot { width: 5px; height: 5px; border-radius: 50%; background: #a9bb82; }
 .right-column { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
 #status { font-size: 10px; color: #5f7953; background: #edf2e1; padding: 4px 8px; border-radius: 5px; }
@@ -61,3 +94,12 @@ footer { display: flex; justify-content: space-between; align-items: center; pad
 @media (min-width: 1500px) { .workspace-grid { grid-template-columns: minmax(500px, 1.6fr) minmax(380px, 1fr); } }
 @media (max-width: 900px) { .app-header { height: 80px; } .prototype { display: none; } .project-bar { align-items: flex-start; flex-direction: column; } .actions { width: 100%; flex-wrap: wrap; } .workspace-grid { grid-template-columns: 1fr; } .blocks-panel { min-height: 480px; } #blockly { min-height: 400px; } .right-column { display: grid; grid-template-columns: 1fr 1fr; } .intro-doodle { font-size: 50px; padding: 0; } }
 @media (max-width: 580px) { .brand { font-size: 21px; } .design-link { font-size: 10px; } .intro { padding-top: 28px; } .intro-doodle { display: none; } h1 { letter-spacing: -1px; } .intro p:last-child { max-width: 280px; line-height: 1.6; } .right-column { display: flex; } .panel-note { display: none; } .button { padding: 10px; } }
+
+#module-inspector { width: 1100px; max-width: 94vw; }
+.module-inspection { display: grid; grid-template-columns: 1.2fr 1fr; gap: 16px; margin-block: 16px; }
+#module-inspector-blocks { min-width: 0; height: 420px; border: 1px solid #d8decb; }
+#module-inspector-source { margin: 0; padding: 12px; height: 420px; overflow: auto; background: #f4f6ef; }
+#modules-dialog .module-choices label { display: flex; gap: 8px; }
+#modules-error { color: #9c442e; }
+#modules-dialog fieldset > button { margin-block: 4px; }
+@media (max-width: 750px) { .module-inspection { grid-template-columns: 1fr; } #module-inspector-blocks, #module-inspector-source { height: 300px; } }

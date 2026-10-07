@@ -1,0 +1,74 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 4,
+  "workspace": {
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_handler",
+          "id": "blocked-block",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "controls_whileUntil",
+                "fields": {
+                  "MODE": "WHILE"
+                },
+                "inputs": {
+                  "BOOL": {
+                    "block": {
+                      "type": "logic_boolean",
+                      "fields": {
+                        "BOOL": "TRUE"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 50,
+          "y": 50,
+          "extraState": {
+            "functionId": "blocked",
+            "signature": {
+              "id": "blocked",
+              "name": "on_start",
+              "parameters": [
+                {
+                  "id": "blocked-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "start",
+                "order": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "procedures": [
+      {
+        "id": "blocked",
+        "name": "on_start",
+        "parameters": [
+          {
+            "id": "blocked-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "start",
+          "order": 0
+        },
+        "returnTypes": null
+      }
+    ]
+  }
+}

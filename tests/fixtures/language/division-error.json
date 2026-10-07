@@ -1,0 +1,52 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 1,
+  "workspace": {
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_program",
+          "id": "program",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "id": "division-error",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "py_binary",
+                      "fields": {
+                        "OP": "/"
+                      },
+                      "inputs": {
+                        "A": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "1"
+                            }
+                          }
+                        },
+                        "B": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "0"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

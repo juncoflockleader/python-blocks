@@ -61,3 +61,11 @@ class Pen:
 
 
 pen = Pen()
+
+
+def __getattr__(name):
+    if name == "events":
+        # Import lazily so the pen library can run without an event host.
+        from _playground_events import events
+        return events
+    raise AttributeError(name)

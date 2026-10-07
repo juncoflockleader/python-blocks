@@ -1,0 +1,300 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 6,
+  "workspace": {
+    "procedures": [
+      {
+        "id": "difference-function",
+        "name": "difference",
+        "parameters": [
+          {
+            "id": "left-param",
+            "name": "left"
+          },
+          {
+            "id": "right-param",
+            "name": "right"
+          }
+        ],
+        "returnTypes": null
+      },
+      {
+        "id": "choose_operation",
+        "name": "choose_operation",
+        "parameters": [],
+        "returnTypes": null
+      },
+      {
+        "id": "apply_operation",
+        "name": "apply_operation",
+        "parameters": [
+          {
+            "id": "apply_operation-operation",
+            "name": "operation"
+          },
+          {
+            "id": "apply_operation-left",
+            "name": "left"
+          },
+          {
+            "id": "apply_operation-right",
+            "name": "right"
+          }
+        ],
+        "returnTypes": null
+      }
+    ],
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_function",
+          "id": "difference-definition",
+          "x": 40,
+          "y": 40,
+          "extraState": {
+            "functionId": "difference-function",
+            "signature": {
+              "id": "difference-function",
+              "name": "difference",
+              "parameters": [
+                {
+                  "id": "left-param",
+                  "name": "left"
+                },
+                {
+                  "id": "right-param",
+                  "name": "right"
+                }
+              ]
+            }
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "py_return_value",
+                "id": "difference-return",
+                "inputs": {
+                  "VALUE": {
+                    "block": {
+                      "type": "py_binary",
+                      "fields": {
+                        "OP": "-"
+                      },
+                      "inputs": {
+                        "A": {
+                          "block": {
+                            "type": "py_get",
+                            "fields": {
+                              "SYMBOL": "param:left-param"
+                            }
+                          }
+                        },
+                        "B": {
+                          "block": {
+                            "type": "py_get",
+                            "fields": {
+                              "SYMBOL": "param:right-param"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_function",
+          "id": "choose_operation-definition",
+          "x": 40,
+          "y": 180,
+          "extraState": {
+            "functionId": "choose_operation",
+            "signature": {
+              "id": "choose_operation",
+              "name": "choose_operation",
+              "parameters": []
+            }
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "py_return_value",
+                "inputs": {
+                  "VALUE": {
+                    "block": {
+                      "type": "py_function_ref",
+                      "extraState": {
+                        "functionId": "difference-function",
+                        "signature": {
+                          "id": "difference-function",
+                          "name": "difference",
+                          "parameters": [
+                            {
+                              "id": "left-param",
+                              "name": "left"
+                            },
+                            {
+                              "id": "right-param",
+                              "name": "right"
+                            }
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_function",
+          "id": "apply_operation-definition",
+          "x": 40,
+          "y": 300,
+          "extraState": {
+            "functionId": "apply_operation",
+            "signature": {
+              "id": "apply_operation",
+              "name": "apply_operation",
+              "parameters": [
+                {
+                  "id": "apply_operation-operation",
+                  "name": "operation"
+                },
+                {
+                  "id": "apply_operation-left",
+                  "name": "left"
+                },
+                {
+                  "id": "apply_operation-right",
+                  "name": "right"
+                }
+              ]
+            }
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "py_return_value",
+                "inputs": {
+                  "VALUE": {
+                    "block": {
+                      "type": "py_dynamic_call_value",
+                      "extraState": {
+                        "argumentCount": 2
+                      },
+                      "inputs": {
+                        "CALLABLE": {
+                          "block": {
+                            "type": "py_get",
+                            "fields": {
+                              "SYMBOL": "param:apply_operation-operation"
+                            }
+                          }
+                        },
+                        "ARG0": {
+                          "block": {
+                            "type": "py_get",
+                            "fields": {
+                              "SYMBOL": "param:apply_operation-left"
+                            }
+                          }
+                        },
+                        "ARG1": {
+                          "block": {
+                            "type": "py_get",
+                            "fields": {
+                              "SYMBOL": "param:apply_operation-right"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_program",
+          "x": 40,
+          "y": 450,
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "py_call_value",
+                      "extraState": {
+                        "functionId": "apply_operation",
+                        "signature": {
+                          "id": "apply_operation",
+                          "name": "apply_operation",
+                          "parameters": [
+                            {
+                              "id": "apply_operation-operation",
+                              "name": "operation"
+                            },
+                            {
+                              "id": "apply_operation-left",
+                              "name": "left"
+                            },
+                            {
+                              "id": "apply_operation-right",
+                              "name": "right"
+                            }
+                          ]
+                        }
+                      },
+                      "inputs": {
+                        "ARG_apply_operation-operation": {
+                          "block": {
+                            "type": "py_call_value",
+                            "extraState": {
+                              "functionId": "choose_operation",
+                              "signature": {
+                                "id": "choose_operation",
+                                "name": "choose_operation",
+                                "parameters": []
+                              }
+                            },
+                            "inputs": {}
+                          }
+                        },
+                        "ARG_apply_operation-left": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "10"
+                            }
+                          }
+                        },
+                        "ARG_apply_operation-right": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "3"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

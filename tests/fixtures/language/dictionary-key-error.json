@@ -1,0 +1,52 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 3,
+  "workspace": {
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_program",
+          "id": "collection-54",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "id": "collection-error",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "py_item_get",
+                      "id": "collection-52",
+                      "inputs": {
+                        "COLLECTION": {
+                          "block": {
+                            "type": "py_dict",
+                            "id": "collection-47",
+                            "extraState": {
+                              "itemCount": 0
+                            }
+                          }
+                        },
+                        "KEY": {
+                          "block": {
+                            "type": "text",
+                            "id": "collection-48",
+                            "fields": {
+                              "TEXT": "absent"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

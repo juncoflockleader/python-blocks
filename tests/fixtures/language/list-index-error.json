@@ -1,0 +1,63 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 3,
+  "workspace": {
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_program",
+          "id": "collection-51",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "id": "collection-error",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "py_item_get",
+                      "id": "collection-49",
+                      "inputs": {
+                        "COLLECTION": {
+                          "block": {
+                            "type": "lists_create_with",
+                            "id": "collection-45",
+                            "inputs": {
+                              "ADD0": {
+                                "block": {
+                                  "type": "py_number",
+                                  "id": "collection-44",
+                                  "fields": {
+                                    "VALUE": "1"
+                                  }
+                                }
+                              }
+                            },
+                            "extraState": {
+                              "itemCount": 1
+                            }
+                          }
+                        },
+                        "KEY": {
+                          "block": {
+                            "type": "py_number",
+                            "id": "collection-46",
+                            "fields": {
+                              "VALUE": "4"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

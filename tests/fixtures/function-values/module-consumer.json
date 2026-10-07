@@ -1,0 +1,242 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 6,
+  "workspace": {
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_program",
+          "x": 40,
+          "y": 40,
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "id": "module-output",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "py_dynamic_call_value",
+                      "extraState": {
+                        "argumentCount": 2
+                      },
+                      "inputs": {
+                        "CALLABLE": {
+                          "block": {
+                            "type": "py_dynamic_call_value",
+                            "extraState": {
+                              "argumentCount": 0
+                            },
+                            "inputs": {
+                              "CALLABLE": {
+                                "block": {
+                                  "type": "py_module_function_ref",
+                                  "id": "module-reference",
+                                  "extraState": {
+                                    "moduleId": "function-values-module",
+                                    "revision": "values-revision-1",
+                                    "importId": "operations-import",
+                                    "alias": "tools",
+                                    "functionId": "choose_operation",
+                                    "signature": {
+                                      "id": "choose_operation",
+                                      "name": "choose_operation",
+                                      "parameters": []
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "ARG0": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "10"
+                            }
+                          }
+                        },
+                        "ARG1": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "3"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "pythonModules": {
+      "formatVersion": 1,
+      "imports": [
+        {
+          "moduleId": "function-values-module",
+          "revision": "values-revision-1",
+          "id": "operations-import",
+          "alias": "tools"
+        }
+      ],
+      "definitions": [
+        {
+          "moduleId": "function-values-module",
+          "revision": "values-revision-1",
+          "name": "operations",
+          "languageVersion": 6,
+          "exports": [
+            {
+              "id": "choose_operation",
+              "name": "choose_operation",
+              "parameters": []
+            }
+          ],
+          "dependencies": [],
+          "workspace": {
+            "procedures": [
+              {
+                "id": "difference-function",
+                "name": "difference",
+                "parameters": [
+                  {
+                    "id": "left-param",
+                    "name": "left"
+                  },
+                  {
+                    "id": "right-param",
+                    "name": "right"
+                  }
+                ],
+                "returnTypes": null
+              },
+              {
+                "id": "choose_operation",
+                "name": "choose_operation",
+                "parameters": [],
+                "returnTypes": null
+              }
+            ],
+            "blocks": {
+              "languageVersion": 0,
+              "blocks": [
+                {
+                  "type": "py_function",
+                  "id": "difference-definition",
+                  "x": 40,
+                  "y": 40,
+                  "extraState": {
+                    "functionId": "difference-function",
+                    "signature": {
+                      "id": "difference-function",
+                      "name": "difference",
+                      "parameters": [
+                        {
+                          "id": "left-param",
+                          "name": "left"
+                        },
+                        {
+                          "id": "right-param",
+                          "name": "right"
+                        }
+                      ]
+                    }
+                  },
+                  "inputs": {
+                    "BODY": {
+                      "block": {
+                        "type": "py_return_value",
+                        "id": "difference-return",
+                        "inputs": {
+                          "VALUE": {
+                            "block": {
+                              "type": "py_binary",
+                              "fields": {
+                                "OP": "-"
+                              },
+                              "inputs": {
+                                "A": {
+                                  "block": {
+                                    "type": "py_get",
+                                    "fields": {
+                                      "SYMBOL": "param:left-param"
+                                    }
+                                  }
+                                },
+                                "B": {
+                                  "block": {
+                                    "type": "py_get",
+                                    "fields": {
+                                      "SYMBOL": "param:right-param"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                {
+                  "type": "py_function",
+                  "id": "choose_operation-definition",
+                  "x": 40,
+                  "y": 200,
+                  "extraState": {
+                    "functionId": "choose_operation",
+                    "signature": {
+                      "id": "choose_operation",
+                      "name": "choose_operation",
+                      "parameters": []
+                    }
+                  },
+                  "inputs": {
+                    "BODY": {
+                      "block": {
+                        "type": "py_return_value",
+                        "inputs": {
+                          "VALUE": {
+                            "block": {
+                              "type": "py_function_ref",
+                              "extraState": {
+                                "functionId": "difference-function",
+                                "signature": {
+                                  "id": "difference-function",
+                                  "name": "difference",
+                                  "parameters": [
+                                    {
+                                      "id": "left-param",
+                                      "name": "left"
+                                    },
+                                    {
+                                      "id": "right-param",
+                                      "name": "right"
+                                    }
+                                  ]
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

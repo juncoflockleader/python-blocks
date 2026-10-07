@@ -1,0 +1,105 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 4,
+  "workspace": {
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_handler",
+          "id": "broken-block",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "py_wait",
+                "inputs": {
+                  "SECONDS": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "0"
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "text_print",
+                    "id": "event-failure",
+                    "inputs": {
+                      "TEXT": {
+                        "block": {
+                          "type": "py_binary",
+                          "fields": {
+                            "OP": "/"
+                          },
+                          "inputs": {
+                            "A": {
+                              "block": {
+                                "type": "py_number",
+                                "fields": {
+                                  "VALUE": "1"
+                                }
+                              }
+                            },
+                            "B": {
+                              "block": {
+                                "type": "py_number",
+                                "fields": {
+                                  "VALUE": "0"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 50,
+          "y": 50,
+          "extraState": {
+            "functionId": "broken",
+            "signature": {
+              "id": "broken",
+              "name": "on_failure",
+              "parameters": [
+                {
+                  "id": "broken-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "fail",
+                "order": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "procedures": [
+      {
+        "id": "broken",
+        "name": "on_failure",
+        "parameters": [
+          {
+            "id": "broken-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "fail",
+          "order": 0
+        },
+        "returnTypes": null
+      }
+    ]
+  }
+}

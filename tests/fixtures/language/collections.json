@@ -1,0 +1,456 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 3,
+  "workspace": {
+    "variables": [
+      {
+        "id": "items",
+        "name": "items",
+        "type": "py:module"
+      },
+      {
+        "id": "alias",
+        "name": "alias",
+        "type": "py:module"
+      },
+      {
+        "id": "record",
+        "name": "record",
+        "type": "py:module"
+      },
+      {
+        "id": "key",
+        "name": "key",
+        "type": "py:module"
+      }
+    ],
+    "procedures": [
+      {
+        "id": "add-value",
+        "name": "add_value",
+        "parameters": [
+          {
+            "id": "values-param",
+            "name": "values"
+          }
+        ],
+        "returnTypes": null
+      }
+    ],
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_function",
+          "id": "add-value-definition",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "py_list_append",
+                "id": "collection-3",
+                "inputs": {
+                  "LIST": {
+                    "block": {
+                      "type": "py_get",
+                      "id": "collection-1",
+                      "fields": {
+                        "SYMBOL": "param:values-param"
+                      }
+                    }
+                  },
+                  "VALUE": {
+                    "block": {
+                      "type": "py_number",
+                      "id": "collection-2",
+                      "fields": {
+                        "VALUE": "3"
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "py_return_value",
+                    "id": "collection-6",
+                    "inputs": {
+                      "VALUE": {
+                        "block": {
+                          "type": "py_length",
+                          "id": "collection-5",
+                          "inputs": {
+                            "VALUE": {
+                              "block": {
+                                "type": "py_get",
+                                "id": "collection-4",
+                                "fields": {
+                                  "SYMBOL": "param:values-param"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "extraState": {
+            "functionId": "add-value",
+            "signature": {
+              "id": "add-value",
+              "name": "add_value",
+              "parameters": [
+                {
+                  "id": "values-param",
+                  "name": "values"
+                }
+              ]
+            }
+          },
+          "x": 50,
+          "y": 50
+        },
+        {
+          "type": "py_program",
+          "id": "collections-program",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "py_set",
+                "id": "collection-21",
+                "inputs": {
+                  "VALUE": {
+                    "block": {
+                      "type": "lists_create_with",
+                      "id": "collection-20",
+                      "inputs": {
+                        "ADD0": {
+                          "block": {
+                            "type": "py_number",
+                            "id": "collection-18",
+                            "fields": {
+                              "VALUE": "1"
+                            }
+                          }
+                        },
+                        "ADD1": {
+                          "block": {
+                            "type": "py_number",
+                            "id": "collection-19",
+                            "fields": {
+                              "VALUE": "2"
+                            }
+                          }
+                        }
+                      },
+                      "extraState": {
+                        "itemCount": 2
+                      }
+                    }
+                  }
+                },
+                "fields": {
+                  "SYMBOL": "items"
+                },
+                "next": {
+                  "block": {
+                    "type": "py_set",
+                    "id": "collection-23",
+                    "inputs": {
+                      "VALUE": {
+                        "block": {
+                          "type": "py_get",
+                          "id": "collection-22",
+                          "fields": {
+                            "SYMBOL": "items"
+                          }
+                        }
+                      }
+                    },
+                    "fields": {
+                      "SYMBOL": "alias"
+                    },
+                    "next": {
+                      "block": {
+                        "type": "py_set",
+                        "id": "collection-24",
+                        "inputs": {
+                          "VALUE": {
+                            "block": {
+                              "type": "py_dict",
+                              "id": "record-literal",
+                              "inputs": {
+                                "KEY0": {
+                                  "block": {
+                                    "type": "text",
+                                    "id": "collection-8",
+                                    "fields": {
+                                      "TEXT": "numbers"
+                                    }
+                                  }
+                                },
+                                "VALUE0": {
+                                  "block": {
+                                    "type": "py_get",
+                                    "id": "collection-9",
+                                    "fields": {
+                                      "SYMBOL": "items"
+                                    }
+                                  }
+                                },
+                                "KEY1": {
+                                  "block": {
+                                    "type": "text",
+                                    "id": "collection-10",
+                                    "fields": {
+                                      "TEXT": "label"
+                                    }
+                                  }
+                                },
+                                "VALUE1": {
+                                  "block": {
+                                    "type": "text",
+                                    "id": "collection-11",
+                                    "fields": {
+                                      "TEXT": "demo"
+                                    }
+                                  }
+                                }
+                              },
+                              "extraState": {
+                                "itemCount": 2
+                              }
+                            }
+                          }
+                        },
+                        "fields": {
+                          "SYMBOL": "record"
+                        },
+                        "next": {
+                          "block": {
+                            "type": "text_print",
+                            "id": "collection-27",
+                            "inputs": {
+                              "TEXT": {
+                                "block": {
+                                  "type": "py_call_value",
+                                  "id": "collection-26",
+                                  "inputs": {
+                                    "ARG_values-param": {
+                                      "block": {
+                                        "type": "py_get",
+                                        "id": "collection-25",
+                                        "fields": {
+                                          "SYMBOL": "items"
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "extraState": {
+                                    "functionId": "add-value",
+                                    "signature": {
+                                      "id": "add-value",
+                                      "name": "add_value",
+                                      "parameters": [
+                                        {
+                                          "id": "values-param",
+                                          "name": "values"
+                                        }
+                                      ]
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "next": {
+                              "block": {
+                                "type": "text_print",
+                                "id": "collection-29",
+                                "inputs": {
+                                  "TEXT": {
+                                    "block": {
+                                      "type": "py_get",
+                                      "id": "collection-28",
+                                      "fields": {
+                                        "SYMBOL": "alias"
+                                      }
+                                    }
+                                  }
+                                },
+                                "next": {
+                                  "block": {
+                                    "type": "text_print",
+                                    "id": "collection-33",
+                                    "inputs": {
+                                      "TEXT": {
+                                        "block": {
+                                          "type": "py_item_get",
+                                          "id": "collection-32",
+                                          "inputs": {
+                                            "COLLECTION": {
+                                              "block": {
+                                                "type": "py_get",
+                                                "id": "collection-30",
+                                                "fields": {
+                                                  "SYMBOL": "items"
+                                                }
+                                              }
+                                            },
+                                            "KEY": {
+                                              "block": {
+                                                "type": "py_number",
+                                                "id": "collection-31",
+                                                "fields": {
+                                                  "VALUE": "-1"
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "next": {
+                                      "block": {
+                                        "type": "py_for_each",
+                                        "id": "collection-17",
+                                        "inputs": {
+                                          "ITERABLE": {
+                                            "block": {
+                                              "type": "py_dict_keys",
+                                              "id": "collection-14",
+                                              "inputs": {
+                                                "DICT": {
+                                                  "block": {
+                                                    "type": "py_get",
+                                                    "id": "collection-13",
+                                                    "fields": {
+                                                      "SYMBOL": "record"
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          },
+                                          "DO": {
+                                            "block": {
+                                              "type": "text_print",
+                                              "id": "collection-16",
+                                              "inputs": {
+                                                "TEXT": {
+                                                  "block": {
+                                                    "type": "py_get",
+                                                    "id": "collection-15",
+                                                    "fields": {
+                                                      "SYMBOL": "key"
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        },
+                                        "fields": {
+                                          "SYMBOL": "key"
+                                        },
+                                        "next": {
+                                          "block": {
+                                            "type": "text_print",
+                                            "id": "collection-38",
+                                            "inputs": {
+                                              "TEXT": {
+                                                "block": {
+                                                  "type": "py_dict_get",
+                                                  "id": "collection-37",
+                                                  "inputs": {
+                                                    "DICT": {
+                                                      "block": {
+                                                        "type": "py_get",
+                                                        "id": "collection-34",
+                                                        "fields": {
+                                                          "SYMBOL": "record"
+                                                        }
+                                                      }
+                                                    },
+                                                    "KEY": {
+                                                      "block": {
+                                                        "type": "text",
+                                                        "id": "collection-35",
+                                                        "fields": {
+                                                          "TEXT": "absent"
+                                                        }
+                                                      }
+                                                    },
+                                                    "DEFAULT": {
+                                                      "block": {
+                                                        "type": "py_number",
+                                                        "id": "collection-36",
+                                                        "fields": {
+                                                          "VALUE": "99"
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            },
+                                            "next": {
+                                              "block": {
+                                                "type": "text_print",
+                                                "id": "collection-42",
+                                                "inputs": {
+                                                  "TEXT": {
+                                                    "block": {
+                                                      "type": "py_contains",
+                                                      "id": "collection-41",
+                                                      "inputs": {
+                                                        "ITEM": {
+                                                          "block": {
+                                                            "type": "text",
+                                                            "id": "collection-39",
+                                                            "fields": {
+                                                              "TEXT": "numbers"
+                                                            }
+                                                          }
+                                                        },
+                                                        "COLLECTION": {
+                                                          "block": {
+                                                            "type": "py_get",
+                                                            "id": "collection-40",
+                                                            "fields": {
+                                                              "SYMBOL": "record"
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 50,
+          "y": 240
+        }
+      ]
+    }
+  }
+}

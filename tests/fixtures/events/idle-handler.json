@@ -1,0 +1,71 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 4,
+  "workspace": {
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_handler",
+          "id": "idle-block",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "py_get",
+                      "fields": {
+                        "SYMBOL": "param:idle-payload"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 50,
+          "y": 50,
+          "extraState": {
+            "functionId": "idle",
+            "signature": {
+              "id": "idle",
+              "name": "on_message",
+              "parameters": [
+                {
+                  "id": "idle-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "message",
+                "order": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "procedures": [
+      {
+        "id": "idle",
+        "name": "on_message",
+        "parameters": [
+          {
+            "id": "idle-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "message",
+          "order": 0
+        },
+        "returnTypes": null
+      }
+    ]
+  }
+}

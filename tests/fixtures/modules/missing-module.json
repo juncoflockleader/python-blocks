@@ -1,0 +1,73 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 5,
+  "workspace": {
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_program",
+          "id": "program",
+          "x": 40,
+          "y": 220,
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "id": "difference-output",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "py_module_call_value",
+                      "id": "difference-call",
+                      "extraState": {
+                        "functionId": "difference-function",
+                        "signature": {
+                          "id": "difference-function",
+                          "name": "difference",
+                          "parameters": [
+                            {
+                              "id": "left-param",
+                              "name": "left"
+                            },
+                            {
+                              "id": "right-param",
+                              "name": "right"
+                            }
+                          ]
+                        },
+                        "moduleId": "arithmetic-module",
+                        "revision": "revision-1",
+                        "importId": "arithmetic-import",
+                        "alias": "tools"
+                      },
+                      "inputs": {
+                        "ARG_left-param": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "10"
+                            }
+                          }
+                        },
+                        "ARG_right-param": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "3"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

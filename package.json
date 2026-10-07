@@ -4,7 +4,9 @@
   "private": true,
   "type": "module",
   "packageManager": "pnpm@11.19.0",
-  "engines": { "node": ">=22.12.0" },
+  "engines": {
+    "node": ">=22.12.0"
+  },
   "scripts": {
     "assets": "node scripts/prepare-assets.mjs",
     "dev": "pnpm assets && vite --host 127.0.0.1",
@@ -16,7 +18,12 @@
     "test:e2e": "playwright test",
     "check": "pnpm typecheck && pnpm test && pnpm test:python && pnpm build"
   },
-  "dependencies": { "blockly": "13.3.0", "pyodide": "314.0.7" },
+  "dependencies": {
+    "@blockly/block-shareable-procedures": "13.3.0",
+    "blockly": "13.3.0",
+    "fflate": "0.8.3",
+    "pyodide": "314.0.7"
+  },
   "devDependencies": {
     "@playwright/test": "1.63.0",
     "@types/node": "26.6.4",

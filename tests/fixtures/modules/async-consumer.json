@@ -1,0 +1,250 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 5,
+  "workspace": {
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_handler",
+          "id": "first-block",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "first"
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "py_wait",
+                    "inputs": {
+                      "SECONDS": {
+                        "block": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "0.05"
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "text_print",
+                        "inputs": {
+                          "TEXT": {
+                            "block": {
+                              "type": "py_module_call_value",
+                              "inputs": {
+                                "ARG_helper-value": {
+                                  "block": {
+                                    "type": "py_number",
+                                    "fields": {
+                                      "VALUE": "21"
+                                    }
+                                  }
+                                }
+                              },
+                              "extraState": {
+                                "functionId": "helper",
+                                "signature": {
+                                  "id": "helper",
+                                  "name": "double_value",
+                                  "parameters": [
+                                    {
+                                      "id": "helper-value",
+                                      "name": "value"
+                                    }
+                                  ],
+                                  "async": true
+                                },
+                                "moduleId": "timing-module",
+                                "revision": "revision-1",
+                                "importId": "timing-import",
+                                "alias": "timing"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 50,
+          "y": 180,
+          "extraState": {
+            "functionId": "first",
+            "signature": {
+              "id": "first",
+              "name": "first_start",
+              "parameters": [
+                {
+                  "id": "first-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "start",
+                "order": 0
+              }
+            }
+          }
+        }
+      ]
+    },
+    "procedures": [
+      {
+        "id": "first",
+        "name": "first_start",
+        "parameters": [
+          {
+            "id": "first-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "start",
+          "order": 0
+        },
+        "returnTypes": null
+      }
+    ],
+    "pythonModules": {
+      "formatVersion": 1,
+      "imports": [
+        {
+          "moduleId": "timing-module",
+          "revision": "revision-1",
+          "id": "timing-import",
+          "alias": "timing"
+        }
+      ],
+      "definitions": [
+        {
+          "moduleId": "timing-module",
+          "revision": "revision-1",
+          "name": "timing",
+          "languageVersion": 5,
+          "exports": [
+            {
+              "id": "helper",
+              "name": "double_value",
+              "parameters": [
+                {
+                  "id": "helper-value",
+                  "name": "value"
+                }
+              ],
+              "async": true
+            }
+          ],
+          "dependencies": [],
+          "workspace": {
+            "procedures": [
+              {
+                "id": "helper",
+                "name": "double_value",
+                "parameters": [
+                  {
+                    "id": "helper-value",
+                    "name": "value"
+                  }
+                ],
+                "async": true,
+                "returnTypes": null
+              }
+            ],
+            "blocks": {
+              "languageVersion": 0,
+              "blocks": [
+                {
+                  "type": "py_function",
+                  "id": "helper-block",
+                  "inputs": {
+                    "BODY": {
+                      "block": {
+                        "type": "py_wait",
+                        "inputs": {
+                          "SECONDS": {
+                            "block": {
+                              "type": "py_number",
+                              "fields": {
+                                "VALUE": "0.01"
+                              }
+                            }
+                          }
+                        },
+                        "next": {
+                          "block": {
+                            "type": "py_return_value",
+                            "inputs": {
+                              "VALUE": {
+                                "block": {
+                                  "type": "py_binary",
+                                  "fields": {
+                                    "OP": "*"
+                                  },
+                                  "inputs": {
+                                    "A": {
+                                      "block": {
+                                        "type": "py_get",
+                                        "fields": {
+                                          "SYMBOL": "param:helper-value"
+                                        }
+                                      }
+                                    },
+                                    "B": {
+                                      "block": {
+                                        "type": "py_number",
+                                        "fields": {
+                                          "VALUE": "2"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "x": 700,
+                  "y": 50,
+                  "extraState": {
+                    "functionId": "helper",
+                    "signature": {
+                      "id": "helper",
+                      "name": "double_value",
+                      "parameters": [
+                        {
+                          "id": "helper-value",
+                          "name": "value"
+                        }
+                      ],
+                      "async": true
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        }
+      ]
+    }
+  }
+}

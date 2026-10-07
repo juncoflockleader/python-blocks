@@ -1,0 +1,49 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 1,
+  "workspace": {
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_program",
+          "id": "program",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "controls_repeat_ext",
+                "id": "fractional-repeat",
+                "inputs": {
+                  "TIMES": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "2.5"
+                      }
+                    }
+                  },
+                  "DO": {
+                    "block": {
+                      "type": "text_print",
+                      "inputs": {
+                        "TEXT": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "1"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

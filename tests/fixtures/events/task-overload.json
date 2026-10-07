@@ -1,0 +1,149 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 4,
+  "workspace": {
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_handler",
+          "id": "flood-block",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "controls_repeat_ext",
+                "inputs": {
+                  "TIMES": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "33"
+                      }
+                    }
+                  },
+                  "DO": {
+                    "block": {
+                      "type": "py_emit",
+                      "id": "event-task-origin",
+                      "inputs": {
+                        "EVENT": {
+                          "block": {
+                            "type": "text",
+                            "fields": {
+                              "TEXT": "message"
+                            }
+                          }
+                        },
+                        "PAYLOAD": {
+                          "block": {
+                            "type": "py_none"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 50,
+          "y": 50,
+          "extraState": {
+            "functionId": "flood",
+            "signature": {
+              "id": "flood",
+              "name": "send_many",
+              "parameters": [
+                {
+                  "id": "flood-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "start",
+                "order": 0
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "receiver-block",
+          "x": 500,
+          "y": 50,
+          "extraState": {
+            "functionId": "receiver",
+            "signature": {
+              "id": "receiver",
+              "name": "receive_many",
+              "parameters": [
+                {
+                  "id": "receiver-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "message",
+                "order": 1
+              }
+            }
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "py_wait",
+                "inputs": {
+                  "SECONDS": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "100"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "procedures": [
+      {
+        "id": "flood",
+        "name": "send_many",
+        "parameters": [
+          {
+            "id": "flood-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "start",
+          "order": 0
+        },
+        "returnTypes": null
+      },
+      {
+        "id": "receiver",
+        "name": "receive_many",
+        "parameters": [
+          {
+            "id": "receiver-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "message",
+          "order": 1
+        },
+        "returnTypes": null
+      }
+    ]
+  }
+}

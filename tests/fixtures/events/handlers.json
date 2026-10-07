@@ -1,0 +1,402 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 4,
+  "workspace": {
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_program",
+          "id": "event-program",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "py_set",
+                "fields": {
+                  "SYMBOL": "total"
+                },
+                "inputs": {
+                  "VALUE": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "0"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 50,
+          "y": 50
+        },
+        {
+          "type": "py_handler",
+          "id": "first-block",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "first"
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "py_wait",
+                    "inputs": {
+                      "SECONDS": {
+                        "block": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "0.05"
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "text_print",
+                        "inputs": {
+                          "TEXT": {
+                            "block": {
+                              "type": "py_call_value",
+                              "inputs": {
+                                "ARG_helper-value": {
+                                  "block": {
+                                    "type": "py_number",
+                                    "fields": {
+                                      "VALUE": "21"
+                                    }
+                                  }
+                                }
+                              },
+                              "extraState": {
+                                "functionId": "helper",
+                                "signature": {
+                                  "id": "helper",
+                                  "name": "double_value",
+                                  "parameters": [
+                                    {
+                                      "id": "helper-value",
+                                      "name": "value"
+                                    }
+                                  ],
+                                  "async": true
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 50,
+          "y": 180,
+          "extraState": {
+            "functionId": "first",
+            "signature": {
+              "id": "first",
+              "name": "first_start",
+              "parameters": [
+                {
+                  "id": "first-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "start",
+                "order": 0
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "second-block",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "second"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 50,
+          "y": 420,
+          "extraState": {
+            "functionId": "second",
+            "signature": {
+              "id": "second",
+              "name": "second_start",
+              "parameters": [
+                {
+                  "id": "second-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "start",
+                "order": 1
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "message-handler-block",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "py_set",
+                "fields": {
+                  "SYMBOL": "total"
+                },
+                "inputs": {
+                  "VALUE": {
+                    "block": {
+                      "type": "py_binary",
+                      "fields": {
+                        "OP": "+"
+                      },
+                      "inputs": {
+                        "A": {
+                          "block": {
+                            "type": "py_get",
+                            "fields": {
+                              "SYMBOL": "total"
+                            }
+                          }
+                        },
+                        "B": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "1"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "text_print",
+                    "inputs": {
+                      "TEXT": {
+                        "block": {
+                          "type": "py_get",
+                          "fields": {
+                            "SYMBOL": "param:message-handler-payload"
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "text_print",
+                        "inputs": {
+                          "TEXT": {
+                            "block": {
+                              "type": "py_get",
+                              "fields": {
+                                "SYMBOL": "total"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 650,
+          "y": 260,
+          "extraState": {
+            "functionId": "message-handler",
+            "signature": {
+              "id": "message-handler",
+              "name": "message_handler",
+              "parameters": [
+                {
+                  "id": "message-handler-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "message",
+                "order": 2
+              }
+            }
+          }
+        },
+        {
+          "type": "py_function",
+          "id": "helper-block",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "py_wait",
+                "inputs": {
+                  "SECONDS": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "0.01"
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "py_return_value",
+                    "inputs": {
+                      "VALUE": {
+                        "block": {
+                          "type": "py_binary",
+                          "fields": {
+                            "OP": "*"
+                          },
+                          "inputs": {
+                            "A": {
+                              "block": {
+                                "type": "py_get",
+                                "fields": {
+                                  "SYMBOL": "param:helper-value"
+                                }
+                              }
+                            },
+                            "B": {
+                              "block": {
+                                "type": "py_number",
+                                "fields": {
+                                  "VALUE": "2"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 700,
+          "y": 50,
+          "extraState": {
+            "functionId": "helper",
+            "signature": {
+              "id": "helper",
+              "name": "double_value",
+              "parameters": [
+                {
+                  "id": "helper-value",
+                  "name": "value"
+                }
+              ],
+              "async": true
+            }
+          }
+        }
+      ]
+    },
+    "procedures": [
+      {
+        "id": "helper",
+        "name": "double_value",
+        "parameters": [
+          {
+            "id": "helper-value",
+            "name": "value"
+          }
+        ],
+        "async": true,
+        "returnTypes": null
+      },
+      {
+        "id": "first",
+        "name": "first_start",
+        "parameters": [
+          {
+            "id": "first-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "start",
+          "order": 0
+        },
+        "returnTypes": null
+      },
+      {
+        "id": "second",
+        "name": "second_start",
+        "parameters": [
+          {
+            "id": "second-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "start",
+          "order": 1
+        },
+        "returnTypes": null
+      },
+      {
+        "id": "message-handler",
+        "name": "message_handler",
+        "parameters": [
+          {
+            "id": "message-handler-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "message",
+          "order": 2
+        },
+        "returnTypes": null
+      }
+    ],
+    "variables": [
+      {
+        "id": "total",
+        "name": "total",
+        "type": "py:module"
+      }
+    ]
+  }
+}

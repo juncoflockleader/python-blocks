@@ -1,0 +1,299 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 7,
+  "workspace": {
+    "procedures": [
+      {
+        "id": "double",
+        "name": "double",
+        "parameters": [
+          {
+            "id": "double-value",
+            "name": "value"
+          }
+        ],
+        "returnTypes": null
+      },
+      {
+        "id": "apply_operation",
+        "name": "apply_operation",
+        "parameters": [
+          {
+            "id": "apply_operation-operation",
+            "name": "operation"
+          },
+          {
+            "id": "apply_operation-value",
+            "name": "value"
+          }
+        ],
+        "returnTypes": null
+      }
+    ],
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_function",
+          "id": "double-definition",
+          "x": 40,
+          "y": 40,
+          "extraState": {
+            "functionId": "double",
+            "signature": {
+              "id": "double",
+              "name": "double",
+              "parameters": [
+                {
+                  "id": "double-value",
+                  "name": "value"
+                }
+              ]
+            }
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "py_return_value",
+                "inputs": {
+                  "VALUE": {
+                    "block": {
+                      "type": "py_binary",
+                      "fields": {
+                        "OP": "*"
+                      },
+                      "inputs": {
+                        "A": {
+                          "block": {
+                            "type": "py_get",
+                            "fields": {
+                              "SYMBOL": "param:double-value"
+                            }
+                          }
+                        },
+                        "B": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "2"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_function",
+          "id": "apply_operation-definition",
+          "x": 40,
+          "y": 180,
+          "extraState": {
+            "functionId": "apply_operation",
+            "signature": {
+              "id": "apply_operation",
+              "name": "apply_operation",
+              "parameters": [
+                {
+                  "id": "apply_operation-operation",
+                  "name": "operation"
+                },
+                {
+                  "id": "apply_operation-value",
+                  "name": "value"
+                }
+              ]
+            }
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "py_return_value",
+                "inputs": {
+                  "VALUE": {
+                    "block": {
+                      "type": "py_dynamic_call_value",
+                      "extraState": {
+                        "argumentCount": 1
+                      },
+                      "inputs": {
+                        "CALLABLE": {
+                          "block": {
+                            "type": "py_get",
+                            "fields": {
+                              "SYMBOL": "param:apply_operation-operation"
+                            }
+                          }
+                        },
+                        "ARG0": {
+                          "block": {
+                            "type": "py_get",
+                            "fields": {
+                              "SYMBOL": "param:apply_operation-value"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_program",
+          "x": 40,
+          "y": 360,
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "py_call_value",
+                      "extraState": {
+                        "functionId": "apply_operation",
+                        "signature": {
+                          "id": "apply_operation",
+                          "name": "apply_operation",
+                          "parameters": [
+                            {
+                              "id": "apply_operation-operation",
+                              "name": "operation"
+                            },
+                            {
+                              "id": "apply_operation-value",
+                              "name": "value"
+                            }
+                          ]
+                        }
+                      },
+                      "inputs": {
+                        "ARG_apply_operation-operation": {
+                          "block": {
+                            "type": "py_function_ref",
+                            "extraState": {
+                              "functionId": "double",
+                              "signature": {
+                                "id": "double",
+                                "name": "double",
+                                "parameters": [
+                                  {
+                                    "id": "double-value",
+                                    "name": "value"
+                                  }
+                                ]
+                              }
+                            }
+                          }
+                        },
+                        "ARG_apply_operation-value": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "3"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "text_print",
+                    "inputs": {
+                      "TEXT": {
+                        "block": {
+                          "type": "py_call_value",
+                          "extraState": {
+                            "functionId": "apply_operation",
+                            "signature": {
+                              "id": "apply_operation",
+                              "name": "apply_operation",
+                              "parameters": [
+                                {
+                                  "id": "apply_operation-operation",
+                                  "name": "operation"
+                                },
+                                {
+                                  "id": "apply_operation-value",
+                                  "name": "value"
+                                }
+                              ]
+                            }
+                          },
+                          "inputs": {
+                            "ARG_apply_operation-operation": {
+                              "block": {
+                                "type": "py_lambda",
+                                "id": "increment-lambda",
+                                "extraState": {
+                                  "id": "increment-scope",
+                                  "parameters": [
+                                    {
+                                      "id": "increment-value",
+                                      "name": "value"
+                                    }
+                                  ]
+                                },
+                                "inputs": {
+                                  "BODY": {
+                                    "block": {
+                                      "type": "py_binary",
+                                      "fields": {
+                                        "OP": "+"
+                                      },
+                                      "inputs": {
+                                        "A": {
+                                          "block": {
+                                            "type": "py_get",
+                                            "id": "read-increment-value",
+                                            "fields": {
+                                              "SYMBOL": "lambda:[\"increment-scope\",\"increment-value\"]"
+                                            }
+                                          }
+                                        },
+                                        "B": {
+                                          "block": {
+                                            "type": "py_number",
+                                            "fields": {
+                                              "VALUE": "1"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "ARG_apply_operation-value": {
+                              "block": {
+                                "type": "py_number",
+                                "fields": {
+                                  "VALUE": "3"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

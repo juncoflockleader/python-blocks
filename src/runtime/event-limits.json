@@ -1,0 +1,13 @@
+{
+  "activeTasks": 32,
+  "queuedEvents": 128,
+  "handlers": 64,
+  "payloadBytes": 16384,
+  "payloadDepth": 16,
+  "payloadNodes": 1024,
+  "eventNameLength": 64,
+  "maxWaitSeconds": 86400,
+  "pendingHostEvents": 32,
+  "pingIntervalMs": 1000,
+  "watchdogMs": 5000
+}

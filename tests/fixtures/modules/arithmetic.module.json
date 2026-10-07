@@ -1,0 +1,116 @@
+{
+  "format": "python-blocks.module",
+  "formatVersion": 1,
+  "entry": {
+    "moduleId": "arithmetic-module",
+    "revision": "revision-1"
+  },
+  "definitions": [
+    {
+      "moduleId": "arithmetic-module",
+      "revision": "revision-1",
+      "name": "arithmetic",
+      "languageVersion": 5,
+      "exports": [
+        {
+          "id": "difference-function",
+          "name": "difference",
+          "parameters": [
+            {
+              "id": "left-param",
+              "name": "left"
+            },
+            {
+              "id": "right-param",
+              "name": "right"
+            }
+          ]
+        }
+      ],
+      "dependencies": [],
+      "workspace": {
+        "procedures": [
+          {
+            "id": "difference-function",
+            "name": "difference",
+            "parameters": [
+              {
+                "id": "left-param",
+                "name": "left"
+              },
+              {
+                "id": "right-param",
+                "name": "right"
+              }
+            ],
+            "returnTypes": null
+          }
+        ],
+        "blocks": {
+          "languageVersion": 0,
+          "blocks": [
+            {
+              "type": "py_function",
+              "id": "difference-definition",
+              "x": 40,
+              "y": 40,
+              "extraState": {
+                "functionId": "difference-function",
+                "signature": {
+                  "id": "difference-function",
+                  "name": "difference",
+                  "parameters": [
+                    {
+                      "id": "left-param",
+                      "name": "left"
+                    },
+                    {
+                      "id": "right-param",
+                      "name": "right"
+                    }
+                  ]
+                }
+              },
+              "inputs": {
+                "BODY": {
+                  "block": {
+                    "type": "py_return_value",
+                    "id": "difference-return",
+                    "inputs": {
+                      "VALUE": {
+                        "block": {
+                          "type": "py_binary",
+                          "fields": {
+                            "OP": "-"
+                          },
+                          "inputs": {
+                            "A": {
+                              "block": {
+                                "type": "py_get",
+                                "fields": {
+                                  "SYMBOL": "param:left-param"
+                                }
+                              }
+                            },
+                            "B": {
+                              "block": {
+                                "type": "py_get",
+                                "fields": {
+                                  "SYMBOL": "param:right-param"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

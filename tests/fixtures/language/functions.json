@@ -1,0 +1,145 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 2,
+  "workspace": {
+    "procedures": [
+      {
+        "id": "difference-function",
+        "name": "difference",
+        "parameters": [
+          {
+            "id": "left-param",
+            "name": "left"
+          },
+          {
+            "id": "right-param",
+            "name": "right"
+          }
+        ],
+        "returnTypes": null
+      }
+    ],
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_function",
+          "id": "difference-definition",
+          "x": 40,
+          "y": 40,
+          "extraState": {
+            "functionId": "difference-function",
+            "signature": {
+              "id": "difference-function",
+              "name": "difference",
+              "parameters": [
+                {
+                  "id": "left-param",
+                  "name": "left"
+                },
+                {
+                  "id": "right-param",
+                  "name": "right"
+                }
+              ]
+            }
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "py_return_value",
+                "id": "difference-return",
+                "inputs": {
+                  "VALUE": {
+                    "block": {
+                      "type": "py_binary",
+                      "fields": {
+                        "OP": "-"
+                      },
+                      "inputs": {
+                        "A": {
+                          "block": {
+                            "type": "py_get",
+                            "fields": {
+                              "SYMBOL": "param:left-param"
+                            }
+                          }
+                        },
+                        "B": {
+                          "block": {
+                            "type": "py_get",
+                            "fields": {
+                              "SYMBOL": "param:right-param"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_program",
+          "id": "program",
+          "x": 40,
+          "y": 220,
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "id": "difference-output",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "py_call_value",
+                      "id": "difference-call",
+                      "extraState": {
+                        "functionId": "difference-function",
+                        "signature": {
+                          "id": "difference-function",
+                          "name": "difference",
+                          "parameters": [
+                            {
+                              "id": "left-param",
+                              "name": "left"
+                            },
+                            {
+                              "id": "right-param",
+                              "name": "right"
+                            }
+                          ]
+                        }
+                      },
+                      "inputs": {
+                        "ARG_left-param": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "10"
+                            }
+                          }
+                        },
+                        "ARG_right-param": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "3"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
