@@ -83,7 +83,7 @@ export function importModule(workspace: Blockly.Workspace, input: ModuleBundle, 
   const binding: ModuleImport = duplicate ?? { ...bundle.entry, id: recoverable.size === 1 ? [...recoverable][0] : Blockly.utils.idGenerator.genUid(), alias };
   if (!duplicate) before.imports.push(binding);
   validateModuleDefinitions(before);
-  if (utf8Size(JSON.stringify({ format: 'python-blocks', formatVersion: 1, languageVersion: MODULE_LANGUAGE_VERSION, workspace: { ...Blockly.serialization.workspaces.save(workspace), pythonModules: before } }, null, 2)) > 2_000_000) throw new Error('This import would exceed the project file size limit.');
+  if (utf8Size(JSON.stringify({ format: 'python-blocks', formatVersion: 1, languageVersion: MODULE_LANGUAGE_VERSION, workspace: { ...Blockly.serialization.workspaces.save(workspace), pythonModules: before } }, null, 2)) > 16_000_000) throw new Error('This import would exceed the project file size limit.');
   changeModules(workspace, before); return structuredClone(binding);
 }
 

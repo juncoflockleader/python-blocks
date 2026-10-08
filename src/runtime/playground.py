@@ -64,8 +64,17 @@ pen = Pen()
 
 
 def __getattr__(name):
+    if name == 'sounds':
+        from _playground_scene import scene
+        return scene.sounds
+    if name == 'game':
+        from _playground_scene import scene
+        return scene.game
     if name == "events":
         # Import lazily so the pen library can run without an event host.
         from _playground_events import events
         return events
+    if name in ("scene", "sprites", "inputs"):
+        import _playground_scene
+        return getattr(_playground_scene, name)
     raise AttributeError(name)

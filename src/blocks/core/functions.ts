@@ -1,4 +1,5 @@
 import * as Blockly from 'blockly/core';
+import { sceneState } from '../../scene/state';
 import { allSymbols, createFunctionModel, isScopedDefinition, signatureOf, SymbolField, type FunctionBlock, type Signature, type Symbol } from '../../language/functions';
 
 export interface FunctionState { functionId: string; signature: Signature; locals?: Symbol[] }
@@ -23,7 +24,9 @@ const shared = {
     if (isScopedDefinition(this)) {
       this.setFieldValue(`(${this.signature.parameters.map(p => p.name).join(', ')})`, 'PARAMETERS');
       if (this.type === 'py_handler') {
-        this.setFieldValue(this.signature.handler?.event ?? 'choose event', 'EVENT');
+        const owner = this.signature.handler?.sprite, kind = this.signature.handler?.kind;
+        const name = owner ? sceneState(this.workspace).sprites.find(s => s.id === owner)?.name ?? 'unavailable sprite' : '';
+        this.setFieldValue(`${this.signature.handler?.event ?? 'choose event'}${owner ? ` · ${name} & clones` : kind ? ` · kind ${kind}` : ''}`, 'EVENT');
         this.setFieldValue(`#${(this.signature.handler?.order ?? 0) + 1}`, 'ORDER');
       } else this.setFieldValue(this.signature.async ? 'define async' : 'define', 'ACTION');
       return;

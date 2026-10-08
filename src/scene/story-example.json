@@ -1,0 +1,309 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 10,
+  "workspace": {
+    "pythonScene": {
+      "version": 1,
+      "background": "#fdfdf9",
+      "assets": [],
+      "sprites": [
+        {
+          "id": "player",
+          "name": "Player",
+          "x": -100,
+          "y": 0,
+          "direction": 0,
+          "size": 100,
+          "layer": 0,
+          "visible": true,
+          "costume": "bird",
+          "costumes": [
+            "bird",
+            "star",
+            "bird",
+            "ball"
+          ],
+          "frameSeconds": 0.25
+        },
+        {
+          "id": "friend",
+          "name": "Friend",
+          "x": 100,
+          "y": 0,
+          "direction": 0,
+          "size": 100,
+          "layer": 0,
+          "visible": true,
+          "costume": "star"
+        }
+      ],
+      "backdrop": "backdrop_meadow"
+    },
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_handler",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "controls_whileUntil",
+                "fields": {
+                  "MODE": "WHILE"
+                },
+                "inputs": {
+                  "BOOL": {
+                    "block": {
+                      "type": "logic_boolean",
+                      "fields": {
+                        "BOOL": "TRUE"
+                      }
+                    }
+                  },
+                  "DO": {
+                    "block": {
+                      "type": "scene_play_animation",
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_sprite",
+                            "fields": {
+                              "SPRITE_ID": "player"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "id": "frames-block",
+          "x": 32,
+          "y": 32,
+          "extraState": {
+            "functionId": "frames",
+            "signature": {
+              "id": "frames",
+              "name": "animate_my_frames",
+              "parameters": [
+                {
+                  "id": "frames-payload",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "start",
+                "order": 0
+              },
+              "async": true
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_say",
+                "fields": {
+                  "STYLE": "say"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "friend"
+                      }
+                    }
+                  },
+                  "TEXT": {
+                    "block": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "Press Space to change the backdrop."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "id": "introduce-block",
+          "x": 550,
+          "y": 32,
+          "extraState": {
+            "functionId": "introduce",
+            "signature": {
+              "id": "introduce",
+              "name": "introduce_story",
+              "parameters": [
+                {
+                  "id": "introduce-payload",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "start",
+                "order": 1
+              },
+              "async": true
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_backdrop_next"
+              }
+            }
+          },
+          "id": "switch-block",
+          "x": 32,
+          "y": 400,
+          "extraState": {
+            "functionId": "switch",
+            "signature": {
+              "id": "switch",
+              "name": "switch_scene",
+              "parameters": [
+                {
+                  "id": "switch-payload",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "key:Space",
+                "order": 2
+              },
+              "async": true
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_say",
+                "fields": {
+                  "STYLE": "think"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "friend"
+                      }
+                    }
+                  },
+                  "TEXT": {
+                    "block": {
+                      "type": "scene_backdrop_get",
+                      "fields": {
+                        "PROPERTY": "backdrop_name"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "id": "respond-block",
+          "x": 550,
+          "y": 400,
+          "extraState": {
+            "functionId": "respond",
+            "signature": {
+              "id": "respond",
+              "name": "describe_backdrop",
+              "parameters": [
+                {
+                  "id": "respond-payload",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "backdrop:change",
+                "order": 3
+              },
+              "async": true
+            }
+          }
+        }
+      ]
+    },
+    "procedures": [
+      {
+        "id": "frames",
+        "name": "animate_my_frames",
+        "parameters": [
+          {
+            "id": "frames-payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "start",
+          "order": 0
+        },
+        "async": true,
+        "returnTypes": null
+      },
+      {
+        "id": "introduce",
+        "name": "introduce_story",
+        "parameters": [
+          {
+            "id": "introduce-payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "start",
+          "order": 1
+        },
+        "async": true,
+        "returnTypes": null
+      },
+      {
+        "id": "switch",
+        "name": "switch_scene",
+        "parameters": [
+          {
+            "id": "switch-payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "key:Space",
+          "order": 2
+        },
+        "async": true,
+        "returnTypes": null
+      },
+      {
+        "id": "respond",
+        "name": "describe_backdrop",
+        "parameters": [
+          {
+            "id": "respond-payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "backdrop:change",
+          "order": 3
+        },
+        "async": true,
+        "returnTypes": null
+      }
+    ]
+  }
+}

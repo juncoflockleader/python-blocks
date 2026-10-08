@@ -1,0 +1,30 @@
+Python Blocks playable project — third-party runtime notices
+
+The pyodide/ directory contains unmodified files from Pyodide 314.0.7.
+Pyodide is distributed under the Mozilla Public License 2.0 (MPL-2.0).
+Its Source Code Form is available without charge at:
+https://github.com/pyodide/pyodide/tree/314.0.7
+https://github.com/pyodide/pyodide/archive/refs/tags/314.0.7.tar.gz
+The complete license is included in licenses/pyodide-MPL-2.0.txt.
+The MPL rights to that code are not restricted by the surrounding project.
+
+The bundled Python interpreter and standard library are CPython 3.14.2.
+Python's full license and incorporated notices are included in
+licenses/CPython-3.14.2.txt. The upstream component notice collection is
+retained in licenses/CPython-component-notices.rst. Source:
+https://github.com/python/cpython/tree/v3.14.2
+
+The runtime was built for Emscripten 5.0.3. Its license is included in
+licenses/Emscripten-5.0.3.txt. Its musl libc notices are retained in
+licenses/musl-COPYRIGHT.txt. Source and other system-library notices:
+https://github.com/emscripten-core/emscripten/tree/5.0.3
+
+The export packager uses fflate 0.8.3 (MIT); its license is retained in
+licenses/fflate-MIT.txt. It is not needed to run this extracted player.
+https://github.com/101arrowz/fflate
+
+Python Blocks source: https://github.com/juncoflockleader/python-blocks
+Project artwork, sounds, blocks and generated Python belong to their
+respective creators. These dependency licenses do not relicense them.
+runtime-source/ contains the Python library sources used by this player;
+the compiled browser worker contains the same sources and their host bridge.

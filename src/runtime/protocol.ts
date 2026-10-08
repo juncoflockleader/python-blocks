@@ -1,8 +1,15 @@
+import type { WatchValue } from '../scene/watch-model';
+import type { QuestionCommand, QuestionReply } from '../scene/questions';
+import type { AudioCommand } from '../scene/sound';
+import type { SceneCommand, SceneInput, SceneState } from '../scene/model';
 import eventLimits from './event-limits.json';
 export { eventLimits };
 export type ExecutionMode = 'sequential' | 'events';
 export type RunnerCommand =
-  | { type: 'run'; code: string; mode: ExecutionMode; files?: Record<string, string> }
+  | { type: 'run'; code: string; mode: ExecutionMode; runtimeURL?: string; files?: Record<string, string>; scene?: SceneState }
+  | { type: 'input'; id: number; input: SceneInput }
+  | { type: 'answer'; reply: QuestionReply }
+  | { type: 'audio-ended'; id: number; error?: string }
   | { type: 'ping'; id: number }
   | { type: 'event'; id: number; message: string };
 
@@ -11,8 +18,12 @@ export type DrawCommand =
   | { type: 'turn'; heading: number };
 
 export type RunnerEvent =
+  | { type: 'watch-values'; values: WatchValue[] }
   | { type: 'status'; message: string }
+  | { type: 'question'; command: QuestionCommand }
+  | { type: 'audio'; command: AudioCommand }
   | { type: 'draw'; command: DrawCommand }
+  | { type: 'scene'; command: SceneCommand }
   | { type: 'stdout'; text: string }
   | { type: 'started' }
   | { type: 'ready' }

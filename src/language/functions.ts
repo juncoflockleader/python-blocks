@@ -1,3 +1,4 @@
+import { validKind } from '../scene/motion';
 import * as Blockly from 'blockly/core';
 import { ObservableParameterModel, ObservableProcedureModel, triggerProceduresUpdate } from '@blockly/block-shareable-procedures';
 import eventLimits from '../runtime/event-limits.json';
@@ -21,17 +22,19 @@ export interface Parameter { id: string; name: string }
 export interface LambdaState { id: string; parameters: Parameter[] }
 export interface LambdaBlock extends Blockly.Block { lambda: LambdaState; updateLambda(): void }
 export const lambdaParameterSymbol = (scope: string, parameter: string) => `lambda:${JSON.stringify([scope, parameter])}`;
-export interface Handler { event: string; order: number }
+export interface Handler { event: string; order: number; sprite?: string; kind?: string }
 export interface Signature { id: string; name: string; parameters: Parameter[]; async?: boolean; handler?: Handler }
 export const isScopedDefinition = (block: Blockly.Block) => ['py_function', 'py_handler'].includes(block.type);
 export function eventNameError(name: unknown) {
-  return typeof name !== 'string' || !name || [...name].length > eventLimits.eventNameLength ? `Event names need 1–${eventLimits.eventNameLength} characters.` : null;
+  return typeof name !== 'string' || !name || [...name].length > eventLimits.eventNameLength ? `Event names need 1–${eventLimits.eventNameLength} characters.` : name.startsWith('_pb:') ? 'Names beginning with _pb: are reserved for scene events.' : null;
 }
 function validateExecution(state: { async?: unknown; handler?: unknown }) {
   if (state.async !== undefined && typeof state.async !== 'boolean') throw new Error('The async function setting is invalid.');
   if (state.handler !== undefined) {
     const handler = state.handler as Handler | null;
     if (!handler || eventNameError(handler.event) || !Number.isSafeInteger(handler.order) || handler.order < 0 || state.async !== true) throw new Error('A handler needs an event name, a nonnegative saved order, and an async definition.');
+    if (handler.kind !== undefined && (!validKind(handler.kind) || handler.sprite !== undefined)) throw new Error('A kind behavior needs a kind of 1–32 characters and no individual sprite target.');
+    if (handler.sprite !== undefined && (typeof handler.sprite !== 'string' || !/^[A-Za-z0-9_-]{1,48}$/.test(handler.sprite))) throw new Error('A sprite behavior needs a valid authored sprite ID.');
   }
 }
 class PythonProcedureModel extends ObservableProcedureModel {

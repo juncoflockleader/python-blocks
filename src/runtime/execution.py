@@ -87,6 +87,8 @@ def run_program(source, files=None):
                 exec(compile(source, "program.py", "exec"), namespace)
                 return json.dumps({"type": "done"})
             except BaseException as error:
+                if '_playground_events' in sys.modules and isinstance(error, sys.modules['_playground_events'].SessionFinished):
+                    return json.dumps({'type': 'done'})
                 return error_result(error)
     except BaseException as error:
         return error_result(error)
@@ -103,6 +105,8 @@ async def run_event_program(source, on_ready=lambda: None, files=None):
                 await session.run(on_ready)
                 return json.dumps({"type": "done"})
             except BaseException as error:
+                from _playground_events import SessionFinished
+                if isinstance(error, SessionFinished): return json.dumps({'type': 'done'})
                 return error_result(error)
     except BaseException as error:
         return error_result(error)

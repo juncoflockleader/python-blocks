@@ -1,0 +1,357 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 17,
+  "workspace": {
+    "pythonScene": {
+      "version": 1,
+      "background": "#fdfdf9",
+      "assets": [
+        {
+          "id": "red_square",
+          "name": "Red square",
+          "width": 32,
+          "height": 32,
+          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAL0lEQVR4nO3OIQEAAAgDsKd7/wg0gRiYifll2v0UAQEBAQEBAQEBAQEBAQGB78ABqAKsiPGd+rIAAAAASUVORK5CYII="
+        },
+        {
+          "id": "blue_square",
+          "name": "Blue square",
+          "width": 32,
+          "height": 32,
+          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAL0lEQVR4nO3OIQEAAAgDMJKRiqrkgRg3E/Ornr2kEhAQEBAQEBAQEBAQEBAQSAceDM8Yl1EhJckAAAAASUVORK5CYII="
+        }
+      ],
+      "controls": {
+        "a": "Space",
+        "b": "x"
+      },
+      "sprites": [
+        {
+          "id": "player",
+          "name": "Explorer",
+          "x": -150,
+          "y": 0,
+          "direction": 0,
+          "size": 100,
+          "layer": 0,
+          "visible": true,
+          "costume": "bird",
+          "motion": {
+            "body": "moving",
+            "controller": "arrows",
+            "speedX": 120,
+            "speedY": 120,
+            "edges": "stop"
+          }
+        },
+        {
+          "id": "goal",
+          "name": "Red goal",
+          "x": 150,
+          "y": 0,
+          "direction": 0,
+          "size": 100,
+          "layer": 0,
+          "visible": true,
+          "costume": "red_square"
+        },
+        {
+          "id": "decoy",
+          "name": "Blue square",
+          "x": 20,
+          "y": 85,
+          "direction": 0,
+          "size": 100,
+          "layer": 0,
+          "visible": true,
+          "costume": "blue_square"
+        }
+      ]
+    },
+    "procedures": [
+      {
+        "id": "ih0",
+        "name": "input_handler_0",
+        "async": true,
+        "parameters": [
+          {
+            "id": "ip0",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "start",
+          "order": 0
+        }
+      },
+      {
+        "id": "ih1",
+        "name": "input_handler_1",
+        "async": true,
+        "parameters": [
+          {
+            "id": "ip1",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "key:Space",
+          "order": 1
+        }
+      },
+      {
+        "id": "ih2",
+        "name": "input_handler_2",
+        "async": true,
+        "parameters": [
+          {
+            "id": "ip2",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "key:x",
+          "order": 2
+        }
+      },
+      {
+        "id": "ih3",
+        "name": "input_handler_3",
+        "async": true,
+        "parameters": [
+          {
+            "id": "ip3",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "update",
+          "order": 3,
+          "sprite": "player"
+        }
+      }
+    ],
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_handler",
+          "id": "ihb0",
+          "x": 40,
+          "y": 40,
+          "extraState": {
+            "functionId": "ih0"
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "input_ask",
+                "fields": {},
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "What is your explorer name?"
+                      },
+                      "inputs": {}
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "input_timer_reset",
+                    "fields": {},
+                    "inputs": {},
+                    "next": {
+                      "block": {
+                        "type": "game_message",
+                        "fields": {},
+                        "inputs": {
+                          "TEXT": {
+                            "block": {
+                              "type": "text_join",
+                              "fields": {},
+                              "inputs": {
+                                "ADD0": {
+                                  "block": {
+                                    "type": "input_answer",
+                                    "fields": {},
+                                    "inputs": {}
+                                  }
+                                },
+                                "ADD1": {
+                                  "block": {
+                                    "type": "text",
+                                    "fields": {
+                                      "TEXT": ": use arrows or touch to find RED. A/Space resets the timer; B/X asks again."
+                                    },
+                                    "inputs": {}
+                                  }
+                                }
+                              },
+                              "extraState": {
+                                "itemCount": 2
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "ihb1",
+          "x": 490,
+          "y": 40,
+          "extraState": {
+            "functionId": "ih1"
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "input_timer_reset",
+                "fields": {},
+                "inputs": {}
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "ihb2",
+          "x": 940,
+          "y": 40,
+          "extraState": {
+            "functionId": "ih2"
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "input_ask",
+                "fields": {},
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "What did you notice about the colors?"
+                      },
+                      "inputs": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "ihb3",
+          "x": 1390,
+          "y": 40,
+          "extraState": {
+            "functionId": "ih3"
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "controls_if",
+                "fields": {},
+                "inputs": {
+                  "IF0": {
+                    "block": {
+                      "type": "scene_touching_color",
+                      "fields": {},
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_sprite",
+                            "fields": {
+                              "SPRITE_ID": "player"
+                            },
+                            "inputs": {}
+                          }
+                        },
+                        "COLOR": {
+                          "block": {
+                            "type": "text",
+                            "fields": {
+                              "TEXT": "#e04646"
+                            },
+                            "inputs": {}
+                          }
+                        },
+                        "TOLERANCE": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "10"
+                            },
+                            "inputs": {}
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "DO0": {
+                    "block": {
+                      "type": "game_finish",
+                      "fields": {
+                        "WON": "TRUE"
+                      },
+                      "inputs": {
+                        "TEXT": {
+                          "block": {
+                            "type": "text_join",
+                            "fields": {},
+                            "inputs": {
+                              "ADD0": {
+                                "block": {
+                                  "type": "text",
+                                  "fields": {
+                                    "TEXT": "You found red in "
+                                  },
+                                  "inputs": {}
+                                }
+                              },
+                              "ADD1": {
+                                "block": {
+                                  "type": "input_timer",
+                                  "fields": {},
+                                  "inputs": {}
+                                }
+                              },
+                              "ADD2": {
+                                "block": {
+                                  "type": "text",
+                                  "fields": {
+                                    "TEXT": " seconds!"
+                                  },
+                                  "inputs": {}
+                                }
+                              }
+                            },
+                            "extraState": {
+                              "itemCount": 3
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

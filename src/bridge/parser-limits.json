@@ -1,0 +1,10 @@
+{
+  "sourceBytes": 16000000,
+  "sourceLines": 100000,
+  "nodes": 50000,
+  "depth": 200,
+  "comments": 50000,
+  "resultBytes": 64000000,
+  "startupMs": 60000,
+  "parseMs": 5000
+}

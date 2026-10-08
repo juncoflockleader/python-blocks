@@ -1,0 +1,849 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 13,
+  "workspace": {
+    "pythonScene": {
+      "version": 1,
+      "background": "#edf4ef",
+      "sprites": [
+        {
+          "id": "player",
+          "name": "Explorer",
+          "x": -190,
+          "y": -129,
+          "costume": "bird",
+          "size": 55,
+          "kind": "player",
+          "direction": 0,
+          "layer": 0,
+          "visible": true,
+          "rotationStyle": "none",
+          "motion": {
+            "body": "moving",
+            "ay": -600,
+            "controller": "arrows",
+            "speedX": 140,
+            "speedY": 0,
+            "edges": "stop"
+          }
+        },
+        {
+          "id": "floor",
+          "name": "Ground",
+          "x": 0,
+          "y": -145,
+          "costume": "floor_art",
+          "size": 200,
+          "kind": "wall",
+          "direction": 0,
+          "layer": 0,
+          "visible": true,
+          "rotationStyle": "none",
+          "motion": {
+            "body": "wall"
+          }
+        },
+        {
+          "id": "step1",
+          "name": "First ledge",
+          "x": -90,
+          "y": -78,
+          "costume": "platform_art",
+          "size": 100,
+          "kind": "wall",
+          "direction": 0,
+          "layer": 0,
+          "visible": true,
+          "rotationStyle": "none",
+          "motion": {
+            "body": "wall"
+          }
+        },
+        {
+          "id": "step2",
+          "name": "Second ledge",
+          "x": 45,
+          "y": -20,
+          "costume": "platform_art",
+          "size": 100,
+          "kind": "wall",
+          "direction": 0,
+          "layer": 0,
+          "visible": true,
+          "rotationStyle": "none",
+          "motion": {
+            "body": "wall"
+          }
+        },
+        {
+          "id": "step3",
+          "name": "Top ledge",
+          "x": 165,
+          "y": 25,
+          "costume": "platform_art",
+          "size": 80,
+          "kind": "wall",
+          "direction": 0,
+          "layer": 0,
+          "visible": true,
+          "rotationStyle": "none",
+          "motion": {
+            "body": "wall"
+          }
+        },
+        {
+          "id": "goal",
+          "name": "Goal star",
+          "x": 175,
+          "y": 48,
+          "costume": "star",
+          "size": 65,
+          "kind": "goal",
+          "direction": 0,
+          "layer": 0,
+          "visible": true,
+          "rotationStyle": "none"
+        },
+        {
+          "id": "target",
+          "name": "Target",
+          "x": -15,
+          "y": -129,
+          "costume": "ball",
+          "size": 55,
+          "kind": "target",
+          "direction": 0,
+          "layer": 0,
+          "visible": true,
+          "rotationStyle": "none"
+        }
+      ],
+      "assets": [
+        {
+          "id": "platform_art",
+          "name": "Green platform",
+          "width": 100,
+          "height": 8,
+          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAICAYAAAAP1Fp1AAAAMElEQVR4nO3RMREAAAjDwDqsJZyDDDJk+D13SacrjnwHyCFoDoFxCIxDYBwC4xCYA184mvvhDLDhAAAAAElFTkSuQmCC"
+        },
+        {
+          "id": "floor_art",
+          "name": "Ground",
+          "width": 240,
+          "height": 5,
+          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAAAFCAYAAAB7CmE4AAAAMklEQVR4nO3TMQ0AMAwEsQAMgxIofwINhy7RSx6833J1bj8gU20HAP8MDMEMDMEMDMEGbzGiKKTqe20AAAAASUVORK5CYII="
+        }
+      ]
+    },
+    "procedures": [
+      {
+        "id": "instructions",
+        "name": "instructions",
+        "parameters": [
+          {
+            "id": "instructions_payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "start",
+          "order": 0
+        },
+        "returnTypes": null,
+        "async": true
+      },
+      {
+        "id": "jump",
+        "name": "jump",
+        "parameters": [
+          {
+            "id": "jump_payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "key:Space",
+          "order": 1,
+          "kind": "player"
+        },
+        "returnTypes": null,
+        "async": true
+      },
+      {
+        "id": "fire",
+        "name": "fire",
+        "parameters": [
+          {
+            "id": "fire_payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "key:f",
+          "order": 2,
+          "kind": "player"
+        },
+        "returnTypes": null,
+        "async": true
+      },
+      {
+        "id": "small_projectile",
+        "name": "small_projectile",
+        "parameters": [
+          {
+            "id": "small_projectile_payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "created",
+          "order": 3,
+          "kind": "projectile"
+        },
+        "returnTypes": null,
+        "async": true
+      },
+      {
+        "id": "hit_target",
+        "name": "hit_target",
+        "parameters": [
+          {
+            "id": "hit_target_payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "overlap",
+          "order": 4,
+          "kind": "projectile"
+        },
+        "returnTypes": null,
+        "async": true
+      },
+      {
+        "id": "reach_goal",
+        "name": "reach_goal",
+        "parameters": [
+          {
+            "id": "reach_goal_payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "overlap",
+          "order": 5,
+          "kind": "player"
+        },
+        "returnTypes": null,
+        "async": true
+      }
+    ],
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_handler",
+          "fields": {},
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "fields": {},
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "Arrow keys move. Space jumps from a surface. F fires a ball. Shoot the target and climb to the star. Stop then Run to play again."
+                      },
+                      "inputs": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 32,
+          "y": 32,
+          "extraState": {
+            "functionId": "instructions",
+            "signature": {
+              "id": "instructions",
+              "name": "instructions",
+              "parameters": [
+                {
+                  "id": "instructions_payload",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "start",
+                "order": 0
+              },
+              "returnTypes": null,
+              "async": true
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "fields": {},
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_jump",
+                "fields": {},
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_self",
+                      "fields": {},
+                      "inputs": {}
+                    }
+                  },
+                  "VALUE": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "300"
+                      },
+                      "inputs": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 572,
+          "y": 32,
+          "extraState": {
+            "functionId": "jump",
+            "signature": {
+              "id": "jump",
+              "name": "jump",
+              "parameters": [
+                {
+                  "id": "jump_payload",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "key:Space",
+                "order": 1,
+                "kind": "player"
+              },
+              "returnTypes": null,
+              "async": true
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "fields": {},
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_fire",
+                "fields": {},
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_self",
+                      "fields": {},
+                      "inputs": {}
+                    }
+                  },
+                  "COSTUME": {
+                    "block": {
+                      "type": "scene_costume",
+                      "fields": {
+                        "COSTUME_ID": "ball"
+                      },
+                      "inputs": {}
+                    }
+                  },
+                  "VX": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "350"
+                      },
+                      "inputs": {}
+                    }
+                  },
+                  "VY": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "0"
+                      },
+                      "inputs": {}
+                    }
+                  },
+                  "SECONDS": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "3"
+                      },
+                      "inputs": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 1112,
+          "y": 32,
+          "extraState": {
+            "functionId": "fire",
+            "signature": {
+              "id": "fire",
+              "name": "fire",
+              "parameters": [
+                {
+                  "id": "fire_payload",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "key:f",
+                "order": 2,
+                "kind": "player"
+              },
+              "returnTypes": null,
+              "async": true
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "fields": {},
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_set",
+                "fields": {
+                  "PROPERTY": "size"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_self",
+                      "fields": {},
+                      "inputs": {}
+                    }
+                  },
+                  "VALUE": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "20"
+                      },
+                      "inputs": {}
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "scene_effect_set",
+                    "fields": {
+                      "EFFECT": "color"
+                    },
+                    "inputs": {
+                      "SPRITE": {
+                        "block": {
+                          "type": "scene_self",
+                          "fields": {},
+                          "inputs": {}
+                        }
+                      },
+                      "VALUE": {
+                        "block": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "90"
+                          },
+                          "inputs": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 32,
+          "y": 682,
+          "extraState": {
+            "functionId": "small_projectile",
+            "signature": {
+              "id": "small_projectile",
+              "name": "small_projectile",
+              "parameters": [
+                {
+                  "id": "small_projectile_payload",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "created",
+                "order": 3,
+                "kind": "projectile"
+              },
+              "returnTypes": null,
+              "async": true
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "fields": {},
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "controls_if",
+                "fields": {},
+                "inputs": {
+                  "IF0": {
+                    "block": {
+                      "type": "logic_compare",
+                      "fields": {
+                        "OP": "EQ"
+                      },
+                      "inputs": {
+                        "A": {
+                          "block": {
+                            "type": "py_item_get",
+                            "fields": {},
+                            "inputs": {
+                              "COLLECTION": {
+                                "block": {
+                                  "type": "py_get",
+                                  "fields": {
+                                    "SYMBOL": "param:hit_target_payload"
+                                  },
+                                  "inputs": {}
+                                }
+                              },
+                              "KEY": {
+                                "block": {
+                                  "type": "text",
+                                  "fields": {
+                                    "TEXT": "other_kind"
+                                  },
+                                  "inputs": {}
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "B": {
+                          "block": {
+                            "type": "text",
+                            "fields": {
+                              "TEXT": "target"
+                            },
+                            "inputs": {}
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "DO0": {
+                    "block": {
+                      "type": "controls_if",
+                      "fields": {},
+                      "inputs": {
+                        "IF0": {
+                          "block": {
+                            "type": "logic_compare",
+                            "fields": {
+                              "OP": "GT"
+                            },
+                            "inputs": {
+                              "A": {
+                                "block": {
+                                  "type": "py_length",
+                                  "fields": {},
+                                  "inputs": {
+                                    "VALUE": {
+                                      "block": {
+                                        "type": "scene_of_kind",
+                                        "fields": {},
+                                        "inputs": {
+                                          "KIND": {
+                                            "block": {
+                                              "type": "text",
+                                              "fields": {
+                                                "TEXT": "target"
+                                              },
+                                              "inputs": {}
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "B": {
+                                "block": {
+                                  "type": "py_number",
+                                  "fields": {
+                                    "VALUE": "0"
+                                  },
+                                  "inputs": {}
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "DO0": {
+                          "block": {
+                            "type": "scene_destroy",
+                            "fields": {},
+                            "inputs": {
+                              "SPRITE": {
+                                "block": {
+                                  "type": "py_item_get",
+                                  "fields": {},
+                                  "inputs": {
+                                    "COLLECTION": {
+                                      "block": {
+                                        "type": "scene_of_kind",
+                                        "fields": {},
+                                        "inputs": {
+                                          "KIND": {
+                                            "block": {
+                                              "type": "text",
+                                              "fields": {
+                                                "TEXT": "target"
+                                              },
+                                              "inputs": {}
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "KEY": {
+                                      "block": {
+                                        "type": "py_number",
+                                        "fields": {
+                                          "VALUE": "0"
+                                        },
+                                        "inputs": {}
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "next": {
+                              "block": {
+                                "type": "text_print",
+                                "fields": {},
+                                "inputs": {
+                                  "TEXT": {
+                                    "block": {
+                                      "type": "text",
+                                      "fields": {
+                                        "TEXT": "Target hit!"
+                                      },
+                                      "inputs": {}
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "scene_destroy",
+                          "fields": {},
+                          "inputs": {
+                            "SPRITE": {
+                              "block": {
+                                "type": "scene_self",
+                                "fields": {},
+                                "inputs": {}
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 572,
+          "y": 682,
+          "extraState": {
+            "functionId": "hit_target",
+            "signature": {
+              "id": "hit_target",
+              "name": "hit_target",
+              "parameters": [
+                {
+                  "id": "hit_target_payload",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "overlap",
+                "order": 4,
+                "kind": "projectile"
+              },
+              "returnTypes": null,
+              "async": true
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "fields": {},
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "controls_if",
+                "fields": {},
+                "inputs": {
+                  "IF0": {
+                    "block": {
+                      "type": "logic_compare",
+                      "fields": {
+                        "OP": "EQ"
+                      },
+                      "inputs": {
+                        "A": {
+                          "block": {
+                            "type": "py_item_get",
+                            "fields": {},
+                            "inputs": {
+                              "COLLECTION": {
+                                "block": {
+                                  "type": "py_get",
+                                  "fields": {
+                                    "SYMBOL": "param:reach_goal_payload"
+                                  },
+                                  "inputs": {}
+                                }
+                              },
+                              "KEY": {
+                                "block": {
+                                  "type": "text",
+                                  "fields": {
+                                    "TEXT": "other_kind"
+                                  },
+                                  "inputs": {}
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "B": {
+                          "block": {
+                            "type": "text",
+                            "fields": {
+                              "TEXT": "goal"
+                            },
+                            "inputs": {}
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "DO0": {
+                    "block": {
+                      "type": "scene_motion_stop",
+                      "fields": {},
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_self",
+                            "fields": {},
+                            "inputs": {}
+                          }
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "scene_say",
+                          "fields": {
+                            "STYLE": "say"
+                          },
+                          "inputs": {
+                            "SPRITE": {
+                              "block": {
+                                "type": "scene_self",
+                                "fields": {},
+                                "inputs": {}
+                              }
+                            },
+                            "TEXT": {
+                              "block": {
+                                "type": "text",
+                                "fields": {
+                                  "TEXT": "You reached the star!"
+                                },
+                                "inputs": {}
+                              }
+                            }
+                          },
+                          "next": {
+                            "block": {
+                              "type": "text_print",
+                              "fields": {},
+                              "inputs": {
+                                "TEXT": {
+                                  "block": {
+                                    "type": "text",
+                                    "fields": {
+                                      "TEXT": "Course complete! Stop and Run to play again."
+                                    },
+                                    "inputs": {}
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 1112,
+          "y": 682,
+          "extraState": {
+            "functionId": "reach_goal",
+            "signature": {
+              "id": "reach_goal",
+              "name": "reach_goal",
+              "parameters": [
+                {
+                  "id": "reach_goal_payload",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "overlap",
+                "order": 5,
+                "kind": "player"
+              },
+              "returnTypes": null,
+              "async": true
+            }
+          }
+        }
+      ]
+    }
+  }
+}

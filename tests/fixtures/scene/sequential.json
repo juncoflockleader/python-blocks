@@ -1,0 +1,129 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 8,
+  "workspace": {
+    "pythonScene": {
+      "version": 1,
+      "background": "#fdfdf9",
+      "assets": [],
+      "sprites": [
+        {
+          "id": "player",
+          "name": "Player",
+          "x": -100,
+          "y": 0,
+          "direction": 0,
+          "size": 100,
+          "layer": 0,
+          "visible": true,
+          "costume": "bird"
+        },
+        {
+          "id": "friend",
+          "name": "Friend",
+          "x": 100,
+          "y": 0,
+          "direction": 0,
+          "size": 100,
+          "layer": 0,
+          "visible": true,
+          "costume": "star"
+        }
+      ]
+    },
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_program",
+          "id": "program",
+          "x": 48,
+          "y": 48,
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_set",
+                "fields": {
+                  "PROPERTY": "x"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "player"
+                      }
+                    }
+                  },
+                  "VALUE": {
+                    "block": {
+                      "type": "py_binary",
+                      "fields": {
+                        "OP": "+"
+                      },
+                      "inputs": {
+                        "A": {
+                          "block": {
+                            "type": "scene_get",
+                            "fields": {
+                              "PROPERTY": "x"
+                            },
+                            "inputs": {
+                              "SPRITE": {
+                                "block": {
+                                  "type": "scene_sprite",
+                                  "fields": {
+                                    "SPRITE_ID": "player"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "B": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "20"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "text_print",
+                    "inputs": {
+                      "TEXT": {
+                        "block": {
+                          "type": "scene_get",
+                          "fields": {
+                            "PROPERTY": "x"
+                          },
+                          "inputs": {
+                            "SPRITE": {
+                              "block": {
+                                "type": "scene_sprite",
+                                "fields": {
+                                  "SPRITE_ID": "player"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "procedures": []
+  }
+}

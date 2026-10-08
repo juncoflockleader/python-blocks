@@ -145,7 +145,7 @@ describe('durable event and async editing', () => {
     const id = copy.id; const signature = structuredClone(copy.signature);
     w.undo(false); await flush(); expect(w.getBlockById(id)).toBeNull();
     w.undo(true); await flush(); expect((w.getBlockById(id) as FunctionBlock).signature).toEqual(signature);
-    const saved = snapshot(w); expect(saved.languageVersion).toBe(7);
+    const saved = snapshot(w); expect(saved.languageVersion).toBe(19);
     const restored = ws(); restore(restored, prepareProject(JSON.stringify(saved)).project);
     expect(compile(restored).source).toBe(compile(w).source);
     expect(handlerSignatures(restored)).toEqual(handlerSignatures(w));

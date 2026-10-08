@@ -24,6 +24,11 @@ class EventPayloadError(ValueError):
     pass
 
 
+class SessionFinished(BaseException):
+    """Normal terminal control flow, including from synchronous startup code."""
+    pass
+
+
 def check_name(name, limits=LIMITS):
     if type(name) is not str or not name or len(name) > limits["eventNameLength"]:
         raise ValueError(f'Event names need 1–{limits["eventNameLength"]} characters.')
@@ -85,8 +90,14 @@ class EventSession:
         self._handlers = []
         self._queue = deque()
         self._tasks = set()
+        self._owners = {}
+        self._coalesced = {}
+        self._cancelled = set()
+        self._services = []
+        self._service_tasks = set()
         self._changed = None
         self._failure = None
+        self._finished = False
         self.state = "setup"
 
     def on(self, name, handler):
@@ -99,10 +110,33 @@ class EventSession:
             raise EventOverloadError(f'Too many handlers (limit {self.limits["handlers"]}).')
         self._handlers.append((name, handler))
 
+    def _route(self, resolver):
+        """Library-owned expansion of an event into instance deliveries, in registration order."""
+        if self.state != 'setup': raise RuntimeError('Register sprite behaviors before the session starts.')
+        if len(self._handlers) >= self.limits['handlers']: raise EventOverloadError('Too many handlers.')
+        self._handlers.append((None, resolver))
+
+    def _service(self, handler):
+        if self.state == 'setup': self._services.append(handler)
+        elif self.state == 'running': self._service_tasks.add(asyncio.create_task(self._deliver(handler, None)))
+        else: raise RuntimeError('This event session has ended.')
+
+    def _cancel_owner(self, owner, defer_current=False):
+        if not self._owners: return
+        current = asyncio.current_task()
+        cancel_current = False
+        for task, target in list(self._owners.items()):
+            if target == owner and not task.done():
+                self._cancelled.add(task)
+                if task is current: cancel_current = True
+                else: task.cancel()
+        if cancel_current and not defer_current: raise asyncio.CancelledError()
+
     def emit(self, name, payload=None):
         check_name(name, self.limits)
         if name == "start":
             raise ValueError('The "start" event is sent once by the runtime; choose another event name.')
+        if name.startswith('_pb:'): raise ValueError('Event names beginning with _pb: are reserved for the scene runtime.')
         self._enqueue(name, payload)
 
     def _enqueue(self, name, payload):
@@ -133,11 +167,22 @@ class EventSession:
             self.state = "failed"
             # Stop siblings immediately, before another ready handler can run.
             current = asyncio.current_task()
-            for task in self._tasks:
+            for task in self._tasks | self._service_tasks:
                 if task is not current:
                     task.cancel()
             if self._changed is not None:
                 self._changed.set()
+
+    def finish(self):
+        self._finished = True
+        self.state = 'finished'
+        if self._tasks or self._service_tasks:
+            current = asyncio.current_task()
+            for task in self._tasks | self._service_tasks:
+                if task is not current: task.cancel()
+        self._queue.clear()
+        if self._changed is not None: self._changed.set()
+        raise SessionFinished()
 
     def receive(self, name, payload):
         """Host delivery failures are fatal, just like Python emission failures."""
@@ -151,11 +196,15 @@ class EventSession:
             return False
 
     async def _deliver(self, handler, payload):
-        if self._failure is not None:
+        if self._failure is not None or self._finished:
             return
         try:
             await handler(payload)
+        except SessionFinished:
+            return
         except asyncio.CancelledError as error:
+            if asyncio.current_task() in self._cancelled:
+                return
             if self.state == "running" and self._failure is None:
                 self.fail(error)
             else:
@@ -171,32 +220,44 @@ class EventSession:
         self._changed = asyncio.Event()
         try:
             self._enqueue("start", None)
+            for handler in self._services:
+                task = asyncio.create_task(self._deliver(handler, None)); self._service_tasks.add(task)
             on_ready()
-            while self._failure is None:
-                while self._queue and self._failure is None:
+            while self._failure is None and not self._finished:
+                while self._queue and self._failure is None and not self._finished:
                     name, encoded, origin = self._queue.popleft()
-                    handlers = [handler for event, handler in self._handlers if event == name]
+                    deliveries = []
+                    for event, handler in self._handlers:
+                        if event == name: deliveries.append((handler, json.loads(encoded), None, None))
+                        elif event is None: deliveries.extend(handler(name, json.loads(encoded)))
+                    deliveries = [d for d in deliveries if d[3] is None or d[3] not in self._coalesced or self._coalesced[d[3]].done()]
                     # Completed tasks need not consume a slot while their done
                     # callbacks are still queued on the browser event loop.
                     self._tasks.difference_update([task for task in self._tasks if task.done()])
-                    if len(self._tasks) + len(handlers) > self.limits["activeTasks"]:
+                    if len(self._tasks) + len(deliveries) > self.limits["activeTasks"]:
                         raise EventOverloadError(f'Too many active handlers for event {name!r} (limit {self.limits["activeTasks"]}). Add a wait between events or use fewer handlers.', origin)
-                    for handler in handlers:
-                        task = asyncio.create_task(self._deliver(handler, json.loads(encoded)))
+                    for handler, payload, owner, key in deliveries:
+                        task = asyncio.create_task(self._deliver(handler, payload))
                         self._tasks.add(task)
-                        task.add_done_callback(self._tasks.discard)
-                if self._failure is None:
+                        self._owners[task] = owner
+                        if key is not None: self._coalesced[key] = task
+                        def finished(task, key=key):
+                            self._tasks.discard(task); self._owners.pop(task, None); self._cancelled.discard(task)
+                            if key is not None and self._coalesced.get(key) is task: self._coalesced.pop(key, None)
+                        task.add_done_callback(finished)
+                if self._failure is None and not self._finished:
                     self._changed.clear()
                     await self._changed.wait()
-            raise self._failure
+            if self._failure is not None: raise self._failure
         finally:
             self.state = "closed"
             self._queue.clear()
-            tasks = list(self._tasks)
+            tasks = list(self._tasks | self._service_tasks)
             for task in tasks:
                 task.cancel()
             await asyncio.gather(*tasks, return_exceptions=True)
             self._tasks.clear()
+            self._service_tasks.clear(); self._owners.clear(); self._coalesced.clear(); self._cancelled.clear()
 
 
 events = EventSession()

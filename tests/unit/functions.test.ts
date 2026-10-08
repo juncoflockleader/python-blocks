@@ -139,7 +139,7 @@ describe('function editing and persistence', () => {
     const restored = ws();
     const migrated = prepareProject(JSON.stringify({ ...snapshot(w), languageVersion: 1 }));
     restore(restored, migrated.project);
-    expect(migrated.project.languageVersion).toBe(7);
+    expect(migrated.project.languageVersion).toBe(19);
     expect(restored.getAllBlocks(false).some(b => b.type.startsWith('procedures_') || b.type.startsWith('variables_'))).toBe(false);
     const result = execute(restored);
     expect(result.stdout).toBe('8\n8\n'); expect(result.source).toContain('def bump(amount)');

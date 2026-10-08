@@ -1,0 +1,44 @@
+#stage { touch-action: none; }
+.stage-dialogue { white-space: pre-wrap; overflow-wrap: anywhere; color: #34483f; }
+.stage-dialogue:empty { display: none; }
+.stage-surface { position: relative; isolation: isolate; }
+.stage-surface > canvas { position: relative; z-index: 0; }
+#game-overlay { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
+#game-hud { position: absolute; inset: 8px 8px auto; color: #fffdf1; font: 600 clamp(10px, 1.1vw, 14px)/1.35 system-ui, sans-serif; }
+.game-counters { display: flex; flex-wrap: wrap; gap: 5px; }
+.game-counters span, #game-message { background: #203d38ed; border: 1px solid #ffffff59; border-radius: 6px; padding: 5px 8px; box-shadow: 0 1px 3px #172d3326; }
+#game-message { margin: 6px 0 0; width: fit-content; max-width: 100%; overflow-wrap: anywhere; font-weight: 500; }
+#game-result { position: absolute; inset: 0; display: grid; place-items: center; background: #132c2d8c; border-radius: 7px; padding: 8px; pointer-events: auto; overflow: auto; }
+.game-result-card { width: min(94%, 360px); max-height: 100%; overflow: auto; background: #fffdf3; color: #203d38; border: 2px solid #b1c8a0; border-radius: 12px; padding: 14px; text-align: center; box-shadow: 0 6px 24px #132c2d4d; }
+.game-result-card h3 { margin: 0 0 5px; font-size: clamp(18px, 2vw, 28px); }
+.game-result-card p { margin: 5px 0; font-size: 13px; line-height: 1.4; overflow-wrap: anywhere; }
+#game-result-score { font-weight: 700; }
+#game-restart { margin-top: 8px; }
+#game-restart:focus-visible { outline: 3px solid #d57a39; outline-offset: 3px; }
+#game-overlay [hidden] { display: none; }
+@media (max-width: 500px) { .game-result-card { padding: 8px; } #game-hud { font-size: 11px; } .game-counters span, #game-message { padding: 3px 6px; } }
+.questions { padding: 0 20px; }
+#question-form { border: 1px solid #aac3be; border-radius: 10px; padding: 14px; background: #f0f7f4; margin: 12px 0; }
+#question-form[hidden], #touch-pad[hidden] { display: none; }
+#question-text { display: block; white-space: pre-wrap; overflow-wrap: anywhere; font-weight: 600; line-height: 1.5; }
+#question-count { font-size: .75rem; margin: 0 0 6px; color: #557367; }
+#question-form > div { display: flex; gap: 8px; flex-wrap: wrap; margin: 12px 0 6px; }
+#question-answer { min-width: 0; flex: 1 1 180px; border: 1px solid #9ebdb3; border-radius: 6px; padding: 9px; font: inherit; }
+#question-form small { font-size: .75rem; }
+.touch-controls { padding: 4px 20px; }
+#touch-pad { border: 0; padding: 10px 0; display: flex; align-items: center; justify-content: space-between; gap: 12px; min-width: 0; }
+#touch-pad legend { font-size: .75rem; margin: 8px 0; }
+.touch-directions { display: grid; grid-template-columns: repeat(3, 44px); gap: 6px; }
+.touch-directions [data-control=ArrowUp] { grid-column: 2; }
+.touch-directions [data-control=ArrowLeft] { grid-column: 1; }
+.touch-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+#touch-pad button { min-width: 44px; min-height: 44px; border: 1px solid #8dab9e; border-radius: 10px; color: #244c41; background: #edf5ee; font-weight: 600; touch-action: none; user-select: none; }
+#touch-pad button[aria-pressed=true] { background: #267c70; color: #fff; }
+#touch-pad button:disabled { opacity: .5; }
+#watch-readouts { padding: 4px 20px 10px; font-size: 12px; }
+#watch-phase { margin: 6px 0; color: #546b4c; }
+#watch-values { display: grid; grid-template-columns: repeat(auto-fit,minmax(130px,1fr)); gap: 6px; list-style: none; margin: 0; padding: 0; }
+#watch-values li { display: grid; gap: 4px; min-width: 0; padding: 8px; border: 1px solid #d4ddc8; border-radius: 8px; background: #f5f7ed; overflow-wrap: anywhere; }
+#watch-values span { font-size: 11px; }
+#watch-values output { font: 600 13px/1.4 ui-monospace, monospace; white-space: pre-wrap; }
+#watch-values output:not([data-state=value]) { color: #736b56; font-weight: 400; }

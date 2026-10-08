@@ -83,7 +83,7 @@ The same dependency traversal includes lambda bodies. A module factory may retur
 
 ## Persistence and errors
 
-New project and module exports use language version 7. Projects from versions 1–6 and pinned version-5/6 modules remain readable. Loading a project preserves existing module revisions and their contents. Saved files describe blocks, identities, arguments, and definitions; running reconstructs the function objects. They do not snapshot a Python heap.
+New project and module exports use language version 19. The version-7 lambda model now coexists with the [creative libraries](sprites-stage-input.md), input tools, watches and unary plus/minus expressions used by the [Python bridge](python-and-blocks.md). Projects from versions 1–18 and pinned modules from versions 5–18 remain readable. Project envelope version 2 also preserves exact Python drafts and recovery; it is distinct from the block language version and the module format version. Loading a project preserves existing module revisions and their contents. Saved files describe blocks, identities, arguments, definitions and draft text; running reconstructs the function objects. They do not snapshot a Python heap.
 
 Dynamic calls support 0–100 positional arguments; lambdas support 0–100 distinct, validly named parameters. Invalid counts, malformed identities, and duplicate lambda scope IDs are rejected before replacing the current project, including disabled lambda code in modules. Deserialization restores Blockly's global event group and Undo-recording state on failure, so a rejected file or clipboard item cannot disable later Undo.
 

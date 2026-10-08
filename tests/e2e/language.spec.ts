@@ -16,7 +16,7 @@ test('saved project reloads and exports a complete block project', async ({ page
   const file = await downloading; let content = '';
   for await (const chunk of (await file.createReadStream())!) content += chunk;
   const saved = JSON.parse(content);
-  expect(saved.format).toBe('python-blocks'); expect(saved.languageVersion).toBe(7);
+  expect(saved.format).toBe('python-blocks'); expect(saved.languageVersion).toBe(19);
   expect(content).toContain('print-large-integer');
 });
 

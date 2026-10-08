@@ -1,0 +1,31 @@
+@import '../scene/play.css';
+:root { font-family: system-ui, sans-serif; color: #26382f; background: #f4f4ee; font-synthesis: none; }
+* { box-sizing: border-box; }
+body { margin: 0; }
+[hidden] { display: none !important; }
+button, input, textarea { font: inherit; }
+button, a, input, textarea, canvas, summary { outline-offset: 4px; }
+:focus-visible { outline: 3px solid #d57a39; }
+.player { width: min(100%, 1000px); padding: 24px; margin: auto; }
+header, nav, footer { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+header { justify-content: space-between; margin-bottom: 20px; }
+h1 { font-weight: 600; font-size: 32px; margin: 0; }
+.eyebrow { color: #567258; font-size: 11px; letter-spacing: 2px; margin: 0 0 7px; }
+nav { margin-bottom: 18px; }
+.button { padding: 10px 15px; border: 1px solid #afc1aa; border-radius: 8px; cursor: pointer; color: #264f40; background: #fafcf5; }
+.button.primary { background: #267c70; color: white; border-color: #267c70; }
+.button:disabled { opacity: .5; cursor: default; }
+.stage-surface { width: 100%; border: 1px solid #cbd5bd; border-radius: 9px; overflow: hidden; }
+#stage { display: block; width: 100%; height: auto; aspect-ratio: 3 / 2; }
+#stage:focus-visible { outline-offset: -4px; }
+#status, #audio-status, .help { font-size: 13px; line-height: 1.6; }
+.help { color: #526851; }
+#game-hud { font-size: clamp(11px, 1.5vw, 18px); }
+.questions, .touch-controls, #watch-readouts { padding-inline: 0; }
+#event-input { display: grid; gap: 12px; padding-top: 15px; }
+#event-input label { display: grid; gap: 6px; }
+input, textarea { min-width: 0; max-width: 100%; border: 1px solid #adbba8; border-radius: 6px; padding: 8px; }
+pre { white-space: pre-wrap; overflow-wrap: anywhere; background: #fdfef9; padding: 14px; border: 1px solid #d4ddc8; border-radius: 8px; font-size: 13px; }
+footer { border-top: 1px solid #d4ddc8; padding-top: 18px; margin-top: 24px; font-size: 12px; }
+a { color: #26766a; }
+@media (max-width: 500px) { .player { padding: 12px; } header { margin-bottom: 12px; } .button { padding: 9px 12px; } }

@@ -1,0 +1,785 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 12,
+  "workspace": {
+    "pythonScene": {
+      "version": 1,
+      "background": "#fff9ee",
+      "assets": [],
+      "sprites": [
+        {
+          "id": "player",
+          "name": "Bird",
+          "x": -100,
+          "y": 0,
+          "direction": 25,
+          "size": 90,
+          "layer": 0,
+          "visible": true,
+          "costume": "bird",
+          "data": {
+            "speed": 2,
+            "ticks": 0
+          }
+        }
+      ]
+    },
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_handler",
+          "fields": {},
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_go",
+                "fields": {},
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_clone",
+                      "fields": {},
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_sprite",
+                            "fields": {
+                              "SPRITE_ID": "player"
+                            },
+                            "inputs": {}
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "X": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "70"
+                      },
+                      "inputs": {}
+                    }
+                  },
+                  "Y": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "65"
+                      },
+                      "inputs": {}
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "scene_go",
+                    "fields": {},
+                    "inputs": {
+                      "SPRITE": {
+                        "block": {
+                          "type": "scene_clone",
+                          "fields": {},
+                          "inputs": {
+                            "SPRITE": {
+                              "block": {
+                                "type": "scene_sprite",
+                                "fields": {
+                                  "SPRITE_ID": "player"
+                                },
+                                "inputs": {}
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "X": {
+                        "block": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "70"
+                          },
+                          "inputs": {}
+                        }
+                      },
+                      "Y": {
+                        "block": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "-65"
+                          },
+                          "inputs": {}
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "text_print",
+                        "fields": {},
+                        "inputs": {
+                          "TEXT": {
+                            "block": {
+                              "type": "text",
+                              "fields": {
+                                "TEXT": "Space adds a bird at the pointer. Click a clone to remove it. Each bird keeps its own tick counter."
+                              },
+                              "inputs": {}
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 32,
+          "y": 32,
+          "extraState": {
+            "functionId": "behavior_0",
+            "signature": {
+              "id": "behavior_0",
+              "name": "welcome",
+              "parameters": [
+                {
+                  "id": "payload_0",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "start",
+                "order": 0
+              },
+              "returnTypes": null
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "fields": {},
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_data_set",
+                "fields": {},
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_self",
+                      "fields": {},
+                      "inputs": {}
+                    }
+                  },
+                  "KEY": {
+                    "block": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "speed"
+                      },
+                      "inputs": {}
+                    }
+                  },
+                  "VALUE": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "3"
+                      },
+                      "inputs": {}
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "scene_data_set",
+                    "fields": {},
+                    "inputs": {
+                      "SPRITE": {
+                        "block": {
+                          "type": "scene_self",
+                          "fields": {},
+                          "inputs": {}
+                        }
+                      },
+                      "KEY": {
+                        "block": {
+                          "type": "text",
+                          "fields": {
+                            "TEXT": "ticks"
+                          },
+                          "inputs": {}
+                        }
+                      },
+                      "VALUE": {
+                        "block": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "0"
+                          },
+                          "inputs": {}
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "scene_turn",
+                        "fields": {},
+                        "inputs": {
+                          "SPRITE": {
+                            "block": {
+                              "type": "scene_self",
+                              "fields": {},
+                              "inputs": {}
+                            }
+                          },
+                          "VALUE": {
+                            "block": {
+                              "type": "py_number",
+                              "fields": {
+                                "VALUE": "120"
+                              },
+                              "inputs": {}
+                            }
+                          }
+                        },
+                        "next": {
+                          "block": {
+                            "type": "scene_effect_set",
+                            "fields": {
+                              "EFFECT": "color"
+                            },
+                            "inputs": {
+                              "SPRITE": {
+                                "block": {
+                                  "type": "scene_self",
+                                  "fields": {},
+                                  "inputs": {}
+                                }
+                              },
+                              "VALUE": {
+                                "block": {
+                                  "type": "py_number",
+                                  "fields": {
+                                    "VALUE": "150"
+                                  },
+                                  "inputs": {}
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 552,
+          "y": 32,
+          "extraState": {
+            "functionId": "behavior_1",
+            "signature": {
+              "id": "behavior_1",
+              "name": "new_bird",
+              "parameters": [
+                {
+                  "id": "payload_1",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "clone",
+                "order": 1,
+                "sprite": "player"
+              },
+              "returnTypes": null
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "fields": {},
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_move",
+                "fields": {},
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_self",
+                      "fields": {},
+                      "inputs": {}
+                    }
+                  },
+                  "VALUE": {
+                    "block": {
+                      "type": "scene_data_get",
+                      "fields": {},
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_self",
+                            "fields": {},
+                            "inputs": {}
+                          }
+                        },
+                        "KEY": {
+                          "block": {
+                            "type": "text",
+                            "fields": {
+                              "TEXT": "speed"
+                            },
+                            "inputs": {}
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "scene_bounce",
+                    "fields": {},
+                    "inputs": {
+                      "SPRITE": {
+                        "block": {
+                          "type": "scene_self",
+                          "fields": {},
+                          "inputs": {}
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "scene_data_set",
+                        "fields": {},
+                        "inputs": {
+                          "SPRITE": {
+                            "block": {
+                              "type": "scene_self",
+                              "fields": {},
+                              "inputs": {}
+                            }
+                          },
+                          "KEY": {
+                            "block": {
+                              "type": "text",
+                              "fields": {
+                                "TEXT": "ticks"
+                              },
+                              "inputs": {}
+                            }
+                          },
+                          "VALUE": {
+                            "block": {
+                              "type": "math_arithmetic",
+                              "fields": {
+                                "OP": "ADD"
+                              },
+                              "inputs": {
+                                "A": {
+                                  "block": {
+                                    "type": "scene_data_get",
+                                    "fields": {},
+                                    "inputs": {
+                                      "SPRITE": {
+                                        "block": {
+                                          "type": "scene_self",
+                                          "fields": {},
+                                          "inputs": {}
+                                        }
+                                      },
+                                      "KEY": {
+                                        "block": {
+                                          "type": "text",
+                                          "fields": {
+                                            "TEXT": "ticks"
+                                          },
+                                          "inputs": {}
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "B": {
+                                  "block": {
+                                    "type": "py_number",
+                                    "fields": {
+                                      "VALUE": "1"
+                                    },
+                                    "inputs": {}
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 1072,
+          "y": 32,
+          "extraState": {
+            "functionId": "behavior_2",
+            "signature": {
+              "id": "behavior_2",
+              "name": "bird_update",
+              "parameters": [
+                {
+                  "id": "payload_2",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "update",
+                "order": 2,
+                "sprite": "player"
+              },
+              "returnTypes": null
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "fields": {},
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "controls_if",
+                "fields": {},
+                "inputs": {
+                  "IF0": {
+                    "block": {
+                      "type": "scene_get",
+                      "fields": {
+                        "PROPERTY": "is_clone"
+                      },
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_self",
+                            "fields": {},
+                            "inputs": {}
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "DO0": {
+                    "block": {
+                      "type": "scene_destroy",
+                      "fields": {},
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_self",
+                            "fields": {},
+                            "inputs": {}
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 32,
+          "y": 532,
+          "extraState": {
+            "functionId": "behavior_3",
+            "signature": {
+              "id": "behavior_3",
+              "name": "click_bird",
+              "parameters": [
+                {
+                  "id": "payload_3",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "click",
+                "order": 3,
+                "sprite": "player"
+              },
+              "returnTypes": null
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "fields": {},
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_go",
+                "fields": {},
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_clone",
+                      "fields": {},
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_sprite",
+                            "fields": {
+                              "SPRITE_ID": "player"
+                            },
+                            "inputs": {}
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "X": {
+                    "block": {
+                      "type": "scene_pointer",
+                      "fields": {
+                        "PROPERTY": "pointer_x"
+                      },
+                      "inputs": {}
+                    }
+                  },
+                  "Y": {
+                    "block": {
+                      "type": "scene_pointer",
+                      "fields": {
+                        "PROPERTY": "pointer_y"
+                      },
+                      "inputs": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 552,
+          "y": 532,
+          "extraState": {
+            "functionId": "behavior_4",
+            "signature": {
+              "id": "behavior_4",
+              "name": "add_bird",
+              "parameters": [
+                {
+                  "id": "payload_4",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "key:Space",
+                "order": 4
+              },
+              "returnTypes": null
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "fields": {},
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_say_for",
+                "fields": {
+                  "STYLE": "say"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_self",
+                      "fields": {},
+                      "inputs": {}
+                    }
+                  },
+                  "TEXT": {
+                    "block": {
+                      "type": "py_convert",
+                      "fields": {
+                        "TYPE": "str"
+                      },
+                      "inputs": {
+                        "VALUE": {
+                          "block": {
+                            "type": "scene_data_get",
+                            "fields": {},
+                            "inputs": {
+                              "SPRITE": {
+                                "block": {
+                                  "type": "scene_self",
+                                  "fields": {},
+                                  "inputs": {}
+                                }
+                              },
+                              "KEY": {
+                                "block": {
+                                  "type": "text",
+                                  "fields": {
+                                    "TEXT": "ticks"
+                                  },
+                                  "inputs": {}
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "SECONDS": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "0.3"
+                      },
+                      "inputs": {}
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 1072,
+          "y": 532,
+          "extraState": {
+            "functionId": "behavior_5",
+            "signature": {
+              "id": "behavior_5",
+              "name": "bird_contact",
+              "parameters": [
+                {
+                  "id": "payload_5",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "overlap",
+                "order": 5,
+                "sprite": "player"
+              },
+              "returnTypes": null
+            }
+          }
+        }
+      ]
+    },
+    "procedures": [
+      {
+        "id": "behavior_0",
+        "name": "welcome",
+        "parameters": [
+          {
+            "id": "payload_0",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "start",
+          "order": 0
+        },
+        "returnTypes": null
+      },
+      {
+        "id": "behavior_1",
+        "name": "new_bird",
+        "parameters": [
+          {
+            "id": "payload_1",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "clone",
+          "order": 1,
+          "sprite": "player"
+        },
+        "returnTypes": null
+      },
+      {
+        "id": "behavior_2",
+        "name": "bird_update",
+        "parameters": [
+          {
+            "id": "payload_2",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "update",
+          "order": 2,
+          "sprite": "player"
+        },
+        "returnTypes": null
+      },
+      {
+        "id": "behavior_3",
+        "name": "click_bird",
+        "parameters": [
+          {
+            "id": "payload_3",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "click",
+          "order": 3,
+          "sprite": "player"
+        },
+        "returnTypes": null
+      },
+      {
+        "id": "behavior_4",
+        "name": "add_bird",
+        "parameters": [
+          {
+            "id": "payload_4",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "key:Space",
+          "order": 4
+        },
+        "returnTypes": null
+      },
+      {
+        "id": "behavior_5",
+        "name": "bird_contact",
+        "parameters": [
+          {
+            "id": "payload_5",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "overlap",
+          "order": 5,
+          "sprite": "player"
+        },
+        "returnTypes": null
+      }
+    ]
+  }
+}

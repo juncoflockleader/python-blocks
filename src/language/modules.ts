@@ -1,7 +1,7 @@
 import * as Blockly from 'blockly/core';
 import { nameError, type Signature } from './functions';
 
-export const MODULE_LANGUAGE_VERSION = 7;
+export const MODULE_LANGUAGE_VERSION = 19;
 export const utf8Size = (text: string) => new TextEncoder().encode(text).length;
 export interface ModulePin { moduleId: string; revision: string }
 export interface ModuleImport extends ModulePin { id: string; alias: string }
@@ -61,7 +61,7 @@ export function validateModuleState(value: unknown): asserts value is ModuleStat
   const definitions = new Map<string, ModuleDefinition>();
   for (const raw of value.definitions) {
     pin(raw); const d = raw as ModuleDefinition; pythonName(d.name);
-    if (![5, 6, MODULE_LANGUAGE_VERSION].includes(d.languageVersion)) throw new Error('Unsupported module language version.');
+    if (![5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, MODULE_LANGUAGE_VERSION].includes(d.languageVersion)) throw new Error('Unsupported module language version.');
     if (definitions.has(moduleKey(d))) throw new Error('A module revision appears more than once.');
     if (!Array.isArray(d.exports) || !d.exports.length) throw new Error('A module must export at least one function.');
     d.exports.forEach(validateModuleSignature);

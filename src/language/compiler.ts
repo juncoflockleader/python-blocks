@@ -1,3 +1,5 @@
+import { sceneState } from '../scene/state';
+import { backdrops, builtinBackdrops, builtins, costumes, emptyScene, validKey, type SceneState } from '../scene/model';
 import { loadWorkspace } from './serialization';
 import * as Blockly from 'blockly/core';
 import { pythonGenerator as standardGenerator, PythonGenerator, Order } from 'blockly/python';
@@ -7,15 +9,28 @@ import type { ExecutionMode } from '../runtime/protocol';
 import { canonical, moduleKey, moduleState, reachableModules, resolveModuleCall, validateModuleState, type ModuleCallBlock, type ModuleDefinition, type ModulePin, type ModuleState } from './modules';
 import { installPythonVariables } from './variables';
 
-export const LANGUAGE_VERSION = 7;
+export const LANGUAGE_VERSION = 19;
+const inputBlocks = new Set(['input_timer', 'input_timer_reset', 'input_ask', 'input_ask_value', 'input_answer', 'input_cancel_questions']);
+const soundBlocks = new Set(['sound_asset', 'sound_play', 'sound_wait', 'sound_stop', 'sound_stop_all', 'sound_set', 'sound_change', 'sound_get', 'sound_clear', 'sound_tempo', 'sound_tempo_get', 'sound_note', 'sound_rest']);
+const gameBlocks = new Set(['game_set', 'game_change', 'game_get', 'game_show', 'game_message', 'game_lives_rule', 'game_countdown', 'game_countdown_stop', 'game_finish', 'game_effect', 'game_effect_clear']);
+const motionBlocks = new Set(['scene_camera_follow', 'scene_world_set', 'scene_world_restart', 'scene_motion_set', 'scene_motion_change', 'scene_motion_body', 'scene_motion_response', 'scene_motion_edges', 'scene_motion_auto', 'scene_control', 'scene_jump', 'scene_projectile', 'scene_fire']);
 export const supportedBlocks = new Set([
+  'scene_touching_color', 'scene_color_touching', ...inputBlocks, ...soundBlocks, ...gameBlocks,
+  'scene_world', 'scene_world_set', 'scene_world_restart', 'scene_world_get', 'scene_camera_go', 'scene_camera_follow', 'scene_camera_clamp', 'scene_camera_get', 'scene_map_get', 'scene_tile_get', 'scene_tile_at', 'scene_tile_set', 'scene_tile_wall', 'scene_tiles_of', 'scene_tile_place',
+  ...motionBlocks, 'scene_motion_get', 'scene_motion_stop', 'scene_kind_set', 'scene_of_kind',
+  'scene_self', 'scene_data', 'scene_data_get', 'scene_data_set', 'scene_instances', 'scene_all', 'scene_pixels', 'scene_pixel_point',
+  'scene_pen_state', 'scene_pen_color', 'scene_pen_set', 'scene_pen_change', 'scene_pen_get', 'scene_stamp', 'scene_pen_clear',
+  'scene_effect_set', 'scene_effect_change', 'scene_effect_get', 'scene_effect_clear', 'scene_stage_effect_set', 'scene_stage_effect_change', 'scene_stage_effect_get', 'scene_stage_effect_clear',
+  'scene_sprite', 'scene_costume', 'scene_lookup', 'scene_create', 'scene_move', 'scene_turn', 'scene_go', 'scene_set', 'scene_get', 'scene_visibility', 'scene_costume_set', 'scene_clone', 'scene_destroy', 'scene_overlaps', 'scene_glide', 'scene_animate', 'scene_key', 'scene_background',
+  'scene_backdrop', 'scene_backdrop_set', 'scene_backdrop_next', 'scene_backdrop_get', 'scene_next_costume', 'scene_frames', 'scene_play_animation',
+  'scene_change', 'scene_point', 'scene_distance', 'scene_touching_point', 'scene_edge', 'scene_bounce', 'scene_rotation', 'scene_layer', 'scene_say', 'scene_say_for', 'scene_pointer',
   'py_lambda',
   'py_function_ref', 'py_module_function_ref', 'py_dynamic_call', 'py_dynamic_call_value',
   'py_module_call', 'py_module_call_value',
   'py_handler', 'py_emit', 'py_wait',
   'lists_create_with', 'py_dict', 'py_length', 'py_item_get', 'py_item_set', 'py_item_delete', 'py_list_append', 'py_contains', 'py_dict_get', 'py_dict_keys', 'py_shallow_copy',
   'py_function', 'py_call', 'py_call_value', 'py_return', 'py_return_value', 'py_get', 'py_set', 'py_for_each', 'py_scoped_range',
-  'py_program', 'py_number', 'py_binary', 'py_logic', 'py_not', 'py_none', 'py_convert', 'py_range', 'py_flow',
+  'py_program', 'py_number', 'py_binary', 'py_unary', 'py_logic', 'py_not', 'py_none', 'py_convert', 'py_range', 'py_flow',
   'pen_move', 'pen_turn', 'pen_color', 'pen_lift', 'controls_repeat_ext', 'controls_whileUntil', 'controls_if', 'controls_forEach',
   'logic_compare', 'logic_operation', 'logic_boolean', 'logic_negate', 'logic_null', 'math_number', 'math_arithmetic', 'math_random_int',
   'text', 'text_print', 'text_join', 'variables_get', 'variables_set',
@@ -34,6 +49,12 @@ export interface Compilation {
   files: Record<string, string>;
   moduleSources: Record<string, ModulePin & { name: string }>;
   requiresEvents: boolean;
+  requiresScene?: boolean;
+  requiresMotion?: boolean;
+  requiresGame?: boolean;
+  requiresSound?: boolean;
+  requiresInput?: boolean;
+  scene?: SceneState;
 }
 const isDefinition = (b: Blockly.Block) => isScopedDefinition(b) || b.type === 'procedures_defnoreturn' || b.type === 'procedures_defreturn';
 const loops = new Set(['controls_repeat_ext', 'controls_whileUntil', 'controls_forEach', 'py_range', 'py_scoped_range', 'py_for_each']);
@@ -56,10 +77,16 @@ class Generator extends PythonGenerator {
   // Encode strings independently of Blockly's line-continuation convention.
   override quote_(value: string) { return JSON.stringify(value); }
   usePen() { this.definitions_['import_pen'] = 'from playground import pen'; }
+  useScene(name: 'sprites' | 'scene' | 'inputs' | 'game' | 'sounds') { this.definitions_[`import_${name}`] = `from playground import ${name} as _pb_${name}`; }
   useEvents() { this.definitions_['import_events'] = 'from playground import events'; }
   useModule(alias: string, file: string) { this.definitions_[`import_module_${alias}`] = `import ${file.slice(0, -3)} as ${alias}`; }
   defineFunction(name: string, source: string) { this.definitions_[`%${name}`] = source; }
-  registerHandler(block: FunctionBlock) { return this.mark(block, `events.on(${this.quote_(block.signature.handler!.event)}, ${block.signature.name})\n`); }
+  registerHandler(block: FunctionBlock) {
+    const handler = block.signature.handler!;
+    if (handler.kind) { this.useScene('scene'); return this.mark(block, `_pb_scene.on_kind(${this.quote_(handler.kind)}, ${this.quote_(handler.event)}, ${block.signature.name})\n`); }
+    if (handler.sprite) { this.useScene('scene'); return this.mark(block, `_pb_scene.on(${this.quote_(handler.sprite)}, ${this.quote_(handler.event)}, ${block.signature.name})\n`); }
+    return this.mark(block, `events.on(${this.quote_(handler.event)}, ${block.signature.name})\n`);
+  }
 
   private mark(block: Blockly.Block, code: string) {
     const id = ++this.nextMarker;
@@ -113,6 +140,102 @@ function generator() {
   const g = new Generator();
   Object.assign(g.forBlock, standardGenerator.forBlock);
   g.addReservedWords('pen,playground');
+  const v = (b: Blockly.Block, gen: Generator, name: string) => gen.valueToCode(b, name, Order.NONE);
+  const sprite = (b: Blockly.Block, gen: Generator) => `(${v(b, gen, 'SPRITE')})`;
+  for (const type of ['input_timer', 'input_answer']) g.forBlock[type] = (_b, gen) => { gen.useScene('inputs'); return [`_pb_inputs.${type === 'input_timer' ? 'timer' : 'answer'}`, Order.MEMBER]; };
+  for (const [type, method] of [['input_timer_reset', 'reset_timer'], ['input_cancel_questions', 'cancel_questions']]) g.forBlock[type] = (_b, gen) => { gen.useScene('inputs'); return `_pb_inputs.${method}()\n`; };
+  for (const type of ['input_ask', 'input_ask_value']) g.forBlock[type] = (b, gen) => { gen.useScene('inputs'); const code = `await _pb_inputs.ask(${v(b, gen, 'TEXT')})`; return type === 'input_ask_value' ? [`(${code})`, Order.ATOMIC] : code + '\n'; };
+  for (const type of ['scene_touching_color', 'scene_color_touching']) g.forBlock[type] = (b, gen) => [`${sprite(b, gen)}.touching_color(${v(b, gen, 'COLOR')}, ${type === 'scene_color_touching' ? v(b, gen, 'OWN_COLOR') : 'None'}, ${v(b, gen, 'TOLERANCE')})`, Order.FUNCTION_CALL];
+  g.forBlock['sound_asset'] = (b, gen) => [gen.quote_(b.getFieldValue('SOUND_ID')), Order.ATOMIC];
+  for (const [type, method, args] of [
+    ['sound_play', 'play', ['SOUND', 'OWNER']], ['sound_wait', 'play_wait', ['SOUND', 'OWNER']],
+    ['sound_stop', 'stop', ['OWNER']], ['sound_stop_all', 'stop_all', []], ['sound_clear', 'clear_effects', ['OWNER']],
+    ['sound_tempo', 'set_tempo', ['VALUE']], ['sound_rest', 'rest', ['BEATS']],
+  ] as const) g.forBlock[type] = (b, gen) => { gen.useScene('sounds'); return `${['sound_wait', 'sound_rest'].includes(type) ? 'await ' : ''}_pb_sounds.${method}(${args.map(a => v(b, gen, a)).join(', ')})\n`; };
+  for (const type of ['sound_set', 'sound_change', 'sound_get']) g.forBlock[type] = (b, gen) => {
+    gen.useScene('sounds'); const code = `_pb_sounds.${type.slice(6)}(${gen.quote_(b.getFieldValue('FIELD'))}, ${type === 'sound_get' ? '' : v(b, gen, 'VALUE') + ', '}${v(b, gen, 'OWNER')})`;
+    return type === 'sound_get' ? [code, Order.FUNCTION_CALL] : code + '\n';
+  };
+  g.forBlock['sound_tempo_get'] = (_b, gen) => { gen.useScene('sounds'); return ['_pb_sounds.tempo', Order.MEMBER]; };
+  g.forBlock['sound_note'] = (b, gen) => { gen.useScene('sounds'); return `await _pb_sounds.note(${v(b, gen, 'NOTE')}, ${v(b, gen, 'BEATS')}, ${gen.quote_(b.getFieldValue('INSTRUMENT'))}, ${v(b, gen, 'OWNER')})\n`; };
+  for (const type of ['game_set', 'game_change']) g.forBlock[type] = (b, gen) => { gen.useScene('game'); return `_pb_game.${type === 'game_set' ? 'set' : 'change'}(${gen.quote_(b.getFieldValue('FIELD'))}, ${v(b, gen, 'VALUE')})\n`; };
+  g.forBlock['game_get'] = (b, gen) => { gen.useScene('game'); return [`_pb_game.get(${gen.quote_(b.getFieldValue('FIELD'))})`, Order.FUNCTION_CALL]; };
+  g.forBlock['game_show'] = (b, gen) => { gen.useScene('game'); return `_pb_game.show(${gen.quote_(b.getFieldValue('FIELD'))}, ${b.getFieldValue('SHOW') === 'TRUE' ? 'True' : 'False'})\n`; };
+  g.forBlock['game_message'] = (b, gen) => { gen.useScene('game'); return `_pb_game.message(${v(b, gen, 'TEXT')})\n`; };
+  g.forBlock['game_lives_rule'] = (b, gen) => { gen.useScene('game'); return `_pb_game.lives_rule(${gen.quote_(b.getFieldValue('ACTION'))})\n`; };
+  g.forBlock['game_countdown'] = (b, gen) => { gen.useScene('game'); return `_pb_game.countdown(${v(b, gen, 'SECONDS')}, ${gen.quote_(b.getFieldValue('ACTION'))})\n`; };
+  g.forBlock['game_countdown_stop'] = (_b, gen) => { gen.useScene('game'); return '_pb_game.stop_countdown()\n'; };
+  g.forBlock['game_finish'] = (b, gen) => { gen.useScene('game'); return `_pb_game.finish(${b.getFieldValue('WON') === 'TRUE' ? 'True' : 'False'}, ${v(b, gen, 'TEXT')})\n`; };
+  g.forBlock['game_effect'] = (b, gen) => { gen.useScene('game'); return `_pb_game.effect(${gen.quote_(b.getFieldValue('KIND'))}, ${v(b, gen, 'SPRITE')}, ${v(b, gen, 'SECONDS')})\n`; };
+  g.forBlock['game_effect_clear'] = (_b, gen) => { gen.useScene('game'); return '_pb_game.clear_effects()\n'; };
+  g.forBlock['scene_sprite'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.named(${gen.quote_(sceneState(b.workspace).sprites.find(s => s.id === b.getFieldValue('SPRITE_ID'))!.name)})`, Order.FUNCTION_CALL]; };
+  g.forBlock['scene_costume'] = (b, gen) => [gen.quote_(b.getFieldValue('COSTUME_ID')), Order.ATOMIC];
+  g.forBlock['scene_backdrop'] = (b, gen) => [b.getFieldValue('BACKDROP_ID') ? gen.quote_(b.getFieldValue('BACKDROP_ID')) : 'None', Order.ATOMIC];
+  g.forBlock['scene_backdrop_set'] = (b, gen) => { gen.useScene('scene'); return `_pb_scene.set_backdrop(${v(b, gen, 'BACKDROP')})\n`; };
+  g.forBlock['scene_backdrop_next'] = (_b, gen) => { gen.useScene('scene'); return '_pb_scene.next_backdrop()\n'; };
+  g.forBlock['scene_backdrop_get'] = (b, gen) => { gen.useScene('scene'); return [`_pb_scene.${b.getFieldValue('PROPERTY')}`, Order.MEMBER]; };
+  g.forBlock['scene_frames'] = (b, gen) => [`${sprite(b, gen)}.frames`, Order.MEMBER];
+  g.forBlock['scene_kind_set'] = (b, gen) => `${sprite(b, gen)}.set_kind(${v(b, gen, 'KIND')})\n`;
+  g.forBlock['scene_of_kind'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.of_kind(${v(b, gen, 'KIND')})`, Order.FUNCTION_CALL]; };
+  for (const [type, action] of [['scene_motion_set', 'set_motion'], ['scene_motion_change', 'change_motion']]) g.forBlock[type] = (b, gen) => `${sprite(b, gen)}.${action}(${gen.quote_(b.getFieldValue('PROPERTY'))}, ${v(b, gen, 'VALUE')})\n`;
+  g.forBlock['scene_motion_get'] = (b, gen) => [`${sprite(b, gen)}.motion_value(${gen.quote_(b.getFieldValue('PROPERTY'))})`, Order.FUNCTION_CALL];
+  for (const key of ['body', 'response', 'edges']) g.forBlock['scene_motion_' + key] = (b, gen) => `${sprite(b, gen)}.set_motion(${gen.quote_(key)}, ${gen.quote_(b.getFieldValue('MODE'))})\n`;
+  g.forBlock['scene_motion_auto'] = (b, gen) => `${sprite(b, gen)}.set_motion("autoDestroy", ${b.getFieldValue('ENABLED') === 'TRUE' ? 'True' : 'False'})\n`;
+  g.forBlock['scene_motion_stop'] = (b, gen) => `${sprite(b, gen)}.stop_motion()\n`;
+  g.forBlock['scene_control'] = (b, gen) => `${sprite(b, gen)}.control(${gen.quote_(b.getFieldValue('SCHEME'))}, ${v(b, gen, 'VX')}, ${v(b, gen, 'VY')})\n`;
+  g.forBlock['scene_jump'] = (b, gen) => `${sprite(b, gen)}.jump(${v(b, gen, 'VALUE')})\n`;
+  for (const type of ['scene_projectile', 'scene_fire']) g.forBlock[type] = (b, gen) => { const code = `${sprite(b, gen)}.projectile(${v(b, gen, 'COSTUME')}, ${v(b, gen, 'VX')}, ${v(b, gen, 'VY')}, ${v(b, gen, 'SECONDS')})`; return type === 'scene_projectile' ? [code, Order.FUNCTION_CALL] : code + '\n'; };
+  g.forBlock['scene_world'] = (b, gen) => [b.getFieldValue('WORLD_ID') ? gen.quote_(b.getFieldValue('WORLD_ID')) : 'None', Order.ATOMIC];
+  for (const [type, method, args, output] of [
+    ['scene_world_set', 'switch_world', ['WORLD'], false], ['scene_world_restart', 'restart_world', [], false],
+    ['scene_camera_go', 'camera_go', ['X', 'Y'], false], ['scene_camera_follow', 'camera_follow', ['SPRITE'], false], ['scene_camera_clamp', 'camera_clamp', ['ENABLED'], false],
+    ['scene_tile_get', 'tile_get', ['COLUMN', 'ROW'], true], ['scene_tile_at', 'tile_at', ['X', 'Y'], true], ['scene_tile_set', 'tile_set', ['COLUMN', 'ROW', 'COSTUME', 'ENABLED'], false], ['scene_tile_wall', 'tile_wall', ['COLUMN', 'ROW', 'ENABLED'], false], ['scene_tiles_of', 'tiles_of', ['COSTUME'], true], ['scene_tile_place', 'tile_place', ['SPRITE', 'COLUMN', 'ROW'], false],
+  ] as const) g.forBlock[type] = (b, gen) => { gen.useScene('scene'); const code = `_pb_scene.${method}(${args.map(a => v(b, gen, a)).join(', ')})`; return output ? [code, Order.FUNCTION_CALL] : code + '\n'; };
+  for (const type of ['scene_world_get', 'scene_camera_get']) g.forBlock[type] = (b, gen) => { gen.useScene('scene'); return [`_pb_scene.${b.getFieldValue('PROPERTY')}`, Order.MEMBER]; };
+  g.forBlock['scene_map_get'] = (b, gen) => { gen.useScene('scene'); return [`_pb_scene.map_value(${gen.quote_(b.getFieldValue('PROPERTY'))})`, Order.FUNCTION_CALL]; };
+  g.forBlock['scene_self'] = (_b, gen) => { gen.useScene('scene'); return ['_pb_scene.current_sprite', Order.MEMBER]; };
+  g.forBlock['scene_data'] = (b, gen) => [`${sprite(b, gen)}.data`, Order.MEMBER];
+  g.forBlock['scene_data_get'] = (b, gen) => [`${sprite(b, gen)}.data[${v(b, gen, 'KEY')}]`, Order.MEMBER];
+  g.forBlock['scene_data_set'] = (b, gen) => `${sprite(b, gen)}.data[${v(b, gen, 'KEY')}] = ${v(b, gen, 'VALUE')}\n`;
+  g.forBlock['scene_all'] = (_b, gen) => { gen.useScene('sprites'); return ['_pb_sprites.all()', Order.FUNCTION_CALL]; };
+  g.forBlock['scene_instances'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.instances(${v(b, gen, 'SPRITE')})`, Order.FUNCTION_CALL]; };
+  g.forBlock['scene_pixels'] = (b, gen) => [`${sprite(b, gen)}.touching_pixels(${v(b, gen, 'OTHER')})`, Order.FUNCTION_CALL];
+  g.forBlock['scene_pixel_point'] = (b, gen) => [`${sprite(b, gen)}.touching_pixel(${v(b, gen, 'X')}, ${v(b, gen, 'Y')})`, Order.FUNCTION_CALL];
+  g.forBlock['scene_pen_state'] = (b, gen) => `${sprite(b, gen)}.${b.getFieldValue('ACTION')}()\n`;
+  g.forBlock['scene_pen_color'] = (b, gen) => `${sprite(b, gen)}.set_pen("color", ${v(b, gen, 'COLOR')})\n`;
+  for (const [type, method] of [['scene_pen_set', 'set_pen'], ['scene_pen_change', 'change_pen']]) g.forBlock[type] = (b, gen) => `${sprite(b, gen)}.${method}(${gen.quote_(b.getFieldValue('PROPERTY'))}, ${v(b, gen, 'VALUE')})\n`;
+  g.forBlock['scene_pen_get'] = (b, gen) => [`${sprite(b, gen)}.pen_value(${gen.quote_(b.getFieldValue('PROPERTY'))})`, Order.FUNCTION_CALL];
+  g.forBlock['scene_pen_clear'] = (_b, gen) => { gen.useScene('scene'); return '_pb_scene.clear_pen()\n'; };
+  for (const stage of [false, true]) {
+    const target = (b: Blockly.Block, gen: Generator) => { if (stage) { gen.useScene('scene'); return '_pb_scene'; } return sprite(b, gen); };
+    const prefix = stage ? 'scene_stage_effect_' : 'scene_effect_';
+    for (const action of ['set', 'change']) g.forBlock[prefix + action] = (b, gen) => `${target(b, gen)}.${action}_effect(${gen.quote_(b.getFieldValue('EFFECT'))}, ${v(b, gen, 'VALUE')})\n`;
+    g.forBlock[prefix + 'get'] = (b, gen) => [`${target(b, gen)}.get_effect(${gen.quote_(b.getFieldValue('EFFECT'))})`, Order.FUNCTION_CALL];
+    g.forBlock[prefix + 'clear'] = (b, gen) => `${target(b, gen)}.clear_effects()\n`;
+  }
+  g.forBlock['scene_lookup'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.get(${v(b, gen, 'NAME')})`, Order.FUNCTION_CALL]; };
+  g.forBlock['scene_create'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.create(${v(b, gen, 'COSTUME')})`, Order.FUNCTION_CALL]; };
+  for (const [type, method, args] of [
+    ['scene_move', 'move', ['VALUE']], ['scene_turn', 'turn', ['VALUE']], ['scene_go', 'go_to', ['X', 'Y']],
+    ['scene_costume_set', 'costume', ['COSTUME']], ['scene_next_costume', 'next_costume', []], ['scene_play_animation', 'play_animation', []], ['scene_destroy', 'destroy', []],
+    ['scene_point', 'point_towards', ['X', 'Y']], ['scene_bounce', 'bounce', []], ['scene_stamp', 'stamp', []],
+    ['scene_glide', 'glide', ['SECONDS', 'X', 'Y']], ['scene_animate', 'animate', ['FRAMES', 'SECONDS']],
+  ] as const) g.forBlock[type] = (b, gen) => `${['scene_glide', 'scene_animate', 'scene_play_animation'].includes(type) ? 'await ' : ''}${sprite(b, gen)}.${method}(${args.map(a => v(b, gen, a)).join(', ')})\n`;
+  g.forBlock['scene_set'] = (b, gen) => `${sprite(b, gen)}.set(${gen.quote_(b.getFieldValue('PROPERTY'))}, ${v(b, gen, 'VALUE')})\n`;
+  g.forBlock['scene_change'] = (b, gen) => `${sprite(b, gen)}.change(${gen.quote_(b.getFieldValue('PROPERTY'))}, ${v(b, gen, 'VALUE')})\n`;
+  g.forBlock['scene_rotation'] = (b, gen) => `${sprite(b, gen)}.rotation_style(${gen.quote_(b.getFieldValue('STYLE'))})\n`;
+  g.forBlock['scene_layer'] = (b, gen) => `${sprite(b, gen)}.to_layer(${gen.quote_(b.getFieldValue('PLACE'))})\n`;
+  for (const [type, method] of [['scene_distance', 'distance_to'], ['scene_touching_point', 'touching_point']]) g.forBlock[type] = (b, gen) => [`${sprite(b, gen)}.${method}(${v(b, gen, 'X')}, ${v(b, gen, 'Y')})`, Order.FUNCTION_CALL];
+  g.forBlock['scene_edge'] = (b, gen) => [`${sprite(b, gen)}.touching_edge(${gen.quote_(b.getFieldValue('EDGE'))})`, Order.FUNCTION_CALL];
+  g.forBlock['scene_say'] = (b, gen) => `${sprite(b, gen)}.say(${v(b, gen, 'TEXT')}, ${gen.quote_(b.getFieldValue('STYLE'))})\n`;
+  g.forBlock['scene_say_for'] = (b, gen) => `await ${sprite(b, gen)}.say_for(${v(b, gen, 'TEXT')}, ${v(b, gen, 'SECONDS')}, ${gen.quote_(b.getFieldValue('STYLE'))})\n`;
+  g.forBlock['scene_pointer'] = (b, gen) => { gen.useScene('inputs'); return [`_pb_inputs.${b.getFieldValue('PROPERTY')}`, Order.MEMBER]; };
+  g.forBlock['scene_get'] = (b, gen) => [`${sprite(b, gen)}.${b.getFieldValue('PROPERTY')}`, Order.MEMBER];
+  g.forBlock['scene_visibility'] = (b, gen) => `${sprite(b, gen)}.${b.getFieldValue('ACTION')}()\n`;
+  g.forBlock['scene_clone'] = (b, gen) => [`${sprite(b, gen)}.clone()`, Order.FUNCTION_CALL];
+  g.forBlock['scene_overlaps'] = (b, gen) => [`${sprite(b, gen)}.overlaps(${v(b, gen, 'OTHER')})`, Order.FUNCTION_CALL];
+  g.forBlock['scene_key'] = (b, gen) => { gen.useScene('inputs'); return [`_pb_inputs.key_down(${gen.quote_(b.getFieldValue('KEY'))})`, Order.FUNCTION_CALL]; };
+  g.forBlock['scene_background'] = (b, gen) => { gen.useScene('scene'); return `_pb_scene.background(${v(b, gen, 'COLOR')})\n`; };
   g.forBlock['py_emit'] = (b, gen) => { gen.useEvents(); return `events.emit(${gen.valueToCode(b, 'EVENT', Order.NONE)}, ${gen.valueToCode(b, 'PAYLOAD', Order.NONE)})\n`; };
   g.forBlock['py_wait'] = (b, gen) => { gen.useEvents(); return `await events.wait(${gen.valueToCode(b, 'SECONDS', Order.NONE)})\n`; };
   g.forBlock['lists_create_with'] = (b, gen) => [`[${b.inputList.filter(i => i.name.startsWith('ADD')).map(i => gen.valueToCode(b, i.name, Order.NONE)).join(', ')}]`, Order.ATOMIC];
@@ -169,6 +292,7 @@ function generator() {
   g.forBlock['py_return_value'] = (b, gen) => `return ${gen.valueToCode(b, 'VALUE', Order.NONE)}\n`;
   g.forBlock['py_program'] = (b, gen) => gen.blockToCode(b.getInputTargetBlock('BODY')) as string;
   g.forBlock['py_number'] = b => [b.getFieldValue('VALUE'), /^[+-]/.test(b.getFieldValue('VALUE')) ? Order.UNARY_SIGN : Order.ATOMIC];
+  g.forBlock['py_unary'] = (b, gen) => [`${b.getFieldValue('OP')}(${gen.valueToCode(b, 'VALUE', Order.NONE)})`, Order.UNARY_SIGN];
   g.forBlock['py_none'] = () => ['None', Order.ATOMIC];
   g.forBlock['py_convert'] = (b, gen) => [`${b.getFieldValue('TYPE')}(${gen.valueToCode(b, 'VALUE', Order.NONE)})`, Order.FUNCTION_CALL];
   // Parenthesizing each operand preserves grouping, including exponentiation
@@ -205,7 +329,7 @@ function activeBlocks(root: Blockly.Block): Blockly.Block[] {
   return found;
 }
 
-interface UnitOptions { file?: string; module?: boolean; moduleFiles?: Map<string, string> }
+interface UnitOptions { inputEnabled?: boolean; soundEnabled?: boolean; motionEnabled?: boolean; gameEnabled?: boolean; file?: string; module?: boolean; moduleFiles?: Map<string, string> }
 export function compileUnit(workspace: Blockly.Workspace, options: UnitOptions = {}): Compilation {
   workspace.options.oneBasedIndex = false;
   const result: Compilation = { source: null, diagnostics: [], sourceMap: [], revision: `compile-${++revision}`, languageVersion: LANGUAGE_VERSION, executionMode: 'sequential', hasEntry: false, files: {}, moduleSources: {}, requiresEvents: false };
@@ -223,6 +347,13 @@ export function compileUnit(workspace: Blockly.Workspace, options: UnitOptions =
   const functions = definitions.filter(isScopedDefinition) as FunctionBlock[];
   const symbols = allSymbols(workspace);
   const imports = moduleState(workspace).imports;
+  const scene = sceneState(workspace);
+  result.requiresMotion = !!scene.worlds?.length || !!scene.camera?.follow || options.motionEnabled || active.some(b => motionBlocks.has(b.type)) || scene.sprites.some(s => s.motion && (s.motion.body && s.motion.body !== 'off' || (s.motion.lifetime ?? 0) > 0));
+  result.requiresInput = !!options.inputEnabled || active.some(b => inputBlocks.has(b.type));
+  result.requiresSound = !!options.soundEnabled || active.some(b => soundBlocks.has(b.type));
+  result.requiresGame = !!options.gameEnabled || active.some(b => gameBlocks.has(b.type));
+  if ((result.requiresInput || result.requiresSound || result.requiresMotion || result.requiresGame) && !options.module) { result.executionMode = 'events'; result.hasEntry = true; result.diagnostics = result.diagnostics.filter(d => d.code !== 'no-entry'); }
+  result.requiresScene = result.requiresInput || result.requiresSound || result.requiresGame || active.some(b => b.type.startsWith('scene_')) || handlers.some(h => h.signature.handler?.sprite || h.signature.handler?.kind);
   for (const binding of imports) {
     if (functions.some(f => f.signature.name === binding.alias) || symbols.some(s => s.kind === 'project' && s.name === binding.alias)) report('module-name-conflict', `Module namespace “${binding.alias}” conflicts with a project variable or function. Rename the namespace.`);
   }
@@ -242,7 +373,13 @@ export function compileUnit(workspace: Blockly.Workspace, options: UnitOptions =
     const signature = signatureOf(model);
     if ((definition.type === 'py_handler') !== !!signature.handler) report('definition-kind', 'The definition does not match its handler/function metadata. Restore its matching definition.', definition);
     if (signature.handler) {
+      if (signature.handler.sprite && !scene.sprites.some(s => s.id === signature.handler!.sprite)) report('missing-sprite', 'This behavior targets a missing authored sprite. Restore it or select another sprite.', definition);
+      if (signature.handler.sprite && ['clone', 'update', 'overlap', 'separate', 'click'].includes(signature.handler.event)) result.requiresEvents = true;
       if (!signature.async || signature.parameters.length !== 1) report('handler-signature', 'An event handler needs an async definition and exactly one payload parameter.', definition);
+      if (signature.handler.event.startsWith('click:') && !scene.sprites.some(s => s.id === signature.handler!.event.slice(6))) report('missing-sprite', 'This click handler targets a missing sprite. Restore it or choose another input event.', definition);
+      if (signature.handler.event.startsWith('world:') && signature.handler.event !== 'world:enter' && !scene.worlds?.some(w => w.id === signature.handler!.event.slice(6))) report('missing-world', 'Choose an available world for this handler.', definition);
+      if (signature.handler.event.startsWith('backdrop:') && signature.handler.event !== 'backdrop:change' && !backdrops(scene).some(a => a.id === signature.handler!.event.slice(9))) report('missing-backdrop', 'Choose an available backdrop for this handler.', definition);
+      if (/^(key|release):/.test(signature.handler.event) && !validKey(signature.handler.event.split(':')[1])) report('input-key', 'Choose a supported input key in the event editor.', definition);
       if (eventNameError(signature.handler.event)) report('event-name', eventNameError(signature.handler.event)!, definition);
       if (handlers.some(h => h !== definition && h.signature.handler?.order === signature.handler!.order)) report('handler-order', 'Handlers need distinct saved positions. Reorder them in Manage handlers.', definition);
     }
@@ -273,6 +410,7 @@ export function compileUnit(workspace: Blockly.Workspace, options: UnitOptions =
     if (isScopedDefinition(block) && block.getParent()) report('nested-function', 'Functions and event handlers must be at the top level.', block);
     const context = enclosingFunction(block); const lambda = enclosingLambda(block);
     const asyncContext = !lambda && context?.getProcedureModel() ? signatureOf(context.getProcedureModel()!).async : false;
+    if (block.type === 'scene_self' && (!(context?.signature.handler?.sprite || context?.signature.handler?.kind) || lambda)) report('sprite-context', 'This sprite belongs directly inside a sprite behavior. Pass it as a parameter to helper functions.', block);
     if (block.type === 'py_lambda') {
       const state = (block as LambdaBlock).lambda;
       try { validateLambda(state); } catch (error) { report('lambda-parameters', error instanceof Error ? error.message : String(error), block); continue; }
@@ -287,7 +425,16 @@ export function compileUnit(workspace: Blockly.Workspace, options: UnitOptions =
       }
     }
     if (lambda && (block.type.startsWith('variables_') || block.type.startsWith('procedures_'))) report('lambda-legacy', 'Use scoped parameter and function blocks inside a lambda.', block);
-    if (block.type === 'py_wait' && !asyncContext) report('wait-context', 'Wait belongs inside an event handler or a function explicitly marked async.', block);
+    if (block.type === 'sound_asset' && (options.module || !scene.sounds?.some(s => s.id === block.getFieldValue('SOUND_ID')))) report('missing-sound', 'Choose an available sound; pass project sounds as module parameters.', block);
+    if (block.type === 'scene_world' && block.getFieldValue('WORLD_ID') && (options.module || !scene.worlds?.some(w => w.id === block.getFieldValue('WORLD_ID')))) report('missing-world', 'Choose an available world; pass project worlds as module parameters.', block);
+    if (block.type === 'scene_sprite' && (!scene.sprites.some(s => s.id === block.getFieldValue('SPRITE_ID')) || options.module)) report('missing-sprite', options.module ? 'Pass a sprite as a parameter when exporting a function module.' : 'Choose an existing scene sprite. Deleted sprites stay unresolved until restored.', block);
+    if (block.type === 'scene_backdrop' && block.getFieldValue('BACKDROP_ID') && !(options.module ? builtinBackdrops : backdrops(scene)).some(a => a.id === block.getFieldValue('BACKDROP_ID'))) report('missing-backdrop', 'Choose an available backdrop; pass project backdrops as module parameters.', block);
+    if (block.type === 'scene_costume' && !(options.module ? builtins : costumes(scene)).some(a => a.id === block.getFieldValue('COSTUME_ID'))) report('missing-costume', 'Choose an available costume; pass project costumes as module parameters.', block);
+    if (['scene_key', 'scene_pointer', 'scene_glide', 'scene_animate', 'scene_say_for', 'scene_play_animation'].includes(block.type)) {
+      result.requiresEvents = true;
+      if (result.executionMode !== 'events' && !options.module) report('event-context', 'Add an event handler to use live input or timed sprite actions.', block);
+    }
+    if (['input_ask', 'input_ask_value', 'sound_wait', 'sound_note', 'sound_rest', 'py_wait', 'scene_glide', 'scene_animate', 'scene_say_for', 'scene_play_animation'].includes(block.type) && !asyncContext) report('wait-context', 'Wait belongs inside an event handler or a function explicitly marked async.', block);
     if (block.type === 'py_emit') {
       result.requiresEvents = true;
       if (result.executionMode !== 'events' && !options.module) report('event-context', 'Add an event handler to run a project that sends events.', block);
@@ -397,11 +544,13 @@ export function compileModuleDefinition(definition: ModuleDefinition, state: Mod
 export function compile(workspace: Blockly.Workspace): Compilation {
   const state = moduleState(workspace);
   const files = new Map(state.definitions.map((d, index) => [moduleKey(d), `_pb_module_${index}.py`]));
-  const result = compileUnit(workspace, { moduleFiles: files });
+  const units: { definition: ModuleDefinition; unit: Compilation }[] = [];
+  let moduleError: unknown;
+  try { validateModuleState(state); for (const definition of reachableModules(state)) units.push({ definition, unit: compileModuleDefinition(definition, state, files) }); } catch (error) { moduleError = error; }
+  const result = compileUnit(workspace, { moduleFiles: files, inputEnabled: units.some(({ unit }) => unit.requiresInput), soundEnabled: units.some(({ unit }) => unit.requiresSound), motionEnabled: units.some(({ unit }) => unit.requiresMotion), gameEnabled: units.some(({ unit }) => unit.requiresGame) });
   try {
-    validateModuleState(state);
-    for (const definition of reachableModules(state)) {
-      const unit = compileModuleDefinition(definition, state, files);
+    if (moduleError) throw moduleError;
+    for (const { definition, unit } of units) {
       const location = { moduleId: definition.moduleId, revision: definition.revision, name: definition.name };
       result.diagnostics.push(...unit.diagnostics.map(d => ({ ...d, module: location, message: `${definition.name}: ${d.message}` })));
       if (unit.source !== null) {
@@ -409,9 +558,25 @@ export function compile(workspace: Blockly.Workspace): Compilation {
         result.files[file] = unit.source; result.moduleSources[file] = location;
         result.sourceMap.push(...unit.sourceMap.map(span => ({ ...span, module: location })));
       }
+      result.requiresScene ||= unit.requiresScene;
+      result.requiresMotion ||= unit.requiresMotion;
+      result.requiresGame ||= unit.requiresGame;
+      result.requiresSound ||= unit.requiresSound;
+      result.requiresInput ||= unit.requiresInput;
+      if (unit.requiresInput || unit.requiresSound || unit.requiresMotion || unit.requiresGame) result.executionMode = 'events';
       if (unit.requiresEvents && result.executionMode !== 'events') result.diagnostics.push({ code: 'module-event-context', severity: 'error', module: location, message: `Module “${definition.name}” sends events. Add an event handler to run an event session.` });
     }
   } catch (error) { result.diagnostics.push({ code: 'module-invalid', severity: 'error', message: error instanceof Error ? error.message : String(error) }); }
+  const scene = sceneState(workspace);
+  if (result.requiresScene || JSON.stringify(scene) !== JSON.stringify(emptyScene())) {
+    result.scene = scene;
+    if (result.source !== null) {
+      const prefix = 'from playground import scene as _pb_scene\n_pb_scene.load("scene.json")\n' + (result.requiresMotion ? '_pb_scene.enable_motion()\n' : '') + '\n';
+      const offset = prefix.split('\n').length - 1;
+      result.source = prefix + result.source;
+      result.sourceMap = result.sourceMap.map(span => span.file === 'program.py' ? { ...span, startLine: span.startLine + offset, endLine: span.endLine + offset } : span);
+    }
+  }
   if (result.diagnostics.some(d => d.severity === 'error')) result.source = null;
   return result;
 }

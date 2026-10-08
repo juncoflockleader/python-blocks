@@ -1,0 +1,552 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 16,
+  "workspace": {
+    "pythonScene": {
+      "version": 1,
+      "background": "#f5f0fa",
+      "assets": [],
+      "sounds": [
+        {
+          "id": "first_song",
+          "name": "Little steps",
+          "kind": "song",
+          "tempo": 120,
+          "beats": 16,
+          "notes": [
+            {
+              "at": 0,
+              "beats": 0.75,
+              "pitch": 60,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 1,
+              "beats": 0.75,
+              "pitch": 64,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 2,
+              "beats": 0.75,
+              "pitch": 67,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 3,
+              "beats": 0.75,
+              "pitch": 72,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 4,
+              "beats": 0.75,
+              "pitch": 71,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 5,
+              "beats": 0.75,
+              "pitch": 67,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 6,
+              "beats": 0.75,
+              "pitch": 64,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 7,
+              "beats": 0.75,
+              "pitch": 62,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 8,
+              "beats": 0.75,
+              "pitch": 60,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 9,
+              "beats": 0.75,
+              "pitch": 64,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 10,
+              "beats": 0.75,
+              "pitch": 69,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 11,
+              "beats": 0.75,
+              "pitch": 67,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 12,
+              "beats": 0.75,
+              "pitch": 64,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 13,
+              "beats": 0.75,
+              "pitch": 62,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 14,
+              "beats": 0.75,
+              "pitch": 60,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 15,
+              "beats": 0.75,
+              "pitch": 60,
+              "instrument": "triangle",
+              "volume": 85
+            },
+            {
+              "at": 0,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "kick",
+              "volume": 65
+            },
+            {
+              "at": 1,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "snare",
+              "volume": 65
+            },
+            {
+              "at": 2,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "kick",
+              "volume": 65
+            },
+            {
+              "at": 3,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "snare",
+              "volume": 65
+            },
+            {
+              "at": 4,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "kick",
+              "volume": 65
+            },
+            {
+              "at": 5,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "snare",
+              "volume": 65
+            },
+            {
+              "at": 6,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "kick",
+              "volume": 65
+            },
+            {
+              "at": 7,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "snare",
+              "volume": 65
+            },
+            {
+              "at": 8,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "kick",
+              "volume": 65
+            },
+            {
+              "at": 9,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "snare",
+              "volume": 65
+            },
+            {
+              "at": 10,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "kick",
+              "volume": 65
+            },
+            {
+              "at": 11,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "snare",
+              "volume": 65
+            },
+            {
+              "at": 12,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "kick",
+              "volume": 65
+            },
+            {
+              "at": 13,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "snare",
+              "volume": 65
+            },
+            {
+              "at": 14,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "kick",
+              "volume": 65
+            },
+            {
+              "at": 15,
+              "beats": 0.25,
+              "pitch": 60,
+              "instrument": "snare",
+              "volume": 65
+            }
+          ]
+        }
+      ],
+      "sprites": [
+        {
+          "id": "bird",
+          "name": "Singer",
+          "x": 0,
+          "y": 0,
+          "direction": 0,
+          "size": 150,
+          "layer": 0,
+          "visible": true,
+          "costume": "bird"
+        }
+      ]
+    },
+    "procedures": [
+      {
+        "id": "sh0",
+        "name": "sound_handler_0",
+        "async": true,
+        "parameters": [
+          {
+            "id": "sp0",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "start",
+          "order": 0
+        }
+      },
+      {
+        "id": "sh1",
+        "name": "sound_handler_1",
+        "async": true,
+        "parameters": [
+          {
+            "id": "sp1",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "key:Space",
+          "order": 1
+        }
+      },
+      {
+        "id": "sh2",
+        "name": "sound_handler_2",
+        "async": true,
+        "parameters": [
+          {
+            "id": "sp2",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "key:m",
+          "order": 2
+        }
+      },
+      {
+        "id": "sh3",
+        "name": "sound_handler_3",
+        "async": true,
+        "parameters": [
+          {
+            "id": "sp3",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "key:u",
+          "order": 3
+        }
+      }
+    ],
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_handler",
+          "id": "shb0",
+          "x": 40,
+          "y": 40,
+          "extraState": {
+            "functionId": "sh0"
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "game_message",
+                "fields": {},
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "A melody with drums. Space plays a chime; M mutes the bird."
+                      },
+                      "inputs": {}
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "controls_whileUntil",
+                    "fields": {
+                      "MODE": "WHILE"
+                    },
+                    "inputs": {
+                      "BOOL": {
+                        "block": {
+                          "type": "logic_boolean",
+                          "fields": {
+                            "BOOL": "TRUE"
+                          },
+                          "inputs": {}
+                        }
+                      },
+                      "DO": {
+                        "block": {
+                          "type": "sound_wait",
+                          "fields": {},
+                          "inputs": {
+                            "SOUND": {
+                              "block": {
+                                "type": "sound_asset",
+                                "fields": {
+                                  "SOUND_ID": "first_song"
+                                },
+                                "inputs": {}
+                              }
+                            },
+                            "OWNER": {
+                              "block": {
+                                "type": "py_none",
+                                "fields": {},
+                                "inputs": {}
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "shb1",
+          "x": 490,
+          "y": 40,
+          "extraState": {
+            "functionId": "sh1"
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_say",
+                "fields": {
+                  "STYLE": "say"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "bird"
+                      },
+                      "inputs": {}
+                    }
+                  },
+                  "TEXT": {
+                    "block": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "Your turn!"
+                      },
+                      "inputs": {}
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "sound_note",
+                    "fields": {
+                      "INSTRUMENT": "sine"
+                    },
+                    "inputs": {
+                      "NOTE": {
+                        "block": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "84"
+                          },
+                          "inputs": {}
+                        }
+                      },
+                      "BEATS": {
+                        "block": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "1"
+                          },
+                          "inputs": {}
+                        }
+                      },
+                      "OWNER": {
+                        "block": {
+                          "type": "scene_sprite",
+                          "fields": {
+                            "SPRITE_ID": "bird"
+                          },
+                          "inputs": {}
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "shb2",
+          "x": 940,
+          "y": 40,
+          "extraState": {
+            "functionId": "sh2"
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "sound_set",
+                "fields": {
+                  "FIELD": "volume"
+                },
+                "inputs": {
+                  "VALUE": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "0"
+                      },
+                      "inputs": {}
+                    }
+                  },
+                  "OWNER": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "bird"
+                      },
+                      "inputs": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "shb3",
+          "x": 1390,
+          "y": 40,
+          "extraState": {
+            "functionId": "sh3"
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "sound_set",
+                "fields": {
+                  "FIELD": "volume"
+                },
+                "inputs": {
+                  "VALUE": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "100"
+                      },
+                      "inputs": {}
+                    }
+                  },
+                  "OWNER": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "bird"
+                      },
+                      "inputs": {}
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

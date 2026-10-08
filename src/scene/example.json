@@ -1,0 +1,679 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 8,
+  "workspace": {
+    "pythonScene": {
+      "version": 1,
+      "background": "#fdfdf9",
+      "assets": [],
+      "sprites": [
+        {
+          "id": "player",
+          "name": "Player",
+          "x": -100,
+          "y": 0,
+          "direction": 0,
+          "size": 100,
+          "layer": 0,
+          "visible": true,
+          "costume": "bird"
+        },
+        {
+          "id": "friend",
+          "name": "Friend",
+          "x": 100,
+          "y": 0,
+          "direction": 0,
+          "size": 100,
+          "layer": 0,
+          "visible": true,
+          "costume": "star"
+        }
+      ]
+    },
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_handler",
+          "id": "animate-block",
+          "x": 48,
+          "y": 48,
+          "extraState": {
+            "functionId": "animate",
+            "signature": {
+              "id": "animate",
+              "name": "animate_friend",
+              "parameters": [
+                {
+                  "id": "animate-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "start",
+                "order": 0
+              }
+            }
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "controls_whileUntil",
+                "fields": {
+                  "MODE": "WHILE"
+                },
+                "inputs": {
+                  "BOOL": {
+                    "block": {
+                      "type": "logic_boolean",
+                      "fields": {
+                        "BOOL": "TRUE"
+                      }
+                    }
+                  },
+                  "DO": {
+                    "block": {
+                      "type": "scene_glide",
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_sprite",
+                            "fields": {
+                              "SPRITE_ID": "friend"
+                            }
+                          }
+                        },
+                        "SECONDS": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "0.6"
+                            }
+                          }
+                        },
+                        "X": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "50"
+                            }
+                          }
+                        },
+                        "Y": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "70"
+                            }
+                          }
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "scene_glide",
+                          "inputs": {
+                            "SPRITE": {
+                              "block": {
+                                "type": "scene_sprite",
+                                "fields": {
+                                  "SPRITE_ID": "friend"
+                                }
+                              }
+                            },
+                            "SECONDS": {
+                              "block": {
+                                "type": "py_number",
+                                "fields": {
+                                  "VALUE": "0.6"
+                                }
+                              }
+                            },
+                            "X": {
+                              "block": {
+                                "type": "py_number",
+                                "fields": {
+                                  "VALUE": "100"
+                                }
+                              }
+                            },
+                            "Y": {
+                              "block": {
+                                "type": "py_number",
+                                "fields": {
+                                  "VALUE": "0"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "key-ArrowRight-block",
+          "x": 488,
+          "y": 48,
+          "extraState": {
+            "functionId": "key-ArrowRight",
+            "signature": {
+              "id": "key-ArrowRight",
+              "name": "when_arrowright",
+              "parameters": [
+                {
+                  "id": "key-ArrowRight-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "key:ArrowRight",
+                "order": 1
+              }
+            }
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_set",
+                "fields": {
+                  "PROPERTY": "x"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "player"
+                      }
+                    }
+                  },
+                  "VALUE": {
+                    "block": {
+                      "type": "py_binary",
+                      "fields": {
+                        "OP": "+"
+                      },
+                      "inputs": {
+                        "A": {
+                          "block": {
+                            "type": "scene_get",
+                            "fields": {
+                              "PROPERTY": "x"
+                            },
+                            "inputs": {
+                              "SPRITE": {
+                                "block": {
+                                  "type": "scene_sprite",
+                                  "fields": {
+                                    "SPRITE_ID": "player"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "B": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "20"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "key-ArrowLeft-block",
+          "x": 48,
+          "y": 328,
+          "extraState": {
+            "functionId": "key-ArrowLeft",
+            "signature": {
+              "id": "key-ArrowLeft",
+              "name": "when_arrowleft",
+              "parameters": [
+                {
+                  "id": "key-ArrowLeft-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "key:ArrowLeft",
+                "order": 2
+              }
+            }
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_set",
+                "fields": {
+                  "PROPERTY": "x"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "player"
+                      }
+                    }
+                  },
+                  "VALUE": {
+                    "block": {
+                      "type": "py_binary",
+                      "fields": {
+                        "OP": "+"
+                      },
+                      "inputs": {
+                        "A": {
+                          "block": {
+                            "type": "scene_get",
+                            "fields": {
+                              "PROPERTY": "x"
+                            },
+                            "inputs": {
+                              "SPRITE": {
+                                "block": {
+                                  "type": "scene_sprite",
+                                  "fields": {
+                                    "SPRITE_ID": "player"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "B": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "-20"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "key-ArrowUp-block",
+          "x": 488,
+          "y": 328,
+          "extraState": {
+            "functionId": "key-ArrowUp",
+            "signature": {
+              "id": "key-ArrowUp",
+              "name": "when_arrowup",
+              "parameters": [
+                {
+                  "id": "key-ArrowUp-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "key:ArrowUp",
+                "order": 3
+              }
+            }
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_set",
+                "fields": {
+                  "PROPERTY": "y"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "player"
+                      }
+                    }
+                  },
+                  "VALUE": {
+                    "block": {
+                      "type": "py_binary",
+                      "fields": {
+                        "OP": "+"
+                      },
+                      "inputs": {
+                        "A": {
+                          "block": {
+                            "type": "scene_get",
+                            "fields": {
+                              "PROPERTY": "y"
+                            },
+                            "inputs": {
+                              "SPRITE": {
+                                "block": {
+                                  "type": "scene_sprite",
+                                  "fields": {
+                                    "SPRITE_ID": "player"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "B": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "20"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "key-ArrowDown-block",
+          "x": 48,
+          "y": 608,
+          "extraState": {
+            "functionId": "key-ArrowDown",
+            "signature": {
+              "id": "key-ArrowDown",
+              "name": "when_arrowdown",
+              "parameters": [
+                {
+                  "id": "key-ArrowDown-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "key:ArrowDown",
+                "order": 4
+              }
+            }
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_set",
+                "fields": {
+                  "PROPERTY": "y"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "player"
+                      }
+                    }
+                  },
+                  "VALUE": {
+                    "block": {
+                      "type": "py_binary",
+                      "fields": {
+                        "OP": "+"
+                      },
+                      "inputs": {
+                        "A": {
+                          "block": {
+                            "type": "scene_get",
+                            "fields": {
+                              "PROPERTY": "y"
+                            },
+                            "inputs": {
+                              "SPRITE": {
+                                "block": {
+                                  "type": "scene_sprite",
+                                  "fields": {
+                                    "SPRITE_ID": "player"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "B": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "-20"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "click-player-block",
+          "x": 488,
+          "y": 608,
+          "extraState": {
+            "functionId": "click-player",
+            "signature": {
+              "id": "click-player",
+              "name": "say_hello",
+              "parameters": [
+                {
+                  "id": "click-player-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "click:player",
+                "order": 5
+              }
+            }
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "Hello from Player!"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "key-state-block",
+          "x": 48,
+          "y": 888,
+          "extraState": {
+            "functionId": "key-state",
+            "signature": {
+              "id": "key-state",
+              "name": "check_key",
+              "parameters": [
+                {
+                  "id": "key-state-payload",
+                  "name": "payload"
+                }
+              ],
+              "async": true,
+              "handler": {
+                "event": "key:Space",
+                "order": 6
+              }
+            }
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "scene_key",
+                      "fields": {
+                        "KEY": "Space"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    "procedures": [
+      {
+        "id": "animate",
+        "name": "animate_friend",
+        "parameters": [
+          {
+            "id": "animate-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "start",
+          "order": 0
+        },
+        "returnTypes": null
+      },
+      {
+        "id": "key-ArrowRight",
+        "name": "when_arrowright",
+        "parameters": [
+          {
+            "id": "key-ArrowRight-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "key:ArrowRight",
+          "order": 1
+        },
+        "returnTypes": null
+      },
+      {
+        "id": "key-ArrowLeft",
+        "name": "when_arrowleft",
+        "parameters": [
+          {
+            "id": "key-ArrowLeft-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "key:ArrowLeft",
+          "order": 2
+        },
+        "returnTypes": null
+      },
+      {
+        "id": "key-ArrowUp",
+        "name": "when_arrowup",
+        "parameters": [
+          {
+            "id": "key-ArrowUp-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "key:ArrowUp",
+          "order": 3
+        },
+        "returnTypes": null
+      },
+      {
+        "id": "key-ArrowDown",
+        "name": "when_arrowdown",
+        "parameters": [
+          {
+            "id": "key-ArrowDown-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "key:ArrowDown",
+          "order": 4
+        },
+        "returnTypes": null
+      },
+      {
+        "id": "click-player",
+        "name": "say_hello",
+        "parameters": [
+          {
+            "id": "click-player-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "click:player",
+          "order": 5
+        },
+        "returnTypes": null
+      },
+      {
+        "id": "key-state",
+        "name": "check_key",
+        "parameters": [
+          {
+            "id": "key-state-payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "key:Space",
+          "order": 6
+        },
+        "returnTypes": null
+      }
+    ]
+  }
+}

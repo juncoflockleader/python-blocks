@@ -1,0 +1,2014 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 14,
+  "workspace": {
+    "pythonScene": {
+      "version": 1,
+      "background": "#fdfdf9",
+      "world": "meadow",
+      "worlds": [
+        {
+          "id": "meadow",
+          "name": "Meadow passage",
+          "background": "#e8f1d9",
+          "map": {
+            "columns": 40,
+            "rows": 10,
+            "tileSize": 32,
+            "tiles": [
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "box",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "box",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "box",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "box",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "ball",
+              null,
+              null,
+              null,
+              null,
+              "box",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "star",
+              null,
+              null,
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "box",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "box",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "box",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass"
+            ],
+            "walls": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "follow": "player",
+            "clamp": true
+          }
+        },
+        {
+          "id": "cavern",
+          "name": "Starlit cavern",
+          "background": "#ccd6ef",
+          "map": {
+            "columns": 24,
+            "rows": 10,
+            "tileSize": 32,
+            "tiles": [
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "star",
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              null,
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass",
+              "grass"
+            ],
+            "walls": [
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              false,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true,
+              true
+            ]
+          },
+          "camera": {
+            "x": 0,
+            "y": 0,
+            "follow": "player",
+            "clamp": true
+          }
+        }
+      ],
+      "assets": [
+        {
+          "id": "grass",
+          "name": "Grass tile",
+          "width": 8,
+          "height": 8,
+          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAG0lEQVR4nGMIaIn4H9MT8R8XzYBPEkQzDAsTAKDgjUEoLXHBAAAAAElFTkSuQmCC"
+        }
+      ],
+      "sprites": [
+        {
+          "id": "player",
+          "name": "Explorer",
+          "x": -128,
+          "y": -16,
+          "costume": "bird",
+          "size": 50,
+          "direction": 0,
+          "layer": 0,
+          "visible": true,
+          "rotationStyle": "none",
+          "kind": "player",
+          "motion": {
+            "body": "moving",
+            "controller": "arrows",
+            "speedX": 200,
+            "speedY": 200,
+            "response": "slide"
+          }
+        },
+        {
+          "id": "meadow_flag",
+          "name": "Meadow flag",
+          "x": 32,
+          "y": 64,
+          "costume": "star",
+          "size": 50,
+          "direction": 0,
+          "layer": 0,
+          "visible": true,
+          "rotationStyle": "none",
+          "world": "meadow"
+        },
+        {
+          "id": "cave_flag",
+          "name": "Cave marker",
+          "x": 32,
+          "y": 64,
+          "costume": "ball",
+          "size": 50,
+          "direction": 0,
+          "layer": 0,
+          "visible": true,
+          "rotationStyle": "none",
+          "world": "cavern"
+        }
+      ]
+    },
+    "procedures": [
+      {
+        "id": "instructions",
+        "name": "instructions",
+        "parameters": [
+          {
+            "id": "instructions_payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "start",
+          "order": 0
+        }
+      },
+      {
+        "id": "enter_world",
+        "name": "enter_world",
+        "parameters": [
+          {
+            "id": "enter_world_payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "world:enter",
+          "order": 1
+        }
+      },
+      {
+        "id": "restart",
+        "name": "restart",
+        "parameters": [
+          {
+            "id": "restart_payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "key:r",
+          "order": 2
+        }
+      },
+      {
+        "id": "tiles",
+        "name": "tiles",
+        "parameters": [
+          {
+            "id": "tiles_payload",
+            "name": "payload"
+          }
+        ],
+        "async": true,
+        "handler": {
+          "event": "tile:overlap",
+          "order": 3,
+          "kind": "player"
+        }
+      }
+    ],
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_handler",
+          "id": "world_block_3",
+          "extraState": {
+            "functionId": "instructions"
+          },
+          "x": 60,
+          "y": 48,
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "id": "world_block_2",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "text",
+                      "id": "world_block_1",
+                      "fields": {
+                        "TEXT": "Arrow keys explore. Touch the purple switch to open the gate, then find the star portal. R restarts this world."
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "world_block_12",
+          "extraState": {
+            "functionId": "enter_world"
+          },
+          "x": 60,
+          "y": 240,
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_say",
+                "fields": {
+                  "STYLE": "say"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "player"
+                      }
+                    }
+                  },
+                  "TEXT": {
+                    "block": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": ""
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "scene_tile_place",
+                    "id": "world_block_7",
+                    "inputs": {
+                      "SPRITE": {
+                        "block": {
+                          "type": "scene_sprite",
+                          "id": "world_block_4",
+                          "fields": {
+                            "SPRITE_ID": "player"
+                          }
+                        }
+                      },
+                      "COLUMN": {
+                        "block": {
+                          "type": "py_number",
+                          "id": "world_block_5",
+                          "fields": {
+                            "VALUE": "3"
+                          }
+                        }
+                      },
+                      "ROW": {
+                        "block": {
+                          "type": "py_number",
+                          "id": "world_block_6",
+                          "fields": {
+                            "VALUE": "5"
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "scene_camera_follow",
+                        "id": "world_block_9",
+                        "inputs": {
+                          "SPRITE": {
+                            "block": {
+                              "type": "scene_sprite",
+                              "id": "world_block_8",
+                              "fields": {
+                                "SPRITE_ID": "player"
+                              }
+                            }
+                          }
+                        },
+                        "next": {
+                          "block": {
+                            "type": "text_print",
+                            "id": "world_block_11",
+                            "inputs": {
+                              "TEXT": {
+                                "block": {
+                                  "type": "scene_world_get",
+                                  "id": "world_block_10",
+                                  "fields": {
+                                    "PROPERTY": "world_name"
+                                  }
+                                }
+                              }
+                            },
+                            "next": {
+                              "block": {
+                                "type": "scene_control",
+                                "id": "world_block_60",
+                                "fields": {
+                                  "SCHEME": "arrows"
+                                },
+                                "inputs": {
+                                  "SPRITE": {
+                                    "block": {
+                                      "type": "scene_sprite",
+                                      "id": "world_block_57",
+                                      "fields": {
+                                        "SPRITE_ID": "player"
+                                      }
+                                    }
+                                  },
+                                  "VX": {
+                                    "block": {
+                                      "type": "py_number",
+                                      "id": "world_block_58",
+                                      "fields": {
+                                        "VALUE": "200"
+                                      }
+                                    }
+                                  },
+                                  "VY": {
+                                    "block": {
+                                      "type": "py_number",
+                                      "id": "world_block_59",
+                                      "fields": {
+                                        "VALUE": "200"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "world_block_14",
+          "extraState": {
+            "functionId": "restart"
+          },
+          "x": 60,
+          "y": 1080,
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_world_restart",
+                "id": "world_block_13"
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "world_block_56",
+          "extraState": {
+            "functionId": "tiles"
+          },
+          "x": 60,
+          "y": 1240,
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "controls_if",
+                "id": "world_block_34",
+                "inputs": {
+                  "IF0": {
+                    "block": {
+                      "type": "logic_compare",
+                      "id": "world_block_21",
+                      "fields": {
+                        "OP": "EQ"
+                      },
+                      "inputs": {
+                        "A": {
+                          "block": {
+                            "type": "py_item_get",
+                            "id": "world_block_19",
+                            "inputs": {
+                              "COLLECTION": {
+                                "block": {
+                                  "type": "py_item_get",
+                                  "id": "world_block_17",
+                                  "inputs": {
+                                    "COLLECTION": {
+                                      "block": {
+                                        "type": "py_get",
+                                        "id": "world_block_15",
+                                        "fields": {
+                                          "SYMBOL": "param:tiles_payload"
+                                        }
+                                      }
+                                    },
+                                    "KEY": {
+                                      "block": {
+                                        "type": "text",
+                                        "id": "world_block_16",
+                                        "fields": {
+                                          "TEXT": "tile"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "KEY": {
+                                "block": {
+                                  "type": "text",
+                                  "id": "world_block_18",
+                                  "fields": {
+                                    "TEXT": "costume"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "B": {
+                          "block": {
+                            "type": "text",
+                            "id": "world_block_20",
+                            "fields": {
+                              "TEXT": "ball"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "DO0": {
+                    "block": {
+                      "type": "scene_tile_set",
+                      "id": "world_block_26",
+                      "inputs": {
+                        "COLUMN": {
+                          "block": {
+                            "type": "py_number",
+                            "id": "world_block_22",
+                            "fields": {
+                              "VALUE": "14"
+                            }
+                          }
+                        },
+                        "ROW": {
+                          "block": {
+                            "type": "py_number",
+                            "id": "world_block_23",
+                            "fields": {
+                              "VALUE": "5"
+                            }
+                          }
+                        },
+                        "COSTUME": {
+                          "block": {
+                            "type": "py_none",
+                            "id": "world_block_24"
+                          }
+                        },
+                        "ENABLED": {
+                          "block": {
+                            "type": "logic_boolean",
+                            "id": "world_block_25",
+                            "fields": {
+                              "BOOL": "FALSE"
+                            }
+                          }
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "scene_tile_set",
+                          "id": "world_block_31",
+                          "inputs": {
+                            "COLUMN": {
+                              "block": {
+                                "type": "py_number",
+                                "id": "world_block_27",
+                                "fields": {
+                                  "VALUE": "9"
+                                }
+                              }
+                            },
+                            "ROW": {
+                              "block": {
+                                "type": "py_number",
+                                "id": "world_block_28",
+                                "fields": {
+                                  "VALUE": "5"
+                                }
+                              }
+                            },
+                            "COSTUME": {
+                              "block": {
+                                "type": "py_none",
+                                "id": "world_block_29"
+                              }
+                            },
+                            "ENABLED": {
+                              "block": {
+                                "type": "logic_boolean",
+                                "id": "world_block_30",
+                                "fields": {
+                                  "BOOL": "FALSE"
+                                }
+                              }
+                            }
+                          },
+                          "next": {
+                            "block": {
+                              "type": "text_print",
+                              "id": "world_block_33",
+                              "inputs": {
+                                "TEXT": {
+                                  "block": {
+                                    "type": "text",
+                                    "id": "world_block_32",
+                                    "fields": {
+                                      "TEXT": "Gate opened!"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "controls_if",
+                    "id": "world_block_55",
+                    "inputs": {
+                      "IF0": {
+                        "block": {
+                          "type": "logic_compare",
+                          "id": "world_block_41",
+                          "fields": {
+                            "OP": "EQ"
+                          },
+                          "inputs": {
+                            "A": {
+                              "block": {
+                                "type": "py_item_get",
+                                "id": "world_block_39",
+                                "inputs": {
+                                  "COLLECTION": {
+                                    "block": {
+                                      "type": "py_item_get",
+                                      "id": "world_block_37",
+                                      "inputs": {
+                                        "COLLECTION": {
+                                          "block": {
+                                            "type": "py_get",
+                                            "id": "world_block_35",
+                                            "fields": {
+                                              "SYMBOL": "param:tiles_payload"
+                                            }
+                                          }
+                                        },
+                                        "KEY": {
+                                          "block": {
+                                            "type": "text",
+                                            "id": "world_block_36",
+                                            "fields": {
+                                              "TEXT": "tile"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "KEY": {
+                                    "block": {
+                                      "type": "text",
+                                      "id": "world_block_38",
+                                      "fields": {
+                                        "TEXT": "costume"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "B": {
+                              "block": {
+                                "type": "text",
+                                "id": "world_block_40",
+                                "fields": {
+                                  "TEXT": "star"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "DO0": {
+                        "block": {
+                          "type": "controls_if",
+                          "id": "world_block_54",
+                          "inputs": {
+                            "IF0": {
+                              "block": {
+                                "type": "logic_compare",
+                                "id": "world_block_44",
+                                "fields": {
+                                  "OP": "EQ"
+                                },
+                                "inputs": {
+                                  "A": {
+                                    "block": {
+                                      "type": "scene_world_get",
+                                      "id": "world_block_42",
+                                      "fields": {
+                                        "PROPERTY": "world_id"
+                                      }
+                                    }
+                                  },
+                                  "B": {
+                                    "block": {
+                                      "type": "text",
+                                      "id": "world_block_43",
+                                      "fields": {
+                                        "TEXT": "meadow"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "DO0": {
+                              "block": {
+                                "type": "scene_world_set",
+                                "id": "world_block_46",
+                                "inputs": {
+                                  "WORLD": {
+                                    "block": {
+                                      "type": "scene_world",
+                                      "id": "world_block_45",
+                                      "fields": {
+                                        "WORLD_ID": "cavern"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "ELSE": {
+                              "block": {
+                                "type": "scene_motion_stop",
+                                "id": "world_block_48",
+                                "inputs": {
+                                  "SPRITE": {
+                                    "block": {
+                                      "type": "scene_self",
+                                      "id": "world_block_47"
+                                    }
+                                  }
+                                },
+                                "next": {
+                                  "block": {
+                                    "type": "scene_say",
+                                    "id": "world_block_51",
+                                    "fields": {
+                                      "STYLE": "say"
+                                    },
+                                    "inputs": {
+                                      "SPRITE": {
+                                        "block": {
+                                          "type": "scene_self",
+                                          "id": "world_block_49"
+                                        }
+                                      },
+                                      "TEXT": {
+                                        "block": {
+                                          "type": "text",
+                                          "id": "world_block_50",
+                                          "fields": {
+                                            "TEXT": "Both worlds explored!"
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "next": {
+                                      "block": {
+                                        "type": "text_print",
+                                        "id": "world_block_53",
+                                        "inputs": {
+                                          "TEXT": {
+                                            "block": {
+                                              "type": "text",
+                                              "id": "world_block_52",
+                                              "fields": {
+                                                "TEXT": "Journey complete!"
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "extraState": {
+                            "hasElse": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}

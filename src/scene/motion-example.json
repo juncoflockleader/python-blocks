@@ -1,0 +1,533 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 9,
+  "workspace": {
+    "pythonScene": {
+      "version": 1,
+      "background": "#fdfdf9",
+      "assets": [],
+      "sprites": [
+        {
+          "id": "player",
+          "name": "Player",
+          "x": -100,
+          "y": 0,
+          "direction": 0,
+          "size": 100,
+          "layer": 0,
+          "visible": true,
+          "costume": "bird",
+          "rotationStyle": "left-right"
+        },
+        {
+          "id": "friend",
+          "name": "Friend",
+          "x": 70,
+          "y": 0,
+          "direction": 35,
+          "size": 100,
+          "layer": 0,
+          "visible": true,
+          "costume": "ball"
+        }
+      ]
+    },
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_handler",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "controls_whileUntil",
+                "fields": {
+                  "MODE": "WHILE"
+                },
+                "inputs": {
+                  "BOOL": {
+                    "block": {
+                      "type": "logic_boolean",
+                      "fields": {
+                        "BOOL": "TRUE"
+                      }
+                    }
+                  },
+                  "DO": {
+                    "block": {
+                      "type": "controls_if",
+                      "inputs": {
+                        "IF0": {
+                          "block": {
+                            "type": "scene_pointer",
+                            "fields": {
+                              "PROPERTY": "pointer_inside"
+                            }
+                          }
+                        },
+                        "DO0": {
+                          "block": {
+                            "type": "scene_point",
+                            "inputs": {
+                              "SPRITE": {
+                                "block": {
+                                  "type": "scene_sprite",
+                                  "fields": {
+                                    "SPRITE_ID": "player"
+                                  }
+                                }
+                              },
+                              "X": {
+                                "block": {
+                                  "type": "scene_pointer",
+                                  "fields": {
+                                    "PROPERTY": "pointer_x"
+                                  }
+                                }
+                              },
+                              "Y": {
+                                "block": {
+                                  "type": "scene_pointer",
+                                  "fields": {
+                                    "PROPERTY": "pointer_y"
+                                  }
+                                }
+                              }
+                            },
+                            "next": {
+                              "block": {
+                                "type": "controls_if",
+                                "inputs": {
+                                  "IF0": {
+                                    "block": {
+                                      "type": "scene_pointer",
+                                      "fields": {
+                                        "PROPERTY": "pointer_down"
+                                      }
+                                    }
+                                  },
+                                  "DO0": {
+                                    "block": {
+                                      "type": "scene_glide",
+                                      "inputs": {
+                                        "SPRITE": {
+                                          "block": {
+                                            "type": "scene_sprite",
+                                            "fields": {
+                                              "SPRITE_ID": "player"
+                                            }
+                                          }
+                                        },
+                                        "SECONDS": {
+                                          "block": {
+                                            "type": "py_number",
+                                            "fields": {
+                                              "VALUE": "0.1"
+                                            }
+                                          }
+                                        },
+                                        "X": {
+                                          "block": {
+                                            "type": "scene_pointer",
+                                            "fields": {
+                                              "PROPERTY": "pointer_x"
+                                            }
+                                          }
+                                        },
+                                        "Y": {
+                                          "block": {
+                                            "type": "scene_pointer",
+                                            "fields": {
+                                              "PROPERTY": "pointer_y"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "py_wait",
+                          "inputs": {
+                            "SECONDS": {
+                              "block": {
+                                "type": "py_number",
+                                "fields": {
+                                  "VALUE": "0.033"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "id": "follow-block",
+          "x": 32,
+          "y": 32,
+          "extraState": {
+            "functionId": "follow",
+            "signature": {
+              "id": "follow",
+              "name": "follow_pointer",
+              "parameters": [
+                {
+                  "id": "follow-payload",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "start",
+                "order": 0
+              },
+              "async": true
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "controls_whileUntil",
+                "fields": {
+                  "MODE": "WHILE"
+                },
+                "inputs": {
+                  "BOOL": {
+                    "block": {
+                      "type": "logic_boolean",
+                      "fields": {
+                        "BOOL": "TRUE"
+                      }
+                    }
+                  },
+                  "DO": {
+                    "block": {
+                      "type": "scene_move",
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_sprite",
+                            "fields": {
+                              "SPRITE_ID": "friend"
+                            }
+                          }
+                        },
+                        "VALUE": {
+                          "block": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "5"
+                            }
+                          }
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "scene_bounce",
+                          "inputs": {
+                            "SPRITE": {
+                              "block": {
+                                "type": "scene_sprite",
+                                "fields": {
+                                  "SPRITE_ID": "friend"
+                                }
+                              }
+                            }
+                          },
+                          "next": {
+                            "block": {
+                              "type": "py_wait",
+                              "inputs": {
+                                "SECONDS": {
+                                  "block": {
+                                    "type": "py_number",
+                                    "fields": {
+                                      "VALUE": "0.033"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "id": "bounce-block",
+          "x": 600,
+          "y": 32,
+          "extraState": {
+            "functionId": "bounce",
+            "signature": {
+              "id": "bounce",
+              "name": "bounce_ball",
+              "parameters": [
+                {
+                  "id": "bounce-payload",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "start",
+                "order": 1
+              },
+              "async": true
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_say_for",
+                "fields": {
+                  "STYLE": "say"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "player"
+                      }
+                    }
+                  },
+                  "TEXT": {
+                    "block": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "Hold the pointer to lead me. The ball bounces!"
+                      }
+                    }
+                  },
+                  "SECONDS": {
+                    "block": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "3"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "id": "hello-block",
+          "x": 32,
+          "y": 550,
+          "extraState": {
+            "functionId": "hello",
+            "signature": {
+              "id": "hello",
+              "name": "introduce_game",
+              "parameters": [
+                {
+                  "id": "hello-payload",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "start",
+                "order": 2
+              },
+              "async": true
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_say",
+                "fields": {
+                  "STYLE": "think"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "player"
+                      }
+                    }
+                  },
+                  "TEXT": {
+                    "block": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "Where shall we go?"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "id": "think-block",
+          "x": 600,
+          "y": 550,
+          "extraState": {
+            "functionId": "think",
+            "signature": {
+              "id": "think",
+              "name": "think_on_click",
+              "parameters": [
+                {
+                  "id": "think-payload",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "click:player",
+                "order": 3
+              },
+              "async": true
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "text_print",
+                "inputs": {
+                  "TEXT": {
+                    "block": {
+                      "type": "scene_pointer",
+                      "fields": {
+                        "PROPERTY": "pointer_down"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "id": "held-block",
+          "x": 32,
+          "y": 830,
+          "extraState": {
+            "functionId": "held",
+            "signature": {
+              "id": "held",
+              "name": "check_pointer",
+              "parameters": [
+                {
+                  "id": "held-payload",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "key:Space",
+                "order": 4
+              },
+              "async": true
+            }
+          }
+        }
+      ]
+    },
+    "procedures": [
+      {
+        "id": "follow",
+        "name": "follow_pointer",
+        "parameters": [
+          {
+            "id": "follow-payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "start",
+          "order": 0
+        },
+        "async": true,
+        "returnTypes": null
+      },
+      {
+        "id": "bounce",
+        "name": "bounce_ball",
+        "parameters": [
+          {
+            "id": "bounce-payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "start",
+          "order": 1
+        },
+        "async": true,
+        "returnTypes": null
+      },
+      {
+        "id": "hello",
+        "name": "introduce_game",
+        "parameters": [
+          {
+            "id": "hello-payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "start",
+          "order": 2
+        },
+        "async": true,
+        "returnTypes": null
+      },
+      {
+        "id": "think",
+        "name": "think_on_click",
+        "parameters": [
+          {
+            "id": "think-payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "click:player",
+          "order": 3
+        },
+        "async": true,
+        "returnTypes": null
+      },
+      {
+        "id": "held",
+        "name": "check_pointer",
+        "parameters": [
+          {
+            "id": "held-payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "key:Space",
+          "order": 4
+        },
+        "async": true,
+        "returnTypes": null
+      }
+    ]
+  }
+}

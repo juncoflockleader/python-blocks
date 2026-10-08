@@ -53,7 +53,7 @@ test('removing a module retains calls and Undo restores the pinned copy across r
   await expect(page.locator('#diagnostics')).toContainText('Restore this pinned module'); await expect(page.locator('#run')).toBeDisabled();
   await expect(page.locator('g[data-id="difference-call"]')).toContainText('tools.difference');
   await page.getByRole('button', { name: 'Undo', exact: true }).click(); await page.reload(); await run(page); await expect(page.locator('#output')).toHaveText('7\n');
-  const project = JSON.parse((await download(page, 'Save project')).data.toString()); expect(project.languageVersion).toBe(7); expect(project.workspace.pythonModules.imports[0].id).toBe('arithmetic-import');
+  const project = JSON.parse((await download(page, 'Save project')).data.toString()); expect(project.languageVersion).toBe(19); expect(project.workspace.pythonModules.imports[0].id).toBe('arithmetic-import');
 });
 
 test('rejects incompatible pins and missing dependencies without changing the project', async ({ page }) => {

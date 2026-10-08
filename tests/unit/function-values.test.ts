@@ -189,7 +189,7 @@ describe('synchronous function values', () => {
 
   it('loads version-5 module projects without changing embedded revision contents', () => {
     const old = prepareProject(readFileSync('tests/fixtures/modules/consumer.json', 'utf8')).project;
-    expect(old.languageVersion).toBe(7); const w = ws(); restore(w, old);
+    expect(old.languageVersion).toBe(19); const w = ws(); restore(w, old);
     expect(moduleState(w).definitions.every(d => d.languageVersion === 5)).toBe(true); expect(execute(w).result.type).toBe('done');
   });
 });

@@ -47,7 +47,9 @@ describe('portable function modules', () => {
     const oversized = JSON.stringify({ text: '汉'.repeat(700_000) });
     expect(oversized.length).toBeLessThan(2_000_000);
     expect(() => prepareModule(oversized)).toThrow('2 MB');
-    expect(() => prepareProject(oversized)).toThrow('2 MB');
+    const projectSize = JSON.stringify({ text: '汉'.repeat(5_400_000) });
+    expect(projectSize.length).toBeLessThan(16_000_000);
+    expect(() => prepareProject(projectSize)).toThrow('16 MB');
   });
   it('transfers private helper closure and uses real qualified Python without running donor startup', () => {
     const { bundle } = arithmeticModule();

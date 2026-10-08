@@ -10,7 +10,15 @@ import type { PythonRunner } from '../../src/runtime/runner';
 const asset = readdirSync(path.resolve('dist/assets')).find(file => /^python\.worker-.*\.js$/.test(file));
 if (!asset) throw new Error('Build the app before running event runtime tests.');
 const harnessFiles: Record<string, string> = {
-  'runner.js': stripTypeScriptTypes(readFileSync('src/runtime/runner.ts', 'utf8')),
+  'runner.js': stripTypeScriptTypes(readFileSync('src/runtime/runner.ts', 'utf8')).replace('../scene/model', './scene-model').replace('../scene/questions', './questions'),
+  'scene-model': stripTypeScriptTypes(readFileSync('src/scene/model.ts', 'utf8')),
+  'watch-model': stripTypeScriptTypes(readFileSync('src/scene/watch-model.ts', 'utf8')),
+  questions: stripTypeScriptTypes(readFileSync('src/scene/questions.ts', 'utf8')),
+  sound: stripTypeScriptTypes(readFileSync('src/scene/sound.ts', 'utf8')),
+  game: stripTypeScriptTypes(readFileSync('src/scene/game.ts', 'utf8')),
+  world: stripTypeScriptTypes(readFileSync('src/scene/world.ts', 'utf8')),
+  motion: stripTypeScriptTypes(readFileSync('src/scene/motion.ts', 'utf8')),
+  effects: stripTypeScriptTypes(readFileSync('src/scene/effects.ts', 'utf8')),
   protocol: stripTypeScriptTypes(readFileSync('src/runtime/protocol.ts', 'utf8')),
   'event-limits.json': `export default ${readFileSync('src/runtime/event-limits.json', 'utf8')};`,
   'python.worker.ts': readFileSync(path.resolve('dist/assets', asset), 'utf8'),

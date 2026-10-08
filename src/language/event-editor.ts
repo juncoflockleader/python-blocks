@@ -1,3 +1,5 @@
+import { sceneState } from '../scene/state';
+import { backdrops, keys } from '../scene/model';
 import * as Blockly from 'blockly/core';
 import { defineFunction } from '../blocks/core/functions';
 import { numberInput } from '../blocks/core';
@@ -11,9 +13,11 @@ export function installEventEditor(workspace: Blockly.WorkspaceSvg) {
     <fieldset><legend>Handler</legend>
       <label>Choose handler <select id="handler-select"></select></label>
       <label>Handler name <input id="handler-name" spellcheck="false"></label>
+      <label>Runs for <select id="handler-sprite"></select></label><label id="handler-kind-label" hidden>Sprite kind <input id="handler-kind" maxlength="32" value="projectile" list="handler-kinds"></label><datalist id="handler-kinds"></datalist>
+      <label>Input shortcut <select id="handler-input-source"></select></label>
       <label>Event name <input id="handler-event" spellcheck="false"></label>
       <label>Payload name <input id="handler-payload" spellcheck="false"></label>
-      <p>Use <code>start</code> for the automatic startup event. Other event names match exactly.</p>
+      <p>A sprite behavior runs independently for that sprite and its clones. Use “this sprite” and its data dictionary. Update payloads contain dt (seconds); overlap/separate payloads contain the other sprite ID. Collision payloads also contain the surface normal and edge name. Kind behaviors include newly created sprites of that kind.</p>
       <button id="handler-apply" class="button primary">Apply handler</button>
       <button id="handler-find" class="button secondary">Go to handler</button>
       <button id="handler-copy" class="button secondary">Duplicate handler</button>
@@ -32,7 +36,8 @@ export function installEventEditor(workspace: Blockly.WorkspaceSvg) {
   function renderOrder() {
     const handlers = handlerSignatures(workspace); el('handler-order').replaceChildren();
     handlers.forEach((h, index) => {
-      const item = document.createElement('li'); const label = document.createElement('span'); label.textContent = `${h.name} — ${h.handler!.event}`; item.append(label);
+      const item = document.createElement('li'); const label = document.createElement('span'); const owner = sceneState(workspace).sprites.find(s => s.id === h.handler!.sprite)?.name;
+      label.textContent = `${h.name} — ${h.handler!.event}${h.handler!.sprite ? ` · ${owner ?? 'Unavailable sprite'}` : h.handler!.kind ? ` · kind ${h.handler!.kind}` : ''}`; item.append(label);
       for (const [delta, name] of [[-1, 'Move handler up'], [1, 'Move handler down']] as const) {
         const button = document.createElement('button'); button.textContent = delta < 0 ? '↑' : '↓'; button.setAttribute('aria-label', name); button.className = 'button secondary';
         button.disabled = index + delta < 0 || index + delta >= handlers.length;
@@ -48,10 +53,29 @@ export function installEventEditor(workspace: Blockly.WorkspaceSvg) {
     selected.value = handlerSignatures(workspace).some(h => h.id === current) ? current : '';
     renderOrder();
   }
+  const source = el<HTMLSelectElement>('handler-input-source');
+  const target = el<HTMLSelectElement>('handler-sprite');
+  function sources() {
+    el('handler-kind-label').hidden = target.value !== ':kind';
+    el<HTMLInputElement>('handler-kind').disabled = target.value !== ':kind';
+    source.replaceChildren(new Option('Custom event', ''), new Option('When run starts', 'start'),
+      ...(target.value ? [new Option('When sprite enters a tile', 'tile:overlap'), new Option('When sprite hits a solid tile', 'tile:hit'), new Option('When an instance is created', 'created'), new Option('When automatic motion hits a wall or edge', 'collision'), new Option('When a clone is created', 'clone'), new Option('Each update (about 30/second)', 'update'), new Option('When pixel contact begins', 'overlap'), new Option('When pixel contact ends', 'separate'), new Option('When this instance is clicked', 'click')] : []),
+      new Option('When countdown ends (event mode)', 'game:countdown'), new Option('When lives reach zero (event mode)', 'game:lives_zero'),
+      new Option('When a world is entered', 'world:enter'), ...(sceneState(workspace).worlds ?? []).map(w => new Option(`When world becomes ${w.name}`, `world:${w.id}`)), new Option('When stage clicked', 'stage:click'), new Option('When pointer pressed', 'stage:press'), new Option('When pointer released', 'stage:release'), new Option('When backdrop changes', 'backdrop:change'), ...backdrops(sceneState(workspace)).map(a => new Option(`When backdrop becomes ${a.name}`, `backdrop:${a.id}`)), ...keys.flatMap(([label, key]) => [new Option(`When ${label} pressed`, `key:${key}`), new Option(`When ${label} released`, `release:${key}`)]), ...sceneState(workspace).sprites.map(s => new Option(`When ${s.name} clicked`, `click:${s.id}`)));
+    source.value = el<HTMLInputElement>('handler-event').value;
+  }
+  target.addEventListener('change', sources);
+  source.addEventListener('change', () => { if (source.value) el<HTMLInputElement>('handler-event').value = source.value; });
   function load() {
     const signature = handlerSignatures(workspace).find(h => h.id === selected.value);
+    target.replaceChildren(new Option('Project (one handler)', ''), new Option('Sprites of a kind', ':kind'), ...sceneState(workspace).sprites.map(s => new Option(`${s.name} and clones`, s.id)));
+    if (signature?.handler?.sprite && !sceneState(workspace).sprites.some(s => s.id === signature.handler!.sprite)) target.add(new Option('Unavailable sprite', signature.handler.sprite));
+    target.value = signature?.handler?.kind ? ':kind' : signature?.handler?.sprite ?? '';
+    el<HTMLInputElement>('handler-kind').value = signature?.handler?.kind ?? 'projectile';
+    el('handler-kinds').replaceChildren(...[...new Set(['sprite', 'player', 'enemy', 'projectile', 'wall', ...sceneState(workspace).sprites.map(s => s.kind ?? 'sprite')])].map(k => new Option(k, k)));
     el<HTMLInputElement>('handler-name').value = signature?.name ?? '';
     el<HTMLInputElement>('handler-event').value = signature?.handler?.event ?? 'start';
+    sources();
     el<HTMLInputElement>('handler-payload').value = signature?.parameters[0]?.name ?? 'payload';
     for (const id of ['handler-find', 'handler-copy', 'handler-delete']) el<HTMLButtonElement>(id).disabled = !signature;
   }
@@ -67,7 +91,7 @@ export function installEventEditor(workspace: Blockly.WorkspaceSvg) {
     const signature: Signature = {
       id: previous?.id ?? Blockly.utils.idGenerator.genUid(), name: el<HTMLInputElement>('handler-name').value.trim(), async: true,
       parameters: [{ id: previous?.parameters[0]?.id ?? Blockly.utils.idGenerator.genUid(), name: el<HTMLInputElement>('handler-payload').value.trim() }],
-      handler: { event: el<HTMLInputElement>('handler-event').value, order: previous?.handler?.order ?? Math.max(-1, ...handlers.map(h => h.handler!.order)) + 1 },
+      handler: { event: el<HTMLInputElement>('handler-event').value, order: previous?.handler?.order ?? Math.max(-1, ...handlers.map(h => h.handler!.order)) + 1, ...(target.value === ':kind' ? { kind: el<HTMLInputElement>('handler-kind').value.trim() } : target.value ? { sprite: target.value } : {}) },
     };
     if (previous) editSignature(workspace, signature);
     else {

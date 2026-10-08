@@ -16,6 +16,24 @@ beforeEach(() => { vi.useFakeTimers(); FakeWorker.instances = []; vi.stubGlobal(
 afterEach(() => { vi.useRealTimers(); vi.unstubAllGlobals(); });
 
 describe('Python worker lifecycle', () => {
+  it('routes question answers to their own worker and clears forms on errors and replacement', () => {
+    const questions = { begin: vi.fn(), accept: vi.fn(), stop: vi.fn() }, runner = new PythonRunner(vi.fn(), undefined, questions);
+    runner.run('questions', 'events'); const old = FakeWorker.instances[0], reply = questions.begin.mock.calls[0][0];
+    old.emit({type:'question',command:{type:'ask',id:1,text:'Name?'}}); expect(questions.accept).toHaveBeenCalledWith({type:'ask',id:1,text:'Name?'});
+    reply({id:1,answer:'Ada'}); expect(old.postMessage).toHaveBeenLastCalledWith({type:'answer',reply:{id:1,answer:'Ada'}});
+    runner.run('replacement','events'); const current = FakeWorker.instances[1]; reply({id:2,answer:'stale'}); expect(current.postMessage).toHaveBeenCalledTimes(1);
+    const currentReply = questions.begin.mock.calls[1][0]; currentReply({id:0,answer:'invalid'}); expect(current.postMessage).toHaveBeenCalledTimes(1);
+    current.emit({type:'error',message:'failure'}); expect(questions.stop).toHaveBeenCalledTimes(3);
+  });
+  it('captures audio assets, routes completions to their worker and stops audio on every disposal', () => {
+    const audio = { begin: vi.fn(), accept: vi.fn(), stop: vi.fn() }, runner = new PythonRunner(vi.fn(), audio);
+    runner.run('sounds', 'events'); const old = FakeWorker.instances[0], complete = audio.begin.mock.calls[0][1];
+    old.emit({ type: 'audio', command: { type: 'stop', owner: null } }); expect(audio.accept).toHaveBeenCalledOnce();
+    complete(1); expect(old.postMessage).toHaveBeenLastCalledWith({type:'audio-ended',id:1});
+    runner.run('new sounds', 'events'); const current = FakeWorker.instances[1];
+    complete(2); expect(current.postMessage).toHaveBeenCalledTimes(1); expect(audio.stop).toHaveBeenCalledTimes(2);
+    current.emit({type:'error',message:'failure'}); expect(audio.stop).toHaveBeenCalledTimes(3);
+  });
   it('terminates a stopped run and ignores messages from its worker after restart', () => {
     const receive = vi.fn(); const runner = new PythonRunner(receive);
     runner.run('while True: pass'); const old = FakeWorker.instances[0];
@@ -77,6 +95,38 @@ describe('Python worker lifecycle', () => {
     for (let index = 0; index < eventLimits.pendingHostEvents; index++) expect(runner.emit('tick')).toBe(true);
     expect(runner.emit('tick')).toBe(false); expect(second.terminate).toHaveBeenCalledOnce();
     expect(receive).toHaveBeenLastCalledWith(expect.objectContaining({ exceptionType: 'EventOverloadError' }));
+  });
+
+  it('routes validated stage input only to the ready worker and shares acknowledgement bounds', () => {
+    const runner = new PythonRunner(vi.fn()); const key = { kind: 'key', key: 'ArrowRight', down: true } as const;
+    expect(runner.input(key)).toBe(false); runner.run('handlers', 'events'); const worker = FakeWorker.instances[0];
+    expect(runner.input(key)).toBe(false); worker.emit({ type: 'ready' }); expect(runner.input(key)).toBe(true);
+    const packet = worker.postMessage.mock.calls.at(-1)![0]; expect(packet).toEqual({ type: 'input', id: expect.any(Number), input: key });
+    worker.emit({ type: 'event-ack', id: packet.id, accepted: true });
+    expect(() => runner.input({ kind: 'key', key: 'invalid', down: true })).toThrow('Invalid stage input');
+    runner.stop(); expect(runner.input(key)).toBe(false);
+  });
+
+  it('coalesces pointer motion without dropping press/release transitions or retaining stale movement', () => {
+    const receive = vi.fn(), runner = new PythonRunner(receive);
+    runner.run('handlers', 'events'); const worker = FakeWorker.instances[0]; worker.emit({ type: 'ready' });
+    const point = (x: number, down = false) => ({ kind: 'pointer' as const, x, y: 0, down, inside: true });
+    runner.input(point(0)); const first = worker.postMessage.mock.calls.at(-1)![0];
+    for (let i = 0; i < 1000; i++) runner.input(point(i % 240));
+    expect(worker.postMessage).toHaveBeenCalledTimes(2); // startup plus one outstanding position
+    worker.emit({ type: 'event-ack', id: first.id, accepted: true });
+    expect(worker.postMessage.mock.calls.at(-1)![0].input.x).toBe(999 % 240);
+    runner.input(point(3, true)); const press = worker.postMessage.mock.calls.at(-1)![0];
+    runner.input(point(4, true)); // held move is coalesced
+    runner.input(point(5, false)); const release = worker.postMessage.mock.calls.at(-1)![0];
+    expect(press.input.down).toBe(true); expect(release.input.down).toBe(false); expect(release.input.x).toBe(5);
+    worker.emit({ type: 'event-ack', id: press.id, accepted: true });
+    runner.input(point(6)); runner.input({ kind: 'reset' }); const count = worker.postMessage.mock.calls.length;
+    worker.emit({ type: 'event-ack', id: release.id, accepted: true });
+    expect(worker.postMessage).toHaveBeenCalledTimes(count); expect(worker.terminate).not.toHaveBeenCalled();
+    runner.input(point(7)); runner.input(point(8)); runner.stop();
+    worker.emit({ type: 'event-ack', id: worker.postMessage.mock.calls.at(-1)![0].id, accepted: true });
+    expect(receive).toHaveBeenLastCalledWith({ type: 'status', message: 'Stopped' });
   });
 });
 

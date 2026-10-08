@@ -7,6 +7,10 @@ import './core/collections';
 import './core/modules';
 import './core/function-values';
 import './core/lambdas';
+import './scene';
+import './sensing';
+import { soundsToolbox } from './sounds';
+import { gameToolbox } from './game';
 import { numberInput } from './core';
 import { compile } from '../language/compiler';
 
@@ -25,6 +29,15 @@ Blockly.common.defineBlocksWithJsonArray([
 export const toolbox: Blockly.utils.toolbox.ToolboxDefinition = {
   kind: 'categoryToolbox', contents: [
     { kind: 'category', name: 'Program', colour: '#47776c', contents: [{ kind: 'block', type: 'py_program' }] },
+    { kind: 'category', name: 'Sensing & input', colour: '#477a85', custom: 'PY_SENSING' },
+    { kind: 'category', name: 'Sounds', colour: '#9470a8', contents: soundsToolbox },
+    { kind: 'category', name: 'Game', colour: '#9a6c3e', contents: gameToolbox },
+    { kind: 'category', name: 'Worlds', colour: '#506f91', custom: 'PY_WORLDS' },
+    { kind: 'category', name: 'Sprites', colour: '#477c9a', custom: 'PY_SPRITES' },
+    { kind: 'category', name: 'Motion', colour: '#477c9a', custom: 'PY_MOTION' },
+    { kind: 'category', name: 'Looks', colour: '#8c67a2', custom: 'PY_LOOKS' },
+    { kind: 'category', name: 'Physics', colour: '#547d91', custom: 'PY_PHYSICS' },
+    { kind: 'category', name: 'Sprite pen', colour: '#47776c', custom: 'PY_PEN' },
     { kind: 'category', name: 'Draw', colour: '#47776c', contents: [
       { kind: 'block', type: 'pen_move', inputs: { STEPS: numberInput(100) } },
       { kind: 'block', type: 'pen_turn', inputs: { DEGREES: numberInput(90) } },
@@ -37,7 +50,7 @@ export const toolbox: Blockly.utils.toolbox.ToolboxDefinition = {
       { kind: 'block', type: 'py_for_each' }, { kind: 'block', type: 'py_flow' },
     ] },
     { kind: 'category', name: 'Logic', colour: '#6682a5', contents: ['controls_if', 'logic_compare', 'py_logic', 'py_not', 'logic_boolean', 'py_none'].map(type => ({ kind: 'block', type })) },
-    { kind: 'category', name: 'Numbers', colour: '#8066ba', contents: ['py_number', 'py_binary', 'py_convert', 'math_random_int'].map(type => ({ kind: 'block', type })) },
+    { kind: 'category', name: 'Numbers', colour: '#8066ba', contents: ['py_number', 'py_binary', 'py_unary', 'py_convert', 'math_random_int'].map(type => ({ kind: 'block', type })) },
     { kind: 'category', name: 'Text', colour: '#ae657d', contents: ['text', 'text_print', 'text_join'].map(type => ({ kind: 'block', type })) },
     { kind: 'category', name: 'Variables', colour: '#a57938', custom: 'PY_VARIABLES' },
     { kind: 'category', name: 'Functions', colour: '#8066ba', custom: 'PY_FUNCTIONS' },

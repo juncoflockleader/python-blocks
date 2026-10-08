@@ -1,0 +1,593 @@
+{
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 11,
+  "workspace": {
+    "pythonScene": {
+      "version": 1,
+      "background": "#fff9ee",
+      "assets": [],
+      "sprites": [
+        {
+          "id": "player",
+          "name": "Player",
+          "x": -100,
+          "y": 0,
+          "direction": 0,
+          "size": 55,
+          "layer": 0,
+          "visible": true,
+          "costume": "bird",
+          "pen": {
+            "down": false,
+            "color": "#267c70",
+            "width": 2,
+            "opacity": 85
+          },
+          "effects": {
+            "ghost": 20
+          }
+        },
+        {
+          "id": "friend",
+          "name": "Friend",
+          "x": 100,
+          "y": 0,
+          "direction": 0,
+          "size": 55,
+          "layer": 0,
+          "visible": true,
+          "costume": "star",
+          "pen": {
+            "down": false,
+            "color": "#8066ba",
+            "width": 2,
+            "opacity": 85
+          },
+          "effects": {}
+        }
+      ]
+    },
+    "blocks": {
+      "languageVersion": 0,
+      "blocks": [
+        {
+          "type": "py_handler",
+          "fields": {},
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_pen_state",
+                "fields": {
+                  "ACTION": "pen_down"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "player"
+                      },
+                      "inputs": {}
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "controls_repeat_ext",
+                    "fields": {},
+                    "inputs": {
+                      "TIMES": {
+                        "block": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "18"
+                          },
+                          "inputs": {}
+                        }
+                      },
+                      "DO": {
+                        "block": {
+                          "type": "controls_repeat_ext",
+                          "fields": {},
+                          "inputs": {
+                            "TIMES": {
+                              "block": {
+                                "type": "py_number",
+                                "fields": {
+                                  "VALUE": "24"
+                                },
+                                "inputs": {}
+                              }
+                            },
+                            "DO": {
+                              "block": {
+                                "type": "scene_move",
+                                "fields": {},
+                                "inputs": {
+                                  "SPRITE": {
+                                    "block": {
+                                      "type": "scene_sprite",
+                                      "fields": {
+                                        "SPRITE_ID": "player"
+                                      },
+                                      "inputs": {}
+                                    }
+                                  },
+                                  "VALUE": {
+                                    "block": {
+                                      "type": "py_number",
+                                      "fields": {
+                                        "VALUE": "7"
+                                      },
+                                      "inputs": {}
+                                    }
+                                  }
+                                },
+                                "next": {
+                                  "block": {
+                                    "type": "scene_turn",
+                                    "fields": {},
+                                    "inputs": {
+                                      "SPRITE": {
+                                        "block": {
+                                          "type": "scene_sprite",
+                                          "fields": {
+                                            "SPRITE_ID": "player"
+                                          },
+                                          "inputs": {}
+                                        }
+                                      },
+                                      "VALUE": {
+                                        "block": {
+                                          "type": "py_number",
+                                          "fields": {
+                                            "VALUE": "15"
+                                          },
+                                          "inputs": {}
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "next": {
+                            "block": {
+                              "type": "scene_turn",
+                              "fields": {},
+                              "inputs": {
+                                "SPRITE": {
+                                  "block": {
+                                    "type": "scene_sprite",
+                                    "fields": {
+                                      "SPRITE_ID": "player"
+                                    },
+                                    "inputs": {}
+                                  }
+                                },
+                                "VALUE": {
+                                  "block": {
+                                    "type": "py_number",
+                                    "fields": {
+                                      "VALUE": "20"
+                                    },
+                                    "inputs": {}
+                                  }
+                                }
+                              },
+                              "next": {
+                                "block": {
+                                  "type": "scene_move",
+                                  "fields": {},
+                                  "inputs": {
+                                    "SPRITE": {
+                                      "block": {
+                                        "type": "scene_sprite",
+                                        "fields": {
+                                          "SPRITE_ID": "player"
+                                        },
+                                        "inputs": {}
+                                      }
+                                    },
+                                    "VALUE": {
+                                      "block": {
+                                        "type": "py_number",
+                                        "fields": {
+                                          "VALUE": "8"
+                                        },
+                                        "inputs": {}
+                                      }
+                                    }
+                                  },
+                                  "next": {
+                                    "block": {
+                                      "type": "scene_effect_change",
+                                      "fields": {
+                                        "EFFECT": "color"
+                                      },
+                                      "inputs": {
+                                        "SPRITE": {
+                                          "block": {
+                                            "type": "scene_sprite",
+                                            "fields": {
+                                              "SPRITE_ID": "player"
+                                            },
+                                            "inputs": {}
+                                          }
+                                        },
+                                        "VALUE": {
+                                          "block": {
+                                            "type": "py_number",
+                                            "fields": {
+                                              "VALUE": "20"
+                                            },
+                                            "inputs": {}
+                                          }
+                                        }
+                                      },
+                                      "next": {
+                                        "block": {
+                                          "type": "scene_stamp",
+                                          "fields": {},
+                                          "inputs": {
+                                            "SPRITE": {
+                                              "block": {
+                                                "type": "scene_sprite",
+                                                "fields": {
+                                                  "SPRITE_ID": "player"
+                                                },
+                                                "inputs": {}
+                                              }
+                                            }
+                                          },
+                                          "next": {
+                                            "block": {
+                                              "type": "py_wait",
+                                              "fields": {},
+                                              "inputs": {
+                                                "SECONDS": {
+                                                  "block": {
+                                                    "type": "py_number",
+                                                    "fields": {
+                                                      "VALUE": "0.05"
+                                                    },
+                                                    "inputs": {}
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "scene_pen_state",
+                        "fields": {
+                          "ACTION": "pen_up"
+                        },
+                        "inputs": {
+                          "SPRITE": {
+                            "block": {
+                              "type": "scene_sprite",
+                              "fields": {
+                                "SPRITE_ID": "player"
+                              },
+                              "inputs": {}
+                            }
+                          }
+                        },
+                        "next": {
+                          "block": {
+                            "type": "scene_visibility",
+                            "fields": {
+                              "ACTION": "hide"
+                            },
+                            "inputs": {
+                              "SPRITE": {
+                                "block": {
+                                  "type": "scene_sprite",
+                                  "fields": {
+                                    "SPRITE_ID": "player"
+                                  },
+                                  "inputs": {}
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 32,
+          "y": 32,
+          "extraState": {
+            "functionId": "draw0",
+            "signature": {
+              "id": "draw0",
+              "name": "draw_flower",
+              "parameters": [
+                {
+                  "id": "payload0",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "start",
+                "order": 0
+              },
+              "returnTypes": null,
+              "async": true
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "fields": {},
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_pen_state",
+                "fields": {
+                  "ACTION": "pen_down"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "friend"
+                      },
+                      "inputs": {}
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "controls_repeat_ext",
+                    "fields": {},
+                    "inputs": {
+                      "TIMES": {
+                        "block": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "30"
+                          },
+                          "inputs": {}
+                        }
+                      },
+                      "DO": {
+                        "block": {
+                          "type": "scene_move",
+                          "fields": {},
+                          "inputs": {
+                            "SPRITE": {
+                              "block": {
+                                "type": "scene_sprite",
+                                "fields": {
+                                  "SPRITE_ID": "friend"
+                                },
+                                "inputs": {}
+                              }
+                            },
+                            "VALUE": {
+                              "block": {
+                                "type": "py_number",
+                                "fields": {
+                                  "VALUE": "9"
+                                },
+                                "inputs": {}
+                              }
+                            }
+                          },
+                          "next": {
+                            "block": {
+                              "type": "scene_turn",
+                              "fields": {},
+                              "inputs": {
+                                "SPRITE": {
+                                  "block": {
+                                    "type": "scene_sprite",
+                                    "fields": {
+                                      "SPRITE_ID": "friend"
+                                    },
+                                    "inputs": {}
+                                  }
+                                },
+                                "VALUE": {
+                                  "block": {
+                                    "type": "py_number",
+                                    "fields": {
+                                      "VALUE": "12"
+                                    },
+                                    "inputs": {}
+                                  }
+                                }
+                              },
+                              "next": {
+                                "block": {
+                                  "type": "py_wait",
+                                  "fields": {},
+                                  "inputs": {
+                                    "SECONDS": {
+                                      "block": {
+                                        "type": "py_number",
+                                        "fields": {
+                                          "VALUE": "0.04"
+                                        },
+                                        "inputs": {}
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "scene_pen_state",
+                        "fields": {
+                          "ACTION": "pen_up"
+                        },
+                        "inputs": {
+                          "SPRITE": {
+                            "block": {
+                              "type": "scene_sprite",
+                              "fields": {
+                                "SPRITE_ID": "friend"
+                              },
+                              "inputs": {}
+                            }
+                          }
+                        },
+                        "next": {
+                          "block": {
+                            "type": "scene_stamp",
+                            "fields": {},
+                            "inputs": {
+                              "SPRITE": {
+                                "block": {
+                                  "type": "scene_sprite",
+                                  "fields": {
+                                    "SPRITE_ID": "friend"
+                                  },
+                                  "inputs": {}
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "x": 512,
+          "y": 32,
+          "extraState": {
+            "functionId": "draw1",
+            "signature": {
+              "id": "draw1",
+              "name": "draw_circle",
+              "parameters": [
+                {
+                  "id": "payload1",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "start",
+                "order": 1
+              },
+              "returnTypes": null,
+              "async": true
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "fields": {},
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "scene_pen_clear",
+                "fields": {},
+                "inputs": {}
+              }
+            }
+          },
+          "x": 992,
+          "y": 32,
+          "extraState": {
+            "functionId": "draw2",
+            "signature": {
+              "id": "draw2",
+              "name": "erase_drawing",
+              "parameters": [
+                {
+                  "id": "payload2",
+                  "name": "payload"
+                }
+              ],
+              "handler": {
+                "event": "key:Space",
+                "order": 2
+              },
+              "returnTypes": null,
+              "async": true
+            }
+          }
+        }
+      ]
+    },
+    "procedures": [
+      {
+        "id": "draw0",
+        "name": "draw_flower",
+        "parameters": [
+          {
+            "id": "payload0",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "start",
+          "order": 0
+        },
+        "returnTypes": null,
+        "async": true
+      },
+      {
+        "id": "draw1",
+        "name": "draw_circle",
+        "parameters": [
+          {
+            "id": "payload1",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "start",
+          "order": 1
+        },
+        "returnTypes": null,
+        "async": true
+      },
+      {
+        "id": "draw2",
+        "name": "erase_drawing",
+        "parameters": [
+          {
+            "id": "payload2",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "key:Space",
+          "order": 2
+        },
+        "returnTypes": null,
+        "async": true
+      }
+    ]
+  }
+}

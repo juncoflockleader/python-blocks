@@ -6,19 +6,20 @@ import { installPythonVariables } from '../language/variables';
 import { moduleState, utf8Size } from '../language/modules';
 import { validateModuleDefinitions } from '../language/module-format';
 import { validateLambdaIdentities } from '../language/lambdas';
+import '../bridge/draft-state';
 
 export const STORAGE_KEY = 'python-blocks.project.v1';
-const MAX_FILE_SIZE = 2_000_000;
+export const MAX_FILE_SIZE = 16_000_000;
 export interface Project {
   format: 'python-blocks';
-  formatVersion: 1;
+  formatVersion: 1 | 2;
   languageVersion: number;
   workspace: ReturnType<typeof Blockly.serialization.workspaces.save>;
 }
 export interface PreparedProject { project: Project; migrationStacks: { id: string; label: string }[] }
 export function createWorkspace() { const workspace = new Blockly.Workspace(new Blockly.Options({ oneBasedIndex: false })); installPythonVariables(workspace); return workspace; }
 export function snapshot(workspace: Blockly.Workspace): Project {
-  return { format: 'python-blocks', formatVersion: 1, languageVersion: LANGUAGE_VERSION, workspace: Blockly.serialization.workspaces.save(workspace) };
+  return { format: 'python-blocks', formatVersion: 2, languageVersion: LANGUAGE_VERSION, workspace: Blockly.serialization.workspaces.save(workspace) };
 }
 
 function checkWorkspace(data: unknown): asserts data is Project['workspace'] {
@@ -28,12 +29,12 @@ function checkWorkspace(data: unknown): asserts data is Project['workspace'] {
 }
 
 export function prepareProject(text: string): PreparedProject {
-  if (utf8Size(text) > MAX_FILE_SIZE) throw new Error('This project is too large to load (2 MB limit).');
+  if (utf8Size(text) > MAX_FILE_SIZE) throw new Error('This project is too large to load (16 MB limit).');
   const data: unknown = JSON.parse(text);
   if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Choose a Python Blocks project JSON file.');
   const value = data as Record<string, unknown>;
   const legacy = value.format === undefined && value.blocks !== undefined;
-  if (!legacy && (value.format !== 'python-blocks' || value.formatVersion !== 1 || ![1, 2, 3, 4, 5, 6, LANGUAGE_VERSION].includes(value.languageVersion as number))) throw new Error('This project uses an unsupported format or language version. The original file has been preserved.');
+  if (!legacy && (value.format !== 'python-blocks' || ![1, 2].includes(value.formatVersion as number) || ![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, LANGUAGE_VERSION].includes(value.languageVersion as number))) throw new Error('This project uses an unsupported format or language version. The original file has been preserved.');
   const state = legacy ? data : value.workspace;
   checkWorkspace(state);
   const candidate = createWorkspace();
