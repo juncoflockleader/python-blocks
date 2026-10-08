@@ -13,7 +13,11 @@ const saved = (page: Page): Promise<Project> => page.evaluate(() => JSON.parse(l
 async function edited(page: Page, name: string, edit: (source: string) => string) {
   await prepare(page);
   await page.locator('#project-file').setInputFiles(`src/scene/${name}.json`);
-  await expect(page.locator('#run')).toBeEnabled();
+  // The old project can also have an enabled Run button. Image validation is
+  // asynchronous: wait for the imported scene before pairing its source/base.
+  const fixture = JSON.parse(readFileSync(`src/scene/${name}.json`, 'utf8'));
+  await expect.poll(async () => (await saved(page)).workspace.pythonScene?.sprites.map((s: { id: string }) => s.id))
+    .toEqual(fixture.workspace.pythonScene.sprites.map((s: { id: string }) => s.id));
   const base = await saved(page), source = (await page.locator('#python').textContent())!, changed = edit(source);
   expect(changed).not.toBe(source);
   const result = await convert(page, changed, { project: base });

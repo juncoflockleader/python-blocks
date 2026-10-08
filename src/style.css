@@ -253,6 +253,20 @@ footer { display: flex; justify-content: space-between; align-items: center; pad
 .stock-filters label:nth-child(2) { flex: 1; min-width: 150px; }
 .stock-filters input, .stock-filters select { box-sizing: border-box; min-width: 0; width: 100%; font: inherit; padding: 9px; border: 1px solid #bdcbb6; border-radius: 6px; background: #fffef9; }
 .stock-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(160px,1fr)); gap: 12px; }
+.learning-panel { margin: 16px 0; padding: 18px 22px; background: #f5f7ec; border: 1px solid #d6dfca; border-radius: 14px; color: #304c42; }
+.learning-panel > summary { font-weight: 650; cursor: pointer; }
+.learning-panel > summary span { font-weight: 400; font-size: 13px; margin-left: 12px; }
+.learning-panel p { max-width: 85ch; line-height: 1.6; }
+.learning-fields { display: grid; grid-template-columns: repeat(auto-fit,minmax(min(100%,240px),1fr)); gap: 14px; margin: 16px 0; }
+.learning-fields label { display: flex; flex-direction: column; gap: 7px; font-size: 14px; }
+.learning-fields input, .learning-fields textarea, .learning-fields select { min-width: 0; padding: 9px; border: 1px solid #afbfad; border-radius: 6px; font: inherit; background: #fff; color: #25382e; }
+.learning-actions, #pilot-tasks { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; margin: 12px 0; }
+#pilot-tasks [aria-current="true"] { background: #286f62; color: white; }
+.learning-panel [hidden] { display: none !important; }
+.learning-panel :focus-visible { outline: 3px solid #bd7b2c; outline-offset: 3px; }
+.learning-panel pre { white-space: pre-wrap; overflow-wrap: anywhere; max-height: 260px; overflow-y: auto; }
+.learning-panel fieldset { min-width: 0; border: 1px solid #cbd6be; border-radius: 10px; margin: 14px 0; padding: 12px 16px; }
+.learning-panel legend { padding: 0 6px; font-weight: 600; }
 .stock-card { padding: 12px; border: 1px solid #d6dfca; border-radius: 12px; background: #fffef9; color: #304c42; text-align: left; cursor: pointer; font: inherit; display: flex; flex-direction: column; gap: 6px; }
 .stock-card:hover { border-color: #57988a; background: #f0f6e9; }
 .stock-card strong { font-size: 14px; }

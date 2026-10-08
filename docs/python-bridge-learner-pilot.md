@@ -1,6 +1,16 @@
 # Blocks and Python learner pilot
 
-Status: **protocol only; no participant sessions have been conducted or results claimed.** Automated browser checks demonstrate software behavior, not learning outcomes. This pilot informs the next expansion of the supported Python subset.
+Status: **the in-app pilot workflow is implemented; no participant sessions have been conducted or results claimed.** Automated browser checks demonstrate software behavior, not learning outcomes. This pilot informs the next expansion of the supported Python subset.
+
+## Running a session
+
+Open **Learner pilot** above the workspace. Enter a participant code, prior experience, and relevant device/accessibility notes. Start saves a return copy of the current project before loading the score starter. If the backup cannot be saved, the project is not replaced. The six activity tabs contain learner prompts; **Facilitator notes** keeps predictions, observed behavior, interpretation, outcome, hint level, and end discussion separate. No outcome is automatically marked successful.
+
+Use **Start task timer** for observed task work. It pauses on task changes, page hiding, reload, and session completion. It measures active observed work, not a full session's wall-clock duration. A browser crash can lose the current timing interval. The sprite activity has an explicit starter button that saves the previous project as a checkpoint first. Invalid Python drafts are included in those project snapshots. The pilot disables AI assist and clears any configured key when it begins.
+
+**Download observations** exports the six tasks, notes, app revision, browser, and session timestamps as JSON, without project backups. Notes stay in this browser; the app does not upload them or collect analytics. **Finish session** stops the timer and unlocks optional AI assist; it does not declare the pilot study complete. Download observations after each session. Use **Saved project checkpoints** to download the original project, work before the sprite starter, or the final pilot project. **Return to original project** saves that final checkpoint before restoring the original. Download files you need before clearing pilot data or starting the next participant's session. Only one pilot session is stored at a time. Avoid simultaneous sessions in multiple tabs; stale pilot writes are rejected.
+
+The facilitator should check that project downloads open before deleting checkpoints. Browser storage can be cleared by the browser or device owner, so a local record is not a durable research archive. Damaged records have a raw recovery download. Keep participant records outside source control unless they have been appropriately reviewed and explicitly approved for sharing.
 
 ## Questions
 

@@ -39,13 +39,14 @@ The implementation is complete under the [blocks and Python bridge plan](blocks-
 - [x] Specify the first round-trip subset: assignments, expressions, conditionals, loops, functions, and curated library calls.
 - [x] Add text editing with explicit handling of unsupported Python and syntax errors.
 - [x] Preserve project behavior through supported blocks → text → blocks transformations.
+- [x] Implement the six-task pilot workflow, starter projects, local observation records, timing, and project checkpoints.
 - [ ] Run a learner pilot around prediction, code recognition, and small text edits using the [prepared protocol](python-bridge-learner-pilot.md).
 
 Acceptance: switching views never silently loses learner work; pilot results inform whether and how to expand text editing.
 
 ## 4. AI agent assist mode
 
-Future, optional feature: a learner supplies their own API key to enable an AI helper. The learner remains the sole author.
+Implemented as an optional, read-only helper using the learner's own API key. See the [AI assist contract](ai-assist.md) for the connection, response catalog, privacy and verification limits. The pilot workflow was implemented first; actual human pilot sessions remain pending. The learner remains the sole author.
 
 **Hard boundary: assistance only, no authoring.** The agent may explain selected blocks or Python, ask guiding questions, offer conceptual hints, and help diagnose a reported error. It may not create or edit blocks, Python, sprites, scenes, assets, or project files; generate complete solutions or replacement code; or apply fixes on the learner's behalf. It must not execute the project or send input automatically. Implement this boundary through read-only capabilities and response checks, not a prompt alone.
 
@@ -53,6 +54,8 @@ Future, optional feature: a learner supplies their own API key to enable an AI h
 - Require a user-supplied API key; show provider/model selection, usage/cost information, cancellation, and clear unavailable/rate-limit errors.
 - Keep keys out of project files, exports, source control, logs, and model context. Decide session-only storage versus an explicit secure persistence option before implementation.
 - Design age-appropriate help that encourages prediction and experimentation without taking over. Provider support, browser/API connection architecture, privacy, and cost controls need a separate design.
+
+Implementation decisions: session-only key memory; OpenAI as the initial provider with a selectable model ID; explicit context snapshot/review/send; fixed endpoint with no tools; strict catalog IDs rather than unrestricted generated prose; bounded requests and response size; cancellation, rate-limit errors and user-rate cost estimates. AI assist is disabled and its key cleared during pilot sessions. Other providers, free-form tutoring, secure persistence, and production hosting are not included. A paid live-provider check and human assessment of the help remain pending.
 
 Acceptance: the helper can explain a failing program and suggest a debugging strategy, but requests to write code, add blocks, draw assets, edit files, or solve the project automatically leave the project unchanged. Users can disable the helper and clear their key at any time.
 

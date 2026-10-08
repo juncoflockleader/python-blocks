@@ -57,6 +57,10 @@ Choose **Input & color example** to answer a question and use arrows or **Touch 
 
 Use **Large stage** for a focused play view with Run/Stop, touch input, questions, game results and watches. **Watch sprite values** pins read-only properties/data; the sprite browser finds objects, their artwork and scripts. See the [editor/play guide](docs/editor-and-play-workflow.md).
 
+**Learner pilot** offers six facilitator-led activities, local notes, timing, downloadable observations, and project checkpoints. Human sessions are still pending; see the [pilot protocol](docs/python-bridge-learner-pilot.md).
+
+**AI assist** is optional and uses your own API key in tab memory. Review the exact context before sending. It selects a concept and guiding question from reviewed options; it cannot write code, change artwork, edit, or Run. It stays disabled during a pilot. See the [assist contract](docs/ai-assist.md) for setup, costs, privacy, and verification limits.
+
 Use **Functions & variables** above the workspace to create or edit functions, parameters, and scoped variables. Their call/get/set blocks appear in the corresponding toolbox categories. **Undo** and **Redo** below the workspace include signature edits. Open [the function example](tests/fixtures/language/functions.json) with **Open project** to try reordering arguments and see their bindings preserved.
 
 Use **Duplicate function**, the block's **Duplicate** menu item, or copy/paste to make an independent function. Open [the collections example](tests/fixtures/language/collections.json) to try passing a list to a function, mutating an alias, and iterating dictionary keys. Collection indices start at zero; negative list indices count from the end. **Shallow copy** copies the outer collection and shares nested values. List-item and dictionary-pair editors preserve removed expressions as drafts, and Undo restores their connections.

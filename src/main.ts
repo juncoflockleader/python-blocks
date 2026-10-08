@@ -27,6 +27,9 @@ import { pythonExport } from './project/python-export';
 import { playableExport } from './project/playable-export';
 import { installPythonEditor } from './bridge/editor';
 import { authoredProject } from './bridge/controller';
+import { installPilot } from './pilot/editor';
+import { scoreStarter } from './pilot/starter';
+import { installAssist } from './assist/editor';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <header class="app-header">
@@ -207,7 +210,7 @@ function saveCurrentProject() {
 window.addEventListener('pagehide', saveCurrentProject);
 
 function installProject(project: ReturnType<typeof snapshot>) {
-  if (!pythonEditor?.flush()) return;
+  if (!pythonEditor?.flush()) return false;
   soundEditor.close();
   pythonEditor?.reset();
   restore(workspace, project);
@@ -215,6 +218,7 @@ function installProject(project: ReturnType<typeof snapshot>) {
   autosaveEnabled = true; recoveryText = null; element('#recover').hidden = true;
   output.textContent = ''; outputPanel.hidden = true; element('#error-details').hidden = true;
   status.textContent = 'Ready'; updateCode();
+  return true;
 }
 
 function showMigration(prepared: PreparedProject) {
@@ -265,8 +269,37 @@ try {
 }
 sceneEditor.restore();
 updateCode(autosaveEnabled);
+let assist: ReturnType<typeof installAssist> | undefined;
+let lastHelpBlock: string | null = null;
+const pilot = installPilot({
+  capture: () => {
+    if (!autosaveEnabled || !pythonEditor?.flush()) throw new Error('Save or recover your current project before starting the pilot.');
+    return JSON.stringify(snapshot(workspace));
+  },
+  load: source => { if (!installProject(prepareProject(source).project)) throw new Error('Save your Python draft before changing projects.'); },
+  starter: kind => JSON.stringify(kind === 'score' ? scoreStarter() : prepareProject(JSON.stringify(spriteExample)).project),
+  download: (name, text) => download(name, text, 'application/json'),
+  changed: active => assist?.setPilotActive(active),
+  revision: typeof __APP_REVISION__ === 'string' ? __APP_REVISION__ : 'development (revision unavailable)',
+});
+assist = installAssist({
+  pilotActive: () => pilot.active,
+  read: kind => {
+    if (kind === 'blocks') return lastHelpBlock ? workspace.getBlockById(lastHelpBlock)?.toString(4000) ?? '' : '';
+    if (kind === 'diagnostics') return [element('#diagnostics').textContent, element('#python-diagnostics').textContent, output.textContent].filter(Boolean).join('\n');
+    const textarea = element<HTMLTextAreaElement>('#python-editor');
+    if (pythonEditor?.active && !element('#python-draft-view').hidden) return textarea.selectionStart !== textarea.selectionEnd ? textarea.value.slice(textarea.selectionStart, textarea.selectionEnd) : textarea.value;
+    const selection = window.getSelection();
+    if (selection && element('#python').contains(selection.anchorNode) && element('#python').contains(selection.focusNode) && selection.toString()) return selection.toString();
+    return element('#python').textContent ?? '';
+  },
+});
 let updatePending = false;
 workspace.addChangeListener(event => {
+  if (event.type === Blockly.Events.SELECTED) {
+    const id = (event as Blockly.Events.Selected).newElementId;
+    if (id && workspace.getBlockById(id)) lastHelpBlock = id;
+  }
   if (event.isUiEvent || updatePending) return;
   updatePending = true;
   queueMicrotask(() => { updatePending = false; updateCode(); });
@@ -349,4 +382,4 @@ element<HTMLInputElement>('#project-file').addEventListener('change', async even
     else installProject(prepared.project);
   } catch (error) { notice.textContent = `Could not open project: ${error instanceof Error ? error.message : error}. Your current work is unchanged.`; }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
