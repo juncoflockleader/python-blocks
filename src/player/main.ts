@@ -1,4 +1,5 @@
 import './style.css';
+import { installIcons } from '../ui/icons';
 import { Stage, validateSceneImages } from '../stage';
 import { emptyScene } from '../scene/model';
 import { GameView } from '../scene/game';
@@ -12,7 +13,7 @@ import { loadPlayProgram, type PlayProgram } from './format';
 document.querySelector('#app')!.innerHTML = `
   <main class="player">
     <header><div><p class="eyebrow">MADE WITH PYTHON BLOCKS</p><h1>Let’s play.</h1></div><span id="status" role="status">Loading project…</span></header>
-    <nav aria-label="Play controls"><button id="run" class="button primary" disabled>▶ Run</button><button id="stop" class="button secondary" disabled>■ Stop</button><button id="audio-enable" class="button secondary">Enable audio</button><button id="audio-mute" class="button secondary" aria-pressed="false">Mute</button><span id="audio-status" role="status">Audio ready</span></nav>
+    <nav aria-label="Play controls"><button id="run" class="button primary" disabled>Run</button><button id="stop" class="button secondary" disabled>Stop</button><button id="audio-enable" class="button secondary">Enable audio</button><button id="audio-mute" class="button secondary" aria-pressed="false">Mute</button><span id="audio-status" role="status">Audio ready</span></nav>
     <section aria-label="Project stage"><div class="stage-surface"><canvas id="stage" width="480" height="320" tabindex="0" aria-label="Interactive stage. Click to focus, then use arrow keys, letters, numbers, or space.">Your project appears here.</canvas><div id="game-overlay"></div></div><p id="stage-dialogue" class="stage-dialogue" role="status"></p></section>
     <section id="questions" class="questions" aria-label="Project questions"></section>
     <div id="touch-controls" class="touch-controls"></div>
@@ -22,6 +23,7 @@ document.querySelector('#app')!.innerHTML = `
     <section id="output-panel" hidden aria-label="Program output"><h2>Program output</h2><pre id="output" aria-live="polite"></pre><details id="error-details" hidden><summary>Python error details</summary><pre id="traceback"></pre></details></section>
     <footer><a href="project.python-blocks.json" download>Editable project</a><a href="program.py" download>Python source</a><a href="README.txt">How to run</a><a href="THIRD-PARTY-NOTICES.txt">Credits & licenses</a></footer>
   </main>`;
+const disposeIcons = installIcons();
 const el = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
 const canvas = el<HTMLCanvasElement>('stage'), run = el<HTMLButtonElement>('run'), stop = el<HTMLButtonElement>('stop');
 const stage = new Stage(canvas), sound = new SoundPlayer(), questions = new Questions(el('questions'), canvas);
@@ -94,6 +96,6 @@ try {
   el('status').textContent = 'Project could not load'; el('output-panel').hidden = false;
   el('output').textContent = `${error instanceof Error ? error.message : error}\nExtract the whole ZIP and run python3 serve.py from its folder. If files are missing or damaged, export the project again.`;
 } finally { clearTimeout(timeout); }
-const dispose = () => { loading.abort(); runner.dispose(); input.dispose(); sound.dispose(); stage.dispose(); };
+const dispose = () => { disposeIcons(); loading.abort(); runner.dispose(); input.dispose(); sound.dispose(); stage.dispose(); };
 window.addEventListener('pagehide', dispose);
 if (import.meta.hot) import.meta.hot.dispose(dispose);

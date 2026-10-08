@@ -1,0 +1,46 @@
+/* Empty generated content is decorative; names remain the original text. */
+[data-ui-icon]::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  flex: 0 0 16px;
+  background-color: currentColor;
+  -webkit-mask: var(--ui-icon) center / contain no-repeat;
+  mask: var(--ui-icon) center / contain no-repeat;
+  vertical-align: -3px;
+}
+button[data-ui-icon], a[data-ui-icon], .ui-tool-caption {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  max-width: 100%;
+  white-space: normal;
+}
+button[data-ui-icon][hidden] { display: none; }
+summary[data-ui-icon]::before { margin-inline: 4px 7px; }
+button.ui-icon-only { font-size: 0; gap: 0; }
+.blocklyTreeRowContentContainer { display: flex; align-items: center; gap: 6px; }
+.blocklyToolboxCategoryIcon[data-ui-icon] {
+  visibility: visible;
+  width: 18px;
+  height: 18px;
+  flex: 0 0 18px;
+  background: none;
+  color: #35483b;
+}
+.blocklyToolboxCategoryIcon[data-ui-icon]::before { width: 18px; height: 18px; }
+[aria-selected=true] .blocklyToolboxCategoryIcon[data-ui-icon] { color: white; }
+.ui-flyout-icon { color: white; pointer-events: none; }
+.blocklyContextMenu .blocklyMenuItem[data-ui-icon]::before {
+  position: absolute;
+  inset-inline-start: 6px;
+  top: 50%;
+  margin-top: -8px;
+}
+.blocklyContextMenu .blocklyMenuItem[data-ui-icon] { position: relative; padding-inline-start: 28px; }
+@media (forced-colors: active) {
+  [data-ui-icon]::before { background-color: ButtonText; }
+  .ui-flyout-icon { color: ButtonText; }
+}

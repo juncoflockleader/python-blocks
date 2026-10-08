@@ -40,12 +40,12 @@ dialog li button { margin-right: 8px; }
 :is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) { width: 600px; max-height: 85vh; overflow: auto; padding: 24px; }
 :is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) h2 { font-size: 20px; }
 :is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) p { font-size: 13px; line-height: 1.5; }
-:is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) fieldset { border: 1px solid #d8decb; border-radius: 8px; padding: 16px; margin-block: 18px; }
+:is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) fieldset { min-width: 0; border: 1px solid #d8decb; border-radius: 8px; padding: 16px; margin-block: 18px; }
 :is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) legend { padding-inline: 6px; font-weight: 600; }
 :is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) label { display: grid; grid-template-columns: 135px minmax(0, 1fr); gap: 12px; align-items: center; margin-block: 10px; font-size: 13px; }
 :is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) input, :is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) select { min-width: 0; padding: 8px; border: 1px solid #cbd4b4; border-radius: 5px; font: inherit; }
 :is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) ol { padding-left: 22px; }
-:is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) li { display: flex; gap: 5px; padding-inline: 0; }
+:is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) li { display: flex; flex-wrap: wrap; gap: 5px; padding-inline: 0; }
 :is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) li input { flex: 1; width: 100px; }
 :is(#language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector) li button { margin: 0; }
 #language-error, #events-error { color: #a13824; }

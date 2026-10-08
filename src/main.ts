@@ -1,4 +1,5 @@
 import './style.css';
+import { installIcons } from './ui/icons';
 import { installPlayView } from './scene/play-view';
 import { Questions } from './scene/questions';
 import { SoundEditor } from './scene/sound-editor';
@@ -35,11 +36,11 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
   <header class="app-header">
     <a class="brand" href="./" aria-label="Python Blocks home"><span class="brand-mark" aria-hidden="true">pb<span>↗</span></span><span>python<span class="brand-light">blocks</span><small>A little idea. A whole new world.</small></span></a>
     <span class="prototype">EARLY EXPLORER · 0.1</span>
-    <a class="design-link" href="https://github.com/juncoflockleader/python-blocks/tree/main/docs" target="_blank" rel="noreferrer">Project notes <span aria-hidden="true">↗</span></a>
+    <a class="design-link" href="https://github.com/juncoflockleader/python-blocks/tree/main/docs" target="_blank" rel="noreferrer">Project notes</a>
   </header>
   <main>
     <section class="intro"><div><p class="eyebrow">THE CREATIVE CODING PLAYGROUND</p><h1>Small blocks. <em>Big possibilities.</em></h1><p>Make something with blocks. Discover the Python that brings it to life.</p></div><span class="intro-doodle" aria-hidden="true">✳</span></section>
-    <section class="project-bar" aria-label="Project controls"><div class="project-name"><span aria-hidden="true">◇</span><div><strong>My first drawing</strong><small>Try changing a number. See what happens.</small></div></div><div class="actions"><button id="save" class="button secondary">Save project</button><button id="open" class="button secondary">Open project</button><input id="project-file" type="file" accept=".json,application/json" hidden><button id="example" class="button secondary">Reset example</button><button id="export" class="button secondary">Export Python <span aria-hidden="true">↗</span></button><button id="export-playable" class="button secondary">Export playable</button><button id="stop" class="button secondary" disabled>■ Stop</button><button id="run" class="button primary">▶ Run code</button></div></section>
+    <section class="project-bar" aria-label="Project controls"><div class="project-name"><span aria-hidden="true">◇</span><div><strong>My first drawing</strong><small>Try changing a number. See what happens.</small></div></div><div class="actions"><button id="save" class="button secondary">Save project</button><button id="open" class="button secondary">Open project</button><input id="project-file" type="file" accept=".json,application/json" hidden><button id="example" class="button secondary">Reset example</button><button id="export" class="button secondary">Export Python</button><button id="export-playable" class="button secondary">Export playable</button><button id="stop" class="button secondary" disabled>Stop</button><button id="run" class="button primary">Run code</button></div></section>
     <p id="export-state" class="project-notice" role="status"></p><button id="export-cancel" class="button secondary" hidden>Cancel export</button><p id="save-state" class="project-notice" role="status"></p><button id="recover" class="button secondary" hidden>Download recovery file</button>
     <section id="diagnostics-panel" class="diagnostics-panel" hidden aria-label="Program diagnostics"><ul id="diagnostics"></ul></section>
     <div class="workspace-grid">
@@ -53,6 +54,8 @@ document.querySelector<HTMLDivElement>('#app')!.innerHTML = `
     <section id="output-panel" class="output-panel" hidden aria-labelledby="output-title"><h2 id="output-title">Program output</h2><pre id="output" aria-live="polite"></pre><details id="error-details" hidden><summary>Python error details</summary><pre id="traceback"></pre></details></section>
     <footer><span>Built for curiosity.</span><span>Blocks → Python → possibility <span class="footer-spark" aria-hidden="true">✳</span></span></footer>
   </main><dialog id="migration-dialog"><h2>Choose startup order</h2><p>This older project has several loose stacks. Choose their order inside Program.</p><ol id="migration-order"></ol><p id="migration-error" role="alert"></p><button id="migration-apply" class="button primary">Use this order</button><button id="migration-cancel" class="button secondary">Cancel</button></dialog>`;
+
+const disposeIcons = installIcons();
 
 function element<T extends HTMLElement>(selector: string): T { return document.querySelector<T>(selector)!; }
 const run = element<HTMLButtonElement>('#run');
@@ -131,6 +134,9 @@ const theme = Blockly.Theme.defineTheme('pythonBlocks', {
   componentStyles: { workspaceBackgroundColour: '#fbfcf8', toolboxBackgroundColour: '#f3f5ed', toolboxForegroundColour: '#35483b', flyoutBackgroundColour: '#edf1e5', flyoutOpacity: 1, scrollbarColour: '#cbd3c4', insertionMarkerColour: '#267c70', insertionMarkerOpacity: 0.25 },
   fontStyle: { family: 'system-ui, sans-serif', weight: '500', size: 12 },
 });
+// Reserve a leading icon gutter using Blockly’s own measured button bounds.
+Blockly.FlyoutButton.TEXT_MARGIN_X = 26;
+Blockly.FlyoutButton.TEXT_MARGIN_Y = 4;
 const workspace = Blockly.inject('blockly', {
   toolbox, theme, oneBasedIndex: false, media: `${import.meta.env.BASE_URL}blockly/`,
   grid: { spacing: 24, length: 2, colour: '#dce2d5', snap: false },
@@ -175,7 +181,7 @@ function updateCode(save = true) {
   if (!compilation || compiledProject !== current) { compilation = compile(workspace); compiledProject = current; }
   pythonEditor?.refresh();
   const textBlocked = !!pythonEditor?.busy || !!pythonEditor?.unstored;
-  run.textContent = pythonEditor?.active ? '▶ Run Python' : '▶ Run code';
+  run.textContent = pythonEditor?.active ? 'Run Python' : 'Run code';
   run.disabled = !!runningCompilation || textBlocked || (!pythonEditor?.active && (!compilation.hasEntry || compilation.source === null));
   exportButton.disabled = textBlocked || (!pythonEditor?.active && compilation.source === null);
   playableButton.disabled = !!exportController || textBlocked || (!pythonEditor?.active && (!compilation.hasEntry || compilation.source === null));
@@ -382,4 +388,4 @@ element<HTMLInputElement>('#project-file').addEventListener('change', async even
     else installProject(prepared.project);
   } catch (error) { notice.textContent = `Could not open project: ${error instanceof Error ? error.message : error}. Your current work is unchanged.`; }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
