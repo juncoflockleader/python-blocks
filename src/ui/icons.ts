@@ -7,22 +7,25 @@ import './icons.css';
 const actions: Record<string, IconName> = {};
 const actionGroups: Partial<Record<IconName, string>> = {
   save: 'save art-save art-speed-save',
+  search: 'block-search-toggle', minus: 'zoom-out', more: 'menu-button', book: 'examples-open menu-examples',
+  sliders: 'sprite-more', brush: 'tray-paint', alert: 'stage-badge', learn: 'menu-pilot',
   folder: 'open python-recover',
   download: 'export export-playable recover python-download python-recovery-download module-export module-save-copy art-export pilot-download pilot-download-backup pilot-recovery',
   upload: 'module-import scene-import art-import sound-import',
-  play: 'run play-run sound-preview art-play pilot-start',
-  stop: 'stop play-stop sound-preview-stop sound-record-stop',
+  play: 'debug-resume run play-run sound-preview art-play pilot-start phone-play',
+  stop: 'debug-stop stop play-stop sound-preview-stop sound-record-stop',
   restart: 'example scene-reset game-restart',
   undo: 'language-undo world-undo art-undo art-project-undo sound-undo art-revert python-discard pilot-return',
   redo: 'language-redo world-redo art-redo art-project-redo',
-  close: 'export-cancel migration-cancel language-close lambda-close events-close modules-close module-inspector-close python-cancel question-cancel art-close world-close stock-close sound-close assist-cancel',
-  plus: 'parameter-add lambda-parameter-add scene-add art-new art-frame-add world-new sound-new song-new watch-add',
+  pause: 'debug-pause',
+  close: 'debug-close block-search-clear export-cancel examples-close name-sheet-cancel level-keep migration-cancel language-close lambda-close events-close modules-close module-inspector-close python-cancel question-cancel art-close world-close stock-close sound-close assist-cancel',
+  plus: 'zoom-in name-sheet-confirm parameter-add lambda-parameter-add scene-add art-new art-frame-add world-new sound-new song-new watch-add',
   trash: 'function-delete handler-delete module-remove python-recovery-remove scene-delete data-remove art-delete art-frame-remove world-delete sound-delete song-clear pilot-clear',
   copy: 'function-copy handler-copy scene-copy art-duplicate art-save-copy art-frame-copy world-copy sound-copy',
-  check: 'migration-apply function-apply variable-apply handler-apply lambda-apply python-apply motion-use-preset sound-apply pilot-finish',
+  check: 'sprite-settings-done level-switch migration-apply function-apply variable-apply handler-apply lambda-apply python-apply motion-use-preset sound-apply pilot-finish',
   edit: 'module-rename python-edit',
-  target: 'function-find handler-find lambda-find scene-locate scene-script-find',
-  eye: 'module-inspect python-inspect assist-review',
+  target: 'zoom-reset function-find handler-find lambda-find scene-locate scene-script-find',
+  eye: 'debug-start module-inspect python-inspect assist-review',
   blocks: 'python-blocks python-use-blocks',
   function: 'language-manage',
   module: 'modules-manage',
@@ -46,22 +49,23 @@ const actionGroups: Partial<Record<IconName, string>> = {
   selection: 'art-deselect sound-select-all',
   flipX: 'art-flip-x', flipY: 'art-flip-y', rotate: 'art-rotate',
   resize: 'art-resize art-scale play-expand',
-  up: 'art-frame-up', down: 'art-frame-down',
-  left: 'song-prev play-close', right: 'song-next',
-  clock: 'pilot-timer', assist: 'assist-enable', lock: 'assist-disable',
+  up: 'debug-out art-frame-up', down: 'art-frame-down',
+  left: 'song-prev play-close', right: 'debug-into debug-over song-next',
+  clock: 'pilot-timer', assist: 'assist-enable menu-assist', lock: 'assist-disable',
 };
 for (const [icon, ids] of Object.entries(actionGroups)) {
   for (const id of ids.split(' ')) actions[id] = icon as IconName;
 }
 
 const categories: Record<string, IconName> = {
-  Program: 'play', 'Sensing & input': 'keyboard', Sounds: 'music', Game: 'game',
+  Program: 'play', Control: 'loop', 'Sensing & input': 'keyboard', Sounds: 'music', Game: 'game',
   Worlds: 'world', Sprites: 'sprite', Motion: 'move', Looks: 'eye', Physics: 'physics',
   'Sprite pen': 'pen', Draw: 'palette', Loops: 'loop', Logic: 'logic', Numbers: 'number',
   Text: 'text', Variables: 'variable', Functions: 'function', 'Function values': 'function',
   Events: 'event', Modules: 'module', Collections: 'list',
 };
 const labels: Record<string, IconName> = {
+  Dismiss: 'close',
   'Apply sprite': 'check', 'Apply world settings': 'check', 'Apply game settings': 'check',
   'Apply appearance': 'check', 'Save entry': 'save', Answer: 'message',
   'Remove parameter': 'trash', 'Remove lambda parameter': 'trash', Remove: 'trash',
@@ -76,7 +80,7 @@ const labels: Record<string, IconName> = {
   'Game motion & collisions': 'physics', 'Input help & touch buttons': 'keyboard',
   'Watch sprite values': 'eye', 'Python error details': 'alert', 'Send a test event': 'event',
   'Manage handlers': 'event', 'Manage lambdas': 'function', 'Manage modules': 'module',
-  'Manage functions': 'function', 'Manage variables': 'variable',
+  'Manage functions': 'function', 'Manage variables': 'variable', 'Make a function': 'plus', 'Make a variable': 'plus',
   'Project notes': 'book', 'Editable project': 'blocks', 'Python source': 'code',
   'How to run': 'help', 'Credits & licenses': 'book',
 };
@@ -136,6 +140,8 @@ export function installIcons(root: HTMLElement = document.body) {
       const name = categories[element.querySelector('.blocklyToolboxCategoryLabel')?.textContent?.trim() ?? ''];
       const icon = element.querySelector<HTMLElement>('.blocklyToolboxCategoryIcon');
       if (name && icon) { icon.setAttribute('aria-hidden', 'true'); decorate(icon, name); }
+      // The palette shows each category as a coloured disc; Blockly keeps the colour on the row border.
+      if (icon && element.style.borderLeftColor) icon.style.setProperty('--category-colour', element.style.borderLeftColor);
       return;
     }
     if (element instanceof HTMLSelectElement) {

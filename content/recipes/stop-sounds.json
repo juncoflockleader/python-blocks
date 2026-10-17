@@ -1,0 +1,39 @@
+{
+  "id": "stop-sounds",
+  "title": "Stop all sounds",
+  "group": "sound",
+  "level": "starter",
+  "concepts": [
+    "sound",
+    "input"
+  ],
+  "phrases": [
+    "stop all sounds",
+    "quiet",
+    "turn off the music",
+    "silence",
+    "mute the song"
+  ],
+  "steps": [
+    {
+      "say": "When the s key is pressed, stop every sound that is playing."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "key",
+        "key": "s"
+      },
+      "stack": [
+        {
+          "type": "sound_stop_all"
+        }
+      ]
+    }
+  ],
+  "preview": "stop-sounds.webm",
+  "tryNext": [
+    "music-loop"
+  ]
+}

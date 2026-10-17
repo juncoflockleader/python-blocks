@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+import { reveal } from './shell';
 const fixture = JSON.parse(readFileSync('src/scene/input-example.json','utf8'));
 const b = (type: string, fields: Record<string, unknown> = {}, inputs: Record<string, any> = {}): any => ({type,fields,inputs:Object.fromEntries(Object.entries(inputs).map(([k,v]) => [k,{block:v}]))});
 const n = (v: number) => b('py_number',{VALUE:String(v)}), t = (v: string) => b('text',{TEXT:v});
@@ -25,7 +26,7 @@ async function install(page: Page, handlers: [string,any][], edit?: (p: any) => 
   await expect(page.locator('#diagnostics-panel')).toBeHidden();
 }
 async function run(page: Page) { await page.locator('#run').click(); await expect(page.locator('#status')).toHaveText('Event session running',{timeout:60_000}); }
-async function send(page: Page, event: string) { await page.locator('#event-name').fill(event); await page.locator('#event-send').click(); }
+async function send(page: Page, event: string) { await (await reveal(page, '#event-name')).fill(event); await (await reveal(page, '#event-send')).click(); }
 async function key(page: Page, key: string) { await page.locator('#stage').focus(); await page.keyboard.press(key); }
 async function point(page: Page, selector: string) { const r = (await page.locator(selector).boundingBox())!; return {x:r.x+r.width/2,y:r.y+r.height/2}; }
 
@@ -74,8 +75,8 @@ test('timer survives questions, focus changes and world transitions, then resets
 
 test('real multi-touch and keyboard holds aggregate, captured release/cancel clears keys, and action mappings persist', async ({ page }) => {
   await install(page,[['key:ArrowRight',print('right down')],['release:ArrowRight',print('right up')],['key:z',print('z down')],['release:z',print('z up')]]);
-  await page.locator('.scene-input-settings summary').click(); await page.locator('#touch-key-a').selectOption('z'); await page.getByRole('button',{name:'Undo',exact:true}).click(); await expect(page.locator('#touch-key-a')).toHaveValue('Space');
-  await page.getByRole('button',{name:'Redo',exact:true}).click(); await expect(page.locator('#touch-key-a')).toHaveValue('z'); await page.reload(); await page.locator('.scene-input-settings summary').click(); await expect(page.locator('#touch-key-a')).toHaveValue('z');
+  await (await reveal(page, '.scene-input-settings summary')).click(); await (await reveal(page, '#touch-key-a')).selectOption('z'); await page.getByRole('button',{name:'Undo',exact:true}).click(); await expect(page.locator('#touch-key-a')).toHaveValue('Space');
+  await page.getByRole('button',{name:'Redo',exact:true}).click(); await expect(page.locator('#touch-key-a')).toHaveValue('z'); await page.reload(); await (await reveal(page, '.scene-input-settings summary')).click(); await expect(page.locator('#touch-key-a')).toHaveValue('z');
   await run(page); await expect(page.locator('#touch-key-a')).toBeDisabled(); await page.locator('#touch-toggle').click(); await page.locator('#touch-pad').scrollIntoViewIfNeeded();
   const right = await point(page,'[data-control="ArrowRight"]'), action = await point(page,'[data-control="a"]');
   await page.locator('#stage').focus(); await page.keyboard.down('ArrowRight'); await expect.poll(() => lines(page)).toEqual(['right down']);
@@ -94,7 +95,7 @@ test('real multi-touch and keyboard holds aggregate, captured release/cancel cle
 });
 
 test('the narrow input example accepts a name and wins through the touch controller, then starts fresh', async ({ page }, info) => {
-  await page.setViewportSize({width:390,height:844}); await page.goto('/'); await page.locator('#scene-input-example').click(); await run(page);
+  await page.setViewportSize({ width: 744, height: 1000 }); await page.goto('/'); await (await reveal(page, '#scene-input-example')).click(); await run(page);
   await expect(page.locator('#question-answer')).toBeFocused(); await page.screenshot({path:info.outputPath('input-question-mobile.png')});
   expect(await page.locator('#question-form').evaluate(e => e.scrollWidth <= e.clientWidth+1)).toBe(true);
   await page.locator('#question-answer').fill('Ada'); await page.locator('#question-answer').press('Enter'); await expect(page.locator('#game-message')).toContainText('Ada');

@@ -1,0 +1,48 @@
+{
+  "id": "hud-message",
+  "title": "Show a message on screen",
+  "group": "game",
+  "level": "starter",
+  "concepts": [
+    "game"
+  ],
+  "phrases": [
+    "hud message",
+    "show instructions",
+    "write a message on screen",
+    "tell the player what to do",
+    "text at the top"
+  ],
+  "steps": [
+    {
+      "say": "When the game starts, show a message fixed to the screen. Empty text clears it."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "game_message",
+          "inputs": {
+            "TEXT": {
+              "shadow": {
+                "type": "text",
+                "fields": {
+                  "TEXT": "Collect all the stars!"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "hud-message.webm",
+  "tryNext": [
+    "keep-score",
+    "countdown"
+  ]
+}

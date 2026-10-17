@@ -4,7 +4,7 @@ import { changeScene, sceneState } from './state';
 
 export function installMotionEditor(workspace: Blockly.WorkspaceSvg, selected: () => string, editable: () => boolean) {
   const labels = { vx: 'x velocity', vy: 'y velocity', ax: 'x acceleration', ay: 'y acceleration', dragX: 'x drag', dragY: 'y drag', speedX: 'Control x speed', speedY: 'Control y speed', lifetime: 'Lifetime (s)' };
-  document.getElementById('scene-properties')!.insertAdjacentHTML('afterend', `<details id="scene-motion"><summary>Game motion & collisions</summary>
+  document.getElementById('sprite-settings-body')!.insertAdjacentHTML('beforeend', `<details id="scene-motion" class="level-builder"><summary>Game motion & collisions</summary>
     <p>Velocity is pixels per second; positive y goes up. Negative y acceleration makes gravity. Moving bodies collide with solid walls. Hidden walls remain solid.</p>
     <form id="motion-form"><fieldset id="motion-fields"><legend>Starting game settings</legend><div class="scene-toolbar"><label>Preset <select id="motion-preset"><option value="walker">Platform walker</option><option value="flying">Flying player</option><option value="wall">Solid wall</option><option value="bouncing">Bouncing ball</option><option value="off">Motion off</option></select></label><button id="motion-use-preset" type="button" class="button secondary">Use preset</button></div>
       <div class="scene-properties-grid"><label>Kind <input id="motion-kind" maxlength="32" required></label>

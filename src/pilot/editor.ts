@@ -10,7 +10,7 @@ interface PilotOptions {
 }
 
 export function installPilot(options: PilotOptions) {
-  const panel = document.createElement('details'); panel.id = 'pilot-panel'; panel.className = 'learning-panel';
+  const panel = document.createElement('details'); panel.id = 'pilot-panel'; panel.className = 'learning-panel level-builder';
   panel.innerHTML = `<summary>Learner pilot <span>Six small activities · facilitator notes stay in this browser</span></summary>
     <p>Try this with a facilitator for 25–35 minutes. Use a participant code, not a name. Stop whenever you choose. Notes are saved locally, separately from your project. AI assist is off during the pilot.</p>
     <form id="pilot-setup"><div class="learning-fields"><label>Participant code <input id="pilot-participant" value="P01" required maxlength="24" pattern="[A-Za-z0-9_-]+"></label><label>Prior experience <select id="pilot-experience"><option>New to coding</option><option>Some blocks</option><option>Regular blocks</option><option>Some Python</option></select></label><label>Device, access needs, or task changes <textarea id="pilot-setting" maxlength="4000" rows="2"></textarea></label></div>
@@ -30,7 +30,7 @@ export function installPilot(options: PilotOptions) {
     <details><summary>Saved project checkpoints & session data</summary><p>Download a checkpoint to reopen with Open project. Returning saves the current project as an end checkpoint before restoring your original.</p><label>Checkpoint <select id="pilot-backup"></select></label><button id="pilot-download-backup" class="button secondary">Download checkpoint</button><button id="pilot-return" class="button secondary">Return to original project</button></details></div>
     <p id="pilot-status" role="status"></p><button id="pilot-recovery" class="button secondary" hidden>Download saved pilot data</button>
     <button id="pilot-clear" class="button secondary" hidden>Clear pilot notes & checkpoints</button>`;
-  document.querySelector('.workspace-grid')!.before(panel);
+  document.querySelector('#help-slot')!.append(panel);
   const el = <T extends HTMLElement = HTMLElement>(id: string) => panel.querySelector<T>(`#pilot-${id}`)!;
   let session: PilotSession | null = null, rawRecovery: string | null = null, timer: number | null = null, disposed = false;
   let storageFailure = false;

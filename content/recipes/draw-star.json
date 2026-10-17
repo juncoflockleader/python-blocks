@@ -1,0 +1,88 @@
+{
+  "id": "draw-star",
+  "title": "Draw a star",
+  "group": "draw",
+  "level": "starter",
+  "concepts": [
+    "loop",
+    "sequence"
+  ],
+  "phrases": [
+    "draw a star",
+    "star shape",
+    "five points",
+    "pointy star",
+    "sketch a star"
+  ],
+  "steps": [
+    {
+      "say": "A five-pointed star turns 144 degrees at each point."
+    },
+    {
+      "say": "Repeat 5 times: move 150 steps and turn right 144 degrees."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "pen_color",
+          "fields": {
+            "COLOR": "#e47d4b"
+          }
+        },
+        {
+          "type": "controls_repeat_ext",
+          "inputs": {
+            "TIMES": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "5"
+                }
+              }
+            },
+            "DO": {
+              "block": {
+                "type": "pen_move",
+                "inputs": {
+                  "STEPS": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "150"
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "pen_turn",
+                    "inputs": {
+                      "DEGREES": {
+                        "shadow": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "144"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "draw-star.webm",
+  "tryNext": [
+    "rainbow-pen",
+    "spiral"
+  ]
+}

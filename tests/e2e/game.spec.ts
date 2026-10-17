@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+import { reveal } from './shell';
 const fixture = JSON.parse(readFileSync('src/scene/star-game-example.json', 'utf8'));
 const b = (type: string, fields: Record<string, unknown> = {}, inputs: Record<string, any> = {}): any => ({ type, fields, inputs: Object.fromEntries(Object.entries(inputs).map(([k,v]) => [k, { block: v }])) });
 const n = (v: number) => b('py_number', { VALUE: String(v) });
@@ -25,7 +26,7 @@ async function key(page: Page, value: string) { await page.locator('#stage').foc
 function walk(v: any, fn: (b: any) => void) { if (v && typeof v === 'object') { if (v.type) fn(v); Object.values(v).forEach(x => walk(x, fn)); } }
 
 test('plays a scrolling game to a win with fixed HUD, effects and complete replay', async ({ page }, info) => {
-  await page.goto('/'); await page.locator('#scene-star-game').click(); const before = await saved(page); await run(page);
+  await page.goto('/'); await (await reveal(page, '#scene-star-game')).click(); const before = await saved(page); await run(page);
   await expect(page.locator('#game-score')).toHaveText('Score 0'); await expect(page.locator('#game-lives')).toHaveText('Lives 3');
   await page.locator('#stage').scrollIntoViewIfNeeded(); const hud = (await page.locator('#game-hud').boundingBox())!;
   await page.locator('#stage').focus(); await page.keyboard.down('ArrowRight');
@@ -49,7 +50,7 @@ test('loses on zero lives and restarts via a narrow-screen result', async ({ pag
   await run(page); await page.locator('#stage').focus(); await page.keyboard.down('ArrowRight');
   await expect(page.locator('#game-result-title')).toHaveText('Game over', { timeout: 6000 }); await page.keyboard.up('ArrowRight');
   await expect(page.locator('#game-result-message')).toContainText('No lives left'); await expect(page.locator('#game-lives')).toHaveText('Lives 0');
-  await page.setViewportSize({ width: 390, height: 844 }); await page.locator('#game-restart').scrollIntoViewIfNeeded();
+  await page.setViewportSize({ width: 744, height: 1000 }); await page.locator('#game-restart').scrollIntoViewIfNeeded();
   expect(await page.locator('#game-result').evaluate(e => e.scrollWidth <= e.clientWidth + 1)).toBe(true);
   await expect(page.locator('#stage')).toHaveAttribute('data-effect-count', '0');
   // Capture the responsive layout after resize/observer paint frames complete.
@@ -91,7 +92,7 @@ test('startup finishes cleanly and supports long result text without HTML or hor
   await install(page, [], p => { p.workspace.blocks.blocks = [{ type: 'py_program', inputs: { BODY: { block: chain(b('game_set', { FIELD: 'score' }, { VALUE: n(999999999) }), b('game_finish', { WON: 'TRUE' }, { TEXT: t(message) }), print('must not print')) } } }]; });
   await page.locator('#run').click(); await expect(page.locator('#status')).toHaveText('You win!', { timeout: 60_000 }); await expect(page.locator('#output')).not.toContainText('must not print');
   await expect(page.locator('#game-result-message')).toHaveText(message); await expect(page.locator('#game-result-message script')).toHaveCount(0);
-  await page.setViewportSize({ width: 390, height: 844 }); await page.locator('#game-restart').scrollIntoViewIfNeeded(); await expect(page.locator('#game-restart')).toBeVisible();
+  await page.setViewportSize({ width: 744, height: 1000 }); await page.locator('#game-restart').scrollIntoViewIfNeeded(); await expect(page.locator('#game-restart')).toBeVisible();
   await page.evaluate(() => new Promise<void>(resolve => requestAnimationFrame(() => requestAnimationFrame(() => resolve()))));
   expect(await page.locator('.game-result-card').evaluate(e => e.scrollWidth <= e.clientWidth + 1)).toBe(true); await page.screenshot({ path: info.outputPath('long-game-result-mobile.png') });
 });

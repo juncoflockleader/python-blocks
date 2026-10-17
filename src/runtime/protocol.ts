@@ -1,4 +1,5 @@
 import type { WatchValue } from '../scene/watch-model';
+import type { DebugOptions, DebugSnapshot } from './debug';
 import type { QuestionCommand, QuestionReply } from '../scene/questions';
 import type { AudioCommand } from '../scene/sound';
 import type { SceneCommand, SceneInput, SceneState } from '../scene/model';
@@ -6,7 +7,8 @@ import eventLimits from './event-limits.json';
 export { eventLimits };
 export type ExecutionMode = 'sequential' | 'events';
 export type RunnerCommand =
-  | { type: 'run'; code: string; mode: ExecutionMode; runtimeURL?: string; files?: Record<string, string>; scene?: SceneState }
+  | { type: 'run'; code: string; mode: ExecutionMode; runtimeURL?: string; files?: Record<string, string>; scene?: SceneState; debug?: DebugOptions & { control: SharedArrayBuffer } }
+  | { type: 'debug-pause' }
   | { type: 'input'; id: number; input: SceneInput }
   | { type: 'answer'; reply: QuestionReply }
   | { type: 'audio-ended'; id: number; error?: string }
@@ -18,6 +20,8 @@ export type DrawCommand =
   | { type: 'turn'; heading: number };
 
 export type RunnerEvent =
+  | { type: 'debug-paused'; snapshot: DebugSnapshot }
+  | { type: 'debug-running' }
   | { type: 'watch-values'; values: WatchValue[] }
   | { type: 'status'; message: string }
   | { type: 'question'; command: QuestionCommand }

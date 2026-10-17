@@ -1,0 +1,110 @@
+{
+ "id": "pen-patterns",
+ "title": "Pen patterns",
+ "level": "starter",
+ "minutes": 15,
+ "order": 3,
+ "summary": "Draw a square, then turn it into a flower with a loop inside a loop.",
+ "ideas": [
+  "repeat",
+  "turn",
+  "nested repeat",
+  "pen color"
+ ],
+ "starter": {
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 19,
+  "workspace": {
+   "blocks": {
+    "languageVersion": 0,
+    "blocks": []
+   },
+   "pythonScene": {
+    "version": 1,
+    "background": "#fdfdf9",
+    "assets": [],
+    "sprites": []
+   }
+  }
+ },
+ "steps": [
+  {
+   "text": "From Events, drag “when game starts” into the workspace.",
+   "check": {
+    "handler": "start"
+   },
+   "highlight": {
+    "category": "events"
+   }
+  },
+  {
+   "text": "Draw a square: repeat 4 times, move 100 steps and turn right 90 degrees. Put it inside “when game starts”.",
+   "check": {
+    "all": [
+     {
+      "nested": [
+       "controls_repeat_ext",
+       "pen_move"
+      ]
+     },
+     {
+      "nested": [
+       "controls_repeat_ext",
+       "pen_turn"
+      ]
+     }
+    ]
+   },
+   "recipe": "draw-square",
+   "highlight": {
+    "category": "draw"
+   }
+  },
+  {
+   "text": "Run it to see your square.",
+   "check": {
+    "ran": true
+   }
+  },
+  {
+   "text": "Make a flower: put your square inside another “repeat”, and turn 30 degrees after each square. Repeat 12 times.",
+   "check": {
+    "nested": [
+     "controls_repeat_ext",
+     "controls_repeat_ext"
+    ]
+   },
+   "highlight": {
+    "category": "control"
+   }
+  },
+  {
+   "text": "Choose a pen color inside the outer repeat.",
+   "check": {
+    "nested": [
+     "controls_repeat_ext",
+     "pen_color"
+    ]
+   },
+   "highlight": {
+    "category": "draw"
+   }
+  },
+  {
+   "text": "Run it again and admire your pattern.",
+   "check": {
+    "ran": true
+   }
+  }
+ ],
+ "finish": {
+  "text": "You drew a pattern with a loop inside a loop!",
+  "remix": [
+   "Try 8 squares turning 45 degrees.",
+   "Draw stars instead of squares: turn 144 degrees, 5 times.",
+   "Change the color on every turn of the outer loop."
+  ]
+ },
+ "next": "talking-story"
+}

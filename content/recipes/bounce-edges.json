@@ -1,0 +1,70 @@
+{
+  "id": "bounce-edges",
+  "title": "Bounce off the edges",
+  "group": "move",
+  "level": "starter",
+  "concepts": [
+    "motion",
+    "event"
+  ],
+  "phrases": [
+    "bounce off the edges",
+    "bounce around the screen",
+    "keep moving and bounce",
+    "ricochet off the walls",
+    "never leave the screen"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Use “when sprite updates”: it runs about 30 times a second while the game runs."
+    },
+    {
+      "say": "Move a few steps each time, then bounce if the sprite is on an edge."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "update"
+      },
+      "stack": [
+        {
+          "type": "scene_move",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "5"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_bounce",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "bounce-edges.webm",
+  "tryNext": [
+    "touch-edge",
+    "stamp-trail"
+  ]
+}

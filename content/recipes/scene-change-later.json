@@ -1,0 +1,124 @@
+{
+  "id": "scene-change-later",
+  "title": "Change the scene after a while",
+  "group": "look",
+  "level": "starter",
+  "concepts": [
+    "wait",
+    "sound",
+    "sequence"
+  ],
+  "phrases": [
+    "change the background after a while",
+    "night falls",
+    "switch scene later",
+    "the day turns into night",
+    "after the talk change the scene"
+  ],
+  "steps": [
+    {
+      "say": "When the game starts, wait a few seconds so the talking can finish."
+    },
+    {
+      "say": "Play a short jingle, then switch the backdrop to Night."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "py_wait",
+          "inputs": {
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "4"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "sound_note",
+          "fields": {
+            "INSTRUMENT": "triangle"
+          },
+          "inputs": {
+            "NOTE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "67"
+                }
+              }
+            },
+            "BEATS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "0.5"
+                }
+              }
+            },
+            "OWNER": {
+              "shadow": {
+                "type": "py_none"
+              }
+            }
+          }
+        },
+        {
+          "type": "sound_note",
+          "fields": {
+            "INSTRUMENT": "triangle"
+          },
+          "inputs": {
+            "NOTE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "72"
+                }
+              }
+            },
+            "BEATS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "1"
+                }
+              }
+            },
+            "OWNER": {
+              "shadow": {
+                "type": "py_none"
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_backdrop_set",
+          "inputs": {
+            "BACKDROP": {
+              "shadow": {
+                "type": "scene_backdrop",
+                "fields": {
+                  "BACKDROP_ID": "backdrop_night"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "scene-change-later.webm",
+  "tryNext": [
+    "backdrop-event",
+    "switch-backdrop"
+  ]
+}

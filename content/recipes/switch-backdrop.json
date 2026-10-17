@@ -1,0 +1,58 @@
+{
+  "id": "switch-backdrop",
+  "title": "Switch backdrop",
+  "group": "look",
+  "level": "starter",
+  "concepts": [
+    "event",
+    "sprite"
+  ],
+  "phrases": [
+    "switch backdrop",
+    "change the background",
+    "new scene",
+    "change the picture behind",
+    "next background"
+  ],
+  "steps": [
+    {
+      "say": "Choose a key, then switch to the next backdrop each time it is pressed."
+    },
+    {
+      "say": "Add backdrops with Backdrop library in the Sprite tab."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "key",
+        "key": "Space"
+      },
+      "stack": [
+        {
+          "type": "scene_backdrop_next"
+        }
+      ]
+    }
+  ],
+  "preview": "switch-backdrop.webm",
+  "demo": [
+    {
+      "wait": 400
+    },
+    {
+      "key": "Space",
+      "ms": 60
+    },
+    {
+      "wait": 600
+    },
+    {
+      "key": "Space",
+      "ms": 60
+    }
+  ],
+  "tryNext": [
+    "next-level"
+  ]
+}

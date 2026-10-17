@@ -1,0 +1,120 @@
+{
+  "id": "touch-edge",
+  "title": "Turn around at the edge",
+  "group": "touch",
+  "level": "starter",
+  "concepts": [
+    "collision",
+    "condition"
+  ],
+  "phrases": [
+    "touch the edge",
+    "when I hit the wall",
+    "reach the side of the screen",
+    "turn around at the edge",
+    "edge of the stage"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Move a little each update."
+    },
+    {
+      "say": "If the sprite touches any edge, turn it around."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "update"
+      },
+      "stack": [
+        {
+          "type": "scene_move",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "4"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "controls_if",
+          "inputs": {
+            "IF0": {
+              "block": {
+                "type": "scene_edge",
+                "fields": {
+                  "EDGE": "any"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_self"
+                    }
+                  }
+                }
+              }
+            },
+            "DO0": {
+              "block": {
+                "type": "scene_turn",
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_self"
+                    }
+                  },
+                  "VALUE": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "180"
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "scene_move",
+                    "inputs": {
+                      "SPRITE": {
+                        "block": {
+                          "type": "scene_self"
+                        }
+                      },
+                      "VALUE": {
+                        "shadow": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "6"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "touch-edge.webm",
+  "tryNext": [
+    "bounce-edges",
+    "wrap-around"
+  ]
+}

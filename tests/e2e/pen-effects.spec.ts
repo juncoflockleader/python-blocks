@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { unzipSync, strFromU8 } from 'fflate';
+import { reveal } from './shell';
 
 type B = { type: string; fields?: Record<string, string>; inputs?: Record<string, { block: B }>; next?: { block: B }; [key: string]: unknown };
 const b = (type: string, fields: Record<string, string> = {}, inputs: Record<string, B> = {}): B => ({ type, fields, inputs: Object.fromEntries(Object.entries(inputs).map(([k, v]) => [k, { block: v }])) });
@@ -79,27 +80,27 @@ test('stage effects leave sprite ink intact and clear removes legacy turtle mark
 });
 
 test('initial appearance edits support Undo, reload, export and malformed-project recovery', async ({ page }, info) => {
-  await page.goto('/'); await page.locator('#project-file').setInputFiles('tests/fixtures/scene/sequential.json'); await page.locator('#scene-appearance summary').click();
-  await page.locator('#appearance-down').check(); await page.locator('#appearance-color').fill('#123456'); await page.locator('#appearance-width').fill('12'); await page.locator('#appearance-opacity').fill('75'); await page.locator('#appearance-effect-whirl').fill('90'); await page.getByRole('button', { name: 'Apply appearance', exact: true }).click();
+  await page.goto('/'); await page.locator('#project-file').setInputFiles('tests/fixtures/scene/sequential.json'); await (await reveal(page, '#scene-appearance summary')).click();
+  await (await reveal(page, '#appearance-down')).check(); await (await reveal(page, '#appearance-color')).fill('#123456'); await (await reveal(page, '#appearance-width')).fill('12'); await (await reveal(page, '#appearance-opacity')).fill('75'); await (await reveal(page, '#appearance-effect-whirl')).fill('90'); await (await reveal(page, page.getByRole('button', { name: 'Apply appearance', exact: true }))).click();
   await expect.poll(async () => (await saved(page)).workspace.pythonScene.sprites[0].pen?.width).toBe(12);
   await page.getByRole('button', { name: 'Undo', exact: true }).click(); await expect(page.locator('#appearance-width')).toHaveValue('3');
   await page.getByRole('button', { name: 'Redo', exact: true }).click(); await expect(page.locator('#appearance-width')).toHaveValue('12');
-  await page.locator('#appearance-target').selectOption('stage'); await page.locator('#appearance-effect-ghost').fill('50'); await page.getByRole('button', { name: 'Apply appearance', exact: true }).click();
-  await page.reload(); await page.locator('#scene-appearance summary').click(); await expect(page.locator('#appearance-width')).toHaveValue('12'); await expect(page.locator('#appearance-effect-whirl')).toHaveValue('90');
-  await page.locator('#appearance-target').selectOption('stage'); await expect(page.locator('#appearance-effect-ghost')).toHaveValue('50');
-  const download = page.waitForEvent('download'); await page.locator('#export').click(); const files = unzipSync(await readFile((await (await download).path())!)); expect(JSON.parse(strFromU8(files['scene.json'])).effects.ghost).toBe(50);
+  await (await reveal(page, '#appearance-target')).selectOption('stage'); await (await reveal(page, '#appearance-effect-ghost')).fill('50'); await (await reveal(page, page.getByRole('button', { name: 'Apply appearance', exact: true }))).click();
+  await page.reload(); await (await reveal(page, '#scene-appearance summary')).click(); await expect(page.locator('#appearance-width')).toHaveValue('12'); await expect(page.locator('#appearance-effect-whirl')).toHaveValue('90');
+  await (await reveal(page, '#appearance-target')).selectOption('stage'); await expect(page.locator('#appearance-effect-ghost')).toHaveValue('50');
+  const download = page.waitForEvent('download'); await (await reveal(page, '#export')).click(); const files = unzipSync(await readFile((await (await download).path())!)); expect(JSON.parse(strFromU8(files['scene.json'])).effects.ghost).toBe(50);
   const before = await saved(page), invalid = structuredClone(before); invalid.workspace.pythonScene.sprites[0].pen.width = 0;
   await page.locator('#project-file').setInputFiles({ name: 'bad-pen.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(invalid)) });
   await expect(page.locator('#save-state')).toContainText('valid numeric properties'); expect((await saved(page)).workspace.pythonScene).toEqual(before.workspace.pythonScene);
-  await page.setViewportSize({ width: 390, height: 844 }); await page.locator('#scene-appearance').scrollIntoViewIfNeeded();
+  await page.setViewportSize({ width: 744, height: 1000 }); await page.locator('#scene-appearance').scrollIntoViewIfNeeded();
   expect(await page.locator('#scene-appearance').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
   await page.screenshot({ path: info.outputPath('appearance-mobile.png'), fullPage: true });
 });
 
 test('drawing example creates independent trails and colored stamps then erases with Space', async ({ page }, info) => {
-  const errors: string[] = []; page.on('pageerror', e => errors.push(e.message)); await page.goto('/'); await page.locator('#scene-drawing-example').click(); await run(page);
+  const errors: string[] = []; page.on('pageerror', e => errors.push(e.message)); await page.goto('/'); await (await reveal(page, '#scene-drawing-example')).click(); await run(page);
   await expect(page.locator('#scene-live')).toContainText('hidden'); await expect.poll(async () => Number(await page.locator('#stage').getAttribute('data-ink-count'))).toBeGreaterThan(490);
-  await page.locator('#scene-selection').selectOption('friend'); await expect(page.locator('#scene-live')).toContainText('x 100, y 0');
+  await (await reveal(page, '#scene-selection')).selectOption('friend'); await expect(page.locator('#scene-live')).toContainText('x 100, y 0');
   await page.screenshot({ path: info.outputPath('drawing-example.png'), fullPage: true });
   await key(page, 'Space'); await expect(page.locator('#status')).toHaveText('Event session running'); expect(errors).toEqual([]);
   await page.locator('#stop').click(); await page.locator('#scene-reset').click(); await expect(page.locator('#stage')).toHaveAttribute('data-ink-count', '0');

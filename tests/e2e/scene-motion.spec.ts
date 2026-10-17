@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
+import { reveal } from './shell';
 
 type B = { type: string; fields?: Record<string, string>; inputs?: Record<string, { block: B }>; next?: { block: B }; [key: string]: unknown };
 const block = (type: string, fields: Record<string, string> = {}, inputs: Record<string, B> = {}): B => ({ type, fields, inputs: Object.fromEntries(Object.entries(inputs).map(([key, b]) => [key, { block: b }])) });
@@ -19,16 +20,16 @@ async function point(page: Page, x: number, y: number) { await page.locator('#st
 
 test('motion example combines independent bouncing, pointer following and dialogue', async ({ page }, info) => {
   const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
-  await page.goto('/'); await page.locator('#scene-motion-example').click(); await run(page);
+  await page.goto('/'); await (await reveal(page, '#scene-motion-example')).click(); await run(page);
   await expect(page.locator('#stage-dialogue')).toContainText('Hold the pointer');
   const target = await point(page, -50, 50); await page.mouse.move(target.x, target.y); await page.mouse.down();
   await expect(page.locator('#scene-live')).toContainText('x -50, y 50');
   await page.keyboard.press('Space'); await expect(page.locator('#output')).toHaveText('True\n');
   await page.mouse.up(); await page.keyboard.press('Space'); await expect(page.locator('#output')).toHaveText('True\nFalse\n');
-  await page.locator('#scene-selection').selectOption('friend'); await expect.poll(async () => await page.locator('#scene-live').textContent()).not.toBe('Friend: x 70, y 0');
+  await (await reveal(page, '#scene-selection')).selectOption('friend'); await expect.poll(async () => await page.locator('#scene-live').textContent()).not.toBe('Friend: x 70, y 0');
   await page.screenshot({ path: info.outputPath('motion-example.png'), fullPage: true });
   expect(errors).toEqual([]); await page.locator('#stop').click(); await page.locator('#scene-reset').click();
-  await page.locator('#scene-selection').selectOption('player'); await expect(page.locator('#scene-x')).toHaveValue('-100'); await expect(page.locator('#stage-dialogue')).toBeEmpty();
+  await (await reveal(page, '#scene-selection')).selectOption('player'); await expect(page.locator('#scene-x')).toHaveValue('-100'); await expect(page.locator('#stage-dialogue')).toBeEmpty();
   await page.reload(); await expect(page.locator('#scene-rotation')).toHaveValue('left-right');
 });
 
@@ -45,7 +46,7 @@ test('pointer capture releases outside the stage and focus loss clears held stat
   await page.keyboard.press('Space'); await expect(page.locator('#output')).toHaveText('press\nrelease\nFalse\n');
   await page.mouse.move(center.x, center.y); await page.mouse.down(); await expect(page.locator('#output')).toHaveText('press\nrelease\nFalse\npress\n');
   await page.keyboard.press('Tab'); await page.mouse.up();
-  await page.locator('#event-name').fill('probe'); await page.locator('#event-send').click();
+  await (await reveal(page, '#event-name')).fill('probe'); await (await reveal(page, '#event-send')).click();
   await expect(page.locator('#output')).toHaveText('press\nrelease\nFalse\npress\nFalse\n');
   await expect(page.locator('#status')).toHaveText('Event session running'); await page.locator('#stop').click();
 });
@@ -69,17 +70,17 @@ test('speech timers cannot erase newer dialogue and hidden or destroyed sprites 
 
 test('rotation styles preserve art orientation and survive Undo and reload', async ({ page }) => {
   await page.goto('/'); await page.locator('#project-file').setInputFiles('tests/fixtures/scene/sequential.json');
-  await page.locator('#scene-direction').fill('180'); await page.locator('#scene-rotation').selectOption('left-right'); await page.getByRole('button', { name: 'Apply sprite', exact: true }).click();
+  await (await reveal(page, '#scene-direction')).fill('180'); await (await reveal(page, '#scene-rotation')).selectOption('left-right'); await page.keyboard.press('Enter');
   const pixel = (x: number) => page.locator('#stage').evaluate((canvas, x) => Array.from((canvas as HTMLCanvasElement).getContext('2d')!.getImageData(x, 159, 1, 1).data), x);
   await expect.poll(() => pixel(125)).toEqual([232, 185, 79, 255]);
-  await page.locator('#scene-rotation').selectOption('none'); await page.getByRole('button', { name: 'Apply sprite', exact: true }).click();
+  await (await reveal(page, '#scene-rotation')).selectOption('none'); await page.keyboard.press('Enter');
   await expect.poll(() => pixel(155)).toEqual([232, 185, 79, 255]);
   await page.getByRole('button', { name: 'Undo', exact: true }).click(); await expect(page.locator('#scene-rotation')).toHaveValue('left-right');
   await page.reload(); await expect(page.locator('#scene-rotation')).toHaveValue('left-right'); await expect.poll(() => pixel(125)).toEqual([232, 185, 79, 255]);
 });
 
 test('long dialogue stays readable within a narrow stage and caption', async ({ page }, info) => {
-  await page.setViewportSize({ width: 390, height: 844 });
+  await page.setViewportSize({ width: 744, height: 1000 });
   const message = 'M'.repeat(240);
   await project(page, [['key:a', block('scene_say', { STYLE: 'say' }, { SPRITE: ref(), TEXT: text(message) })]]);
   await run(page); await page.locator('#stage').focus(); await page.keyboard.press('a');

@@ -59,12 +59,23 @@ Implementation decisions: session-only key memory; OpenAI as the initial provide
 
 Acceptance: the helper can explain a failing program and suggest a debugging strategy, but requests to write code, add blocks, draw assets, edit files, or solve the project automatically leave the project unchanged. Users can disable the helper and clear their key at any time.
 
-## 5. Prepare a release
+## 5. Make programs easier to find and debug
+
+- [x] Search the block library and existing project blocks, including current functions, variables, modules and sprite defaults; keyboard insertion and Undo.
+- [x] Pause, step into/over/out and resume real Python, with captured source, block highlighting, call stacks and bounded local/global values.
+
+See [block search and Python debugging](debugging-and-search.md) for event scheduling, paused clocks, hosting requirements and verification. Expression-level stepping, breakpoints and value editing remain later extensions.
+
+## 6. Prepare a release
 
 - Owner chooses project license and confirms product name.
 - Audit dependency and runtime notices.
 - Define target devices and startup/memory budgets.
 - Design untrusted-code isolation before any shared-project import or public gallery.
 - Choose hosting and privacy requirements before accounts or analytics.
+
+## 7. Learner experience: one-screen editor, guidance, academy, assets
+
+Track A (the one-screen editor: shell, Starter/Builder/Pro levels, sprite tray and inspector, hat-block events and make-buttons, tablet pass) is implemented; its physical-iPad measurements are deferred, with a desktop baseline recorded (see the [implementation record](learner-experience-plan.md#210-implementation-record)). Track B (guidance: 55 reviewed recipes with test-rendered previews, a local wish matcher, an example gallery, six checked guided builds, Help-tab nudges, and AI assist that may only route to a reviewed recipe ID) is implemented; timed sessions with new testers for the guided builds remain (see the [Track B record](learner-experience-plan.md#38-implementation-record)). Tracks C and D are proposed, not started. The [learner experience plan](learner-experience-plan.md) measures the current page (about three tablet screens tall, 21 flat palette categories, dialog-only handler creation) and sequences four tracks: a fixed one-screen shell with Starter/Builder/Pro levels and hat-block events; intent recipes, an example gallery, guided game builds and recipe-routing AI assist; a Beast-Academy-style course taught through game building from events and loops to recursion and algorithms, with automatic checking; and referenced stock assets with animated characters, tilesets, a sound-effect generator and music loops. The learner pilot above should run against the new shell.
 
 Each phase can change based on learner feedback. This is sequencing, not a delivery-date commitment.

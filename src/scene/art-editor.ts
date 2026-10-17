@@ -222,6 +222,8 @@ export function installArtEditor(workspace: Blockly.WorkspaceSvg, selectedSprite
   el('art-close').addEventListener('click', () => dialog.close()); dialog.addEventListener('close', stopPreview);
   return {
     open(target?: {kind:'costume'|'backdrop';id:string}) { dialog.showModal(); if (!dirty) void attempt(async () => { spriteSelect.value = selectedSprite(); if (target) kind = target.kind; await load(target?.id ?? (identity || (kind === 'costume' ? scene().sprites.find(s => s.id === selectedSprite())?.costume ?? 'bird' : scene().backdrop ?? 'backdrop_meadow'))); }); else { paint(); if (target) el('art-state').textContent = 'Your unsaved artwork draft is still open. Save or discard it before changing artwork.'; } },
+    /** Open on a blank costume draft for the selected sprite (the sprite tray's Paint button). */
+    paint() { dialog.showModal(); if (dirty) { paint(); el('art-state').textContent = 'Your unsaved artwork draft is still open. Save or discard it before starting a new costume.'; return; } void attempt(() => { spriteSelect.value = selectedSprite(); kind = 'costume'; newDraft(); }); },
     close() { dialog.close(); stopPreview(); },
     dispose() { stopPreview(); loadToken++; onionToken++; dialog.remove(); },
   };

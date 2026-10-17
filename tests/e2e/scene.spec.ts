@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { unzipSync, strFromU8 } from 'fflate';
+import { reveal, menu } from './shell';
 
 const sceneFile = path.resolve('tests/fixtures/scene/sequential.json');
 async function saved(page: Page) { return page.evaluate(() => JSON.parse(localStorage.getItem('python-blocks.project.v1')!).workspace.pythonScene); }
@@ -11,13 +12,13 @@ async function stagePoint(page: Page, x: number, y: number) { await page.locator
 
 test('authors, duplicates, drags, and persists the starting scene with Undo', async ({ page }, info) => {
   const errors: string[] = []; page.on('pageerror', e => errors.push(e.message)); await page.goto('/');
-  await page.getByRole('button', { name: 'Add sprite', exact: true }).click();
-  await page.locator('#scene-name').fill('Hero'); await page.locator('#scene-x').fill('-100'); await page.locator('#scene-size').fill('125');
-  await page.getByRole('button', { name: 'Apply sprite', exact: true }).click();
-  await page.getByRole('button', { name: 'Duplicate sprite', exact: true }).click();
+  await (await reveal(page, page.getByRole('button', { name: 'Add sprite', exact: true }))).click();
+  await (await reveal(page, '#scene-name')).fill('Hero'); await (await reveal(page, '#scene-x')).fill('-100'); await (await reveal(page, '#scene-size')).fill('125');
+  await page.keyboard.press('Enter');
+  await (await reveal(page, page.getByRole('button', { name: 'Duplicate sprite', exact: true }))).click();
   await expect.poll(async () => (await saved(page)).sprites.length).toBe(2);
   const before = await saved(page); expect(before.sprites).toHaveLength(2); expect(before.sprites[0].id).not.toBe(before.sprites[1].id);
-  await page.locator('#scene-selection').selectOption(before.sprites[0].id);
+  await (await reveal(page, '#scene-selection')).selectOption(before.sprites[0].id);
   const start = await stagePoint(page, -100, 10), end = await stagePoint(page, -130, 70);
   await page.mouse.move(start.x, start.y); await page.mouse.down(); await page.mouse.move(end.x, end.y, { steps: 5 }); await page.mouse.up();
   await expect(page.locator('#scene-y')).toHaveValue('60');
@@ -28,22 +29,22 @@ test('authors, duplicates, drags, and persists the starting scene with Undo', as
 });
 
 test('two sprites run independently with keyboard and click input and a fresh restart', async ({ page }, info) => {
-  await page.goto('/'); await page.getByRole('button', { name: 'Sprite example', exact: true }).click(); await run(page, true);
+  await page.goto('/'); await (await reveal(page, '#scene-example')).click(); await run(page, true);
   const point = await stagePoint(page, -100, 0); await page.mouse.click(point.x, point.y);
   await expect(page.locator('#output')).toContainText('Hello from Player!');
   await page.keyboard.down('ArrowRight'); await page.keyboard.down('ArrowRight'); await page.keyboard.up('ArrowRight'); await expect(page.locator('#scene-live')).toContainText('x -80');
   await page.keyboard.down('Space'); await expect(page.locator('#output')).toContainText('True'); await page.keyboard.up('Space');
-  await page.locator('#scene-selection').selectOption('friend'); await expect.poll(async () => (await page.locator('#scene-live').textContent()) !== 'Friend: x 100, y 0').toBe(true);
+  await (await reveal(page, '#scene-selection')).selectOption('friend'); await expect.poll(async () => (await page.locator('#scene-live').textContent()) !== 'Friend: x 100, y 0').toBe(true);
   await page.screenshot({ path: info.outputPath('sprite-running.png'), fullPage: true });
   await page.locator('#stop').click(); await expect(page.locator('#scene-add')).toBeDisabled();
   expect((await saved(page)).sprites[0].x).toBe(-100);
-  await page.locator('#scene-selection').selectOption('player'); await run(page, true); await expect(page.locator('#scene-live')).toContainText('x -100');
+  await (await reveal(page, '#scene-selection')).selectOption('player'); await run(page, true); await expect(page.locator('#scene-live')).toContainText('x -100');
   await page.locator('#stop').click(); await page.locator('#scene-reset').click(); await expect(page.locator('#scene-x')).toHaveValue('-100');
 });
 
 test('runtime transforms stay out of saved projects and scene assets travel in source exports', async ({ page }) => {
   await open(page); await run(page); await expect(page.locator('#scene-live')).toContainText('x -80'); expect((await saved(page)).sprites[0].x).toBe(-100);
-  const downloading = page.waitForEvent('download'); await page.locator('#export').click(); const download = await downloading;
+  const downloading = page.waitForEvent('download'); await (await reveal(page, '#export')).click(); const download = await downloading;
   const data = await readFile((await download.path())!); const files = unzipSync(data);
   expect(JSON.parse(strFromU8(files['scene.json'])).sprites[0].x).toBe(-100); expect(strFromU8(files['program.py'])).toContain('_pb_scene.load("scene.json")');
   await run(page); await expect(page.locator('#output')).toHaveText('-80\n');
@@ -51,9 +52,9 @@ test('runtime transforms stay out of saved projects and scene assets travel in s
 });
 
 test('sprite rename and deletion retain stable references and Undo repairs the program', async ({ page }) => {
-  await open(page); await page.locator('#scene-name').fill('Captain'); await page.getByRole('button', { name: 'Apply sprite', exact: true }).click();
+  await open(page); await (await reveal(page, '#scene-name')).fill('Captain'); await page.keyboard.press('Enter');
   await expect(page.locator('#python')).toContainText('_pb_sprites.named("Captain")');
-  await page.locator('#scene-delete').click(); await expect(page.locator('#run')).toBeDisabled(); await expect(page.locator('#diagnostics')).toContainText('existing scene sprite');
+  await (await reveal(page, '#scene-delete')).click(); await expect(page.locator('#run')).toBeDisabled(); await expect(page.locator('#diagnostics')).toContainText('existing scene sprite');
   await page.getByRole('button', { name: 'Undo', exact: true }).click(); await page.reload(); await run(page); await expect(page.locator('#output')).toHaveText('-80\n');
 });
 
@@ -70,8 +71,8 @@ test('imports image costumes and preserves their pixels through save and reload'
 });
 
 test('input shortcuts select authored sprites and typing in forms does not control the stage', async ({ page }) => {
-  await page.goto('/'); await page.locator('#scene-example').click(); await run(page, true);
-  await page.locator('#scene-events').click(); await page.locator('#handler-input-source').selectOption('click:player'); await expect(page.locator('#handler-event')).toHaveValue('click:player');
+  await page.goto('/'); await (await reveal(page, '#scene-example')).click(); await run(page, true);
+  await menu(page, 'Event handlers'); await page.locator('#handler-input-source').selectOption('click:player'); await expect(page.locator('#handler-event')).toHaveValue('click:player');
   await page.locator('#handler-name').fill('my_handler'); await page.keyboard.press('ArrowRight'); await page.locator('#events-close').click(); await expect(page.locator('#scene-live')).toContainText('x -100');
   await page.locator('#stop').click();
 });
@@ -84,7 +85,7 @@ test('invalid scene imports preserve current work and later Undo remains usable'
   brokenImage.workspace.pythonScene.assets = [{ id: 'broken', name: 'Broken', width: 2, height: 2, data: `data:image/png;base64,${pngHeader.toString('base64')}` }];
   await page.locator('#project-file').setInputFiles({ name: 'broken-image.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(brokenImage)) });
   await expect(page.locator('#save-state')).toContainText('not a readable PNG'); await expect(page.locator('#scene-name')).toHaveValue('Player');
-  await page.locator('#scene-x').fill('90'); await page.getByRole('button', { name: 'Apply sprite', exact: true }).click(); await page.getByRole('button', { name: 'Undo', exact: true }).click(); await expect(page.locator('#scene-x')).toHaveValue('-100');
+  await (await reveal(page, '#scene-x')).fill('90'); await page.keyboard.press('Enter'); await page.getByRole('button', { name: 'Undo', exact: true }).click(); await expect(page.locator('#scene-x')).toHaveValue('-100');
   await run(page); await expect(page.locator('#output')).toHaveText('-80\n');
 });
 
@@ -95,7 +96,7 @@ test('leaving the focused stage clears held keys in the Python runtime', async (
   project.workspace.procedures.find((p: { id: string }) => p.id === 'key-state').handler.event = 'probe';
   await page.goto('/'); await page.locator('#project-file').setInputFiles({ name: 'keys.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(project)) }); await run(page, true);
   await page.locator('#stage').focus(); await page.keyboard.down('ArrowRight'); await expect(page.locator('#scene-live')).toContainText('x -80');
-  await page.locator('#event-name').fill('probe'); await page.locator('#event-send').click(); await expect(page.locator('#output')).toHaveText('False\n');
+  await (await reveal(page, '#event-name')).fill('probe'); await (await reveal(page, '#event-send')).click(); await expect(page.locator('#output')).toHaveText('False\n');
   await page.keyboard.up('ArrowRight'); await page.locator('#stage').focus(); await page.keyboard.press('ArrowRight'); await expect(page.locator('#scene-live')).toContainText('x -60'); await page.locator('#stop').click();
 });
 
@@ -108,8 +109,8 @@ test('sprite runtime failures retain their Python details and highlight the oper
 });
 
 test('scene properties remain usable at a narrow viewport', async ({ page }, info) => {
-  await page.setViewportSize({ width: 390, height: 844 }); await open(page);
-  await page.locator('#scene-name').fill('Little bird'); await page.getByRole('button', { name: 'Apply sprite', exact: true }).click();
+  await page.setViewportSize({ width: 744, height: 1000 }); await open(page);
+  await (await reveal(page, '#scene-name')).fill('Little bird'); await page.keyboard.press('Enter');
   await expect(page.locator('#scene-selection option:checked')).toHaveText('Little bird');
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true);
   await page.screenshot({ path: info.outputPath('sprite-mobile.png'), fullPage: true });

@@ -1,0 +1,129 @@
+{
+ "id": "catch-the-star",
+ "title": "Catch the star",
+ "level": "starter",
+ "minutes": 15,
+ "order": 1,
+ "summary": "Fly a bird with the arrow keys and catch a star five times.",
+ "ideas": [
+  "key events",
+  "overlap",
+  "score",
+  "random position"
+ ],
+ "starter": {
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 19,
+  "workspace": {
+   "blocks": {
+    "languageVersion": 0,
+    "blocks": []
+   },
+   "pythonScene": {
+    "version": 1,
+    "background": "#fdfdf9",
+    "assets": [],
+    "sprites": [
+     {
+      "id": "bird",
+      "name": "Bird",
+      "x": -170,
+      "y": -60,
+      "direction": 0,
+      "size": 100,
+      "layer": 0,
+      "visible": true,
+      "costume": "bird"
+     }
+    ],
+    "backdrop": "backdrop_meadow"
+   }
+  }
+ },
+ "steps": [
+  {
+   "text": "Add a star: press Sprite library under the stage and choose Star.",
+   "check": {
+    "costume": "star"
+   },
+   "highlight": {
+    "element": "#scene-stock"
+   }
+  },
+  {
+   "text": "Select the bird. Make it fly with the arrow keys: from Events drag “when game starts”, then from Motion drag “control sprite with arrows” into it.",
+   "check": {
+    "handler": "start",
+    "contains": [
+     "scene_control"
+    ]
+   },
+   "recipe": "arrow-keys",
+   "select": "bird",
+   "highlight": {
+    "category": "events"
+   }
+  },
+  {
+   "text": "Run it. Click the stage and use the arrow keys. Can you reach the star?",
+   "check": {
+    "ran": true
+   }
+  },
+  {
+   "text": "When the bird overlaps the star, add 1 to the score and move the star somewhere random.",
+   "check": {
+    "handler": "overlap",
+    "contains": [
+     "game_change",
+     "scene_go"
+    ]
+   },
+   "recipe": "collect-coin",
+   "select": "bird",
+   "highlight": {
+    "category": "game"
+   }
+  },
+  {
+   "text": "Show the score: when the game starts, set the score to 0 and show it on the screen.",
+   "check": {
+    "blocks": [
+     "game_show"
+    ]
+   },
+   "recipe": "keep-score",
+   "highlight": {
+    "category": "game"
+   }
+  },
+  {
+   "text": "Win! When the game starts, wait until the score is 5, then finish the game as a win.",
+   "check": {
+    "blocks": [
+     "game_finish"
+    ]
+   },
+   "recipe": "win-screen",
+   "highlight": {
+    "category": "game"
+   }
+  },
+  {
+   "text": "Play your game and catch five stars.",
+   "check": {
+    "finished": "won"
+   }
+  }
+ ],
+ "finish": {
+  "text": "You made a catching game!",
+  "remix": [
+   "Make the star glide away from the bird when it gets close.",
+   "Add a 20 second countdown so you must hurry.",
+   "Paint your own bird in Artwork & frames."
+  ]
+ },
+ "next": "dodge-the-balls"
+}

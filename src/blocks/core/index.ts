@@ -1,3 +1,5 @@
+// Patches below modify Blockly's built-in blocks, so load them first.
+import 'blockly/blocks';
 import * as Blockly from 'blockly/core';
 
 Blockly.common.defineBlocksWithJsonArray([

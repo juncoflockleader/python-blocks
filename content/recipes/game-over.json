@@ -1,0 +1,59 @@
+{
+  "id": "game-over",
+  "title": "Game over and play again",
+  "group": "game",
+  "level": "starter",
+  "concepts": [
+    "game",
+    "collision"
+  ],
+  "phrases": [
+    "game over",
+    "lose the game",
+    "play again",
+    "try again screen",
+    "when I lose"
+  ],
+  "needs": {
+    "sprites": 2
+  },
+  "steps": [
+    {
+      "say": "Select the player. When it overlaps the enemy, finish the game as a loss."
+    },
+    {
+      "say": "The result screen has a Play again button that restarts from the beginning."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "overlap",
+        "other": "$other"
+      },
+      "stack": [
+        {
+          "type": "game_finish",
+          "fields": {
+            "WON": "FALSE"
+          },
+          "inputs": {
+            "TEXT": {
+              "shadow": {
+                "type": "text",
+                "fields": {
+                  "TEXT": "Game over! Try again."
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "game-over.webm",
+  "tryNext": [
+    "lives",
+    "win-screen"
+  ]
+}

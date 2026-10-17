@@ -1,0 +1,107 @@
+{
+  "id": "conversation",
+  "title": "Two characters talk",
+  "group": "look",
+  "level": "starter",
+  "concepts": [
+    "sprite",
+    "wait",
+    "sequence"
+  ],
+  "phrases": [
+    "two characters talk",
+    "have a conversation",
+    "talk to each other",
+    "dialogue",
+    "answer back"
+  ],
+  "needs": {
+    "sprites": 2
+  },
+  "steps": [
+    {
+      "say": "Select the first speaker; the other sprite answers."
+    },
+    {
+      "say": "When the game starts, the first sprite says a line for two seconds, then the other answers. Each “say for” waits, so they take turns."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "scene_say_for",
+          "fields": {
+            "STYLE": "say"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "TEXT": {
+              "shadow": {
+                "type": "text",
+                "fields": {
+                  "TEXT": "Hello! How are you?"
+                }
+              }
+            },
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "2"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_say_for",
+          "fields": {
+            "STYLE": "say"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$other"
+                }
+              }
+            },
+            "TEXT": {
+              "shadow": {
+                "type": "text",
+                "fields": {
+                  "TEXT": "Great, thanks!"
+                }
+              }
+            },
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "2"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "conversation.webm",
+  "tryNext": [
+    "scene-change-later",
+    "play-sound"
+  ]
+}

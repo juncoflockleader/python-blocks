@@ -3,9 +3,10 @@ import { mkdir, writeFile } from 'node:fs/promises';
 import { join, dirname, resolve } from 'node:path';
 import { spawn } from 'node:child_process';
 import { unzipSync } from 'fflate';
+import { reveal } from './shell';
 
 export async function exported(page: Page) {
-  const download = page.waitForEvent('download'); await page.locator('#export-playable').click();
+  const download = page.waitForEvent('download'); await (await reveal(page, '#export-playable')).click();
   const result = await download, chunks: Buffer[] = [];
   for await (const chunk of (await result.createReadStream())!) chunks.push(Buffer.from(chunk));
   expect(result.suggestedFilename()).toBe('python-blocks-playable.zip');

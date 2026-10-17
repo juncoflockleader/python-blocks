@@ -1,0 +1,82 @@
+{
+  "id": "draw-square",
+  "title": "Draw a square",
+  "group": "draw",
+  "level": "starter",
+  "concepts": [
+    "loop",
+    "sequence"
+  ],
+  "phrases": [
+    "draw a square",
+    "make a box shape",
+    "square with the pen",
+    "four sides",
+    "draw lines"
+  ],
+  "steps": [
+    {
+      "say": "A square has four equal sides and four right-angle turns."
+    },
+    {
+      "say": "Repeat 4 times: move 100 steps, then turn right 90 degrees."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "controls_repeat_ext",
+          "inputs": {
+            "TIMES": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "4"
+                }
+              }
+            },
+            "DO": {
+              "block": {
+                "type": "pen_move",
+                "inputs": {
+                  "STEPS": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "100"
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "pen_turn",
+                    "inputs": {
+                      "DEGREES": {
+                        "shadow": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "90"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "draw-square.webm",
+  "tryNext": [
+    "draw-star",
+    "spiral"
+  ]
+}

@@ -1,0 +1,598 @@
+# Learner experience plan: one-screen editor, guidance, academy and assets
+
+Status: Track A (one-screen editor) implemented on 2026-10-15. The owner accepted the desktop baseline in place of the physical-iPad run for now and deferred that measurement; see [section 2.10](#210-implementation-record). Track B (guidance) implemented on 2026-10-15; timed sessions with new testers are still needed for its guided builds, see [section 3.8](#38-implementation-record). Tracks C and D remain proposals. UI/UX mocks for all four tracks are on a private design canvas: https://claude.ai/artifact/BaCsQC2dTj5s4vAwErxBgZ (board A1 is interactive; share from the page before sending the link to anyone else). This plan sits on top of the completed language, 2D, bridge, search/debug and assist work recorded in the [roadmap](roadmap.md). It covers four tracks the owner asked for:
+
+| Track | Problem today | Outcome this plan targets |
+| --- | --- | --- |
+| A. One-screen editor | Everything exists but is spread over a page almost three tablet screens tall, with 183 buttons and 21 flat toolbox categories. | A fixed app shell that fits an iPad in landscape, with tools disclosed progressively. |
+| B. Guidance | A child who wants "the enemy to chase me" cannot find the path from that wish to blocks. The AI helper only answers questions the child already knows how to ask. | Intent-based recipes, a real example gallery, step-by-step guided game builds, and an AI helper that routes to reviewed recipes. |
+| C. Academy | No curriculum. The language already supports sequence through recursion and higher-order functions, but nothing teaches it. | A Beast-Academy-style course taught through game building, from events and loops to recursion and algorithms, with automatic checking. |
+| D. Assets | 20 single-frame costumes, 6 backdrops, 4 tiles, 7 synthesized instruments, 3 burst effects. No animated characters, no sound effects, no music loops. | Animated character sets, tilesets, parallax backdrops, a sound-effect generator and library, music loops, and richer runtime effects, delivered through a referenced asset pipeline. |
+
+The tracks depend on each other in one direction: A unblocks B and C (there is nowhere to put a lesson panel or recipe drawer in the current page), and D feeds B and C (guided builds and academy games need characters that can walk and jump). Section 6 gives the sequencing.
+
+## 1. Evidence from the current build
+
+Measured on the development build on 2026-10-15 in Chromium emulating a 1024 × 768 viewport (iPad landscape, before browser chrome). The relevant source is the shell in [src/main.ts](../src/main.ts), the layout in [src/style.css](../src/style.css), the toolbox in [src/blocks/index.ts](../src/blocks/index.ts) and the scene inspector in [src/scene/editor.ts](../src/scene/editor.ts).
+
+| Region | Measurement |
+| --- | --- |
+| Page height | 2224 px, about 2.9 screens. The page scrolls; the Blockly workspace also scrolls, so a wheel or finger over the workspace stops page scrolling. |
+| Header and hero intro | 246 px before any control. The "Small blocks. Big possibilities." section is marketing copy on an editing screen. |
+| Project bar, save notice, Learner pilot, AI assist | About 300 px of mostly collapsed panels that every learner sees before the workspace. |
+| Blocks panel heading | 107 px, because Functions & variables, Events, Modules, Find blocks and Clear search wrap onto three rows at this width. |
+| Workspace top | y ≈ 700 px. The first block is below the fold on an iPad. |
+| Stage panel | 1122 px tall: the 480 × 320 canvas plus the starting-scene toolbar, sprite toolbar, navigation browser, watchers, a 432 px property form, three collapsed editors and two asset toolbars. |
+| Python panel | Starts at y = 1683 px. The product's core idea, seeing Python beside blocks, is two screens away from the blocks. |
+| Program output and errors | Appended below the right column after a run. A print or an error is invisible unless the learner scrolls. |
+| Buttons in the document at load | 183. Dialogs: 11. |
+| Example entry points | 11 buttons in four places: Reset example in the project bar; Sprite, Motion, Story, Drawing, Behavior, Platformer, Worlds and Star game in the scene toolbar; Music example in the audio controls; Input & color example after them. Each replaces the project silently with no description, preview or "what to try". |
+
+Discoverability findings that measurements do not show:
+
+- The toolbox lists 21 categories in one flat column, starting with Program, Sensing & input, Sounds, Game, Worlds, Sprites, Motion. Loops, Logic and Numbers are tenth to twelfth. The order is roughly the reverse of a learning path.
+- Event handlers are not blocks a learner drags. The Events category holds a **Manage handlers** button that opens a dialog with handler kind, sprite, payload parameters and delivery order. A Scratch learner expects to drag "when key pressed" onto the canvas. The same is true for variables and functions, which start from **Manage variables** and **Manage functions** buttons in the flyout.
+- Advanced tools (Function values, Modules, Collections, Debug code, Learner pilot, AI assist, Export playable, Watch sprite values) are presented at the same level as Run and Loops. Nothing distinguishes a first session from an expert session.
+- Button text is 11 px and buttons are about 35 px tall, below the 44 pt touch target Apple recommends. Block text is 12 px at 0.9 scale.
+- The AI helper answers with one concept and one guiding question from the [reviewed catalog](ai-assist.md). It cannot say "use *when overlap* with *point toward*", which is the kind of help a stuck child needs.
+
+## 2. Track A: one-screen editor
+
+### 2.1 Goals and non-goals
+
+Goals: every editing session fits a 1024 × 700 logical viewport without page scrolling; a first-time learner sees only what a first project needs; the three core surfaces (blocks, stage, Python) are each one tap away; touch targets and block sizes suit a tablet; keyboard and screen-reader paths from the existing accessibility work are preserved.
+
+Non-goals: phone-portrait authoring (play-only is fine on phones), a native app, redesigning the artwork, sound and world dialogs beyond fitting them in the viewport, changing any block semantics or the saved project format.
+
+### 2.2 Target devices and budget
+
+| Device class | Logical viewport after browser chrome | Decision |
+| --- | --- | --- |
+| iPad 10.2" / 10th gen, landscape | about 1080 × 700 | Primary design target. |
+| iPad Air / Pro 11", landscape | about 1180 × 740 | Must fit with room to spare. |
+| Chromebook / laptop | 1280 × 650 and up | Same shell; Python can show side by side with the stage. |
+| Tablet portrait | about 810 × 1000 | Supported in a stacked variant: stage above a shorter workspace, Python and inspector as sheets. |
+| Phone | under 600 wide | Play view only; editing shows a "turn your tablet sideways or use a larger screen" message. |
+
+Two risks must be measured on a real iPad before this track is called done, because emulation cannot show them: Pyodide startup time and memory in iPadOS Safari, and whether the cross-origin isolation headers the debugger needs work under the host chosen for release. The roadmap's release phase already lists device and memory budgets; this track supplies the numbers.
+
+### 2.3 Layout
+
+```text
+┌──────────────────────────────────────────────────────────────────────┐
+│ ◇ My star game   [Undo][Redo]        [▶ Run] [■ Stop]   [Level ▾] [⋯] │ 48 px top bar
+├──────────────┬────────────────────────────┬──────────────────────────┤
+│ Palette      │ Workspace                  │ Stage 480×320 (3:2)      │
+│ (icons +     │                            │ fills column width       │
+│  labels,     │                            ├──────────────────────────┤
+│  level-      │                            │ Sprite tray: ○ ○ ○ [+]   │
+│  filtered)   │                            ├──────────────────────────┤
+│              │                            │ Tabs: Sprite | Python |  │
+│              │                            │       Output | Help      │
+│              │                            │ (tab body scrolls)       │
+│ [More…]      │ [Find blocks]  [zoom ± ⌖]  │                          │
+└──────────────┴────────────────────────────┴──────────────────────────┘
+```
+
+Rules that make the layout hold:
+
+- The shell is `height: 100dvh; display: grid` with no page scroll. Only the workspace, the palette flyout and the active tab body scroll. The body gets `overscroll-behavior: none` and `touch-action: manipulation` so a tablet never rubber-bands the page while dragging blocks.
+- The right column width is clamped so the stage is at least 360 px wide and at most 40 % of the viewport. At 1024 wide the stage is about 384 × 256, the workspace about 560 px wide, and the palette 80 px (icon plus label) expanding to a flyout on tap.
+- The top bar replaces the header, hero intro and project bar. Run and Stop are the largest controls on screen. Save, Open, Export Python, Export playable, Reset, Debug, Learner pilot and AI settings move into the ⋯ menu; the Level control (section 2.5) sits beside it.
+- The Python view becomes a tab in the right column with a **side by side** toggle that splits the workspace horizontally when the viewport is at least 1280 px wide. Live highlighting of the generated line for the selected block is the reason to keep it one tap away, not two screens away.
+- Output, printed text, tracebacks, the test-event form and watch readouts live in the Output tab. A run that prints or fails switches to that tab automatically and shows a one-line badge on the stage ("Let's try again · tap to see") when another tab is active.
+- Large stage, Artwork & frames, Sounds & music, Worlds & tilemaps and the stock library remain modal dialogs, each sized to `100dvh - 24px` with their own internal scrolling. They already mostly do this.
+
+### 2.4 Information architecture: today versus proposed
+
+| Today | Proposed |
+| --- | --- |
+| Header, hero, project bar, pilot panel, assist panel stacked above the editor | One 48 px top bar; pilot and assist in the ⋯ menu and in the Help tab |
+| 21 flat toolbox categories | 8 categories at the Starter level, 14 at Builder, all 21 at Pro; see 2.5 |
+| Events through a Manage handlers dialog | Hat blocks in the Events palette; the dialog remains as the advanced editor (2.6) |
+| Manage variables / Manage functions buttons open a shared dialog | **Make a variable** and **Make a function** flyout buttons that ask one question (the name) and insert the block; the full dialog stays behind **Edit…** |
+| Scene inspector is a 1100 px form under the stage | Sprite tray with thumbnails plus a compact Sprite tab (name, costume, x, y, size, direction, visible) and a **More settings** sheet for world, layer, rotation, pen, data, motion and watchers (2.7) |
+| 11 example buttons in four places | One **Examples** gallery (section 3.3) opened from the top bar and from the empty-workspace card |
+| Find blocks bar always visible above the workspace | A search button in the workspace corner that expands into the existing search; the intent search of section 3.2 shares it |
+| Output below the page | Output tab plus a stage badge |
+| Audio enable/mute, touch controls, questions scattered under the stage | A small stage toolbar: audio, touch controls toggle, large stage; questions render over the stage as they already do in the play view |
+
+### 2.5 Progressive disclosure through levels
+
+Scratch stays discoverable by having few categories; MakeCode hides an **Advanced** group; the academy in section 4 needs the same mechanism to unlock tools unit by unit. Add a `level` field to editor state (not to the project) with three values. The palette, top-bar menu and sprite settings filter on it. A project that uses a block above the current level shows a one-time prompt to switch levels, so opening a shared project never hides its blocks.
+
+| Level | Palette categories | Hidden tools |
+| --- | --- | --- |
+| Starter (default for new browsers) | Events, Motion, Looks, Sound, Control (repeat, if, wait), Draw, Variables, Game | Debug, Modules, Function values, Collections, Physics, Worlds, Sensing beyond key/pointer/overlap, watchers, pilot, assist settings, Export playable |
+| Builder | Starter plus Logic, Numbers, Text, Functions, Sensing & input, Physics | Modules, Function values, Collections, Worlds, Debug |
+| Pro | Everything, in today's order with Loops/Logic/Numbers moved above the scene categories | Nothing |
+
+Starter's "Control" category is a presentation grouping of existing blocks (repeat, while, if, wait, break/continue), not a new block set. Category contents at each level are a single table in a new `src/ui/levels.ts`, so the academy can reference the same identifiers.
+
+### 2.6 Events, variables and functions without a dialog
+
+Handlers are real Python functions registered with the runtime, with payload parameters and an owner; the dialog exists because those details matter. The fix is to give the common cases a block-shaped entry that fills the details in:
+
+- Add hat blocks `when [key ▾] pressed`, `when [sprite ▾] clicked`, `when [sprite ▾] overlaps [sprite ▾]`, `when game starts`, `when [sprite ▾] updates`, `when countdown ends`, `when I receive [message]`. Dropping one onto the workspace creates the handler through the existing event editor code path (same owner, payload names and delivery order rules), then attaches the hat to it. The Events palette lists one hat per kind plus existing handlers.
+- The Starter palette shows the four most common hats. Builder and Pro show all of them, and the **Manage handlers** button stays for payload renames and ordering.
+- **Make a variable** and **Make a function** become flyout buttons that prompt for a name with a native `prompt`-style sheet and then insert the set/get or call block. Blockly's flyout buttons are already in use, so this is a change to [src/language/editor.ts](../src/language/editor.ts) rather than new infrastructure.
+
+Generated Python does not change. A learner who later opens the Python tab sees the same `@handler` registration the dialog produced.
+
+### 2.7 Sprite tray and inspector
+
+- A horizontal tray under the stage shows thumbnails (the navigation browser already renders them) with the selected sprite outlined, plus **+** for the stock library and **Paint** for a new costume. Tapping a sprite selects it in the palette defaults, the inspector and the stage, as today.
+- The Sprite tab holds the seven fields a learner changes constantly. Each field commits on change with Undo, replacing the **Apply sprite** submit step, which is a common point of confusion in form-based editors.
+- **More settings** opens a sheet with the current property grid, world membership, rotation style, pen and effects, data and behaviors, game motion, and watchers. Nothing is removed; it is layered.
+- Stage drag placement, Find on stage and Go to script remain and gain toolbar icons.
+
+### 2.8 Touch and tablet specifics
+
+- Minimum 44 × 44 px hit areas for every button, tab, tray thumbnail and flyout button. Base font 14 px for controls, 13 px for block text at scale 1.0 on tablets (`startScale` by media query).
+- Blockly options: `zoom.pinch: true`, larger scrollbars, `trashcan` replaced by drag-to-palette deletion plus an explicit delete in the block context menu (long press). Keep `move.wheel` for laptops.
+- Touch controls auto-show on touch devices when the running program registered a key handler, and hide otherwise. Keyboard focus hints ("click the stage to use keys") only appear when a physical keyboard is present (`navigator.maxTouchPoints === 0` or a keydown has been observed).
+- Number fields use `inputmode="decimal"`; name fields disable autocorrect.
+- The art editor and world editor already set `touch-action: none` on their canvases; verify two-finger scroll inside those dialogs still works.
+- Verify on a physical iPad: Pyodide first load and warm start time, memory headroom with a 16 MB project, Web Audio unlock on the first Run tap, microphone permission flow, file save/open through Files, and the Playable ZIP flow (which may need a "Share" sheet alternative to download).
+
+### 2.9 Implementation phases and acceptance
+
+| Phase | Work | Files touched |
+| --- | --- | --- |
+| A1 Shell | Top bar, grid shell, tabs, Output tab, stage toolbar, menu; delete hero and project bar | `src/main.ts`, `src/style.css`, `src/scene/editor.ts` markup, `src/ui/debugger.ts`, `src/assist/editor.ts`, `src/pilot/editor.ts` mount points |
+| A2 Levels | `levels.ts`, filtered toolbox, Level control, upgrade prompt, Starter "Control" grouping | `src/blocks/index.ts`, new `src/ui/levels.ts` |
+| A3 Sprite tray and inspector | Tray, compact tab, More settings sheet, commit-on-change | `src/scene/navigation.ts`, `src/scene/editor.ts`, appearance/data/motion editors |
+| A4 Hat blocks and make-buttons | Hat block definitions, drop-to-create, flyout buttons | `src/blocks/core/*`, `src/language/event-editor.ts`, `src/language/editor.ts`, compiler mapping tests |
+| A5 Tablet pass | Hit areas, scale, pinch, touch-control auto-show, physical-device checklist | `src/style.css`, Blockly options, `src/scene/play-input.ts` |
+
+Acceptance: on a 1024 × 700 viewport a learner can open the app, drag a repeat and a move block, run, see printed output and an error without scrolling the page; a Starter-level palette shows eight categories; a key-press handler is created by dragging a hat block; every existing browser test passes after updating selectors, with new tests for the shell at 1024 × 700, the level filter and hat-block creation; a physical iPad run of the Star game records startup time, memory and any blocked flow in this document.
+
+### 2.10 Implementation record
+
+Implemented 2026-10-15. The editor is now the shell described above; generated Python, the saved project format and block semantics are unchanged.
+
+| Phase | What shipped | Where |
+| --- | --- | --- |
+| A1 Shell | 52 px top bar (title and save state, Undo/Redo, Run/Stop, Level, Examples, ⋯ menu); blocks panel with corner tools (search, zoom in/out, center); right column with the stage, a stage toolbar (Reset stage, audio, touch controller, Large stage), the sprite tray and Sprite, Python, Output and Help tabs. The hero, project bar and footer are gone. The first print or error of a run opens Output; if the learner is typing in another tab, a stage badge and a tab dot point there instead. Python can sit beside the blocks at 1280 px and wider and marks the lines generated by the selected block. The eleven example buttons are one **Examples** list (the gallery of section 3.3 replaces it). | [shell.ts](../src/ui/shell.ts), [shell.css](../src/ui/shell.css), [main.ts](../src/main.ts) |
+| A2 Levels | One table for all palettes: Starter 8 categories, Builder 14 (the six additions listed in 2.5; "13" earlier in this plan was a miscount), Pro the full 21 with Loops, Logic and Numbers moved up. Starter's Control and Game, and Builder's Game, are groupings of existing blocks. The level is stored per browser (`python-blocks-level`, Starter by default) and also filters the ⋯ menu, block search and the More settings sheet. Opening a file or an example, finishing a migration or a pilot load, and the first start of a browser that has never chosen a level each offer, once, the level the project needs, naming the tools it uses; keeping the current level records that choice. | [levels.ts](../src/ui/levels.ts) |
+| A3 Sprite tray and inspector | Thumbnail tray with **Sprite library** and **Paint** (a blank costume for the selected sprite). The Sprite tab holds name, costume, x, y, size, direction and visible; each commits on Enter or when the field is left, as one Undo step, and invalid values are refused and restored. **More settings** opens a sheet with layer, rotation, world membership, pen and effects, data and behaviors, game motion and watchers. It is non-modal and covers only the tabs, so the stage and tray stay usable and choosing another sprite updates it. | [scene/editor.ts](../src/scene/editor.ts), [navigation.ts](../src/scene/navigation.ts) |
+| A4 Hat blocks and make-buttons | Seven palette hats (game starts, key pressed, sprite clicked, sprite overlaps sprite, sprite updates, countdown ends, I receive). A hat never lands on the workspace: its drag substitutes an ordinary handler definition with the dialog's rules (unique `on_…` name, one `payload` parameter, next delivery position, owner sprite where relevant), created through the same function-model path. "Overlaps Star" starts with `if this sprite overlaps Star`. Handler blocks now share the Events colour and hat shape and describe their event in learner words (presentation only). The Events palette also lists existing handlers. **Make a variable** and **Make a function** ask for a name in a small sheet and insert a `set … to 0` or `define` block; **Manage …** keeps the full dialogs. | [hats.ts](../src/language/hats.ts), [event-names.ts](../src/language/event-names.ts), [language/editor.ts](../src/language/editor.ts), [name-sheet.ts](../src/ui/name-sheet.ts) |
+| A5 Tablet pass | 44 px controls and tabs, 14 px control text, 52 px palette rows, 46 px flyout buttons; pinch zoom and Blockly's 25 px touch scrollbars; no trashcan (drag a block back to the palette or use Delete in its long-press menu); scale 1.0 and 13 px block text on touch screens; decimal keypads and no autocorrect on name fields; the on-screen controller appears on touch screens when the running program listens for keys; keyboard hints appear only once a keyboard is detected; tablet portrait stacks stage and tabs above the workspace; phones show a play-only message with **Play project**. Editor dialogs fit `100dvh - 24px` and scroll inside. | [shell.css](../src/ui/shell.css), [touch.ts](../src/scene/touch.ts) |
+
+Verification: [unit tests](../tests/unit/levels.test.ts) cover the level table, palette contents and monotonic levels, required-level reasons, hat signatures, naming, overlap bodies and compilation, and handler labels. [Shell browser tests](../tests/e2e/shell.spec.ts) cover the acceptance scenario at 1024 × 700 (drag repeat and move, run, output and error visible without page scroll), the output badge, hat creation with Undo/Redo, sprite hats, level filtering, persistence and the one-time prompt, the make-buttons, commit-on-change and the sheet, Python side by side, tablet portrait and phone play-only, keyboard use of the menu and tabs, and 44 px targets. Existing browser tests start at the Pro level (seeded in the Playwright configuration) and use [shell helpers](../tests/e2e/shell.ts) to open the tab, menu or sheet that now holds a control; editor checks that ran at a 390 px phone width now run at 744 px, the narrowest editing layout.
+
+Deviations from the plan text: Builder has 14 categories; the More settings sheet is non-modal (above); the top bar is 52 px rather than 48 px so its controls can be 44 px with a border; Run keeps the label **Run code**.
+
+Deferred by the owner (2026-10-15):
+
+- Physical iPad measurements. The paired iPad was offline and no iOS simulator runtime or WebKit build was available, so nothing below has been measured on iPadOS. The owner accepted the desktop baseline below for Track A and deferred this run. Fill the table on an iPad 10.2"/10th generation in landscape before tablet support is announced publicly. Note that serving the editor over plain HTTP on a local network is not a secure context, so Debug code (which needs cross-origin isolation) will only be available from an HTTPS host:
+
+| Check (Star game example unless noted) | Result (deferred) |
+| --- | --- |
+| Pyodide first load, cold cache (Run tap to "Event session running") | not measured |
+| Warm start (second Run) | not measured |
+| Memory headroom with a 16 MB project | not measured |
+| Web Audio unlock on the first Run tap | not measured |
+| Microphone permission (Sounds & music → Record) | not measured |
+| Save project / Open project through Files | not measured |
+| Export playable download, or need for a Share sheet | not measured |
+| Cross-origin isolation on the release host (Debug code available) | not measured |
+| Two-finger scroll inside Artwork & frames and Worlds & tilemaps | not measured |
+| Pinch zoom, drag-to-palette delete and long-press Delete in the workspace | not measured |
+
+For comparison only, the same flow in headless Chromium 1024 × 700 on an Apple M3 Max laptop (local preview server, fresh browser context per trial, three trials): editor ready in 170–280 ms; Run to "Event session running" for the Star game in 970–990 ms on the first run and about 960 ms on the second, because each run starts a fresh Python worker; main-thread JavaScript heap about 11 MB (the worker's memory is not included). An iPad will be slower; these numbers only set a desktop reference.
+
+## 3. Track B: guidance
+
+### 3.1 Why the current help misses
+
+The child's complaint, "I want to do X but cannot find how", has three parts. First, the wish is phrased as an outcome ("make it chase me"), not a block name ("point toward" plus "move"). Block search matches labels and tooltips, so it cannot bridge that. Second, outcomes usually need two to five blocks in a specific arrangement, which no single block tooltip shows. Third, the AI helper was deliberately designed to classify a question into a concept and a question; it cannot show an arrangement of blocks, and it requires the learner to type a question in the first place.
+
+The plan below keeps the authorship boundary for the model (it still never writes code) but adds a reviewed library of outcome-shaped help that the app itself can show and insert.
+
+### 3.2 Intent recipes: "How do I…?"
+
+A recipe is a reviewed, deterministic answer to a child-language intent. Format, stored in `content/recipes/*.json` and validated by a unit test:
+
+```json
+{
+  "id": "chase",
+  "title": "Make an enemy chase the player",
+  "phrases": ["chase", "follow me", "come after me", "enemy moves toward"],
+  "level": "starter",
+  "concepts": ["event", "motion"],
+  "needs": { "sprites": 2 },
+  "steps": [
+    { "say": "The enemy needs to run all the time, so start from an update event." },
+    { "say": "Point toward the player, then move a little." }
+  ],
+  "blocks": { "handler": "update", "stack": [ { "type": "scene_point", "..." : "..." }, { "type": "scene_move", "..." : "..." } ] },
+  "preview": "chase.webm",
+  "tryNext": ["touch-lose-life", "random-start"]
+}
+```
+
+Rules:
+
+- `blocks` is a Blockly serialization fragment using the existing palette defaults, so insertion goes through the same path as block search insertion today (one Undo step, references resolved to the selected sprite). Nothing in a recipe is generated at runtime.
+- Each recipe ships a two-second looping preview rendered from a fixture project by the Playwright suite, so previews can never drift from what the blocks do.
+- Phrases are matched by the existing accent-insensitive, every-word search in [src/ui/block-search.ts](../src/ui/block-search.ts), extended with a third scope, **Ideas**, that is the default scope on the Starter level. Typing "jump" shows the recipe card above matching blocks.
+- A recipe can require a handler. Inserting it creates the handler through the hat-block path of section 2.6.
+
+Initial recipe set, grouped by what a child asks for. About forty recipes cover most first-month questions; each is one to five blocks.
+
+| Group | Recipes |
+| --- | --- |
+| Move | arrow keys move me; glide to a point; bounce off edges; jump with gravity; move randomly; chase the player; run away from the pointer; wrap around the screen |
+| Look | say something; change costume when I move (walk animation); face left and right; grow and shrink; hide then show; switch backdrop |
+| Touch and sense | when I touch the enemy; collect a coin (destroy and score); touch the edge; click a sprite; touch a color; keep a distance |
+| Game | keep score; lives and losing one; countdown timer; win screen; game over and play again; next level (world transition); random spawn; spawn every second (clone); shoot a projectile; HUD message |
+| Sound | play a sound when something happens; background music loop; make a jump sound; stop all sounds |
+| Draw | draw a square; draw a star; spiral; rainbow pen; stamp a trail |
+| Data | remember the best score (variable); list of enemies; pick a random item; count how many |
+| Fix | my sprite does not move (focus the stage, handler owner); it moves too fast; two things happen at once; my loop never ends |
+
+### 3.3 Example gallery
+
+Replace the eleven buttons with a gallery dialog, also used as the empty-workspace card. Each card has a thumbnail from the fixture screenshot, a one-line description, the concept tags from the level table, **Play**, **Open to edit** and three **Try changing…** prompts shown in the Help tab after opening. Opening an example while the current project has unsaved changes keeps today's confirmation through the Python draft flush.
+
+The ten current examples stay. Add the six small games of section 3.4 and the academy capstones as they land. A gallery entry is a JSON record pointing at the project fixture, so the academy can reuse the same loader.
+
+### 3.4 Guided builds
+
+A guided build is a short, checked tutorial that ends in a playable game. It runs in the Help tab beside the workspace, one step at a time, with the target palette category and block highlighted in the toolbox, and a check that passes when the workspace contains the expected structure. This is the MakeCode and Code.org pattern; its value over a video is that the learner cannot get lost between the video and the editor.
+
+Step format, stored with the recipes:
+
+```json
+{ "id": "catch-the-star", "title": "Catch the star", "level": "starter", "minutes": 15,
+  "starter": "fixtures/guided/catch-the-star-start.json",
+  "steps": [
+    { "text": "Add a star from the library.", "check": { "sprites": { "costume": "star" } } },
+    { "text": "Make the bird move with the arrow keys.", "highlight": ["Events", "scene_control"], "recipe": "arrow-keys", "check": { "handler": "key", "contains": ["scene_control"] } },
+    { "text": "Run it. Can you reach the star?", "check": { "ran": true } },
+    { "text": "When the bird overlaps the star, add 1 to the score and move the star somewhere random.", "recipe": "collect-coin", "check": { "handler": "overlap", "contains": ["game_change", "scene_go"] } }
+  ] }
+```
+
+Checks are static predicates over the compiled project (`compile()` already yields block maps, handlers and scene state) plus two dynamic facts the runner already knows (ran, finished with result). No new runtime hooks are needed for the first set.
+
+Six guided builds for the first release, chosen so that each introduces one new idea and reuses the previous one:
+
+| Build | Game | New ideas | Reuses | Minutes |
+| --- | --- | --- | --- | --- |
+| 1 | Catch the star | key events, overlap, score, random position | — | 15 |
+| 2 | Dodge the balls | clones, update event, lives, countdown, lose screen | 1 | 20 |
+| 3 | Pen patterns | repeat, turn, nested repeat, pen color | — | 15 |
+| 4 | Maze run | world template, tile walls, camera follow, world transition | 1 | 20 |
+| 5 | Jump quest | gravity, controller, jump, projectile, win screen | 2, 4 | 25 |
+| 6 | Talking story | say/wait, costumes and frames, backdrop events, sound | — | 20 |
+
+Each build needs assets from Track D (an animated hero and enemy for 2, 4 and 5; a walking character for 6). Builds 1 and 3 can ship with today's art.
+
+### 3.5 Contextual nudges
+
+Small, deterministic prompts that appear in the Help tab and never as modals:
+
+- Empty workspace: three gallery cards and "Or search an idea: *jump*, *chase*, *score*".
+- After adding a sprite from the library: "Make it move" and "Make it talk" recipe chips.
+- After a runtime error that maps to a block: the existing highlighted block plus a recipe chip for the matching Fix recipe (focus the stage, loop never ends, name not set).
+- After thirty seconds idle on a workspace with a single handler: "Try next" chips from the recipe's `tryNext`.
+- After finishing a guided build: "Remix it" prompts and the next build.
+
+### 3.6 AI as a router, not an author
+
+Keep the [authorship contract](ai-assist.md) for the model and change what the app does with its answer:
+
+1. The ask box becomes **What do you want to make happen?** with suggestion chips drawn from recipe phrases, so a child does not need to compose a question. Free text is still accepted.
+2. The structured response schema gains an optional `recipe` field constrained to recipe IDs, alongside the existing concept, question and line. The model classifies the wish into a recipe; the app displays the reviewed recipe card with its preview and **Insert** button. The model still cannot emit code, and an unknown ID is rejected exactly as today.
+3. Before any paid call, the local phrase matcher runs first. Most wishes resolve locally with no key configured, which also makes the feature work in the pilot and in classrooms without keys.
+4. A second tier, to decide separately: let the model draft a block fragment that is validated by the existing non-executing parser and shown only as a draggable suggestion the learner must place. This changes the contract in the assist document and should wait for pilot evidence that recipes alone leave real gaps.
+
+### 3.7 Phases and acceptance
+
+| Phase | Work |
+| --- | --- |
+| B1 | Recipe format, validation test, Ideas search scope, insertion, 20 recipes with previews |
+| B2 | Gallery dialog, empty-state card, try-next prompts |
+| B3 | Guided-build engine (steps, highlight, checks), builds 1 and 3 |
+| B4 | Nudges, AI routing (`recipe` field, chips, local-first matching) |
+| B5 | Builds 2, 4, 5, 6 once Track D delivers the animated hero and enemy; remaining 20 recipes |
+
+Acceptance: a child who types or taps "chase" sees a preview and inserts a working chase in one step; each guided build is completed by a tester with no prior exposure in under its listed minutes; recipe previews are generated by tests, not hand-recorded; the AI helper suggests a recipe for ten held-out phrasings of each of the first twenty intents without a key configured.
+
+### 3.8 Implementation record
+
+Implemented 2026-10-15, all five phases. Generated Python, the saved project format and the AI authorship boundary are unchanged: an inserted idea is ordinary blocks, and the model can still only return reviewed IDs.
+
+| Phase | What shipped | Where |
+| --- | --- | --- |
+| B1 Recipes | 55 recipes in the eight groups of 3.2 (the planned ones plus fall down, a two-sprite conversation, change the scene later, a backdrop event, camera follow, survive the timer, reach the goal and "name not set"). Each declares a level, concept tags, phrases, steps, needs (sprites, worlds) and up to three try-next IDs. A block recipe is one or more handler parts (`handler` kind plus a `stack` of serialized blocks) with placeholders for the selected sprite, the other sprite, a second world and project variables. **Insert** goes through the hat-block path, as one Undo step, to the right of the existing scripts; a recipe that needs another sprite shows a target picker, and one that cannot work says what is missing ("This idea needs 2 sprites…") instead of inserting half of it. The five Fix recipes are checklists without blocks. Block search has a third scope, **Ideas and blocks**, the default at Starter, which lists idea cards above matching blocks. | [recipes.ts](../src/guide/recipes.ts), [card.ts](../src/guide/card.ts), [content/recipes](../content/recipes), [block-search.ts](../src/ui/block-search.ts) |
+| B1 Matching | A local matcher replaces every-word search for wishes: accent and case folding, a light stemmer, multiword expressions, an everyday synonym table, one-typo correction against the recipe vocabulary, and rarity-weighted scoring with title, whole-phrase and coverage bonuses. It runs in the browser with no key. | [match.ts](../src/guide/match.ts) |
+| B1 Previews | 50 two-second WebM previews (every block recipe) and 16 gallery thumbnails, rendered by the [previews spec](../tests/e2e/previews.spec.ts) from fixture projects through the real editor: load the fixture, insert the idea from the Ideas box, run, replay scripted keys or clicks, record the stage. Each output is keyed by a hash of its inputs (renderer version, blocks, variables, needs, demo, fixture); the spec re-renders stale files locally and fails in CI, and a unit test fails when any key is stale. | [preview-key.ts](../tests/preview-key.ts), [public/recipes](../public/recipes), [public/gallery](../public/gallery) |
+| B2 Gallery and empty state | **Examples** (top bar and ⋯ menu) opens a gallery: the ten examples plus the six finished guided-build games, each with a thumbnail, description, concept tags, the level its project needs (computed, and checked by a test), **Play**, **Open to edit**, and **Build it step by step** for the six games. Opening still refuses while an unapplied Python draft exists. After opening, the Help tab shows the entry's three **Try changing…** prompts. An empty workspace shows a start card over the blocks panel with three Starter projects (Catch the star, Pen patterns, Story), wish chips (*jump*, *chase*, *score*), **Start a guided build** and **All examples**. | [gallery.ts](../src/guide/gallery.ts), [content/gallery.json](../content/gallery.json), [nudges.ts](../src/guide/nudges.ts) |
+| B3 Guided builds | The Help tab lists the builds. A build loads its starter project (asking again first if the workspace is not empty, and raising the level if needed), then shows one step at a time with a progress meter, highlights the palette category or editor control the step names, selects the step's sprite, and preselects the step's target in idea cards. **Show me how** opens the step's idea; the learner still chooses Insert. Each step's check is re-evaluated after every block change and scene edit (both arrive as workspace events), run and game end; **Next step** unlocks only when it passes. Finishing shows three remix prompts and the next build. Progress survives a reload. Each build also records active time per step (time with the tab hidden does not count) and whether **Show me how** was used; the finish shows the total against the planned minutes, and **Download timing** saves the record as JSON for a facilitator. Nothing is uploaded. | [builds.ts](../src/guide/builds.ts), [checks.ts](../src/guide/checks.ts), [content/builds](../content/builds) |
+| B4 Nudges | Help-tab prompts, at most three at a time and each dismissible: the empty-workspace card; "Make it move / Make it talk" after adding a library sprite; the matching Fix checklist after a runtime error about a loop that never ends, an unset name, or keys while the stage lacks focus; try-next chips after 30 seconds idle with one handler; remix prompts after a build. | [nudges.ts](../src/guide/nudges.ts) |
+| B4 AI routing | The Help tab's **What do you want to make happen?** box, with chips drawn from recipe phrases, works at every level with no key: it runs the local matcher and shows up to three idea cards. When nothing matches, **Ask the AI helper to pick an idea** carries the wish into the assist panel (Builder and Pro; at Starter it says the helper is not available), which has a new **Making something happen** mode and the same chips. There the local matcher runs again before anything is sent; only an unmatched wish can reach the provider. Whenever ideas are offered, the response schema requires a `recipe` field whose enum is the reviewed recipe IDs plus null; any other value is rejected like an unknown concept. A returned ID only makes the app show that card. | [ideas.ts](../src/guide/ideas.ts), [assist/catalog.ts](../src/assist/catalog.ts), [assist/editor.ts](../src/assist/editor.ts) |
+| B5 Builds | All six builds of 3.4: Catch the star (Starter, 15 min, 7 steps), Dodge the balls (Starter, 20, 6), Pen patterns (Starter, 15, 6), Talking story (Builder, 20, 5), Jump quest (Builder, 25, 5) and Maze run (Pro, 20, 6). "Next build" goes through them in that order, so each level's builds come before the next level's. | [content/builds](../content/builds) |
+
+Verification: [recipe unit tests](../tests/unit/recipes.test.ts) validate every recipe (fields, placeholders, try-next and group coverage), check that each uses only its level's palette, insert each into a fixture and compile it without errors and without leftover placeholders, cover the missing-sprite and missing-world messages and variable reuse, and check preview freshness. [Guidance unit tests](../tests/unit/guidance.test.ts) check that each build's starter does not already pass, that each finished game compiles and passes every static step at the build's level, that steps point at real recipes, sprites and categories, the gallery levels and tags, and the AI routing contract (unknown, non-string and prototype IDs rejected; schema enum; instructions). The [recipe tests](../tests/unit/recipes.test.ts) also hold each wish set above at its measured rate. The [guidance browser tests](../tests/e2e/guidance.spec.ts) cover the chase acceptance scenario, the wish box and chips, the gallery, the nudges, AI routing with an intercepted provider (a locally matched wish sends no request; otherwise the request offers the recipe IDs, the returned ID shows its reviewed card, and nothing is inserted for the learner), and a walkthrough of each of the six builds from start to the finish screen (Catch the star also reloads mid-build to check resuming, and downloads its timing record).
+
+Acceptance against 3.7:
+
+- **"chase" in one step: met.** Typing *chase* in the Ideas box (or in block search at Starter) shows the chase card with its preview; one **Insert** adds a handler that points the selected sprite toward the other sprite and moves it, and the run shows it chasing (browser test above).
+- **Previews generated by tests: met** (B1 Previews above). The five Fix checklists have no blocks and so no preview.
+- **Ten held-out phrasings of each of the first twenty intents, no key: about 95% on wishes nobody tuned against, not all 200.** Measured on four sets of ten wishes per intent, all in [recipe-heldout.ts](../tests/unit/recipe-heldout.ts) and [recipe-wishes.json](../tests/unit/recipe-wishes.json). "Shown" means the intended idea is among the three cards the box shows.
+
+  | Set | Written by | Use | First | Shown |
+  | --- | --- | --- | --- | --- |
+  | Original | the implementer | development (vocabulary was added while reading its misses) | 186 | 200 |
+  | A | a separate agent | development | 175 | 196 |
+  | B | a separate agent | blind at first: 167 / 188 before any change, 168 / 191 after one round; development since | 173 | 196 |
+  | C | a third agent, a different model | **blind**: written after the matcher was frozen and scored once | **164** | **189** |
+
+  Set C is the honest generalization figure: 189 of 200 (94.5%) show the intended idea, 164 (82%) rank it first, and every wish shows at least one card. The weakest intents there are *Move randomly* (often matched to *Random spawn* or *Pick a random item*), *When I touch the enemy* and *Do something when clicked*. Changes between rounds were general vocabulary (collectible nouns, sound words, taller/shorter, "clickable", "swim after", the four arrow directions, keeping *walk* distinct from *move*), one-typo correction, and two recipe phrases; the scoring weights were not retuned. The unit test holds every set at or above its measured numbers. These wishes were written by AI agents imitating children; real children's wishes from the pilot remain the better test.
+- **Each build completed by a tester new to it within its minutes: not done; it needs people.** The app now measures it: each build records active time per step and whether **Show me how** was used, shows the total against the planned minutes at the finish, and **Download timing** saves the record (build, planned and active minutes, per-step seconds, app revision, browser) for the facilitator. Until testers have done this, the browser walkthroughs only prove each build can be finished as written. They insert ideas through **Show me how** or drag from the palette, and two reach the ending without playing skillfully (Dodge the balls waits for the timer; Jump quest moves the goal next to the explorer). Run timed sessions with new testers and adjust the minute budgets or step text from what they do.
+
+Deviations from the plan text:
+
+- Builds 2, 4, 5 and 6 use today's art; they did not wait for Track D. Swapping in the animated hero, enemy and walker later changes only the build projects and their previews.
+- Checks inspect the workspace (handler signatures, block trees, nesting, counts) and scene state (sprites, costumes, frames, worlds, walls, backdrops), plus the two run facts, rather than the output of `compile()`. The same information is there and a half-built project need not compile.
+- Highlights mark a palette category or an editor control (Sprite library, Artwork & frames, Worlds & tilemaps), not a single block inside the flyout.
+- A build's starter project is stored inline in its JSON, and its finished game is a separate `<id>-game.json` that the gallery also uses.
+- Matching uses the new matcher in 3.8 rather than block search's every-word search, which missed most child phrasings.
+- The local-first check in the assist panel needs an enabled key, because the panel only opens its review step then; the keyless path is the Ideas box.
+
+### 3.9 Review of Tracks A and B, 2026-10-16: gaps for the next iteration
+
+Reviewed on the development build in Chromium at 1024 × 700, 810 × 1000 and the 375 × 812 phone preset, plus the code. Type checking, the 723 unit tests and the 21 shell and guidance browser tests pass. Nothing has run on an iPad; the table in 2.10 is still unmeasured. The acceptance scenarios of 2.9 and 3.7 hold: no page scroll at 1024 × 700, Starter shows eight categories, dragging a hat creates a real handler, "chase" inserts in one step, previews come from tests.
+
+| # | Gap | Where | Priority |
+| --- | --- | --- | --- |
+| 1 | The "Start something" card covers the workspace while a guided build is on its first step: `begin()` loads the starter (empty workspace) before setting `active`, so `nudges.empty(... && !guide.active)` fires. The card even offers the same build again. Set `active` before `host.load`, or re-evaluate the empty state after `begin`. | `src/guide/builds.ts` lines 78–89, `src/main.ts` line 294 | Bug |
+| 2 | Starting a build when the workspace is not empty needs a second tap on the same card; the first tap only writes "Choose it again to start" and unhides the active panel with Back / Next step / Leave build for a build that has not started. Use explicit Replace project / Cancel buttons. | `src/guide/builds.ts` lines 80–85 | Bug |
+| 3 | The project title is not autosaved: after a reload the Star game shows as "My project". | `src/main.ts` title assignments | Small |
+| 4 | Pro palette overflow at 700 px tall: 21 rows × 52 px = 1207 px in a 648 px toolbox; 11 categories are fully visible, the twelfth is cut off and nothing says there are more. Builder (14 rows) also overflows. Use denser rows above Starter, two columns, or a scroll hint. | `src/ui/shell.css` palette rules | Tablet |
+| 5 | The tab panel is 233 px tall at 1024 × 700 and each idea card is about 500 px (357 × 238 video, steps, buttons); three matches mean 2,400 px of scrolling in a letterbox. Cap preview height in narrow columns, show the best match expanded and the others collapsed. | `src/guide/card.ts`, `src/ui/shell.css` | Tablet |
+| 6 | The Help tab stacks everything in a fixed order (nudges, ideas, guided builds, tips). After opening an example and asking an idea, the "Try changing" card, three idea cards and the build list all scroll past each other. Add a sub-navigation (Ideas / Builds) or collapse sections that are not in use. | `src/ui/shell.ts` help panel | Tablet |
+| 7 | With a touch pointer and a key-listening program, the on-screen controller overlays the lower 45 % of the 383 × 255 editor stage and hides sprites. Dock the pad under the stage, or open Large stage automatically on Run when the controller is needed. Large stage itself is 847 px tall in a 674 px viewport, so it scrolls. | `src/scene/touch.ts`, `shell.css` `.stage-wrap .touch-controls` | Tablet |
+| 8 | Side-by-side Python needs 1280 px, so no iPad (1080, 1180 or 1194 px wide) can ever use it. Lower the threshold to about 1080 px with a narrower stage column, or let Python replace the stage temporarily. | `src/ui/shell.ts` `installPythonPlacement` | Tablet |
+| 9 | Sprite tab inputs are 40 px tall and the color input 27 px; the touch-size test only checks buttons. The panel shows about four fields at 700 px; the stage column could give up 40–60 px. | `src/ui/shell.css`, `tests/e2e/shell.spec.ts` | Small |
+| 10 | Ideas at Starter rank Builder and Pro recipes beside Starter ones ("Make the camera follow me" was second for "chase") and their button silently switches the level, growing the palette from 8 to 21 categories. Demote or hide above-level recipes at Starter, or confirm the switch. | `src/guide/match.ts`, `src/guide/card.ts` line 59 | Guidance |
+| 11 | The gallery is a 640 px, two-column dialog with 3,478 px of scrolling at 1024 wide, no tag chips or search, and examples mixed with guided builds. Use 90 vw with three or four columns and the chips from the mock. | `src/guide/gallery.ts` | Guidance |
+| 12 | Recipe previews are WebM only. iPadOS Safari gained WebM playback late (iOS 15) and support varies by device; on error the card removes the video, so the learner sees no preview. Render an H.264 MP4 or animated WebP beside each WebM and use `<source>` fallbacks. | `tests/e2e/previews.spec.ts`, `src/guide/card.ts` | Tablet |
+| 13 | The game HUD message bar covers the top quarter of the small editor stage; fine in Large stage. Consider a smaller HUD scale under 400 px wide. | `src/scene/game.ts`, play CSS | Small |
+| 14 | At Starter the Ideas box says the AI helper is not available. That follows the level table, but a parent-configured key could reasonably work at Starter. Owner decision. | `src/guide/ideas.ts` | Decision |
+
+Additions to the iPad checklist in 2.10 once a device is available: WebM preview playback (12); block drag with `touch-action: manipulation` on the body (Blockly sets `none` on its own surface); `100dvh` sheets and dialogs while Safari's toolbar collapses; pinch zoom and long-press menus; the controller overlay (7).
+
+### 3.10 Iteration 2 record, 2026-10-16
+
+Everything in 3.9 except item 14 (the owner's decision) is implemented. Verified in Chromium at 1024 × 700, 1080 × 700 and 810 × 1000; the iPad table in 2.10 is still unmeasured.
+
+| # | Resolution | Where |
+| --- | --- | --- |
+| 1 | A build marks itself active before its starter loads, so the empty-workspace card never appears over a step. The browser walkthrough asserts it. | `src/guide/builds.ts` |
+| 2 | Replacing a project is an explicit choice: **Replace and start** / **Keep my project** in the Builds section. The active step panel is mounted above the Help sections, so "Show me how" can open an idea without hiding the step. | `src/guide/builds.ts`, `src/ui/shell.ts` |
+| 3 | The project title is kept with the autosave (`python-blocks.title.v1`) and restored on reload. | `src/main.ts` |
+| 4 | Builder and Pro palettes use two 80 px columns on tablet-height screens (Pro below 1160 px tall, Builder below 840 px, landscape only), so all 21 categories fit 1024 × 700 and the flyout opens beside the wider palette. Whatever still overflows (portrait) shows a **More** cue that scrolls the palette. | `src/ui/shell.css`, `installPaletteHint` in `src/ui/shell.ts` |
+| 5 | Previews are capped at 150 px in a column; only the best match is a full card, the rest are compact cards with a thumbnail beside the title. Three "chase" matches went from 2,436 px of scrolling to about 1,100 px. | `src/guide/guide.css`, `src/guide/card.ts` |
+| 6 | The Help tab has Ideas, Builds and More sections (a segmented control); nudges and the active build step stay above them. Ideas, the gallery's "Try changing" prompt, guided builds, the pilot and AI assist each open their own section. | `src/ui/shell.ts`, `src/main.ts` |
+| 7 | The on-screen controller starts hidden. On a touch screen, Run with a key-listening program opens Large stage, where the controller docks under the stage; the run's end hides it again. The Large stage sizes its stage to the viewport height (with room for the controller when no keyboard is detected) instead of scrolling. | `src/scene/touch.ts`, `src/main.ts`, `src/ui/shell.css` |
+| 8 | Side-by-side Python from 1080 px, with a narrower stage column while it is on, so every iPad in landscape can use it. | `src/ui/shell.ts`, `src/ui/shell.css` |
+| 9 | All text, number, select and color inputs are 44 px tall; the browser touch-size check now covers the Sprite tab's inputs and the Help sections. On screens up to 760 px tall the stage column is a little narrower, which gives the tab panel another row. Reset stage becomes icon-only in narrow columns instead of wrapping. | `src/ui/shell.css`, `tests/e2e/shell.spec.ts` |
+| 10 | Ideas are ranked for the current level: an above-level idea loses 10 % per level, so a near tie goes to the same-level idea ("jump" at Starter shows the jump sound first and the Builder jump second) while a clear fit still wins ("camera follow me"). Inserting an above-level idea still switches the level, and the status line now says so. | `rankIdeas` in `src/guide/ideas.ts`, `src/main.ts` |
+| 11 | The gallery is 1040 px wide at most, four columns at 1024, with filter chips (All, Guided builds, Games, Stories, Drawing, Music, Worlds, Sprites) and a search box; each entry carries a `kind`. | `src/guide/gallery.ts`, `content/gallery.json` |
+| 12 | Every preview is rendered three ways by the previews spec: WebM (VP9), MP4 (H.264, which iPadOS plays everywhere) and a PNG still of the last frame. Cards list MP4 then WebM as `<source>`s with the still as poster, and fall back to the still if neither plays. Renderer version 2 re-rendered all 50 previews. | `tests/e2e/previews.spec.ts`, `tests/preview-key.ts`, `src/guide/card.ts` |
+| 13 | HUD text scales with the stage it sits on (container query units) rather than the window, so the small editor stage keeps more of its picture. | `src/scene/play.css` |
+| 14 | Unchanged: the AI helper stays unavailable at Starter until the owner decides. | — |
+
+### 3.11 Fix flows from a block's warning, 2026-10-16
+
+A block's **!** used to open Blockly's bubble with the compiler's sentence and nothing else. At Starter and Builder it now opens a non-modal popover (title in learner words, the message, **Fix it step by step** / **Not now**); Pro keeps the plain bubble. Starting a flow pins a Fix panel at the top of the Help tab, above the sections and any active guided build. The panel shows why the warning is there, the steps that clear it, a highlight on the palette category or editor button the step needs and an outline on the block, and a one-tap action where the fix is deterministic. Steps are recomputed from the project after every edit (a missing-sprite flow first offers the Sprite library, then "Use Ball 1 here" once a sprite exists), and the panel says **Fixed!** when the warning is gone.
+
+| Warning | Flow | One-tap action |
+| --- | --- | --- |
+| `missing-input` | the slot is empty, drop a value or let the app fill it | 0, empty text or `true`, by the slot's type or name |
+| `missing-sprite` (block) | pick a sprite, or add one first | Use ‹sprite› here · Open the Sprite library |
+| `missing-sprite` (script) | choose the script's sprite in Event handlers, or add one | Open Event handlers · Open the Sprite library |
+| `missing-costume` / `missing-backdrop` | pick an existing one | Use Bird / Meadow here |
+| `missing-sound` / `missing-world` | pick one, or add one first | Use ‹name› here · Open Sounds & music / the World library |
+| `inactive-draft` | the block is outside every script | Put it under "when game starts" |
+| `event-context` / `wait-context` | live input and waits need an event script | Move Program into "when game starts" |
+| `unresolved-symbol` | the variable is gone | Make a variable |
+| `unresolved-call` | the function is gone | Remove this block |
+| `flow-outside-loop` / `return-outside-function` | drag inside a loop or function, or remove | Remove this block |
+| `multiple-programs` | two Programs | Merge into the other Program |
+| `nested-program` / `nested-function` | scripts stay at the top | Move it out |
+| `invalid-number` | not a Python number | Set it to 0 |
+| a runtime error | Python stopped here | Show the fix idea (name, loop, keys) or Show the error |
+| anything else | the compiler's message | Show the details |
+
+Every action is one Undo step. Implementation: [fixes.ts](../src/guide/fixes.ts) (`fixFor` builds the flow from the current project; `installFixes` owns the popover, the panel and the warning-icon tap, which is intercepted before Blockly's gesture at the learner levels). Unit tests in [fixes.test.ts](../tests/unit/fixes.test.ts) run each action against compiled fixtures; [fixes.spec.ts](../tests/e2e/fixes.spec.ts) covers the popover, the Help panel, the library-then-pick sprite flow, the start-script wrap, Undo and the Pro bubble.
+
+## 4. Track C: academy
+
+### 4.1 Model
+
+Beast Academy teaches through a comic-style guide in which characters discover an idea, followed by practice sets that ramp from routine to starred challenges, organized by level and chapter. The analog here:
+
+| Beast Academy | Python Blocks Academy |
+| --- | --- |
+| Level (grade band) | Level 1–7, each a game genre and a concept family |
+| Chapter | Unit: one concept, one small game or mechanic |
+| Guide comic | Interactive guide: a short in-editor story in which the stock cast (Fox, Robot, Rabbit, Turtle, Bee) hits a problem in a game and the learner helps, with prediction questions in the dialogue |
+| Practice book | Practice set: predict, fix, complete and build problems checked automatically, three difficulty tiers, starred challenges |
+| Puzzles and games in the book | The game itself: the unit's mechanic is played before it is built |
+| Review and assessment | Unit mastery check plus a level capstone game with a rubric |
+
+The pedagogy is Use-Modify-Create and PRIMM (predict, run, investigate, modify, make): every unit starts by playing a finished game, moves to predicting and editing, and ends with building. The learner pilot tasks already follow this shape.
+
+### 4.2 Curriculum map
+
+Everything in the table uses features that exist today, except where marked **needs**.
+
+| Level | Theme and genre | Concepts | Python the learner reads | Capstone game | Needs |
+| --- | --- | --- | --- | --- | --- |
+| 1 Signals | Interactive story and tap games | sequence, events, coordinates, say, costumes, sounds | `def on_key(...)`, calls with arguments | Greeting card that reacts to taps and keys | Track A hat blocks |
+| 2 Loops | Pen art and endless runners | repeat, forever/update, nested loops, counting with range, animation loops | `for i in range(4):`, `while True` with `await wait` | Pattern painter and a scrolling dodge game | — |
+| 3 Decisions and memory | Collect-and-dodge games | if/else, comparisons, booleans, variables, score and lives, random, collisions | `if score >= 3:`, `score = score + 1` | Star catcher with levels | — |
+| 4 Functions | Shooters and Pong-style games | define/call, parameters, return values, decomposition, scope | `def spawn(x, y):`, `return distance` | Pong or a wave shooter with spawn and reset functions | Animated enemy set |
+| 5 Collections | Quiz, inventory and wave games | lists, indexing, iteration, dictionaries, data-driven levels, high-score tables | `enemies.append(e)`, `for e in enemies:`, `levels[n]` | Quiz game or tower-defense waves defined by data | — |
+| 6 Recursion | Fractals and mazes | recursive drawing, recursive countdown, maze generation, flood fill on a tilemap, base cases | `def tree(n): ... tree(n - 1)` | Maze explorer with a recursively generated maze | Tile query API already exists; needs a larger map limit check |
+| 7 Algorithms | Dungeon and strategy games | linear and binary search (guessing game), sorting a leaderboard, breadth-first pathfinding on tiles, state machines for enemy AI, probability and simulation, counting steps as a cost | `while lo <= hi:`, a sort, a queue-based BFS | Dungeon chase: enemies that path-find to the player | Queue helper block or recipe; step-count reporter for cost intuition |
+| 8 Systems (stretch) | Multi-script games and text Python | async coordination, messages, modules, higher-order functions, lambdas, editing Python text directly | `await`, `emit`, `map`/`filter`, module imports | A game built from modules with at least one text-edited function | The bridge is complete; needs Builder/Pro level |
+
+Each level has four to six units. Across levels the Python side of the editor grows in prominence: Levels 1–2 show Python as a read-only mirror, Level 3 asks prediction questions about Python lines, Level 5 presents some problems as Python first with blocks as the check, and Levels 7–8 require small text edits through the existing draft and Apply flow.
+
+### 4.3 Unit anatomy and problem types
+
+| Part | Content | Check |
+| --- | --- | --- |
+| Play | The unit's finished game, loaded read-only in play view with "what to notice" prompts | played to finish |
+| Guide | Four to eight dialogue panels over the stage with the cast; each panel can show a block stack, run it, and ask a prediction | prediction answered |
+| Practice: predict | "What prints?" or "Where does the sprite end up?" with multiple choice or a number | exact answer |
+| Practice: fix | A broken project with one or two bugs and an expected behavior | static plus dynamic check |
+| Practice: complete | A Parsons-style problem: given blocks are scattered or a slot is empty | static structure |
+| Practice: build | A short specification with starter project | dynamic check with scripted input |
+| Challenge (starred) | Open-ended extension with a rubric and an optional self-check | rubric checklist |
+| Mastery | Three randomly chosen practice variants at the top tier | pass two of three |
+
+Practice problems are parameterized templates (repeat counts, positions, names), so a bank of 60 templates per level yields hundreds of variants and supports retries without repetition. Beast Academy's online version is built on this kind of variation.
+
+### 4.4 Automatic checking
+
+Three check kinds, all built on existing pieces:
+
+- Static: predicates over `compile()` output and the scene state (block present, nesting, handler kind, variable used in a condition, function with two parameters, recursion present). The guided-build engine of section 3.4 defines the same predicates.
+- Dynamic: run the learner's project in the ordinary worker with scripted input through the existing test-event path and the play-input layer (key press sequences, pointer positions, answers to questions), with a time bound, then assert on watch values, game state, printed output or sprite positions. The runner already exposes watchers, game snapshots and completion. Package this as a `checker` module that the browser tests also use.
+- Prediction: multiple-choice or numeric answers compared locally; the correct answer is produced by running the reference solution through the checker at authoring time, never typed by hand.
+
+Hints are authored per problem as a ladder (nudge, concept, step, show-me) and surface through the Help tab. Hint ladders are the right place for AI later: the model picks a rung, the app shows the authored text.
+
+### 4.5 Progress, mastery and a parent view
+
+Progress is a small JSON record per browser (unit, problem id, attempts, passed, time) stored next to the autosave key, exportable as a file so a family or classroom can move it. A parent view lists units, mastery and time per week and links to the learner's capstone projects. Accounts and cloud sync remain a release-phase decision; the data model should not assume a single device, so records carry a learner ID the family chooses.
+
+### 4.6 Authoring pipeline and volume
+
+Content lives in `content/academy/<level>/<unit>/` as unit JSON, fixture projects, reference solutions and problem templates. A test renders every unit, runs every reference solution through the checker, and asserts every problem has a passing solution and a failing starter. Volume for a first course: Levels 1–3, four units each, about 12 units, 150 problem templates, 3 capstones. Levels 4–7 follow once the first three have been used by learners.
+
+### 4.7 Phases and acceptance
+
+| Phase | Work |
+| --- | --- |
+| C1 | Unit runtime in the Help tab (guide panels, problem cards, checker, progress record); Level 1 unit 1 end to end |
+| C2 | Levels 1–3 content, capstones, parent view; informal trial with one learner |
+| C3 | Levels 4–5 (needs animated assets and the data-driven level helpers) |
+| C4 | Levels 6–7 (queue and step-count helpers, maze and pathfinding units) |
+| C5 | Level 8 and the text-Python arc |
+
+Acceptance: a learner can play, read, practice and build through a unit without facilitator help; every reference solution passes and every starter fails its checker in CI; a Level 3 capstone built by a learner runs as an exported playable; one learner completes Levels 1–3 and the recorded confusions feed the next revision.
+
+## 5. Track D: assets
+
+### 5.1 Current inventory and limits
+
+| Kind | Today | Limit |
+| --- | --- | --- |
+| Costumes | 4 built-ins (Bird, Star, Ball, Box) plus 16 code-drawn stock costumes in [src/scene/stock-art.ts](../src/scene/stock-art.ts), all single frame, 64 px, no facing direction | 24 custom costumes per project, 256 × 256 px, embedded PNG data URLs |
+| Backdrops | Meadow, Night plus Forest, Coral reef, City park, Space | 12 per project, 480 × 320 |
+| Tiles | Grass, Stone, Sand, Metal | 32 px, worlds up to 8 per project |
+| Animation | learner-authored frames only; no stock animation | 64 frames per sprite |
+| Sound | 7 synthesized instruments, recording and import | 24 sound assets, 60 s each |
+| Effects | sparkles, confetti, rings bursts; seven sprite and stage graphic effects | — |
+| Project | 16 MB total, 12 MB scene | — |
+
+Stock art is rasterized into the project when added, which keeps exports self-contained but means every asset pack is paid for in every project's size. A richer library needs referenced assets.
+
+### 5.2 Art direction and sourcing
+
+Keep the current look: flat shapes, soft outlines, the pastel palette already shared by the UI and the stock art. That style scales to animation cheaply and reads well at 64 px. Options:
+
+| Option | Pros | Cons |
+| --- | --- | --- |
+| Original art in-house (vector sources, exported to PNG sheets) | Consistent with the current cast, no attribution surface, full control over poses needed by lessons | Slowest; an animated character set is roughly 30–40 frames |
+| CC0 packs (for example Kenney's platformer, roguelike and UI packs, and his sound packs) | Thousands of consistent frames, tiles and sounds, no attribution required, safe under the undecided project license | Visually different from the current cast; must be restyled or kept to a separate "pack" look |
+| CC-BY packs | Widest choice | Attribution must appear in-app and in every export; adds a license surface the README warns about |
+
+Recommendation: original art for the hero cast the academy uses (Fox, Robot, Rabbit, Turtle, Bee, plus two new human-like explorers), with full animation sets, and CC0 packs for breadth in tiles, props, UI and sound effects, each pack behind its own tag so a project can keep one visual style. Every asset carries license metadata in its manifest, and the asset build fails on an entry without one.
+
+### 5.3 Visual content
+
+| Content | Specification |
+| --- | --- |
+| Animated characters | Seven characters with idle (2–4 frames), walk (6–8), jump, hurt and celebrate, facing right; the runtime's left-right rotation style flips them. 64 px for base; 128 px source for the large stage. |
+| Enemies and critters | Eight, each with idle and move; two with an attack frame for Level 4 shooters. |
+| Collectibles and props | Coin and gem spin cycles (6 frames), hearts, keys, doors, switches, spikes, platforms, crates, signposts, bushes, rocks, clouds. |
+| Tilesets | Four themes (grass, cave, snow, ruins) with top, middle, edge, corner, slope and one-way platform tiles, drawn as 32 px with 2× sources; an autotile rule table so the world editor paints edges automatically. |
+| Backdrops | Twelve, each as two or three parallax layers (far, mid, near) plus a flat composite for projects that do not use parallax. |
+| UI and HUD | Hearts, coin counter, timer glyphs, buttons for result screens, speech-bubble variants, a bitmap font for stage text. |
+| Effects sprites | Dust puff, explosion, hit spark, pickup glow, portal, as small frame sets usable by the burst API. |
+
+### 5.4 Format and pipeline changes
+
+- Add referenced stock assets: a sprite's costume or a world's tiles can point at `stock:<pack>/<id>@<version>` instead of an embedded PNG. The editor resolves references from a versioned manifest bundled with the app; Save project keeps references; Export playable and Export Python copy the referenced files into the ZIP, as they already do for embedded assets. A language-version bump with a migration that leaves embedded assets untouched.
+- Stock references do not count toward the 24-costume embedded limit. Embedded custom art keeps its limit.
+- Animation sets as library entries: a stock character ships with named sequences. Add `sprite.play("walk")`, `sprite.set_animation("idle")` and `when animation ends` beside the existing frame API, with a Looks block for each. Learner-painted frames can be grouped into named sets in Artwork & frames, so the feature is not stock-only.
+- Asset sources live in `assets/src/` (SVG or Aseprite) with a build script producing sheets, 1× and 2× PNGs, manifests with license fields, and preview thumbnails. The stock library dialog reads the manifest, gains pack and tag filters, and shows animated thumbnails.
+- Raise the backdrop limit to allow parallax layers, and give the stage a layer list (far, mid, near) with per-layer scroll factors tied to the camera.
+
+### 5.5 Sound
+
+- A sound-effect generator in Sounds & music, in the style of sfxr: presets (jump, coin, hit, explosion, laser, power-up, blip) with Randomize and a few sliders, rendering to the existing 22,050 Hz WAV format. It is small, original, and fun for children, and it produces unlimited effects without any pack.
+- A stock effect set of about forty CC0 sounds for guided builds and the academy, referenced like stock art.
+- Music loops: eight original songs in the existing score format at chiptune-friendly tempos, plus `sounds.loop(song)` and `sounds.stop_loop()` with fade, and ducking of the loop while a `play_wait` effect runs.
+- Instrument expansion: pluck, bass, bell, organ and noise layers in the song grid; a per-song volume. The seven current instruments stay.
+
+### 5.6 Runtime effects
+
+- Particle presets beyond the three bursts: trail, dust, explosion, hearts, rain, using the effect sprites above; a `game.effect` kind for each.
+- Screen shake, flash and tint on the stage; camera zoom and smooth follow; glide easing options.
+- Sprite outline and glow effects added to the seven existing graphic effects; a stage text object for titles and dialogue that is rendered on canvas, so it appears in exports and pixel sensing stays unaffected by HUD HTML.
+
+### 5.7 Phases and acceptance
+
+| Phase | Work |
+| --- | --- |
+| D1 | Manifest and referenced-asset format, migration, stock dialog filters, exports; one animated hero and one enemy as the proof |
+| D2 | Named animation sets and blocks; the remaining hero cast; collectibles and props |
+| D3 | Sound-effect generator, stock effects, music loops and loop API |
+| D4 | Tilesets with autotile, parallax backdrops, stage layers |
+| D5 | Runtime effects and stage text |
+
+Acceptance: a child builds the Jump quest guided build with a hero that idles, walks and jumps, an enemy, coins that spin, a jump sound and a background loop, without painting anything; a project using twenty stock references stays under 200 KB; an exported playable of that project runs offline with every referenced asset; every asset in the manifest has a license field and a preview; the stock dialog shows animated thumbnails in under a second on an iPad.
+
+## 6. Sequencing across tracks
+
+| Order | Milestone | Tracks | Why this order |
+| --- | --- | --- | --- |
+| 1 | One-screen shell, levels, gallery | A1, A2, B2 | Nothing else has a place to live until the shell exists; the gallery is the cheapest guidance win |
+| 2 | Hat blocks, sprite tray, tablet pass | A3, A4, A5 | Makes the Starter level real; needed before a child tests guided builds on an iPad |
+| 3 | Recipes, guided builds 1 and 3, AI routing | B1, B3, B4 | Directly addresses the "cannot figure out how" complaint with today's art |
+| 4 | Referenced assets, animated hero, sound generator | D1, D2, D3 | Unblocks the remaining guided builds and Levels 4+ |
+| 5 | Guided builds 2, 4, 5, 6 | B5 | Full guidance set |
+| 6 | Academy runtime and Levels 1–3 | C1, C2 | First course on a stable shell and asset base; trial with one learner |
+| 7 | Tilesets, parallax, runtime effects | D4, D5 | Polish that the academy capstones can then use |
+| 8 | Levels 4–8 | C3, C4, C5 | Content follows evidence from the first three levels |
+
+Like the roadmap, this is sequencing, not a delivery-date commitment. The learner pilot in the roadmap remains the best early evidence source and should run against milestone 3 rather than against today's page.
+
+## 7. Decisions needed from the owner
+
+1. Primary device: confirm iPad 10.2"/10th generation landscape as the design target, and name one laptop class to verify side-by-side Python.
+2. Confirm that the app (not the model) may insert reviewed recipe blocks, which keeps the assist contract intact, and defer the model-drafted-blocks tier until pilot evidence exists.
+3. Asset sourcing: original hero cast plus CC0 packs for breadth, or all original. The choice affects the license audit already listed in the release phase.
+4. Accept a project-format version bump for referenced stock assets and named animation sets.
+5. Where academy progress lives before accounts exist: local record with file export, as proposed, or wait for hosting decisions.
+6. Which comes first for the child's benefit if effort is limited: guided builds with today's art (milestone 3) or animated assets (milestone 4). This plan puts guidance first.
+
+## 8. Risks
+
+- Pyodide on iPadOS Safari may exceed memory or load slowly on older iPads; measure before promising tablet support publicly. The portable player has the same exposure.
+- Hat blocks that create handlers on drop must keep the handler's owner, payload names and delivery order consistent with the dialog, or the Python bridge round trip breaks. Reuse the editor's creation function rather than reimplementing it.
+- Levels hide tools; a hidden tool that a shared project uses must trigger the upgrade prompt, not a silent diagnostic.
+- Recipe previews rendered by tests take CI time; cache by fixture hash.
+- Referenced assets reintroduce a dependency on the app version at load time. The manifest must be versioned and the migration must embed a reference on export when an older player is targeted.
+- The academy's dynamic checks run learner code with scripted input in the ordinary worker; the existing watchdog and limits apply, but checker flakiness (timing-dependent games) must be designed out by seeding random and stepping the clock, which needs a deterministic mode in the runtime.
+- Content volume is the long pole. Twelve units and 150 problem templates for Levels 1–3 are a larger authoring effort than any single engineering phase above.

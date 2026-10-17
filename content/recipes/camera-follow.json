@@ -1,0 +1,68 @@
+{
+  "id": "camera-follow",
+  "title": "Make the camera follow me",
+  "group": "game",
+  "level": "pro",
+  "concepts": [
+    "world",
+    "coordinates"
+  ],
+  "phrases": [
+    "camera follows the player",
+    "scroll the screen",
+    "follow cam",
+    "keep the hero in view",
+    "move the view with me"
+  ],
+  "needs": {
+    "sprites": 1,
+    "worlds": 1
+  },
+  "steps": [
+    {
+      "say": "Worlds can be bigger than the stage. When the game starts, make the camera follow your sprite."
+    },
+    {
+      "say": "Clamp the camera so it never shows past the edge of the world."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "scene_camera_follow",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_camera_clamp",
+          "inputs": {
+            "ENABLED": {
+              "shadow": {
+                "type": "logic_boolean",
+                "fields": {
+                  "BOOL": "TRUE"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "camera-follow.webm",
+  "tryNext": [
+    "next-level"
+  ]
+}

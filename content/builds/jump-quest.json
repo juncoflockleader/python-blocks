@@ -1,0 +1,220 @@
+{
+ "id": "jump-quest",
+ "title": "Jump quest",
+ "level": "builder",
+ "minutes": 25,
+ "order": 5,
+ "summary": "Jump up the ledges with gravity, fire with x and reach the goal star.",
+ "ideas": [
+  "gravity",
+  "controller",
+  "jump",
+  "projectile",
+  "win screen"
+ ],
+ "starter": {
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 19,
+  "workspace": {
+   "blocks": {
+    "languageVersion": 0,
+    "blocks": []
+   },
+   "pythonScene": {
+    "version": 1,
+    "background": "#edf4ef",
+    "sprites": [
+     {
+      "id": "player",
+      "name": "Explorer",
+      "x": -190,
+      "y": -129,
+      "costume": "bird",
+      "size": 55,
+      "kind": "player",
+      "direction": 0,
+      "layer": 0,
+      "visible": true,
+      "rotationStyle": "none"
+     },
+     {
+      "id": "floor",
+      "name": "Ground",
+      "x": 0,
+      "y": -145,
+      "costume": "floor_art",
+      "size": 200,
+      "kind": "wall",
+      "direction": 0,
+      "layer": 0,
+      "visible": true,
+      "rotationStyle": "none",
+      "motion": {
+       "body": "wall"
+      }
+     },
+     {
+      "id": "step1",
+      "name": "First ledge",
+      "x": -90,
+      "y": -78,
+      "costume": "platform_art",
+      "size": 100,
+      "kind": "wall",
+      "direction": 0,
+      "layer": 0,
+      "visible": true,
+      "rotationStyle": "none",
+      "motion": {
+       "body": "wall"
+      }
+     },
+     {
+      "id": "step2",
+      "name": "Second ledge",
+      "x": 45,
+      "y": -20,
+      "costume": "platform_art",
+      "size": 100,
+      "kind": "wall",
+      "direction": 0,
+      "layer": 0,
+      "visible": true,
+      "rotationStyle": "none",
+      "motion": {
+       "body": "wall"
+      }
+     },
+     {
+      "id": "step3",
+      "name": "Top ledge",
+      "x": 165,
+      "y": 25,
+      "costume": "platform_art",
+      "size": 80,
+      "kind": "wall",
+      "direction": 0,
+      "layer": 0,
+      "visible": true,
+      "rotationStyle": "none",
+      "motion": {
+       "body": "wall"
+      }
+     },
+     {
+      "id": "goal",
+      "name": "Goal star",
+      "x": 175,
+      "y": 48,
+      "costume": "star",
+      "size": 65,
+      "kind": "goal",
+      "direction": 0,
+      "layer": 0,
+      "visible": true,
+      "rotationStyle": "none"
+     }
+    ],
+    "assets": [
+     {
+      "id": "platform_art",
+      "name": "Green platform",
+      "width": 100,
+      "height": 8,
+      "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAICAYAAAAP1Fp1AAAAMElEQVR4nO3RMREAAAjDwDqsJZyDDDJk+D13SacrjnwHyCFoDoFxCIxDYBwC4xCYA184mvvhDLDhAAAAAElFTkSuQmCC"
+     },
+     {
+      "id": "floor_art",
+      "name": "Ground",
+      "width": 240,
+      "height": 5,
+      "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAAAFCAYAAAB7CmE4AAAAMklEQVR4nO3TMQ0AMAwEsQAMgxIofwINhy7RSx6833J1bj8gU20HAP8MDMEMDMEMDMEGbzGiKKTqe20AAAAASUVORK5CYII="
+     }
+    ]
+   }
+  }
+ },
+ "steps": [
+  {
+   "text": "Select the explorer. Give it gravity and a jump on the space key.",
+   "check": {
+    "all": [
+     {
+      "handler": "start",
+      "contains": [
+       "scene_motion_set"
+      ]
+     },
+     {
+      "handler": "key",
+      "contains": [
+       "scene_jump"
+      ]
+     }
+    ]
+   },
+   "recipe": "jump-gravity",
+   "select": "player",
+   "highlight": {
+    "category": "physics"
+   }
+  },
+  {
+   "text": "Walk with the arrow keys. Set the vertical speed to 0 so up does not fly.",
+   "check": {
+    "blocks": [
+     "scene_control"
+    ]
+   },
+   "recipe": "arrow-keys",
+   "select": "player",
+   "highlight": {
+    "category": "motion"
+   }
+  },
+  {
+   "text": "Fire: when the x key is pressed, fire a projectile from the explorer.",
+   "check": {
+    "blocks": [
+     "scene_fire"
+    ]
+   },
+   "recipe": "shoot-projectile",
+   "select": "player",
+   "highlight": {
+    "category": "physics"
+   }
+  },
+  {
+   "text": "Win when the explorer reaches the goal star.",
+   "check": {
+    "handler": "overlap",
+    "contains": [
+     "game_finish"
+    ]
+   },
+   "recipe": "reach-goal",
+   "select": "player",
+   "other": "goal",
+   "highlight": {
+    "category": "game"
+   }
+  },
+  {
+   "text": "Play: jump up the ledges and reach the star.",
+   "check": {
+    "finished": "won"
+   }
+  }
+ ],
+ "finish": {
+  "text": "You made a platform game!",
+  "remix": [
+   "Add an enemy that patrols a ledge.",
+   "Collect coins on the way up.",
+   "Make a harder level with more ledges."
+  ]
+ },
+ "next": "maze-run"
+}

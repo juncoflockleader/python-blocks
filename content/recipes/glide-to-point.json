@@ -1,0 +1,120 @@
+{
+  "id": "glide-to-point",
+  "title": "Glide to a point",
+  "group": "move",
+  "level": "starter",
+  "concepts": [
+    "motion",
+    "coordinates",
+    "wait"
+  ],
+  "phrases": [
+    "glide to a place",
+    "slide smoothly",
+    "move slowly to a spot",
+    "go over there smoothly",
+    "travel to a position"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Glide moves the sprite smoothly and waits until it arrives."
+    },
+    {
+      "say": "Pick x and y for where it should go. The middle of the stage is x 0, y 0."
+    },
+    {
+      "say": "Add a second glide to come back."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "scene_glide",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "1"
+                }
+              }
+            },
+            "X": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "150"
+                }
+              }
+            },
+            "Y": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "80"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_glide",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "1"
+                }
+              }
+            },
+            "X": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "-150"
+                }
+              }
+            },
+            "Y": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "-60"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "glide-to-point.webm",
+  "tryNext": [
+    "move-randomly",
+    "bounce-edges"
+  ]
+}

@@ -58,6 +58,7 @@ export class PlayInput {
     this.held.clear(); this.touch.clear();
   }
   configure(controls?: Controls) { this.release(); this.touch.configure(controls); }
+  showTouch(shown: boolean) { this.touch.setShown(shown); }
   setEnabled(enabled: boolean) { if (!enabled) this.release(); this.enabled = enabled; this.touch.setEnabled(enabled); }
   dispose() { this.setEnabled(false); this.listeners.abort(); }
 }

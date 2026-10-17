@@ -1,0 +1,200 @@
+{
+  "id": "keep-distance",
+  "title": "Keep a distance",
+  "group": "touch",
+  "level": "builder",
+  "concepts": [
+    "coordinates",
+    "condition"
+  ],
+  "phrases": [
+    "keep a distance",
+    "stay away from",
+    "don’t get too close",
+    "run when someone is near",
+    "keep away"
+  ],
+  "needs": {
+    "sprites": 2
+  },
+  "steps": [
+    {
+      "say": "Select the shy sprite. Each update, check its distance to the other sprite."
+    },
+    {
+      "say": "If it is closer than 100 steps, point toward the other sprite, turn around and move away."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "update"
+      },
+      "stack": [
+        {
+          "type": "controls_if",
+          "inputs": {
+            "IF0": {
+              "block": {
+                "type": "logic_compare",
+                "fields": {
+                  "OP": "LT"
+                },
+                "inputs": {
+                  "A": {
+                    "block": {
+                      "type": "scene_distance",
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_self"
+                          }
+                        },
+                        "X": {
+                          "block": {
+                            "type": "scene_get",
+                            "fields": {
+                              "PROPERTY": "x"
+                            },
+                            "inputs": {
+                              "SPRITE": {
+                                "block": {
+                                  "type": "scene_sprite",
+                                  "fields": {
+                                    "SPRITE_ID": "$other"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        },
+                        "Y": {
+                          "block": {
+                            "type": "scene_get",
+                            "fields": {
+                              "PROPERTY": "y"
+                            },
+                            "inputs": {
+                              "SPRITE": {
+                                "block": {
+                                  "type": "scene_sprite",
+                                  "fields": {
+                                    "SPRITE_ID": "$other"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "B": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "100"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "DO0": {
+              "block": {
+                "type": "scene_point",
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_self"
+                    }
+                  },
+                  "X": {
+                    "block": {
+                      "type": "scene_get",
+                      "fields": {
+                        "PROPERTY": "x"
+                      },
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_sprite",
+                            "fields": {
+                              "SPRITE_ID": "$other"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Y": {
+                    "block": {
+                      "type": "scene_get",
+                      "fields": {
+                        "PROPERTY": "y"
+                      },
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_sprite",
+                            "fields": {
+                              "SPRITE_ID": "$other"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "scene_turn",
+                    "inputs": {
+                      "SPRITE": {
+                        "block": {
+                          "type": "scene_self"
+                        }
+                      },
+                      "VALUE": {
+                        "shadow": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "180"
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "scene_move",
+                        "inputs": {
+                          "SPRITE": {
+                            "block": {
+                              "type": "scene_self"
+                            }
+                          },
+                          "VALUE": {
+                            "shadow": {
+                              "type": "py_number",
+                              "fields": {
+                                "VALUE": "4"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "keep-distance.webm",
+  "tryNext": [
+    "run-away-pointer"
+  ]
+}

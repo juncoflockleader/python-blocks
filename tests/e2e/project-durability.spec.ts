@@ -1,6 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { encodeWave } from '../../src/scene/sound';
+import { reveal } from './shell';
 
 test('a near-limit project with sounds and full maps saves a file it can reopen', async ({page}) => {
   const project = JSON.parse(readFileSync('tests/fixtures/scene/sequential.json','utf8'));
@@ -16,12 +17,12 @@ test('a near-limit project with sounds and full maps saves a file it can reopen'
   expect(Buffer.byteLength(JSON.stringify(project,null,2))).toBeGreaterThan(16_000_000);
   await page.goto('/'); await page.locator('#project-file').setInputFiles({name:'large.json',mimeType:'application/json',buffer:bytes});
   await expect(page.locator('#scene-selection')).toHaveValue('player'); await expect(page.locator('#save-state')).not.toContainText('could not');
-  const pending = page.waitForEvent('download'); await page.locator('#save').click(); const download = await pending;
+  const pending = page.waitForEvent('download'); await (await reveal(page, '#save')).click(); const download = await pending;
   const chunks: Buffer[] = []; for await (const chunk of (await download.createReadStream())!) chunks.push(Buffer.from(chunk));
   const saved = Buffer.concat(chunks); expect(saved.length).toBeLessThanOrEqual(16_000_000);
   const captured = JSON.parse(saved.toString()); expect(captured.workspace.pythonScene).toEqual(scene);
   expect(captured.workspace.blocks.blocks.find((b: any) => b.id === 'long-draft').fields.TEXT).toBe(draft.fields.TEXT);
-  await page.locator('#example').click();
+  await (await reveal(page, '#example')).click();
   await page.locator('#project-file').setInputFiles({name:'saved.json',mimeType:'application/json',buffer:saved});
   await expect(page.locator('#scene-selection')).toHaveValue('player'); await expect(page.locator('#save-state')).not.toContainText('unchanged');
   await page.locator('#run').click(); await expect(page.locator('#status')).toHaveText('Event session running',{timeout:60_000});

@@ -1,0 +1,137 @@
+{
+  "id": "spiral",
+  "title": "Draw a spiral",
+  "group": "draw",
+  "level": "builder",
+  "concepts": [
+    "loop",
+    "assignment",
+    "expression"
+  ],
+  "phrases": [
+    "spiral",
+    "swirl",
+    "snail shell",
+    "growing square",
+    "round and round getting bigger"
+  ],
+  "steps": [
+    {
+      "say": "A spiral is a square whose sides keep getting longer."
+    },
+    {
+      "say": "Keep the side length in a variable. Each time around, move that far, turn, and add 5 to the length."
+    }
+  ],
+  "variables": [
+    "length"
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "py_set",
+          "fields": {
+            "SYMBOL": "$var:length"
+          },
+          "inputs": {
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "5"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "controls_repeat_ext",
+          "inputs": {
+            "TIMES": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "40"
+                }
+              }
+            },
+            "DO": {
+              "block": {
+                "type": "pen_move",
+                "inputs": {
+                  "STEPS": {
+                    "block": {
+                      "type": "py_get",
+                      "fields": {
+                        "SYMBOL": "$var:length"
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "pen_turn",
+                    "inputs": {
+                      "DEGREES": {
+                        "shadow": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "90"
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "py_set",
+                        "fields": {
+                          "SYMBOL": "$var:length"
+                        },
+                        "inputs": {
+                          "VALUE": {
+                            "block": {
+                              "type": "py_binary",
+                              "fields": {
+                                "OP": "+"
+                              },
+                              "inputs": {
+                                "A": {
+                                  "block": {
+                                    "type": "py_get",
+                                    "fields": {
+                                      "SYMBOL": "$var:length"
+                                    }
+                                  }
+                                },
+                                "B": {
+                                  "shadow": {
+                                    "type": "py_number",
+                                    "fields": {
+                                      "VALUE": "5"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "spiral.webm",
+  "tryNext": [
+    "draw-star"
+  ]
+}

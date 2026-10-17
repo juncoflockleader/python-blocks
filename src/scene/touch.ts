@@ -24,11 +24,15 @@ export class TouchControls {
   private enabled = false;
   private profile = defaultControls();
   private pad: HTMLFieldSetElement;
-  private shown = matchMedia('(pointer: coarse)').matches;
+  // The toggle may be moved elsewhere (the editor puts it in the stage toolbar), so keep a reference.
+  private toggle: HTMLButtonElement;
+  // Hidden until a running program needs keys (the editor decides) or the learner presses the toggle:
+  // on a tablet the pad would otherwise cover the small editor stage all the time.
+  private shown = false;
   constructor(readonly root: HTMLElement, private stage: HTMLElement, private held: HeldKeys) {
     root.innerHTML = '<button id="touch-toggle" class="button secondary" aria-controls="touch-pad">Touch controls</button><fieldset id="touch-pad" disabled><legend>On-screen controller</legend><div class="touch-directions"><button type="button" data-control="ArrowUp" aria-label="Move up">↑</button><button type="button" data-control="ArrowLeft" aria-label="Move left">←</button><button type="button" data-control="ArrowDown" aria-label="Move down">↓</button><button type="button" data-control="ArrowRight" aria-label="Move right">→</button></div><div class="touch-actions"><button type="button" data-control="a">A</button><button type="button" data-control="b">B</button></div></fieldset>';
-    this.pad = root.querySelector('fieldset')!;
-    root.querySelector('#touch-toggle')!.addEventListener('click', () => { this.clear(); this.shown = !this.shown; this.render(); });
+    this.pad = root.querySelector('fieldset')!; this.toggle = root.querySelector<HTMLButtonElement>('#touch-toggle')!;
+    this.toggle.addEventListener('click', () => { this.clear(); this.shown = !this.shown; this.render(); });
     for (const button of root.querySelectorAll<HTMLButtonElement>('[data-control]')) {
       button.addEventListener('contextmenu', e => e.preventDefault());
       button.addEventListener('pointerdown', e => {
@@ -47,6 +51,8 @@ export class TouchControls {
     this.render();
   }
   private key(button: HTMLButtonElement) { const key = button.dataset.control!; return key === 'a' || key === 'b' ? this.profile[key] : key; }
+  /** Show or hide the pad without waiting for the learner to press the toggle. */
+  setShown(shown: boolean) { if (this.shown !== shown) { this.clear(); this.shown = shown; this.render(); } }
   configure(profile: Controls = defaultControls()) { this.clear(); this.profile = { ...profile }; this.render(); }
   setEnabled(enabled: boolean) { if (!enabled) this.clear(); this.enabled = enabled; this.render(); }
   clear() {
@@ -57,7 +63,7 @@ export class TouchControls {
   private renderPressed() { for (const b of this.root.querySelectorAll<HTMLButtonElement>('[data-control]')) b.setAttribute('aria-pressed', String([...this.pointers.values(), ...this.keyboard.values()].includes(b))); }
   private render() {
     this.pad.hidden = !this.shown; this.pad.disabled = !this.enabled;
-    this.root.querySelector('#touch-toggle')!.setAttribute('aria-expanded', String(this.shown));
+    this.toggle.setAttribute('aria-expanded', String(this.shown));
     for (const action of ['a','b'] as const) { const b = this.root.querySelector<HTMLButtonElement>(`[data-control="${action}"]`)!; b.textContent = `${action.toUpperCase()} · ${this.profile[action] === 'Space' ? 'space' : this.profile[action]}`; b.setAttribute('aria-label', `Action ${action.toUpperCase()}: ${this.profile[action]}`); }
   }
 }

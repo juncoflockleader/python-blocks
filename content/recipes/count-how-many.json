@@ -1,0 +1,144 @@
+{
+  "id": "count-how-many",
+  "title": "Count how many",
+  "group": "data",
+  "level": "builder",
+  "concepts": [
+    "assignment",
+    "expression"
+  ],
+  "phrases": [
+    "count how many",
+    "counter",
+    "how many times",
+    "add one each time",
+    "tally"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Make a variable called count. Start it at 0."
+    },
+    {
+      "say": "Each click, set count to count + 1 and say it."
+    }
+  ],
+  "variables": [
+    "count"
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "py_set",
+          "fields": {
+            "SYMBOL": "$var:count"
+          },
+          "inputs": {
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "0"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "handler": {
+        "kind": "click"
+      },
+      "stack": [
+        {
+          "type": "py_set",
+          "fields": {
+            "SYMBOL": "$var:count"
+          },
+          "inputs": {
+            "VALUE": {
+              "block": {
+                "type": "py_binary",
+                "fields": {
+                  "OP": "+"
+                },
+                "inputs": {
+                  "A": {
+                    "block": {
+                      "type": "py_get",
+                      "fields": {
+                        "SYMBOL": "$var:count"
+                      }
+                    }
+                  },
+                  "B": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_say_for",
+          "fields": {
+            "STYLE": "say"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            },
+            "TEXT": {
+              "block": {
+                "type": "py_get",
+                "fields": {
+                  "SYMBOL": "$var:count"
+                }
+              }
+            },
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "1"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "count-how-many.webm",
+  "demo": [
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 300
+    },
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 600
+    }
+  ],
+  "tryNext": [
+    "best-score"
+  ]
+}

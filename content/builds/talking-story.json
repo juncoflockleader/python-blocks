@@ -1,0 +1,134 @@
+{
+ "id": "talking-story",
+ "title": "Talking story",
+ "level": "builder",
+ "minutes": 20,
+ "order": 6,
+ "summary": "Two characters talk, music plays, night falls and the bird changes costume.",
+ "ideas": [
+  "say and wait",
+  "costumes and frames",
+  "backdrop events",
+  "sound"
+ ],
+ "starter": {
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 19,
+  "workspace": {
+   "blocks": {
+    "languageVersion": 0,
+    "blocks": []
+   },
+   "pythonScene": {
+    "version": 1,
+    "background": "#fdfdf9",
+    "assets": [],
+    "sprites": [
+     {
+      "id": "bird",
+      "name": "Bird",
+      "x": -120,
+      "y": -40,
+      "direction": 0,
+      "size": 100,
+      "layer": 0,
+      "visible": true,
+      "costume": "bird"
+     },
+     {
+      "id": "star",
+      "name": "Star",
+      "x": 130,
+      "y": 60,
+      "direction": 0,
+      "size": 100,
+      "layer": 0,
+      "visible": true,
+      "costume": "star"
+     }
+    ],
+    "backdrop": "backdrop_meadow"
+   }
+  }
+ },
+ "steps": [
+  {
+   "text": "When the game starts, the bird says hello and the star answers. Each “say for” waits, so they take turns.",
+   "check": {
+    "all": [
+     {
+      "handler": "start",
+      "contains": [
+       "scene_say_for"
+      ]
+     },
+     {
+      "count": [
+       "scene_say_for",
+       2
+      ]
+     }
+    ]
+   },
+   "recipe": "conversation",
+   "select": "bird",
+   "other": "star",
+   "highlight": {
+    "category": "looks"
+   }
+  },
+  {
+   "text": "After the talk, play a little tune and switch the backdrop to Night.",
+   "check": {
+    "blocks": [
+     "sound_note",
+     "scene_backdrop_set"
+    ]
+   },
+   "recipe": "scene-change-later",
+   "highlight": {
+    "category": "sounds"
+   }
+  },
+  {
+   "text": "Give the bird a second costume: paint one in Artwork & frames, or use Import costume in the Sprite tab.",
+   "check": {
+    "frames": 2
+   },
+   "select": "bird",
+   "highlight": {
+    "element": "#scene-art"
+   }
+  },
+  {
+   "text": "When the backdrop switches to Night, make the bird think something and show its next costume.",
+   "check": {
+    "handler": "backdrop",
+    "contains": [
+     "scene_next_costume"
+    ]
+   },
+   "recipe": "backdrop-event",
+   "select": "bird",
+   "highlight": {
+    "category": "events"
+   }
+  },
+  {
+   "text": "Run your story from the start.",
+   "check": {
+    "ran": true
+   }
+  }
+ ],
+ "finish": {
+  "text": "You told a story with turns, music and a twist!",
+  "remix": [
+   "Add a third character who arrives at night.",
+   "Ask the reader a question and use the answer.",
+   "Make the stars twinkle with graphic effects."
+  ]
+ },
+ "next": "jump-quest"
+}

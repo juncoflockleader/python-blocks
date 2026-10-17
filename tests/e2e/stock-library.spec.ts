@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { strFromU8 } from 'fflate';
 import { exported, isolated, run } from './playable-support';
+import { reveal } from './shell';
 
 const saved = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem('python-blocks.project.v1')!).workspace.pythonScene);
 async function open(page: Page) {
@@ -38,8 +39,8 @@ test('stock sprites have real previews, searchable categories and atomic reusabl
   await page.locator('#language-undo').click(); await expect.poll(() => saved(page)).toEqual(before);
   await page.locator('#language-redo').click(); await expect.poll(() => saved(page)).toEqual(first);
   await page.reload(); expect(await saved(page)).toEqual(first);
-  await page.locator('#scene-selection').selectOption(cat.id); await page.locator('#scene-art').click(); await expect(page.locator('#art-name')).toHaveValue('Cat'); await expect(page.locator('#art-save')).toBeEnabled();
-  await page.locator('#art-close').click(); await page.setViewportSize({width:390,height:844}); await page.locator('#scene-stock').click();
+  await (await reveal(page, '#scene-selection')).selectOption(cat.id); await (await reveal(page, '#scene-art')).click(); await expect(page.locator('#art-name')).toHaveValue('Cat'); await expect(page.locator('#art-save')).toBeEnabled();
+  await page.locator('#art-close').click(); await page.setViewportSize({ width: 744, height: 1000 }); await page.locator('#scene-stock').click();
   await page.locator('#stock-search').fill('robot'); await expect(page.locator('[data-stock-id="robot"] canvas')).toBeVisible();
   expect(await page.locator('#stock-dialog').evaluate(e => e.scrollWidth <= e.clientWidth)).toBe(true);
   await page.locator('#stock-dialog').screenshot({path:info.outputPath('stock-sprites-mobile.png')});
@@ -51,7 +52,7 @@ test('stock sprites have real previews, searchable categories and atomic reusabl
 
 test('world templates preserve previous work, embed reusable artwork, undo together and play independently', async ({page,browser},info) => {
   await open(page); const before=await saved(page);
-  await page.locator('#scene-worlds').click(); await page.locator('#world-stock').click();
+  await (await reveal(page, '#scene-worlds')).click(); await page.locator('#world-stock').click();
   await expect(page.locator('.stock-card')).toHaveCount(4); await expect(page.locator('.stock-thumbnail canvas')).toHaveCount(4);
   await page.locator('#stock-dialog').screenshot({path:info.outputPath('stock-worlds.png')}); await add(page,'forest');
   await expect(page.locator('#world-name')).toHaveValue('Forest trail'); const first=await saved(page);
@@ -76,10 +77,10 @@ test('world templates preserve previous work, embed reusable artwork, undo toget
 });
 
 test('all stock backdrops and worlds add through the normal save format and respect the world limit', async ({page},info) => {
-  await open(page); await page.locator('#scene-stock-backdrop').click(); await expect(page.locator('.stock-card')).toHaveCount(6); await expect(page.locator('.stock-thumbnail canvas')).toHaveCount(6);
+  await open(page); await (await reveal(page, '#scene-stock-backdrop')).click(); await expect(page.locator('.stock-card')).toHaveCount(6); await expect(page.locator('.stock-thumbnail canvas')).toHaveCount(6);
   await page.locator('#stock-dialog').screenshot({path:info.outputPath('stock-backdrops.png')}); await add(page,'reef');
   const backdrop=await saved(page); expect(backdrop.backdrops[0].name).toBe('Coral reef'); expect(backdrop.backdrop).toBe(backdrop.backdrops[0].id);
-  await page.locator('#scene-worlds').click();
+  await (await reveal(page, '#scene-worlds')).click();
   for (const id of ['forest','reef','city','space','forest','reef','city','space']) { await page.locator('#world-stock').click(); await add(page,id); }
   const full=await saved(page); expect(full.worlds).toHaveLength(8); expect(full.backdrops).toHaveLength(4);
   await page.locator('#world-stock').click(); await page.locator('[data-stock-id="forest"]').click(); await expect(page.locator('#stock-error')).toContainText('already has 8 worlds');

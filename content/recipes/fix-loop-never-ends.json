@@ -1,0 +1,28 @@
+{
+  "id": "fix-loop-never-ends",
+  "title": "My loop never ends",
+  "group": "fix",
+  "level": "starter",
+  "concepts": [
+    "loop",
+    "wait"
+  ],
+  "phrases": [
+    "my loop never ends",
+    "the game froze",
+    "forever loop stuck",
+    "it keeps going forever",
+    "the page stopped responding"
+  ],
+  "steps": [
+    {
+      "say": "A forever loop without a wait never lets other scripts have a turn."
+    },
+    {
+      "say": "Add a short wait inside the loop, or use “when sprite updates” instead of a forever loop."
+    },
+    {
+      "say": "Use repeat with a number when you only need a few times."
+    }
+  ]
+}

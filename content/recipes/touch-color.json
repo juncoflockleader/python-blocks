@@ -1,0 +1,125 @@
+{
+  "id": "touch-color",
+  "title": "React to a color",
+  "group": "touch",
+  "level": "builder",
+  "concepts": [
+    "collision",
+    "condition"
+  ],
+  "phrases": [
+    "touch a color",
+    "when I touch green",
+    "stand on a colored area",
+    "touching red",
+    "color sensing"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Each update, move a little."
+    },
+    {
+      "say": "If the sprite touches the chosen color, say something. Pick a color from your backdrop."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "update"
+      },
+      "stack": [
+        {
+          "type": "scene_move",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "3"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_bounce",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            }
+          }
+        },
+        {
+          "type": "controls_if",
+          "inputs": {
+            "IF0": {
+              "block": {
+                "type": "scene_touching_color",
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_self"
+                    }
+                  },
+                  "COLOR": {
+                    "shadow": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "#83aa70"
+                      }
+                    }
+                  },
+                  "TOLERANCE": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "40"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "DO0": {
+              "block": {
+                "type": "scene_say",
+                "fields": {
+                  "STYLE": "say"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_self"
+                    }
+                  },
+                  "TEXT": {
+                    "shadow": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "Grass!"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "touch-color.webm",
+  "tryNext": [
+    "touch-edge"
+  ]
+}

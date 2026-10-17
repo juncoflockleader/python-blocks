@@ -1,0 +1,120 @@
+{
+  "id": "wrap-around",
+  "title": "Wrap around the screen",
+  "group": "move",
+  "level": "starter",
+  "concepts": [
+    "coordinates",
+    "condition"
+  ],
+  "phrases": [
+    "wrap around the screen",
+    "come back on the other side",
+    "go off one side and appear on the other",
+    "loop around the edges",
+    "teleport to the other edge"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Move a little each update."
+    },
+    {
+      "say": "If x is past the right edge (240), jump to the left edge (-240)."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "update"
+      },
+      "stack": [
+        {
+          "type": "scene_move",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "4"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "controls_if",
+          "inputs": {
+            "IF0": {
+              "block": {
+                "type": "logic_compare",
+                "fields": {
+                  "OP": "GT"
+                },
+                "inputs": {
+                  "A": {
+                    "block": {
+                      "type": "scene_get",
+                      "fields": {
+                        "PROPERTY": "x"
+                      },
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_self"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "B": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "240"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "DO0": {
+              "block": {
+                "type": "scene_set",
+                "fields": {
+                  "PROPERTY": "x"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_self"
+                    }
+                  },
+                  "VALUE": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "-240"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "wrap-around.webm",
+  "tryNext": [
+    "bounce-edges"
+  ]
+}

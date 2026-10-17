@@ -1,0 +1,147 @@
+{
+  "id": "jump-gravity",
+  "title": "Jump with gravity",
+  "group": "move",
+  "level": "builder",
+  "concepts": [
+    "motion",
+    "input",
+    "event"
+  ],
+  "phrases": [
+    "jump with gravity",
+    "make my character jump",
+    "jump when I press space",
+    "fall down and land",
+    "platform jumping"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "When the game starts, turn on automatic motion and pull the sprite down with gravity (negative y acceleration)."
+    },
+    {
+      "say": "Stop at the stage edges so it lands on the floor."
+    },
+    {
+      "say": "When space is pressed, jump if the sprite is standing on something."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "scene_motion_body",
+          "fields": {
+            "MODE": "moving"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_motion_set",
+          "fields": {
+            "PROPERTY": "ay"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "-900"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_motion_edges",
+          "fields": {
+            "MODE": "stop"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "handler": {
+        "kind": "key",
+        "key": "Space"
+      },
+      "stack": [
+        {
+          "type": "scene_jump",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "450"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "jump-gravity.webm",
+  "demo": [
+    {
+      "wait": 700
+    },
+    {
+      "key": "Space",
+      "ms": 80
+    },
+    {
+      "wait": 700
+    },
+    {
+      "key": "Space",
+      "ms": 80
+    }
+  ],
+  "tryNext": [
+    "jump-sound",
+    "shoot-projectile"
+  ]
+}

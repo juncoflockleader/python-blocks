@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import path from 'node:path';
 import { readFile } from 'node:fs/promises';
+import { menu } from './shell';
 
 const fixture = (name: string) => path.resolve('tests/fixtures/function-values', name);
 async function open(page: Page, name = 'references.json') { await page.goto('/'); await page.locator('#project-file').setInputFiles(fixture(name)); }
@@ -12,7 +13,7 @@ test('function references rename and reorder with definitions while dynamic call
   await expect(page.locator('.blocklyToolboxFlyout')).toContainText(/function\s*difference/);
   await page.getByRole('treeitem', { name: 'Function values', exact: true }).click();
   await expect(page.locator('.blocklyToolboxFlyout')).toContainText('call function value');
-  await page.getByRole('button', { name: 'Functions & variables' }).click();
+  await menu(page, 'Functions & variables');
   await page.getByLabel('Choose function').selectOption('difference-function');
   await page.getByLabel('Function name', { exact: true }).fill('subtract_values');
   await page.getByRole('button', { name: 'Move parameter up', exact: true }).nth(1).click();
@@ -43,7 +44,7 @@ test('dynamic argument editing preserves removed shadows, maps arity errors, and
 });
 
 test('definition deletion leaves references unresolved and undo repairs them', async ({ page }) => {
-  await open(page); await page.getByRole('button', { name: 'Functions & variables' }).click();
+  await open(page); await menu(page, 'Functions & variables');
   await page.getByLabel('Choose function').selectOption('difference-function'); await page.getByRole('button', { name: 'Delete function', exact: true }).click();
   await expect(page.locator('#diagnostics')).toContainText('no active definition'); await expect(page.locator('#run')).toBeDisabled();
   await expect(page.locator('g[data-id="difference-reference"]')).toBeAttached();
@@ -71,10 +72,10 @@ test('higher-order functions pass and return functions in real Pyodide after sav
 test('imported function values return private helpers and keep pinned identity through namespace edits and removal', async ({ page }) => {
   await open(page, 'module-consumer.json'); await expect(page.locator('#python')).toContainText('(tools.choose_operation)()');
   await page.getByRole('treeitem', { name: 'Modules', exact: true }).click(); await expect(page.locator('.blocklyToolboxFlyout')).toContainText(/function\s*tools\.choose_operation/);
-  await page.getByRole('button', { name: 'Modules', exact: true }).click(); await page.locator('#module-alias').fill('helpers');
+  await menu(page, 'Modules'); await page.locator('#module-alias').fill('helpers');
   await page.getByRole('button', { name: 'Rename namespace', exact: true }).click(); await page.locator('#modules-close').click();
   await expect(page.locator('#python')).toContainText('(helpers.choose_operation)()'); await page.reload(); await run(page); await expect(page.locator('#output')).toHaveText('7\n');
-  await page.getByRole('button', { name: 'Modules', exact: true }).click(); await page.getByRole('button', { name: 'Remove import', exact: true }).click(); await page.locator('#modules-close').click();
+  await menu(page, 'Modules'); await page.getByRole('button', { name: 'Remove import', exact: true }).click(); await page.locator('#modules-close').click();
   await expect(page.locator('#run')).toBeDisabled(); await expect(page.locator('g[data-id="module-reference"]')).toContainText('helpers.choose_operation');
   await page.getByRole('button', { name: 'Undo', exact: true }).click(); await page.reload(); await run(page); await expect(page.locator('#output')).toHaveText('7\n');
 });
@@ -86,7 +87,7 @@ test('rejected function-value metadata preserves the project and subsequent Undo
   await page.locator('#project-file').setInputFiles({ name: 'bad.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(bad)) });
   await expect(page.locator('#save-state')).toContainText('between 0 and 100');
   await expect(page.locator('#python')).toContainText('(difference)(10, 3)');
-  await page.getByRole('button', { name: 'Functions & variables' }).click(); await page.getByLabel('Choose function').selectOption('difference-function');
+  await menu(page, 'Functions & variables'); await page.getByLabel('Choose function').selectOption('difference-function');
   await page.getByLabel('Function name', { exact: true }).fill('renamed'); await page.getByRole('button', { name: 'Apply function', exact: true }).click();
   await expect(page.locator('#python')).toContainText('(renamed)(10, 3)'); await page.getByRole('button', { name: 'Undo', exact: true }).click();
   await expect(page.locator('#python')).toContainText('(difference)(10, 3)'); await run(page); await expect(page.locator('#output')).toHaveText('7\n');

@@ -1,0 +1,129 @@
+{
+  "id": "move-randomly",
+  "title": "Move to random places",
+  "group": "move",
+  "level": "starter",
+  "concepts": [
+    "motion",
+    "loop",
+    "coordinates"
+  ],
+  "phrases": [
+    "move randomly",
+    "wander around",
+    "go to random places",
+    "fly around by itself",
+    "move around on its own",
+    "go to a random position"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Repeat forever so the sprite never stops wandering."
+    },
+    {
+      "say": "Glide to a random x between -200 and 200 and a random y between -130 and 130."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "controls_whileUntil",
+          "fields": {
+            "MODE": "WHILE"
+          },
+          "inputs": {
+            "BOOL": {
+              "shadow": {
+                "type": "logic_boolean",
+                "fields": {
+                  "BOOL": "TRUE"
+                }
+              }
+            },
+            "DO": {
+              "block": {
+                "type": "scene_glide",
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "$sprite"
+                      }
+                    }
+                  },
+                  "SECONDS": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "0.6"
+                      }
+                    }
+                  },
+                  "X": {
+                    "block": {
+                      "type": "math_random_int",
+                      "inputs": {
+                        "FROM": {
+                          "shadow": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "-200"
+                            }
+                          }
+                        },
+                        "TO": {
+                          "shadow": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "200"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Y": {
+                    "block": {
+                      "type": "math_random_int",
+                      "inputs": {
+                        "FROM": {
+                          "shadow": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "-130"
+                            }
+                          }
+                        },
+                        "TO": {
+                          "shadow": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "130"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "move-randomly.webm",
+  "tryNext": [
+    "chase",
+    "random-spawn"
+  ]
+}

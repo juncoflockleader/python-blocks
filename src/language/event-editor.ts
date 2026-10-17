@@ -6,7 +6,7 @@ import { numberInput } from '../blocks/core';
 import { editSignature, handlerSignatures, refreshSymbols, reorderHandlers, type FunctionBlock, type Signature } from './functions';
 
 export function installEventEditor(workspace: Blockly.WorkspaceSvg) {
-  document.querySelector('.blocks-panel .panel-heading')!.insertAdjacentHTML('beforeend', '<button class="button secondary" id="events-manage">Events</button>');
+  document.getElementById('menu-tools')!.insertAdjacentHTML('beforeend', '<button class="button secondary" id="events-manage">Event handlers</button>');
   document.body.insertAdjacentHTML('beforeend', `<dialog id="events-dialog" aria-labelledby="events-title">
     <h2 id="events-title">Event handlers</h2>
     <p>Handlers are independent async activities. They run in the saved order below until they wait. Each receives its own payload.</p>

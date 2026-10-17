@@ -1,0 +1,28 @@
+{
+  "id": "fix-name-not-set",
+  "title": "A name is not set yet",
+  "group": "fix",
+  "level": "builder",
+  "concepts": [
+    "name_error",
+    "assignment"
+  ],
+  "phrases": [
+    "name is not defined",
+    "name error",
+    "variable not set",
+    "it says a name is missing",
+    "unknown variable"
+  ],
+  "steps": [
+    {
+      "say": "Python reads a variable only after something has set it."
+    },
+    {
+      "say": "Set the variable to a starting value when the game starts, before any script reads it."
+    },
+    {
+      "say": "Check the spelling: score and Score are different names."
+    }
+  ]
+}

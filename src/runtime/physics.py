@@ -151,8 +151,10 @@ class Physics:
         snapshots = {s.id: (s.x, s.y, dict(s._state['motion'])) for s in self.scene.items.values()}
         while self.accumulator + EPSILON >= STEP:
             self.accumulator = max(0, self.accumulator - STEP); seen = set()
+            behaviors = self.scene._behaviors
             for sprite in list(self.scene.items.values()):
                 m = sprite._state['motion']
+                if behaviors and behaviors.holding(sprite): continue
                 if m['lifetime'] > 0:
                     m['lifetime'] = max(0, m['lifetime'] - STEP)
                     if m['lifetime'] < EPSILON: sprite.destroy(); continue

@@ -1,0 +1,124 @@
+{
+ "id": "maze-run",
+ "title": "Maze run",
+ "level": "pro",
+ "minutes": 20,
+ "order": 4,
+ "summary": "Explore a tile world with walls, a following camera and a door to a second world.",
+ "ideas": [
+  "world template",
+  "tile walls",
+  "camera follow",
+  "world transition"
+ ],
+ "starter": {
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 19,
+  "workspace": {
+   "blocks": {
+    "languageVersion": 0,
+    "blocks": []
+   },
+   "pythonScene": {
+    "version": 1,
+    "background": "#fdfdf9",
+    "assets": [],
+    "sprites": [
+     {
+      "id": "explorer",
+      "name": "Explorer",
+      "x": 0,
+      "y": 0,
+      "direction": 0,
+      "size": 60,
+      "layer": 0,
+      "visible": true,
+      "costume": "bird"
+     }
+    ]
+   }
+  }
+ },
+ "steps": [
+  {
+   "text": "Open Worlds & tilemaps in the Sprite tab and add a world from the World library.",
+   "check": {
+    "worlds": 1
+   },
+   "highlight": {
+    "element": "#scene-worlds"
+   }
+  },
+  {
+   "text": "Select the explorer. Make it move with the arrow keys.",
+   "check": {
+    "handler": "start",
+    "contains": [
+     "scene_control"
+    ]
+   },
+   "recipe": "arrow-keys",
+   "select": "explorer",
+   "highlight": {
+    "category": "motion"
+   }
+  },
+  {
+   "text": "Make the camera follow the explorer, and clamp it to the world.",
+   "check": {
+    "blocks": [
+     "scene_camera_follow"
+    ]
+   },
+   "recipe": "camera-follow",
+   "select": "explorer",
+   "highlight": {
+    "category": "worlds"
+   }
+  },
+  {
+   "text": "Open Worlds & tilemaps, choose the Wall tool and paint solid tiles to make your maze.",
+   "check": {
+    "walls": 1
+   },
+   "highlight": {
+    "element": "#scene-worlds"
+   }
+  },
+  {
+   "text": "Run it and explore. Walls stop the explorer.",
+   "check": {
+    "ran": true
+   }
+  },
+  {
+   "text": "Add a second world and a flag sprite. When the explorer touches the flag, switch to the other world.",
+   "check": {
+    "all": [
+     {
+      "worlds": 2
+     },
+     {
+      "blocks": [
+       "scene_world_set"
+      ]
+     }
+    ]
+   },
+   "recipe": "next-level",
+   "select": "explorer",
+   "highlight": {
+    "category": "worlds"
+   }
+  }
+ ],
+ "finish": {
+  "text": "You built a world to explore!",
+  "remix": [
+   "Hide a star behind the walls and keep score.",
+   "Add a countdown to escape the maze.",
+   "Make a third world."
+  ]
+ }
+}

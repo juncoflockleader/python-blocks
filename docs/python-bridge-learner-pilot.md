@@ -4,7 +4,7 @@ Status: **the in-app pilot workflow is implemented; no participant sessions have
 
 ## Running a session
 
-Open **Learner pilot** above the workspace. Enter a participant code, prior experience, and relevant device/accessibility notes. Start saves a return copy of the current project before loading the score starter. If the backup cannot be saved, the project is not replaced. The six activity tabs contain learner prompts; **Facilitator notes** keeps predictions, observed behavior, interpretation, outcome, hint level, and end discussion separate. No outcome is automatically marked successful.
+Open **Learner pilot** from the ⋯ menu or the Help tab (Builder and Pro levels). Enter a participant code, prior experience, and relevant device/accessibility notes. Start saves a return copy of the current project before loading the score starter. If the backup cannot be saved, the project is not replaced. The six activity tabs contain learner prompts; **Facilitator notes** keeps predictions, observed behavior, interpretation, outcome, hint level, and end discussion separate. No outcome is automatically marked successful.
 
 Use **Start task timer** for observed task work. It pauses on task changes, page hiding, reload, and session completion. It measures active observed work, not a full session's wall-clock duration. A browser crash can lose the current timing interval. The sprite activity has an explicit starter button that saves the previous project as a checkpoint first. Invalid Python drafts are included in those project snapshots. The pilot disables AI assist and clears any configured key when it begins.
 

@@ -1,12 +1,13 @@
 import { expect, test, type Page } from '@playwright/test';
 import path from 'node:path';
+import { reveal, menu } from './shell';
 
 async function open(page: Page, file: string) { await page.goto('/'); await page.locator('#project-file').setInputFiles(path.resolve('tests/fixtures/events', file)); }
 async function run(page: Page) { await page.getByRole('button', { name: 'Run code' }).click(); await expect(page.locator('#status')).toHaveText('Event session running', { timeout: 60_000 }); }
-async function send(page: Page, event: string, payload = 'null') { await page.locator('#event-name').fill(event); await page.locator('#event-payload').fill(payload); await page.getByRole('button', { name: 'Send event', exact: true }).click(); }
-async function manage(page: Page) { await page.getByRole('button', { name: 'Events', exact: true }).click(); }
+async function send(page: Page, event: string, payload = 'null') { await (await reveal(page, '#event-name')).fill(event); await (await reveal(page, '#event-payload')).fill(payload); await (await reveal(page, page.getByRole('button', { name: 'Send event', exact: true }))).click(); }
+async function manage(page: Page) { await menu(page, 'Event handlers'); }
 async function saved(page: Page) {
-  const downloading = page.waitForEvent('download'); await page.getByRole('button', { name: 'Save project', exact: true }).click();
+  const downloading = page.waitForEvent('download'); await (await reveal(page, page.getByRole('button', { name: 'Save project', exact: true }))).click();
   const download = await downloading; let content = ''; for await (const chunk of (await download.createReadStream())!) content += chunk; return JSON.parse(content);
 }
 
@@ -23,7 +24,7 @@ test('saved event projects run async helpers, receive test input, and export the
   const project = await saved(page); expect(project.languageVersion).toBe(19);
   expect(project.workspace.procedures.find((f: { id: string }) => f.id === 'helper').async).toBe(true);
   await page.screenshot({ path: testInfo.outputPath('event-project.png'), fullPage: true });
-  const downloading = page.waitForEvent('download'); await page.getByRole('button', { name: 'Export Python' }).click();
+  const downloading = page.waitForEvent('download'); await (await reveal(page, page.getByRole('button', { name: 'Export Python' }))).click();
   let source = ''; for await (const chunk of (await (await downloading).createReadStream())!) source += chunk;
   expect(source).toContain('then awaits the event session');
   await page.getByRole('button', { name: 'Stop', exact: false }).click();
@@ -39,7 +40,7 @@ test('handler forms rename payloads, preserve copied scope, and undo deletion', 
   await page.getByRole('button', { name: 'Apply handler' }).click();
   await expect(page.locator('#python')).toContainText('async def receive_input(data):');
   await expect(page.locator('#python')).toContainText('print(data)');
-  await page.getByRole('button', { name: 'Functions & variables' }).click();
+  await menu(page, 'Functions & variables');
   await page.locator('#variable-name').fill('count'); await page.locator('#variable-scope').selectOption('idle');
   await page.getByRole('button', { name: 'Apply variable' }).click();
   await manage(page); await page.locator('#handler-select').selectOption('idle');
@@ -96,13 +97,13 @@ test('handler delivery order is editable, undoable, and persistent', async ({ pa
 
 test('async function edits show context errors and undo restores awaited calls', async ({ page }) => {
   await open(page, 'handlers.json');
-  await page.getByRole('button', { name: 'Functions & variables' }).click(); await page.locator('#function-select').selectOption('helper');
+  await menu(page, 'Functions & variables'); await page.locator('#function-select').selectOption('helper');
   await expect(page.locator('#function-async')).toBeChecked(); await page.locator('#function-async').uncheck();
   await page.getByRole('button', { name: 'Apply function' }).click();
   await expect(page.locator('#diagnostics')).toContainText('explicitly marked async'); await expect(page.locator('#run')).toBeDisabled();
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
   await expect(page.locator('#python')).toContainText('await double_value(21)'); await expect(page.locator('#run')).toBeEnabled();
-  await page.getByRole('button', { name: 'Functions & variables' }).click(); await page.locator('#function-select').selectOption('helper');
+  await menu(page, 'Functions & variables'); await page.locator('#function-select').selectOption('helper');
   await page.locator('#function-name').fill('twice'); await page.getByRole('button', { name: 'Apply function' }).click();
   await expect(page.locator('#python')).toContainText('await twice(21)'); await page.reload(); await run(page);
   await expect(page.locator('#output')).toHaveText('first\nsecond\n42\n');

@@ -5,6 +5,7 @@ import { validWatchValues } from '../scene/watch-model';
 import { validQuestionCommand, validQuestionReply } from '../scene/questions';
 import playgroundSource from './playground.py?raw';
 import executionSource from './execution.py?raw';
+import debuggerSource from './debugger.py?raw';
 import eventsSource from './events.py?raw';
 import sceneSource from './scene.py?raw';
 import worldsSource from './worlds.py?raw';
@@ -22,9 +23,14 @@ const send = (event: RunnerEvent) => self.postMessage(event);
 let started = false;
 let ready = false;
 let python: PyodideInterface | null = null;
+let debugControl: Int32Array | null = null;
 
 self.onmessage = async (event: MessageEvent<RunnerCommand>) => {
   const command = event.data;
+  if (command.type === 'debug-pause') {
+    if (debugControl && python && ready) python.runPython('_pb_debugger.pause_idle()');
+    return;
+  }
   if (command.type === 'answer') {
     if (python && validQuestionReply(command.reply)) {
       python.globals.set('_question_reply', JSON.stringify(command.reply));
@@ -106,6 +112,23 @@ self.onmessage = async (event: MessageEvent<RunnerCommand>) => {
     send({ type: 'status', message: 'Running Python…' });
     send({ type: 'started' });
     python.runPython(executionSource);
+    if (command.debug) {
+      debugControl = new Int32Array(command.debug.control);
+      python.registerJsModule('_playground_debug_host', {
+        requested: () => Atomics.load(debugControl!, 0) === 1,
+        suspend: (json: string) => {
+          Atomics.store(debugControl!, 1, 1);
+          send({ type: 'debug-paused', snapshot: JSON.parse(json) });
+          while (Atomics.load(debugControl!, 1) === 1) Atomics.wait(debugControl!, 1, 1);
+          const action = Atomics.load(debugControl!, 0);
+          send({ type: 'debug-running' });
+          return action;
+        },
+      });
+      python.FS.writeFile('/home/pyodide/_playground_debugger.py', debuggerSource);
+      python.globals.set('_debug_lines_json', JSON.stringify(command.debug.lines));
+      python.runPython('from _playground_debugger import Debugger\nfrom _playground_debug_host import requested, suspend\n_pb_debugger = Debugger(json.loads(_debug_lines_json), requested, suspend)\n_pb_debugger.install()');
+    }
     python.globals.set('_program_source', command.code);
     python.globals.set('_generated_modules_json', JSON.stringify(command.files ?? {}));
     let previousWatch = '';
@@ -125,6 +148,7 @@ self.onmessage = async (event: MessageEvent<RunnerCommand>) => {
       ? 'from _playground_host import session_ready\nawait run_event_program(_program_source, session_ready, json.loads(_generated_modules_json))'
       : 'run_program(_program_source, json.loads(_generated_modules_json))') as string;
     ready = false;
+    if (debugControl) python.runPython('_pb_debugger.close()');
     publishWatches();
     send(JSON.parse(result) as RunnerEvent);
   } catch (error) {

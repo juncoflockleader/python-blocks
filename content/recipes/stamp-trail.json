@@ -1,0 +1,130 @@
+{
+  "id": "stamp-trail",
+  "title": "Stamp a trail",
+  "group": "draw",
+  "level": "starter",
+  "concepts": [
+    "loop",
+    "sprite"
+  ],
+  "phrases": [
+    "stamp a trail",
+    "leave copies behind",
+    "footprints",
+    "stamp my sprite",
+    "trail of pictures"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Repeat 12 times: stamp the sprite where it is, then move and turn a little."
+    },
+    {
+      "say": "Stamps stay on the stage until erased."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "controls_repeat_ext",
+          "inputs": {
+            "TIMES": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "12"
+                }
+              }
+            },
+            "DO": {
+              "block": {
+                "type": "scene_stamp",
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "$sprite"
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "scene_move",
+                    "inputs": {
+                      "SPRITE": {
+                        "block": {
+                          "type": "scene_sprite",
+                          "fields": {
+                            "SPRITE_ID": "$sprite"
+                          }
+                        }
+                      },
+                      "VALUE": {
+                        "shadow": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "30"
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "scene_turn",
+                        "inputs": {
+                          "SPRITE": {
+                            "block": {
+                              "type": "scene_sprite",
+                              "fields": {
+                                "SPRITE_ID": "$sprite"
+                              }
+                            }
+                          },
+                          "VALUE": {
+                            "shadow": {
+                              "type": "py_number",
+                              "fields": {
+                                "VALUE": "30"
+                              }
+                            }
+                          }
+                        },
+                        "next": {
+                          "block": {
+                            "type": "py_wait",
+                            "inputs": {
+                              "SECONDS": {
+                                "shadow": {
+                                  "type": "py_number",
+                                  "fields": {
+                                    "VALUE": "0.08"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "stamp-trail.webm",
+  "tryNext": [
+    "rainbow-pen"
+  ]
+}

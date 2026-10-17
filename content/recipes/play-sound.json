@@ -1,0 +1,108 @@
+{
+  "id": "play-sound",
+  "title": "Play a sound when something happens",
+  "group": "sound",
+  "level": "starter",
+  "concepts": [
+    "sound",
+    "event"
+  ],
+  "phrases": [
+    "play a sound",
+    "make a noise",
+    "beep when I click",
+    "sound effect",
+    "ding"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Pick an event: here, when the sprite is clicked."
+    },
+    {
+      "say": "Play a short note. Notes 60 to 84 sound bright; try other instruments."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "click"
+      },
+      "stack": [
+        {
+          "type": "sound_note",
+          "fields": {
+            "INSTRUMENT": "triangle"
+          },
+          "inputs": {
+            "NOTE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "72"
+                }
+              }
+            },
+            "BEATS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "0.5"
+                }
+              }
+            },
+            "OWNER": {
+              "shadow": {
+                "type": "py_none"
+              }
+            }
+          }
+        },
+        {
+          "type": "sound_note",
+          "fields": {
+            "INSTRUMENT": "triangle"
+          },
+          "inputs": {
+            "NOTE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "79"
+                }
+              }
+            },
+            "BEATS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "0.5"
+                }
+              }
+            },
+            "OWNER": {
+              "shadow": {
+                "type": "py_none"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "play-sound.webm",
+  "demo": [
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 600
+    }
+  ],
+  "tryNext": [
+    "music-loop",
+    "jump-sound"
+  ]
+}

@@ -1,11 +1,12 @@
 import { expect, test } from '@playwright/test';
 import path from 'node:path';
+import { menu } from './shell';
 
 test('signature editing keeps arguments bound, supports undo, and survives reload in Pyodide', async ({ page }, testInfo) => {
   await page.goto('/');
   await page.locator('#project-file').setInputFiles(path.resolve('tests/fixtures/language/functions.json'));
   await expect(page.locator('#python')).toContainText('difference(10, 3)');
-  await page.getByRole('button', { name: 'Functions & variables' }).click();
+  await menu(page, 'Functions & variables');
   await page.getByLabel('Choose function').selectOption('difference-function');
   await page.getByLabel('Function name', { exact: true }).fill('subtract_values');
   await page.getByLabel('Parameter 2 name').fill('amount');
@@ -29,7 +30,7 @@ test('signature editing keeps arguments bound, supports undo, and survives reloa
 
 test('the forms create functions and scoped variables and reject name conflicts', async ({ page }) => {
   await page.goto('/');
-  await page.getByRole('button', { name: 'Functions & variables' }).click();
+  await menu(page, 'Functions & variables');
   await page.getByLabel('Function name', { exact: true }).fill('calculate');
   await page.getByRole('button', { name: 'Add parameter', exact: true }).click();
   await page.getByLabel('Parameter 1 name').fill('limit');
@@ -39,7 +40,7 @@ test('the forms create functions and scoped variables and reject name conflicts'
   await expect(page.locator('#python')).not.toContainText('def calculate');
   await page.getByRole('button', { name: 'Redo', exact: true }).click();
   await expect(page.locator('#python')).toContainText('def calculate(limit):');
-  await page.getByRole('button', { name: 'Functions & variables' }).click();
+  await menu(page, 'Functions & variables');
   await page.getByLabel('Variable name', { exact: true }).fill('limit');
   await page.getByLabel('Scope', { exact: true }).selectOption({ label: 'Local to calculate' });
   await page.getByRole('button', { name: 'Apply variable', exact: true }).click();
@@ -54,7 +55,7 @@ test('the forms create functions and scoped variables and reject name conflicts'
 test('deleting a definition retains calls and undo repairs them', async ({ page }) => {
   await page.goto('/');
   await page.locator('#project-file').setInputFiles(path.resolve('tests/fixtures/language/functions.json'));
-  await page.getByRole('button', { name: 'Functions & variables' }).click();
+  await menu(page, 'Functions & variables');
   await page.getByLabel('Choose function').selectOption('difference-function');
   await page.getByRole('button', { name: 'Delete function', exact: true }).click();
   await expect(page.locator('#diagnostics')).toContainText('no active definition');
@@ -68,7 +69,7 @@ test('deleting a definition retains calls and undo repairs them', async ({ page 
 test('duplicating a function remaps references and undo/redo preserves its new identity', async ({ page }) => {
   await page.goto('/');
   await page.locator('#project-file').setInputFiles(path.resolve('tests/fixtures/language/functions.json'));
-  await page.getByRole('button', { name: 'Functions & variables' }).click();
+  await menu(page, 'Functions & variables');
   await page.getByLabel('Choose function').selectOption('difference-function');
   await page.getByRole('button', { name: 'Duplicate function', exact: true }).click();
   await expect(page.locator('#python')).toContainText('def difference_copy(left, right):');
@@ -83,7 +84,7 @@ test('duplicating a function remaps references and undo/redo preserves its new i
   await expect(page.locator('#python')).toContainText('def difference_copy(left, right):');
   const restored = await page.evaluate(() => JSON.parse(localStorage.getItem('python-blocks.project.v1')!).workspace.procedures.find((f: { name: string }) => f.name === 'difference_copy'));
   expect(restored).toEqual(copied);
-  await page.getByRole('button', { name: 'Functions & variables' }).click();
+  await menu(page, 'Functions & variables');
   await page.getByLabel('Choose function').selectOption(copied.id);
   await page.getByLabel('Parameter 1 name').fill('copied_left');
   await page.getByRole('button', { name: 'Apply function', exact: true }).click();

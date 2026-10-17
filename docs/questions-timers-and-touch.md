@@ -4,7 +4,7 @@ This increment completes the remaining sensing/input family in [D04 of the 2D pa
 
 ## Try the example
 
-Choose **Input & color example**, then **Run code**. Answer the explorer's name question and use the arrow keys or **Touch controls** to reach the red square. A/Space resets the elapsed timer; B/X asks another question. Reaching red wins and displays the elapsed seconds. **Play again** restores the captured project and asks again. The squares are original embedded artwork; no external assets or services are needed.
+Choose **Examples → Input & color**, then **Run code**. Answer the explorer's name question and use the arrow keys or **Touch controls** to reach the red square. A/Space resets the elapsed timer; B/X asks another question. Reaching red wins and displays the elapsed seconds. **Play again** restores the captured project and asks again. The squares are original embedded artwork; no external assets or services are needed.
 
 The **Sensing & input** palette contains key/pointer reporters, pixel/color contact, timer, question and answer blocks. **Input help & touch buttons** in the scene inspector describes focus rules and lets learners choose the keyboard keys sent by the A/B buttons. Those settings support project Undo, save/open and captured export.
 

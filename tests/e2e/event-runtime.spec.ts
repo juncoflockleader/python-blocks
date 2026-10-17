@@ -19,6 +19,7 @@ const harnessFiles: Record<string, string> = {
   world: stripTypeScriptTypes(readFileSync('src/scene/world.ts', 'utf8')),
   motion: stripTypeScriptTypes(readFileSync('src/scene/motion.ts', 'utf8')),
   effects: stripTypeScriptTypes(readFileSync('src/scene/effects.ts', 'utf8')),
+  debug: stripTypeScriptTypes(readFileSync('src/runtime/debug.ts', 'utf8')),
   protocol: stripTypeScriptTypes(readFileSync('src/runtime/protocol.ts', 'utf8')),
   'event-limits.json': `export default ${readFileSync('src/runtime/event-limits.json', 'utf8')};`,
   'python.worker.ts': readFileSync(path.resolve('dist/assets', asset), 'utf8'),
@@ -27,7 +28,7 @@ declare global { interface Window { eventRunner: PythonRunner; eventMessages: Ru
 test.beforeEach(async ({ page }) => {
   await page.route('**/__event_test/*', route => {
     const source = harnessFiles[new URL(route.request().url()).pathname.split('/').at(-1)!];
-    return source ? route.fulfill({ contentType: 'text/javascript', body: source }) : route.abort();
+    return source ? route.fulfill({ contentType: 'text/javascript', body: source, headers: { 'Cross-Origin-Embedder-Policy': 'require-corp' } }) : route.abort();
   });
 });
 async function start(page: Page, code: string) {

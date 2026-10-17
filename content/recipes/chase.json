@@ -1,0 +1,110 @@
+{
+  "id": "chase",
+  "title": "Make an enemy chase the player",
+  "group": "move",
+  "level": "starter",
+  "concepts": [
+    "event",
+    "motion"
+  ],
+  "phrases": [
+    "chase",
+    "follow me",
+    "come after me",
+    "enemy moves toward",
+    "hunt the player",
+    "run after someone"
+  ],
+  "needs": {
+    "sprites": 2
+  },
+  "steps": [
+    {
+      "say": "Select the enemy first. The player is the other sprite."
+    },
+    {
+      "say": "The enemy needs to run all the time, so start from “when sprite updates”."
+    },
+    {
+      "say": "Point toward the player’s x and y, then move a little."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "update"
+      },
+      "stack": [
+        {
+          "type": "scene_point",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            },
+            "X": {
+              "block": {
+                "type": "scene_get",
+                "fields": {
+                  "PROPERTY": "x"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "$other"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "Y": {
+              "block": {
+                "type": "scene_get",
+                "fields": {
+                  "PROPERTY": "y"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_sprite",
+                      "fields": {
+                        "SPRITE_ID": "$other"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_move",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "3"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "chase.webm",
+  "tryNext": [
+    "touch-enemy",
+    "lives"
+  ]
+}

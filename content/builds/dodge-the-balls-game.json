@@ -1,0 +1,520 @@
+{
+ "format": "python-blocks",
+ "formatVersion": 1,
+ "languageVersion": 19,
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "py_handler",
+     "id": "on_start_handler_block",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_start_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_control",
+        "fields": {
+         "SCHEME": "arrows"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "player"
+           }
+          }
+         },
+         "VX": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "220"
+           }
+          }
+         },
+         "VY": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_motion_edges",
+          "fields": {
+           "MODE": "stop"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "player"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "game_set",
+            "fields": {
+             "FIELD": "lives"
+            },
+            "inputs": {
+             "VALUE": {
+              "shadow": {
+               "type": "py_number",
+               "fields": {
+                "VALUE": "3"
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "game_show",
+              "fields": {
+               "SHOW": "TRUE",
+               "FIELD": "lives"
+              },
+              "next": {
+               "block": {
+                "type": "game_lives_rule",
+                "fields": {
+                 "ACTION": "lose"
+                },
+                "next": {
+                 "block": {
+                  "type": "game_countdown",
+                  "fields": {
+                   "ACTION": "event"
+                  },
+                  "inputs": {
+                   "SECONDS": {
+                    "shadow": {
+                     "type": "py_number",
+                     "fields": {
+                      "VALUE": "30"
+                     }
+                    }
+                   }
+                  },
+                  "next": {
+                   "block": {
+                    "type": "game_show",
+                    "fields": {
+                     "SHOW": "TRUE",
+                     "FIELD": "countdown"
+                    },
+                    "next": {
+                     "block": {
+                      "type": "controls_repeat_ext",
+                      "inputs": {
+                       "TIMES": {
+                        "shadow": {
+                         "type": "py_number",
+                         "fields": {
+                          "VALUE": "8"
+                         }
+                        }
+                       },
+                       "DO": {
+                        "block": {
+                         "type": "scene_go",
+                         "inputs": {
+                          "SPRITE": {
+                           "block": {
+                            "type": "scene_clone",
+                            "inputs": {
+                             "SPRITE": {
+                              "block": {
+                               "type": "scene_sprite",
+                               "fields": {
+                                "SPRITE_ID": "ball"
+                               }
+                              }
+                             }
+                            }
+                           }
+                          },
+                          "X": {
+                           "block": {
+                            "type": "math_random_int",
+                            "inputs": {
+                             "FROM": {
+                              "shadow": {
+                               "type": "py_number",
+                               "fields": {
+                                "VALUE": "-220"
+                               }
+                              }
+                             },
+                             "TO": {
+                              "shadow": {
+                               "type": "py_number",
+                               "fields": {
+                                "VALUE": "220"
+                               }
+                              }
+                             }
+                            }
+                           }
+                          },
+                          "Y": {
+                           "shadow": {
+                            "type": "py_number",
+                            "fields": {
+                             "VALUE": "170"
+                            }
+                           }
+                          }
+                         },
+                         "next": {
+                          "block": {
+                           "type": "py_wait",
+                           "inputs": {
+                            "SECONDS": {
+                             "shadow": {
+                              "type": "py_number",
+                              "fields": {
+                               "VALUE": "2"
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_ball_update_handler_block",
+     "x": 480,
+     "y": 530,
+     "extraState": {
+      "functionId": "on_ball_update_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_change",
+        "fields": {
+         "PROPERTY": "y"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_self"
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "-4"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "controls_if",
+          "inputs": {
+           "IF0": {
+            "block": {
+             "type": "logic_compare",
+             "fields": {
+              "OP": "LT"
+             },
+             "inputs": {
+              "A": {
+               "block": {
+                "type": "scene_get",
+                "fields": {
+                 "PROPERTY": "y"
+                },
+                "inputs": {
+                 "SPRITE": {
+                  "block": {
+                   "type": "scene_self"
+                  }
+                 }
+                }
+               }
+              },
+              "B": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "-170"
+                }
+               }
+              }
+             }
+            }
+           },
+           "DO0": {
+            "block": {
+             "type": "scene_go",
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_self"
+               }
+              },
+              "X": {
+               "block": {
+                "type": "math_random_int",
+                "inputs": {
+                 "FROM": {
+                  "shadow": {
+                   "type": "py_number",
+                   "fields": {
+                    "VALUE": "-220"
+                   }
+                  }
+                 },
+                 "TO": {
+                  "shadow": {
+                   "type": "py_number",
+                   "fields": {
+                    "VALUE": "220"
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "Y": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "170"
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_player_overlap_handler_block",
+     "x": 480,
+     "y": 710,
+     "extraState": {
+      "functionId": "on_player_overlap_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "game_change",
+        "fields": {
+         "FIELD": "lives"
+        },
+        "inputs": {
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "-1"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_go",
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "player"
+             }
+            }
+           },
+           "X": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "0"
+             }
+            }
+           },
+           "Y": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "-120"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_countdown_end_handler_block",
+     "x": 480,
+     "y": 850,
+     "extraState": {
+      "functionId": "on_countdown_end_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "game_finish",
+        "fields": {
+         "WON": "TRUE"
+        },
+        "inputs": {
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "You survived!"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  "pythonScene": {
+   "version": 1,
+   "background": "#fdfdf9",
+   "assets": [],
+   "sprites": [
+    {
+     "id": "player",
+     "name": "Player",
+     "x": 0,
+     "y": -120,
+     "direction": 0,
+     "size": 100,
+     "layer": 0,
+     "visible": true,
+     "costume": "bird"
+    },
+    {
+     "id": "ball",
+     "name": "Ball",
+     "x": 0,
+     "y": 170,
+     "direction": 0,
+     "size": 100,
+     "layer": 0,
+     "visible": true,
+     "costume": "ball"
+    }
+   ],
+   "backdrop": "backdrop_night"
+  },
+  "procedures": [
+   {
+    "id": "on_start_handler",
+    "name": "on_start",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_start_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "start",
+     "order": 0
+    }
+   },
+   {
+    "id": "on_ball_update_handler",
+    "name": "on_ball_update",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_ball_update_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "update",
+     "order": 1,
+     "sprite": "ball"
+    }
+   },
+   {
+    "id": "on_player_overlap_handler",
+    "name": "on_player_overlap",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_player_overlap_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "overlap",
+     "order": 2,
+     "sprite": "player"
+    }
+   },
+   {
+    "id": "on_countdown_end_handler",
+    "name": "on_countdown_end",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_countdown_end_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "game:countdown",
+     "order": 3
+    }
+   }
+  ]
+ }
+}

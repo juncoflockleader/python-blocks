@@ -1,0 +1,442 @@
+{
+ "format": "python-blocks",
+ "formatVersion": 1,
+ "languageVersion": 19,
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "py_handler",
+     "id": "on_start_handler_block",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_start_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_motion_body",
+        "fields": {
+         "MODE": "moving"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "player"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_motion_set",
+          "fields": {
+           "PROPERTY": "ay"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "player"
+             }
+            }
+           },
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "-900"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "scene_motion_edges",
+            "fields": {
+             "MODE": "stop"
+            },
+            "inputs": {
+             "SPRITE": {
+              "block": {
+               "type": "scene_sprite",
+               "fields": {
+                "SPRITE_ID": "player"
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "scene_control",
+              "fields": {
+               "SCHEME": "arrows"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "fields": {
+                  "SPRITE_ID": "player"
+                 }
+                }
+               },
+               "VX": {
+                "shadow": {
+                 "type": "py_number",
+                 "fields": {
+                  "VALUE": "160"
+                 }
+                }
+               },
+               "VY": {
+                "shadow": {
+                 "type": "py_number",
+                 "fields": {
+                  "VALUE": "0"
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_space_key_handler_block",
+     "x": 480,
+     "y": 250,
+     "extraState": {
+      "functionId": "on_space_key_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_jump",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "player"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "450"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_x_key_handler_block",
+     "x": 480,
+     "y": 350,
+     "extraState": {
+      "functionId": "on_x_key_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_fire",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "player"
+           }
+          }
+         },
+         "COSTUME": {
+          "shadow": {
+           "type": "scene_costume",
+           "fields": {
+            "COSTUME_ID": "ball"
+           }
+          }
+         },
+         "VX": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "320"
+           }
+          }
+         },
+         "VY": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "1.5"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_explorer_overlap_handler_block",
+     "x": 480,
+     "y": 450,
+     "extraState": {
+      "functionId": "on_explorer_overlap_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "scene_overlaps",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_self"
+             }
+            },
+            "OTHER": {
+             "block": {
+              "type": "scene_sprite",
+              "fields": {
+               "SPRITE_ID": "goal"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "game_finish",
+           "fields": {
+            "WON": "TRUE"
+           },
+           "inputs": {
+            "TEXT": {
+             "shadow": {
+              "type": "text",
+              "fields": {
+               "TEXT": "You reached the top!"
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  "pythonScene": {
+   "version": 1,
+   "background": "#edf4ef",
+   "sprites": [
+    {
+     "id": "player",
+     "name": "Explorer",
+     "x": -190,
+     "y": -129,
+     "costume": "bird",
+     "size": 55,
+     "kind": "player",
+     "direction": 0,
+     "layer": 0,
+     "visible": true,
+     "rotationStyle": "none"
+    },
+    {
+     "id": "floor",
+     "name": "Ground",
+     "x": 0,
+     "y": -145,
+     "costume": "floor_art",
+     "size": 200,
+     "kind": "wall",
+     "direction": 0,
+     "layer": 0,
+     "visible": true,
+     "rotationStyle": "none",
+     "motion": {
+      "body": "wall"
+     }
+    },
+    {
+     "id": "step1",
+     "name": "First ledge",
+     "x": -90,
+     "y": -78,
+     "costume": "platform_art",
+     "size": 100,
+     "kind": "wall",
+     "direction": 0,
+     "layer": 0,
+     "visible": true,
+     "rotationStyle": "none",
+     "motion": {
+      "body": "wall"
+     }
+    },
+    {
+     "id": "step2",
+     "name": "Second ledge",
+     "x": 45,
+     "y": -20,
+     "costume": "platform_art",
+     "size": 100,
+     "kind": "wall",
+     "direction": 0,
+     "layer": 0,
+     "visible": true,
+     "rotationStyle": "none",
+     "motion": {
+      "body": "wall"
+     }
+    },
+    {
+     "id": "step3",
+     "name": "Top ledge",
+     "x": 165,
+     "y": 25,
+     "costume": "platform_art",
+     "size": 80,
+     "kind": "wall",
+     "direction": 0,
+     "layer": 0,
+     "visible": true,
+     "rotationStyle": "none",
+     "motion": {
+      "body": "wall"
+     }
+    },
+    {
+     "id": "goal",
+     "name": "Goal star",
+     "x": 175,
+     "y": 48,
+     "costume": "star",
+     "size": 65,
+     "kind": "goal",
+     "direction": 0,
+     "layer": 0,
+     "visible": true,
+     "rotationStyle": "none"
+    }
+   ],
+   "assets": [
+    {
+     "id": "platform_art",
+     "name": "Green platform",
+     "width": 100,
+     "height": 8,
+     "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAICAYAAAAP1Fp1AAAAMElEQVR4nO3RMREAAAjDwDqsJZyDDDJk+D13SacrjnwHyCFoDoFxCIxDYBwC4xCYA184mvvhDLDhAAAAAElFTkSuQmCC"
+    },
+    {
+     "id": "floor_art",
+     "name": "Ground",
+     "width": 240,
+     "height": 5,
+     "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAAAFCAYAAAB7CmE4AAAAMklEQVR4nO3TMQ0AMAwEsQAMgxIofwINhy7RSx6833J1bj8gU20HAP8MDMEMDMEMDMEGbzGiKKTqe20AAAAASUVORK5CYII="
+    }
+   ]
+  },
+  "procedures": [
+   {
+    "id": "on_start_handler",
+    "name": "on_start",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_start_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "start",
+     "order": 0
+    }
+   },
+   {
+    "id": "on_space_key_handler",
+    "name": "on_space_key",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_space_key_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "key:Space",
+     "order": 1
+    }
+   },
+   {
+    "id": "on_x_key_handler",
+    "name": "on_x_key",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_x_key_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "key:x",
+     "order": 2
+    }
+   },
+   {
+    "id": "on_explorer_overlap_handler",
+    "name": "on_explorer_overlap",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_explorer_overlap_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "overlap",
+     "order": 3,
+     "sprite": "player"
+    }
+   }
+  ]
+ }
+}

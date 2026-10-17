@@ -1,0 +1,148 @@
+{
+ "id": "dodge-the-balls",
+ "title": "Dodge the balls",
+ "level": "starter",
+ "minutes": 20,
+ "order": 2,
+ "summary": "Balls fall from the sky. Dodge them for 30 seconds without losing all your lives.",
+ "ideas": [
+  "clones",
+  "update event",
+  "lives",
+  "countdown",
+  "lose screen"
+ ],
+ "starter": {
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 19,
+  "workspace": {
+   "blocks": {
+    "languageVersion": 0,
+    "blocks": []
+   },
+   "pythonScene": {
+    "version": 1,
+    "background": "#fdfdf9",
+    "assets": [],
+    "sprites": [
+     {
+      "id": "player",
+      "name": "Player",
+      "x": 0,
+      "y": -120,
+      "direction": 0,
+      "size": 100,
+      "layer": 0,
+      "visible": true,
+      "costume": "bird"
+     },
+     {
+      "id": "ball",
+      "name": "Ball",
+      "x": 0,
+      "y": 170,
+      "direction": 0,
+      "size": 100,
+      "layer": 0,
+      "visible": true,
+      "costume": "ball"
+     }
+    ],
+    "backdrop": "backdrop_night"
+   }
+  }
+ },
+ "steps": [
+  {
+   "text": "Select the player and make it move with the arrow keys. Change the vertical speed to 0 so it stays on the ground.",
+   "check": {
+    "handler": "start",
+    "contains": [
+     "scene_control"
+    ]
+   },
+   "recipe": "arrow-keys",
+   "select": "player",
+   "highlight": {
+    "category": "motion"
+   }
+  },
+  {
+   "text": "Select the ball. Make it fall: each update, move it down, and when it reaches the bottom, send it back to the top.",
+   "check": {
+    "handler": "update",
+    "contains": [
+     "scene_change",
+     "scene_go"
+    ]
+   },
+   "recipe": "fall-down",
+   "select": "ball"
+  },
+  {
+   "text": "More balls: when the game starts, clone the ball every second.",
+   "check": {
+    "blocks": [
+     "scene_clone"
+    ]
+   },
+   "recipe": "spawn-clones",
+   "select": "ball",
+   "highlight": {
+    "category": "game"
+   }
+  },
+  {
+   "text": "Lives: start with 3 lives, and lose one when the player touches a ball.",
+   "check": {
+    "all": [
+     {
+      "blocks": [
+       "game_lives_rule"
+      ]
+     },
+     {
+      "handler": "overlap",
+      "contains": [
+       "game_change"
+      ]
+     }
+    ]
+   },
+   "recipe": "lives",
+   "select": "player",
+   "highlight": {
+    "category": "game"
+   }
+  },
+  {
+   "text": "Survive: count down 30 seconds, and win when the countdown ends.",
+   "check": {
+    "handler": "countdown",
+    "contains": [
+     "game_finish"
+    ]
+   },
+   "recipe": "survive-timer",
+   "highlight": {
+    "category": "game"
+   }
+  },
+  {
+   "text": "Play until the game ends. Did you survive?",
+   "check": {
+    "finished": "any"
+   }
+  }
+ ],
+ "finish": {
+  "text": "You made a dodging game!",
+  "remix": [
+   "Make the balls fall faster as time goes on.",
+   "Add a star that gives back a life.",
+   "Try 60 seconds and more balls."
+  ]
+ },
+ "next": "pen-patterns"
+}

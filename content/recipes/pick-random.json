@@ -1,0 +1,153 @@
+{
+  "id": "pick-random",
+  "title": "Pick a random item",
+  "group": "data",
+  "level": "pro",
+  "concepts": [
+    "list",
+    "expression"
+  ],
+  "phrases": [
+    "pick a random item",
+    "random choice",
+    "choose one at random",
+    "rock paper scissors",
+    "pick from a list"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Put the choices in a list. Positions start at 0."
+    },
+    {
+      "say": "Pick a random position from 0 to 2 and say that item."
+    }
+  ],
+  "variables": [
+    "choices"
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "click"
+      },
+      "stack": [
+        {
+          "type": "py_set",
+          "fields": {
+            "SYMBOL": "$var:choices"
+          },
+          "inputs": {
+            "VALUE": {
+              "block": {
+                "type": "lists_create_with",
+                "inputs": {
+                  "ADD0": {
+                    "shadow": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "rock"
+                      }
+                    }
+                  },
+                  "ADD1": {
+                    "shadow": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "paper"
+                      }
+                    }
+                  },
+                  "ADD2": {
+                    "shadow": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "scissors"
+                      }
+                    }
+                  }
+                },
+                "extraState": {
+                  "itemCount": 3
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_say_for",
+          "fields": {
+            "STYLE": "say"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            },
+            "TEXT": {
+              "block": {
+                "type": "py_item_get",
+                "inputs": {
+                  "COLLECTION": {
+                    "block": {
+                      "type": "py_get",
+                      "fields": {
+                        "SYMBOL": "$var:choices"
+                      }
+                    }
+                  },
+                  "KEY": {
+                    "block": {
+                      "type": "math_random_int",
+                      "inputs": {
+                        "FROM": {
+                          "shadow": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "0"
+                            }
+                          }
+                        },
+                        "TO": {
+                          "shadow": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "2"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "1"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "pick-random.webm",
+  "demo": [
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 900
+    }
+  ],
+  "tryNext": [
+    "count-how-many"
+  ]
+}

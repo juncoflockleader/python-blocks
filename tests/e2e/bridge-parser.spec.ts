@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { build } from 'vite';
 import { resolve } from 'node:path';
+import { reveal } from './shell';
 
 // Exercise the real Vite-built parser client and module worker before the editor
 // integration exists. Only these in-memory build assets are routed; Pyodide and
@@ -15,7 +16,7 @@ test.beforeAll(async () => {
   }
 });
 async function prepare(page: Page) {
-  for (const [path,body] of assets) await page.route('**'+path,route => route.fulfill({body,contentType:'text/javascript'}));
+  for (const [path,body] of assets) await page.route('**'+path,route => route.fulfill({body,contentType:'text/javascript',headers:{'Cross-Origin-Embedder-Policy':'require-corp'}}));
   await page.goto('/');
   await expect(page.locator('#run')).toBeVisible();
   await page.evaluate(async () => {
@@ -75,7 +76,7 @@ test('parser startup errors recover and parsing does not stop a live scene inter
   await page.route('**/pyodide/pyodide.mjs',route => route.fulfill({status:503,body:'unavailable'}));
   const error = await page.evaluate(() => (window as any).bridgeParser.parse('').then(() => '',(e: Error) => e.message));
   expect(error).toContain('could not start'); await page.unroute('**/pyodide/pyodide.mjs');
-  await page.locator('#scene-example').click(); await page.locator('#run').click();
+  await (await reveal(page, '#scene-example')).click(); await page.locator('#run').click();
   await expect(page.locator('#status')).toHaveText('Event session running',{timeout:60_000});
   const result = await page.evaluate(() => (window as any).bridgeParser.parse('from playground import events\nasync def tick(payload):\n    await events.wait(0.1)\nevents.on("tick", tick)\n'));
   expect(result.ok).toBe(true); await expect(page.locator('#status')).toHaveText('Event session running');

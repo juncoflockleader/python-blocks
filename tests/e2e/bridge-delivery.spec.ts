@@ -2,13 +2,14 @@ import { expect, test, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { strFromU8, unzipSync } from 'fflate';
 import { exported, isolated, key, openProject, run } from './playable-support';
+import { reveal } from './shell';
 
 async function edit(page: Page, source?: string) {
-  await page.locator('#python-edit').click(); await expect(page.locator('#python-editor')).toBeVisible();
-  if (source !== undefined) await page.locator('#python-editor').fill(source);
+  await (await reveal(page, '#python-edit')).click(); await expect(page.locator('#python-editor')).toBeVisible();
+  if (source !== undefined) await (await reveal(page, '#python-editor')).fill(source);
 }
 async function sourceFiles(page: Page) {
-  const pending = page.waitForEvent('download'); await page.locator('#export').click();
+  const pending = page.waitForEvent('download'); await (await reveal(page, '#export')).click();
   return unzipSync(readFileSync((await (await pending).path())!));
 }
 const errors = new WeakMap<Page, string[]>();
@@ -23,13 +24,13 @@ test('replay accepts its validated draft but blocks later invalid or unapplied t
   await page.locator('#game-restart').click(); await expect(page.locator('#game-result-message')).toHaveText('First finish', { timeout: 60_000 });
   await expect(page.locator('#output')).toHaveText('first run\n');
   for (const draft of [source + 'print(', source.replace('First finish', 'Second finish')]) {
-    await page.locator('#python-editor').fill(draft); await page.locator('#game-restart').click();
+    await (await reveal(page, '#python-editor')).fill(draft); await page.locator('#game-restart').click();
     await expect(page.locator('#python-state')).toContainText('Use Run Python');
     await expect(page.locator('#python-editor')).toBeFocused(); await expect(page.locator('#game-result-message')).toHaveText('First finish');
     await expect(page.locator('#stop')).toBeDisabled();
   }
   await page.locator('#run').click(); await expect(page.locator('#game-result-message')).toHaveText('Second finish', { timeout: 60_000 });
-  await page.locator('#python-editor').fill('print('); await page.locator('#python-discard').click();
+  await (await reveal(page, '#python-editor')).fill('print('); await (await reveal(page, '#python-discard')).click();
   await page.locator('#game-restart').click(); await expect(page.locator('#game-result-message')).toHaveText('Second finish', { timeout: 60_000 });
 });
 
@@ -39,14 +40,14 @@ test('edited scene source and playable ZIP capture accepted code, exact draft an
   await page.goto('/'); await page.locator('#project-file').setInputFiles({ name: 'scene.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(project)) });
   await edit(page); const original = await page.locator('#python-editor').inputValue();
   const source = '# My written program 雪🙂\n' + original.replace('.x) + (20)', '.x) + (35)');
-  expect(source).toContain('35'); await page.locator('#python-editor').fill(source);
+  expect(source).toContain('35'); await (await reveal(page, '#python-editor')).fill(source);
   const sources = await sourceFiles(page), generated = (await page.locator('#python').textContent())!;
   expect(strFromU8(sources['program.py'])).toBe(generated);
   expect(JSON.parse(strFromU8(sources['scene.json']))).toEqual(project.workspace.pythonScene);
   let release!: () => void; const held = new Promise<void>(resolve => { release = resolve; });
   await page.route('**/player/bundle.json', async route => { await held; await route.continue(); });
   const pending = exported(page); await expect(page.locator('#export-cancel')).toBeVisible();
-  await page.locator('#python-editor').fill('print('); release(); const files = await pending;
+  await (await reveal(page, '#python-editor')).fill('print('); release(); const files = await pending;
   const captured = JSON.parse(strFromU8(files['project.python-blocks.json']));
   expect(captured.workspace.pythonBridge.draft.source).toBe(source); expect(captured.workspace.pythonBridge.draft.baseSource).toBe(source);
   expect(strFromU8(files['program.py'])).toBe(generated); expect(JSON.parse(strFromU8(files['scene.json']))).toEqual(project.workspace.pythonScene);
@@ -68,7 +69,7 @@ test('main-file edits keep transitive module sources and pins in independently r
   await openProject(page, 'tests/fixtures/modules/transitive-consumer.json');
   const original = await sourceFiles(page); await edit(page);
   const source = (await page.locator('#python-editor').inputValue()) + '\n# an extra learner-authored statement\nprint(42)\n';
-  await page.locator('#python-editor').fill(source); const sources = await sourceFiles(page), files = await exported(page);
+  await (await reveal(page, '#python-editor')).fill(source); const sources = await sourceFiles(page), files = await exported(page);
   for (const name of Object.keys(original).filter(name => /^_pb_module_/.test(name) || name === 'modules.json')) {
     expect(sources[name]).toEqual(original[name]); expect(files[name]).toEqual(original[name]);
   }
@@ -94,5 +95,5 @@ test('Python edits retain finite execution limits and Stop in editor and indepen
   const play = await isolated(browser, files, info);
   try { await play.page.goto(play.url); await bounded(play.page); expect(play.blocked).toEqual([]); expect(play.errors).toEqual([]); }
   finally { await play.close(); }
-  await page.locator('#python-editor').fill('print(42)\n'); await run(page, false); await expect(page.locator('#output')).toHaveText('42\n');
+  await (await reveal(page, '#python-editor')).fill('print(42)\n'); await run(page, false); await expect(page.locator('#output')).toHaveText('42\n');
 });

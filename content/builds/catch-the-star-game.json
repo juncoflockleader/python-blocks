@@ -1,0 +1,333 @@
+{
+ "format": "python-blocks",
+ "formatVersion": 1,
+ "languageVersion": 19,
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "py_handler",
+     "id": "on_start_handler_block",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_start_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_control",
+        "fields": {
+         "SCHEME": "arrows"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "bird"
+           }
+          }
+         },
+         "VX": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "180"
+           }
+          }
+         },
+         "VY": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "180"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_motion_edges",
+          "fields": {
+           "MODE": "stop"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "bird"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "game_set",
+            "fields": {
+             "FIELD": "score"
+            },
+            "inputs": {
+             "VALUE": {
+              "shadow": {
+               "type": "py_number",
+               "fields": {
+                "VALUE": "0"
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "game_show",
+              "fields": {
+               "SHOW": "TRUE",
+               "FIELD": "score"
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_bird_overlap_handler_block",
+     "x": 420,
+     "y": 250,
+     "extraState": {
+      "functionId": "on_bird_overlap_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "scene_overlaps",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_self"
+             }
+            },
+            "OTHER": {
+             "block": {
+              "type": "scene_sprite",
+              "fields": {
+               "SPRITE_ID": "star"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "game_change",
+           "fields": {
+            "FIELD": "score"
+           },
+           "inputs": {
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "1"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "scene_go",
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "fields": {
+                 "SPRITE_ID": "star"
+                }
+               }
+              },
+              "X": {
+               "block": {
+                "type": "math_random_int",
+                "inputs": {
+                 "FROM": {
+                  "shadow": {
+                   "type": "py_number",
+                   "fields": {
+                    "VALUE": "-200"
+                   }
+                  }
+                 },
+                 "TO": {
+                  "shadow": {
+                   "type": "py_number",
+                   "fields": {
+                    "VALUE": "200"
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "Y": {
+               "block": {
+                "type": "math_random_int",
+                "inputs": {
+                 "FROM": {
+                  "shadow": {
+                   "type": "py_number",
+                   "fields": {
+                    "VALUE": "-130"
+                   }
+                  }
+                 },
+                 "TO": {
+                  "shadow": {
+                   "type": "py_number",
+                   "fields": {
+                    "VALUE": "130"
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "controls_if",
+               "inputs": {
+                "IF0": {
+                 "block": {
+                  "type": "logic_compare",
+                  "fields": {
+                   "OP": "EQ"
+                  },
+                  "inputs": {
+                   "A": {
+                    "block": {
+                     "type": "game_get",
+                     "fields": {
+                      "FIELD": "score"
+                     }
+                    }
+                   },
+                   "B": {
+                    "shadow": {
+                     "type": "py_number",
+                     "fields": {
+                      "VALUE": "5"
+                     }
+                    }
+                   }
+                  }
+                 }
+                },
+                "DO0": {
+                 "block": {
+                  "type": "game_finish",
+                  "fields": {
+                   "WON": "TRUE"
+                  },
+                  "inputs": {
+                   "TEXT": {
+                    "shadow": {
+                     "type": "text",
+                     "fields": {
+                      "TEXT": "You caught 5 stars!"
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  "pythonScene": {
+   "version": 1,
+   "background": "#fdfdf9",
+   "assets": [],
+   "sprites": [
+    {
+     "id": "bird",
+     "name": "Bird",
+     "x": -170,
+     "y": -60,
+     "direction": 0,
+     "size": 100,
+     "layer": 0,
+     "visible": true,
+     "costume": "bird"
+    },
+    {
+     "id": "star",
+     "name": "Star",
+     "x": 140,
+     "y": 60,
+     "direction": 0,
+     "size": 100,
+     "layer": 0,
+     "visible": true,
+     "costume": "star"
+    }
+   ],
+   "backdrop": "backdrop_meadow"
+  },
+  "procedures": [
+   {
+    "id": "on_start_handler",
+    "name": "on_start",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_start_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "start",
+     "order": 0
+    }
+   },
+   {
+    "id": "on_bird_overlap_handler",
+    "name": "on_bird_overlap",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_bird_overlap_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "overlap",
+     "order": 1,
+     "sprite": "bird"
+    }
+   }
+  ]
+ }
+}

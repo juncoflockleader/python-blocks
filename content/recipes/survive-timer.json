@@ -1,0 +1,85 @@
+{
+  "id": "survive-timer",
+  "title": "Win if you survive",
+  "group": "game",
+  "level": "starter",
+  "concepts": [
+    "game",
+    "event"
+  ],
+  "phrases": [
+    "survive until time runs out",
+    "win when the timer ends",
+    "stay alive for 30 seconds",
+    "last until the end",
+    "survival timer"
+  ],
+  "steps": [
+    {
+      "say": "When the game starts, count down 30 seconds and send an event when it ends (instead of losing)."
+    },
+    {
+      "say": "When the countdown ends, finish the game as a win."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "game_countdown",
+          "fields": {
+            "ACTION": "event"
+          },
+          "inputs": {
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "30"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "game_show",
+          "fields": {
+            "SHOW": "TRUE",
+            "FIELD": "countdown"
+          }
+        }
+      ]
+    },
+    {
+      "handler": {
+        "kind": "countdown"
+      },
+      "stack": [
+        {
+          "type": "game_finish",
+          "fields": {
+            "WON": "TRUE"
+          },
+          "inputs": {
+            "TEXT": {
+              "shadow": {
+                "type": "text",
+                "fields": {
+                  "TEXT": "You survived!"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "survive-timer.webm",
+  "tryNext": [
+    "lives",
+    "spawn-clones"
+  ]
+}

@@ -4,7 +4,7 @@ This module adds authored 2D scenes and a Python sprite library to the existing 
 
 ## Try the example
 
-Choose **Sprite example** below the stage, then **Run code**. Click the stage to focus it. The arrow keys move Player in steps while Friend glides independently. Clicking Player prints a greeting. The space handler demonstrates a query of the current held-key state; a very quick press may already be released when the handler runs.
+Choose **Examples → Sprites**, then **Run code**. Click the stage to focus it. The arrow keys move Player in steps while Friend glides independently. Clicking Player prints a greeting. The space handler demonstrates a query of the current held-key state; a very quick press may already be released when the handler runs.
 
 **Motion example** adds pointer following, an independently bouncing ball, speech/thought bubbles and left/right rotation. Hold the primary pointer button on the stage to lead the bird; Space prints whether it is currently held. Both examples are saved projects with ordinary editable blocks.
 

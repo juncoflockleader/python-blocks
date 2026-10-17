@@ -4,7 +4,7 @@ import { defaultPen } from './model';
 import { sceneState, changeScene } from './state';
 
 export function installAppearanceEditor(workspace: Blockly.WorkspaceSvg, selected: () => string, editable: () => boolean) {
-  document.getElementById('scene-properties')!.insertAdjacentHTML('afterend', `<details id="scene-appearance"><summary>Pen & graphic effects</summary>
+  document.getElementById('sprite-settings-body')!.insertAdjacentHTML('beforeend', `<details id="scene-appearance"><summary>Pen & graphic effects</summary>
     <p>These settings are saved as the starting appearance. Pen trails and stamps are created by running blocks.</p>
     <label>Edit <select id="appearance-target"><option value="sprite">Selected sprite</option><option value="stage">Stage background</option></select></label>
     <form id="appearance-form"><fieldset id="appearance-fields"><legend>Initial appearance</legend>

@@ -1,5 +1,6 @@
 import * as Blockly from 'blockly/core';
 import { sceneState } from '../../scene/state';
+import { describeEvent } from '../../language/event-names';
 import { allSymbols, createFunctionModel, isScopedDefinition, signatureOf, SymbolField, type FunctionBlock, type Signature, type Symbol } from '../../language/functions';
 
 export interface FunctionState { functionId: string; signature: Signature; locals?: Symbol[] }
@@ -24,9 +25,7 @@ const shared = {
     if (isScopedDefinition(this)) {
       this.setFieldValue(`(${this.signature.parameters.map(p => p.name).join(', ')})`, 'PARAMETERS');
       if (this.type === 'py_handler') {
-        const owner = this.signature.handler?.sprite, kind = this.signature.handler?.kind;
-        const name = owner ? sceneState(this.workspace).sprites.find(s => s.id === owner)?.name ?? 'unavailable sprite' : '';
-        this.setFieldValue(`${this.signature.handler?.event ?? 'choose event'}${owner ? ` · ${name} & clones` : kind ? ` · kind ${kind}` : ''}`, 'EVENT');
+        this.setFieldValue(describeEvent(this.signature.handler, sceneState(this.workspace)), 'EVENT');
         this.setFieldValue(`#${(this.signature.handler?.order ?? 0) + 1}`, 'ORDER');
       } else this.setFieldValue(this.signature.async ? 'define async' : 'define', 'ACTION');
       return;
@@ -55,7 +54,9 @@ for (const type of ['py_function', 'py_handler']) Blockly.Blocks[type] = {
     if (type === 'py_handler') header.appendField(new Blockly.FieldLabel('choose event'), 'EVENT').appendField('→');
     header.appendField(new Blockly.FieldLabel('choose a function'), 'NAME').appendField(new Blockly.FieldLabel('()'), 'PARAMETERS');
     if (type === 'py_handler') header.appendField(new Blockly.FieldLabel('#1'), 'ORDER');
-    this.appendStatementInput('BODY'); this.setColour('#8066ba');
+    this.appendStatementInput('BODY'); this.setColour(type === 'py_handler' ? '#ba7b4e' : '#8066ba');
+    // Handlers start a script, so they share the Events colour and hat shape of the palette's event blocks.
+    if (type === 'py_handler') this.hat = 'cap';
     this.setTooltip(type === 'py_handler' ? 'An async event handler. Edit its payload parameter and saved order with Events → Manage handlers.' : 'A Python function. Edit its name, parameters, and async setting with Functions → Manage functions.');
   },
   destroy(this: FunctionBlock) {

@@ -1,0 +1,280 @@
+[
+  {
+    "id": "scene-example",
+    "title": "Sprites",
+    "description": "Move a player with the arrow keys and print where it is.",
+    "kind": "sprites",
+    "project": "src/scene/example.json",
+    "level": "builder",
+    "tags": [
+      "input",
+      "sprite"
+    ],
+    "tryChanging": [
+      "Change how far each arrow press moves the player.",
+      "Make Friend glide to a different corner.",
+      "Print a message when the player is clicked."
+    ]
+  },
+  {
+    "id": "scene-motion-example",
+    "title": "Motion",
+    "description": "Glide, point toward the pointer, bounce and talk.",
+    "kind": "sprites",
+    "project": "src/scene/motion-example.json",
+    "level": "builder",
+    "tags": [
+      "motion",
+      "coordinates"
+    ],
+    "tryChanging": [
+      "Make the sprite glide faster or slower.",
+      "Change what the sprite says when it bounces.",
+      "Point toward a fixed spot instead of the pointer."
+    ]
+  },
+  {
+    "id": "scene-story-example",
+    "title": "Story",
+    "description": "Characters speak, animate and change backdrops.",
+    "kind": "story",
+    "project": "src/scene/story-example.json",
+    "level": "starter",
+    "tags": [
+      "sprite",
+      "event"
+    ],
+    "tryChanging": [
+      "Write new lines for the characters.",
+      "Switch to a different backdrop when Space is pressed.",
+      "Make the animation play twice."
+    ]
+  },
+  {
+    "id": "scene-drawing-example",
+    "title": "Drawing",
+    "description": "Sprite pens, stamps and repeating patterns.",
+    "kind": "drawing",
+    "project": "src/scene/drawing-example.json",
+    "level": "starter",
+    "tags": [
+      "loop",
+      "sprite"
+    ],
+    "tryChanging": [
+      "Change the number of repeats.",
+      "Use a different pen color.",
+      "Stamp at every turn instead of every step."
+    ]
+  },
+  {
+    "id": "scene-behavior-example",
+    "title": "Behaviors",
+    "description": "A bird with its own data, clones and update events.",
+    "kind": "sprites",
+    "project": "src/scene/behavior-example.json",
+    "level": "builder",
+    "tags": [
+      "event",
+      "dictionary"
+    ],
+    "tryChanging": [
+      "Make each clone a different size.",
+      "Change how often the bird makes clones.",
+      "Give the bird a new data value and show it."
+    ]
+  },
+  {
+    "id": "scene-game-example",
+    "title": "Platformer",
+    "description": "Run, jump on ledges and reach the goal star.",
+    "kind": "game",
+    "project": "src/scene/game-example.json",
+    "level": "pro",
+    "tags": [
+      "motion",
+      "collision"
+    ],
+    "tryChanging": [
+      "Make the jump higher.",
+      "Move a ledge to make it harder.",
+      "Make the explorer walk faster."
+    ]
+  },
+  {
+    "id": "scene-world-example",
+    "title": "Worlds",
+    "description": "Tile maps, a following camera and two worlds.",
+    "kind": "world",
+    "project": "src/scene/world-example.json",
+    "level": "pro",
+    "tags": [
+      "world",
+      "coordinates"
+    ],
+    "tryChanging": [
+      "Paint a new wall in Worlds & tilemaps.",
+      "Make the camera stop following.",
+      "Move the flag to a new spot."
+    ]
+  },
+  {
+    "id": "scene-star-game",
+    "title": "Star game",
+    "description": "Collect stars, avoid hazards and beat the countdown.",
+    "kind": "game",
+    "project": "src/scene/star-game-example.json",
+    "level": "pro",
+    "tags": [
+      "game",
+      "collision"
+    ],
+    "tryChanging": [
+      "Give yourself more time on the countdown.",
+      "Change the winning message.",
+      "Make a hazard give back a life instead."
+    ]
+  },
+  {
+    "id": "sound-example",
+    "title": "Music",
+    "description": "A singer with notes, rhythm and volume.",
+    "kind": "music",
+    "project": "src/scene/sound-example.json",
+    "level": "starter",
+    "tags": [
+      "sound",
+      "loop"
+    ],
+    "tryChanging": [
+      "Change two notes in the melody.",
+      "Make the tune slower with tempo.",
+      "Use a different instrument."
+    ]
+  },
+  {
+    "id": "scene-input-example",
+    "title": "Input & color",
+    "description": "Ask questions, time the player and sense colors.",
+    "kind": "game",
+    "project": "src/scene/input-example.json",
+    "level": "builder",
+    "tags": [
+      "input",
+      "condition"
+    ],
+    "tryChanging": [
+      "Ask a different question.",
+      "Change the color the explorer must find.",
+      "Show the timer when you win."
+    ]
+  },
+  {
+    "id": "catch-the-star-game",
+    "title": "Catch the star",
+    "description": "Fly a bird with the arrow keys and catch a star five times.",
+    "kind": "game",
+    "project": "content/builds/catch-the-star-game.json",
+    "level": "starter",
+    "tags": [
+      "event",
+      "collision"
+    ],
+    "tryChanging": [
+      "Make the star move faster when you catch it.",
+      "Win at 10 stars instead of 5.",
+      "Add a countdown."
+    ],
+    "build": "catch-the-star"
+  },
+  {
+    "id": "dodge-the-balls-game",
+    "title": "Dodge the balls",
+    "description": "Balls fall from the sky. Survive for 30 seconds.",
+    "kind": "game",
+    "project": "content/builds/dodge-the-balls-game.json",
+    "level": "starter",
+    "tags": [
+      "game",
+      "loop"
+    ],
+    "tryChanging": [
+      "Make the balls fall faster.",
+      "Start with more lives.",
+      "Make more balls appear."
+    ],
+    "build": "dodge-the-balls"
+  },
+  {
+    "id": "pen-patterns-game",
+    "title": "Pen patterns",
+    "description": "A flower drawn by a loop inside a loop.",
+    "kind": "drawing",
+    "project": "content/builds/pen-patterns-game.json",
+    "level": "starter",
+    "tags": [
+      "loop",
+      "sequence"
+    ],
+    "tryChanging": [
+      "Turn 45 degrees and repeat 8 times.",
+      "Draw triangles instead of squares.",
+      "Change the pen color."
+    ],
+    "build": "pen-patterns"
+  },
+  {
+    "id": "talking-story-game",
+    "title": "Talking story",
+    "description": "Two characters talk, music plays and night falls.",
+    "kind": "story",
+    "project": "content/builds/talking-story-game.json",
+    "level": "starter",
+    "tags": [
+      "event",
+      "sound"
+    ],
+    "tryChanging": [
+      "Write your own dialogue.",
+      "Play a different tune.",
+      "Make the bird say something new at night."
+    ],
+    "build": "talking-story"
+  },
+  {
+    "id": "jump-quest-game",
+    "title": "Jump quest",
+    "description": "Jump up the ledges, fire with x and reach the goal.",
+    "kind": "game",
+    "project": "content/builds/jump-quest-game.json",
+    "level": "builder",
+    "tags": [
+      "motion",
+      "game"
+    ],
+    "tryChanging": [
+      "Jump higher or lower.",
+      "Fire projectiles faster.",
+      "Move the goal star."
+    ],
+    "build": "jump-quest"
+  },
+  {
+    "id": "maze-run-game",
+    "title": "Maze run",
+    "description": "Explore a tile world and find the door to another world.",
+    "kind": "world",
+    "project": "content/builds/maze-run-game.json",
+    "level": "pro",
+    "tags": [
+      "world",
+      "collision"
+    ],
+    "tryChanging": [
+      "Paint more walls to make a harder maze.",
+      "Move the flag.",
+      "Make the explorer slower."
+    ],
+    "build": "maze-run"
+  }
+]

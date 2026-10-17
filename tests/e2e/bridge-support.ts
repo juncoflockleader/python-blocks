@@ -13,7 +13,7 @@ export async function buildConverterHarness() {
   }
 }
 export async function prepare(page: Page) {
-  for (const [path, body] of assets) await page.route('**' + path, route => route.fulfill({ body, contentType: 'text/javascript' }));
+  for (const [path, body] of assets) await page.route('**' + path, route => route.fulfill({ body, contentType: 'text/javascript', headers: { 'Cross-Origin-Embedder-Policy': 'require-corp' } }));
   await page.goto('/'); await expect(page.locator('#run')).toBeVisible();
   await page.evaluate(async () => { const path = '/bridge-converter-test.js'; (window as any).testBridge = await import(path); });
 }

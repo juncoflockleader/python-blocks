@@ -1,0 +1,102 @@
+{
+  "id": "keep-score",
+  "title": "Keep score",
+  "group": "game",
+  "level": "starter",
+  "concepts": [
+    "game",
+    "event"
+  ],
+  "phrases": [
+    "keep score",
+    "points",
+    "count my points",
+    "show the score",
+    "add a point"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "When the game starts, set the score to 0 and show it on the screen."
+    },
+    {
+      "say": "Each time something good happens (here: a click), change the score by 1."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "game_set",
+          "fields": {
+            "FIELD": "score"
+          },
+          "inputs": {
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "0"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "game_show",
+          "fields": {
+            "SHOW": "TRUE",
+            "FIELD": "score"
+          }
+        }
+      ]
+    },
+    {
+      "handler": {
+        "kind": "click"
+      },
+      "stack": [
+        {
+          "type": "game_change",
+          "fields": {
+            "FIELD": "score"
+          },
+          "inputs": {
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "1"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "keep-score.webm",
+  "demo": [
+    {
+      "wait": 300
+    },
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 300
+    },
+    {
+      "click": "$sprite"
+    }
+  ],
+  "tryNext": [
+    "win-screen",
+    "best-score"
+  ]
+}

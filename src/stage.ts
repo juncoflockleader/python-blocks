@@ -40,6 +40,8 @@ export class Stage {
   private tilemap?: Tilemap;
   private gameEffects = new GameEffects();
   private effectFrame = 0;
+  private pausedAt: number | null = null;
+  private pausedTime = 0;
   private readonly viewportObserver: ResizeObserver;
 
   constructor(private readonly canvas: HTMLCanvasElement) {
@@ -55,6 +57,7 @@ export class Stage {
   }
 
   reset(scene = emptyScene()) {
+    this.pausedAt = null; this.pausedTime = 0;
     this.onReset();
     this.clearGameEffects();
     this.commands = []; this.scene = structuredClone(scene); this.sprites = new Map(scene.sprites.filter(s => !s.world || s.world === scene.world).map(s => [s.id, { ...s }]));
@@ -70,7 +73,7 @@ export class Stage {
   previewPosition(id: string, x: number, y: number) { const s = this.sprites.get(id); if (s) { s.x = x; s.y = y; this.paint(); } }
   acceptScene(command: SceneCommand) {
     if (command.type === 'game') return;
-    if (command.type === 'game_effect') this.gameEffects.add(command);
+    if (command.type === 'game_effect') this.gameEffects.add(command, this.effectTime());
     else if (command.type === 'game_effect_clear') this.clearGameEffects();
     else if (command.type === 'world') { this.clearGameEffects(); this.loadWorld(command.id); }
     else if (command.type === 'camera') this.camera = { x: command.x, y: command.y };
@@ -102,6 +105,12 @@ export class Stage {
 
   private clearInk() { cancelAnimationFrame(this.inkFrame); this.inkFrame = 0; this.pendingInk = []; this.ink.getContext('2d')!.clearRect(0, 0, this.ink.width, this.ink.height); }
   clearGameEffects() { cancelAnimationFrame(this.effectFrame); this.effectFrame = 0; this.gameEffects.clear(); }
+  private effectTime() { return (this.pausedAt ?? performance.now()) - this.pausedTime; }
+  pause(paused: boolean) {
+    if (paused && this.pausedAt === null) this.pausedAt = performance.now();
+    else if (!paused && this.pausedAt !== null) { this.pausedTime += performance.now() - this.pausedAt; this.pausedAt = null; }
+    cancelAnimationFrame(this.effectFrame); this.effectFrame = 0; this.paint();
+  }
   dispose() { this.viewportObserver.disconnect(); cancelAnimationFrame(this.inkFrame); this.clearGameEffects(); }
   private queueInk(command: InkCommand) {
     // Independent native limits allow 10,000 turtle commands and 10,000 sprite marks.
@@ -205,7 +214,7 @@ export class Stage {
     for (const sprite of [...this.sprites.values()].sort((a, b) => a.layer - b.layer)) if (sprite.visible) this.paintSprite(sprite);
     ctx.restore();
     for (const [id, bubble] of this.bubbles) { const sprite = this.sprites.get(id); if (sprite?.visible) this.paintBubble(sprite, bubble); }
-    if (this.gameEffects.paint(ctx, this.camera, performance.now(), matchMedia('(prefers-reduced-motion: reduce)').matches) && !this.effectFrame) {
+    if (this.gameEffects.paint(ctx, this.camera, this.effectTime(), matchMedia('(prefers-reduced-motion: reduce)').matches) && this.pausedAt === null && !this.effectFrame) {
       this.effectFrame = requestAnimationFrame(() => { this.effectFrame = 0; this.paint(); });
     }
     this.canvas.dataset.effectCount = String(this.gameEffects.count);

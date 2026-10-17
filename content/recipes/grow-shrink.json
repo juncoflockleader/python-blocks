@@ -1,0 +1,151 @@
+{
+  "id": "grow-shrink",
+  "title": "Grow and shrink",
+  "group": "look",
+  "level": "starter",
+  "concepts": [
+    "loop",
+    "sprite"
+  ],
+  "phrases": [
+    "grow and shrink",
+    "get bigger",
+    "make it bigger and smaller",
+    "pulse",
+    "change size"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "When the sprite is clicked, repeat 10 times: grow a little and wait a moment."
+    },
+    {
+      "say": "Then repeat 10 times to shrink back."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "click"
+      },
+      "stack": [
+        {
+          "type": "controls_repeat_ext",
+          "inputs": {
+            "TIMES": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "10"
+                }
+              }
+            },
+            "DO": {
+              "block": {
+                "type": "scene_change",
+                "fields": {
+                  "PROPERTY": "size"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_self"
+                    }
+                  },
+                  "VALUE": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "5"
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "py_wait",
+                    "inputs": {
+                      "SECONDS": {
+                        "shadow": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "0.03"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "controls_repeat_ext",
+          "inputs": {
+            "TIMES": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "10"
+                }
+              }
+            },
+            "DO": {
+              "block": {
+                "type": "scene_change",
+                "fields": {
+                  "PROPERTY": "size"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_self"
+                    }
+                  },
+                  "VALUE": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "-5"
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "py_wait",
+                    "inputs": {
+                      "SECONDS": {
+                        "shadow": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "0.03"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "grow-shrink.webm",
+  "demo": [
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 900
+    }
+  ],
+  "tryNext": [
+    "hide-show"
+  ]
+}

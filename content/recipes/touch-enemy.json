@@ -1,0 +1,72 @@
+{
+  "id": "touch-enemy",
+  "title": "When I touch the enemy",
+  "group": "touch",
+  "level": "starter",
+  "concepts": [
+    "collision",
+    "event"
+  ],
+  "phrases": [
+    "when I touch the enemy",
+    "when they bump",
+    "hit the enemy",
+    "when two sprites touch",
+    "crash into something"
+  ],
+  "needs": {
+    "sprites": 2
+  },
+  "steps": [
+    {
+      "say": "Select the sprite that touches. Use “when sprite overlaps” and choose the other sprite."
+    },
+    {
+      "say": "Put what should happen inside: here the sprite says “Ouch!”."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "overlap",
+        "other": "$other"
+      },
+      "stack": [
+        {
+          "type": "scene_say_for",
+          "fields": {
+            "STYLE": "say"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            },
+            "TEXT": {
+              "shadow": {
+                "type": "text",
+                "fields": {
+                  "TEXT": "Ouch!"
+                }
+              }
+            },
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "1"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "touch-enemy.webm",
+  "tryNext": [
+    "lives",
+    "game-over"
+  ]
+}

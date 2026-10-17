@@ -96,6 +96,22 @@ class PhysicsTests(unittest.IsolatedAsyncioTestCase):
         shot = p.projectile('ball', 2000, 0, 0); self.step(.2); self.assertNotIn(shot, self.scene.all())
         clone = p.clone(); clone.set_motion('ay', -500); self.assertEqual(p.motion_value('ay'), -300); self.assertEqual(clone.kind, 'hero')
 
+    async def test_new_sprite_holds_still_until_its_created_handlers_start(self):
+        # A full-size projectile fired beside a floor would overlap it; its created
+        # handler shrinks it. Physics stepping before that handler must not destroy it.
+        self.wall(0, -40, 400, 4); self.player.go_to(0, -20); started = []
+        async def created(payload): started.append(True); self.scene.current_sprite.set('size', 10)
+        self.scene.on_kind('projectile', 'created', created)
+        task = asyncio.create_task(self.events.run()); self.tasks.append(task); await until(lambda: self.events.state == 'running')
+        shot = self.player.projectile('ball', 200, 0, 3); shot.set_motion('response', 'destroy')
+        self.physics.step(.05)
+        self.assertIn(shot, self.scene.all()); self.assertEqual((shot.x, started), (0, []))
+        await until(lambda: bool(started)); self.step(.1)
+        self.assertIn(shot, self.scene.all()); self.assertAlmostEqual(shot.x, 20)
+        # Without created handlers, or after the time limit, a new sprite moves at once.
+        plain = self.player.clone(); plain.set_motion('body', 'moving'); plain.set_motion('vx', 120); self.step(.1); self.assertAlmostEqual(plain.x, 12)
+        self.player.go_to(0, 80); stuck = self.player.projectile('ball', 200, 0, 3); self.scene._behaviors.starting[stuck.id][2] = 0; self.physics.step(.05); self.assertAlmostEqual(stuck.x, 10)
+
     async def test_kind_handlers_receive_new_projectiles_and_physics_collision_payload_once(self):
         self.wall(30, 0, 4, 200); seen = []
         async def created(payload): seen.append(('created', self.scene.current_sprite.id, payload['kind']))

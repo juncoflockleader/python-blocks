@@ -1,4 +1,5 @@
 import { validQuestionReply, type QuestionHost } from '../scene/questions';
+import { debugAvailable, debugCommands, type DebugAction, type DebugOptions } from './debug';
 import type { AudioHost } from './audio';
 import { validateInput, type SceneInput, type SceneState } from '../scene/model';
 import { encodeHostEvent, eventLimits, type ExecutionMode, type RunnerCommand, type RunnerEvent } from './protocol';
@@ -11,6 +12,9 @@ export class PythonRunner {
   private pendingEvents = new Set<number>();
   private nextId = 0;
   private ready = false;
+  private control: Int32Array | null = null;
+  private paused = false;
+  private mode: ExecutionMode = 'sequential';
   private pointerId: number | null = null;
   private pointerDown = false;
   private queuedPointer: Extract<SceneInput, { kind: 'pointer' }> | null = null;
@@ -20,8 +24,11 @@ export class PythonRunner {
   private readonly onEvent: (event: RunnerEvent) => void;
   constructor(onEvent: (event: RunnerEvent) => void, audio?: AudioHost, questions?: QuestionHost) { this.onEvent = onEvent; this.audio = audio; this.questions = questions; }
 
-  run(code: string, mode: ExecutionMode = 'sequential', files: Record<string, string> = {}, scene?: SceneState, runtimeURL?: string) {
+  run(code: string, mode: ExecutionMode = 'sequential', files: Record<string, string> = {}, scene?: SceneState, runtimeURL?: string, debug?: DebugOptions) {
     this.dispose();
+    if (debug && !debugAvailable()) { this.onEvent({ type: 'error', message: 'Debugging needs a browser with shared memory and an isolated editor page. See the debugging guide for hosting headers.' }); return; }
+    this.mode = mode;
+    this.control = debug ? new Int32Array(new SharedArrayBuffer(8)) : null;
     const worker = new Worker(new URL('./python.worker.ts', import.meta.url), { type: 'module' });
     this.worker = worker;
     const audioEnded = (id: number, error?: string) => { if (this.worker === worker) worker.postMessage({ type: 'audio-ended', id, ...(error ? { error } : {}) } satisfies RunnerCommand); };
@@ -45,8 +52,21 @@ export class PythonRunner {
         if (mode === 'events') this.ping();
         else this.setDeadline(10_000, 'Stopped after 10 seconds. Check your loops and try again.');
       }
+      if (message.type === 'debug-paused') {
+        this.paused = true;
+        clearTimeout(this.timer); clearTimeout(this.pingTimer); this.pendingPing = null;
+        void this.audio?.pause?.(true).catch(error => {
+          if (this.worker !== worker) return;
+          this.dispose(); this.onEvent({ type: 'error', message: `Audio could not pause: ${String(error)}` });
+        });
+      }
+      if (message.type === 'debug-running') {
+        this.paused = false;
+        if (mode === 'events') this.ping();
+        else this.setDeadline(10_000, 'Stopped after 10 seconds of execution. Check your loops and try again.');
+      }
       if (message.type === 'pong') {
-        if (message.id === this.pendingPing) {
+        if (!this.paused && message.id === this.pendingPing) {
           this.pendingPing = null; clearTimeout(this.timer);
           this.pingTimer = setTimeout(() => this.ping(), eventLimits.pingIntervalMs);
         }
@@ -70,18 +90,39 @@ export class PythonRunner {
       this.dispose();
       this.onEvent({ type: 'error', message: event.message || 'Python could not start. Please try again.' });
     };
-    worker.postMessage({ type: 'run', code, mode, files, ...(runtimeURL ? { runtimeURL } : {}), ...(scene ? { scene } : {}) } satisfies RunnerCommand);
+    worker.postMessage({ type: 'run', code, mode, files, ...(runtimeURL ? { runtimeURL } : {}), ...(scene ? { scene } : {}), ...(debug && this.control ? { debug: { ...debug, control: this.control.buffer as SharedArrayBuffer } } : {}) } satisfies RunnerCommand);
+  }
+
+  async debug(action: DebugAction): Promise<boolean> {
+    const worker = this.worker, control = this.control;
+    if (!worker || !control) return false;
+    if (action === 'pause') {
+      if (this.paused) return false;
+      Atomics.store(control, 0, debugCommands.pause);
+      worker.postMessage({ type: 'debug-pause' } satisfies RunnerCommand);
+      return true;
+    }
+    if (!this.paused) return false;
+    // Resume audio before Python can request another voice. Stop/replacement
+    // can occur while AudioContext.resume is pending; never wake the old run.
+    await this.audio?.pause?.(false);
+    if (this.worker !== worker || this.control !== control || !this.paused) return false;
+    this.paused = false;
+    if (this.mode === 'events') worker.postMessage({ type: 'input', id: ++this.nextId, input: { kind: 'reset' } } satisfies RunnerCommand);
+    Atomics.store(control, 0, debugCommands[action]);
+    Atomics.store(control, 1, 0); Atomics.notify(control, 1);
+    return true;
   }
 
   emit(name: string, payload: unknown = null): boolean {
-    if (!this.worker || !this.ready) return false;
+    if (!this.worker || !this.ready || this.paused) return false;
     const message = encodeHostEvent(name, payload);
     return this.sendInput(id => ({ type: 'event', id, message }));
   }
 
   input(input: SceneInput): boolean {
     validateInput(input);
-    if (!this.worker || !this.ready) return false;
+    if (!this.worker || !this.ready || this.paused) return false;
     if (input.kind === 'reset') { this.queuedPointer = null; this.pointerId = null; this.pointerDown = false; }
     if (input.kind === 'pointer') {
       // Coalesce positions under worker pressure, while retaining every button transition.
@@ -114,11 +155,12 @@ export class PythonRunner {
     this.pointerId = null; this.queuedPointer = null; this.pointerDown = false;
     this.worker?.terminate();
     this.worker = null;
+    this.control = null; this.paused = false;
     this.audio?.stop(); this.questions?.stop();
   }
 
   private ping() {
-    if (!this.worker) return;
+    if (!this.worker || this.paused) return;
     this.pendingPing = ++this.nextId;
     this.setDeadline(eventLimits.watchdogMs, 'The event session stopped responding. Add an explicit wait inside long-running loops, then run again.');
     this.worker.postMessage({ type: 'ping', id: this.pendingPing } satisfies RunnerCommand);

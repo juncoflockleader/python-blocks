@@ -1,0 +1,98 @@
+{
+  "id": "random-spawn",
+  "title": "Start in a random place",
+  "group": "game",
+  "level": "starter",
+  "concepts": [
+    "coordinates",
+    "game"
+  ],
+  "phrases": [
+    "random spawn",
+    "start somewhere random",
+    "appear in a random place",
+    "random start position",
+    "surprise location"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "When the game starts, move the sprite to a random x and y."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "scene_go",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "X": {
+              "block": {
+                "type": "math_random_int",
+                "inputs": {
+                  "FROM": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "-200"
+                      }
+                    }
+                  },
+                  "TO": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "200"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "Y": {
+              "block": {
+                "type": "math_random_int",
+                "inputs": {
+                  "FROM": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "-130"
+                      }
+                    }
+                  },
+                  "TO": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "130"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "random-spawn.webm",
+  "tryNext": [
+    "spawn-clones",
+    "move-randomly"
+  ]
+}

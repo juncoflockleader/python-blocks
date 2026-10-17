@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+import { reveal } from './shell';
 const fixture = JSON.parse(readFileSync('src/scene/input-example.json','utf8'));
 const b = (type: string, fields: Record<string,unknown> = {}, inputs: Record<string,any> = {}): any => ({type,fields,inputs:Object.fromEntries(Object.entries(inputs).map(([k,v]) => [k,{block:v}]))});
 const n = (v: number) => b('py_number',{VALUE:String(v)}), t = (v: string) => b('text',{TEXT:v});
@@ -17,11 +18,11 @@ async function install(page: Page, handlers: [string,any][], edit?: (p: any) => 
 }
 async function run(page: Page) { await page.locator('#run').click(); await expect(page.locator('#status')).toHaveText('Event session running',{timeout:60_000}); }
 async function key(page: Page, value: string) { await page.locator('#stage').focus(); await page.keyboard.press(value); }
-async function addWatch(page: Page, property: string, key?: string) { await page.locator('#watch-property').selectOption(property); if (key !== undefined) await page.locator('#watch-key').fill(key); await page.locator('#watch-add').click(); }
+async function addWatch(page: Page, property: string, key?: string) { await (await reveal(page, '#watch-property')).selectOption(property); if (key !== undefined) await (await reveal(page, '#watch-key')).fill(key); await (await reveal(page, '#watch-add')).click(); }
 
 test('focused palettes use the selected sprite and navigation opens its costume and script', async ({ page }, info) => {
-  await page.goto('/'); await page.locator('#scene-example').click(); const before = await saved(page);
-  await page.locator('#scene-filter').fill('friend'); await expect(page.locator('#scene-cards button:visible')).toHaveCount(1); await page.locator('#scene-cards button:visible').click();
+  await page.goto('/'); await (await reveal(page, '#scene-example')).click(); const before = await saved(page);
+  await (await reveal(page, '#scene-filter')).fill('friend'); await expect(page.locator('#scene-cards button:visible')).toHaveCount(1); await page.locator('#scene-cards button:visible').click();
   await expect(page.locator('#scene-selection')).toHaveValue('friend'); await expect(page.locator('#scene-cards button:visible')).toHaveAttribute('aria-pressed','true');
   await page.getByRole('treeitem',{name:'Motion',exact:true}).click(); await expect(page.locator('.blocklyToolboxFlyout')).toContainText('Friend');
   await expect(page.locator('.blocklyToolboxFlyout')).not.toContainText('fire');
@@ -29,37 +30,37 @@ test('focused palettes use the selected sprite and navigation opens its costume 
   await expect(page.locator('.blocklyToolboxFlyout')).not.toContainText('Player');
   await page.getByRole('treeitem',{name:'Looks',exact:true}).click(); await expect(page.locator('.blocklyToolboxFlyout')).toContainText('say');
   await page.getByRole('treeitem',{name:'Physics',exact:true}).click(); await expect(page.locator('.blocklyToolboxFlyout')).toContainText('fire');
-  await page.locator('#scene-edit-costume').click(); await expect(page.locator('#art-assets')).toHaveValue(before.workspace.pythonScene.sprites[1].costume); await expect(page.locator('#art-kind')).toHaveValue('costume'); await page.locator('#art-close').click();
-  await page.locator('#scene-script-find').click(); await expect(page.locator('.blocklyHighlighted')).toHaveCount(1);
+  await (await reveal(page, '#scene-edit-costume')).click(); await expect(page.locator('#art-assets')).toHaveValue(before.workspace.pythonScene.sprites[1].costume); await expect(page.locator('#art-kind')).toHaveValue('costume'); await page.locator('#art-close').click();
+  await (await reveal(page, '#scene-script-find')).click(); await expect(page.locator('.blocklyHighlighted')).toHaveCount(1);
   expect((await saved(page)).workspace.pythonScene).toEqual(before.workspace.pythonScene);
-  await page.locator('#scene-filter').fill('no such sprite'); await expect(page.locator('#scene-filter-empty')).toBeVisible(); await page.locator('#scene-filter').fill('');
+  await (await reveal(page, '#scene-filter')).fill('no such sprite'); await expect(page.locator('#scene-filter-empty')).toBeVisible(); await (await reveal(page, '#scene-filter')).fill('');
   await page.screenshot({path:info.outputPath('sprite-navigation-desktop.png'),fullPage:true});
 });
 
 test('world navigation and framing find inactive sprites, preserve positions and restore authored camera', async ({ page }) => {
-  await page.goto('/'); await page.locator('#scene-world-example').click(); const original = await saved(page), scene = original.workspace.pythonScene;
+  await page.goto('/'); await (await reveal(page, '#scene-world-example')).click(); const original = await saved(page), scene = original.workspace.pythonScene;
   const target = scene.sprites.find((s: any) => s.world && s.world !== scene.world);
-  await page.locator('#scene-selection').selectOption(target.id); await page.locator('#scene-locate').click();
+  await (await reveal(page, '#scene-selection')).selectOption(target.id); await (await reveal(page, '#scene-locate')).click();
   await expect(page.locator('#stage')).toHaveAttribute('data-world',target.world); await expect(page.locator('#scene-browse-world')).toHaveValue(target.world);
   expect((await saved(page)).workspace.pythonScene.sprites).toEqual(scene.sprites);
   await page.getByRole('button',{name:'Undo',exact:true}).click(); await expect(page.locator('#scene-browse-world')).toHaveValue(scene.world);
-  await page.locator('#scene-browse-world').selectOption(''); await expect(page.locator('#stage')).toHaveAttribute('data-world','');
+  await (await reveal(page, '#scene-browse-world')).selectOption(''); await expect(page.locator('#stage')).toHaveAttribute('data-world','');
   await page.reload(); await expect(page.locator('#scene-browse-world')).toHaveValue('');
 });
 
 test('watchers show actual nested Python mutations, survive rename/undo/reload, and retain last-run values until reset', async ({ page }, info) => {
   await install(page,[['key:g',chain(actor('scene_set',{PROPERTY:'x'},{VALUE:n(40)}),b('py_list_append',{}, {VALUE:n(3),LIST:actor('scene_data_get',{}, {KEY:t('items')})}))],['key:d',actor('scene_destroy')]]);
-  await page.locator('#watch-settings summary').click(); await addWatch(page,'x'); await addWatch(page,'data','items'); await addWatch(page,'data','missing');
+  await (await reveal(page, '#watch-settings summary')).click(); await addWatch(page,'x'); await addWatch(page,'data','items'); await addWatch(page,'data','missing');
   await expect(page.locator('#watch-values li')).toHaveCount(3); await expect(page.locator('#watch-values output').nth(0)).toHaveText('0'); await expect(page.locator('#watch-values output').nth(2)).toHaveText('Key not set');
-  await page.locator('#watch-add').click(); await expect(page.locator('#watch-error')).toContainText('already has a watcher');
-  await page.locator('#scene-name').fill('Scout'); await page.getByRole('button',{name:'Apply sprite',exact:true}).click(); await expect(page.locator('#watch-values')).toContainText('Scout');
+  await (await reveal(page, '#watch-add')).click(); await expect(page.locator('#watch-error')).toContainText('already has a watcher');
+  await (await reveal(page, '#scene-name')).fill('Scout'); await page.keyboard.press('Enter'); await expect(page.locator('#watch-values')).toContainText('Scout');
   await page.reload(); await expect(page.locator('#watch-values li')).toHaveCount(3); await run(page); await key(page,'g');
   await expect(page.locator('#watch-values output').nth(0)).toHaveText('40'); await expect(page.locator('#watch-values output').nth(1)).toHaveText('[1, 2, 3]');
   await expect(page.locator('#watch-add')).toBeDisabled(); expect((await saved(page)).workspace.pythonScene.sprites[0].data.items).toEqual([1,2]);
   await page.screenshot({path:info.outputPath('live-watchers-desktop.png'),fullPage:true});
   await key(page,'d'); await expect(page.locator('#watch-values output').nth(0)).toHaveText('Sprite not active'); await page.locator('#stop').click(); await expect(page.locator('#watch-phase')).toHaveText('Last run values');
   await page.locator('#scene-reset').click(); await expect(page.locator('#watch-phase')).toHaveText('Starting values'); await expect(page.locator('#watch-values output').nth(0)).toHaveText('0');
-  await page.locator('#watch-settings summary').click(); await page.locator('#watch-config button').first().click(); await expect(page.locator('#watch-values li')).toHaveCount(2);
+  await (await reveal(page, '#watch-settings summary')).click(); await (await reveal(page, '#watch-config button')).first().click(); await expect(page.locator('#watch-values li')).toHaveCount(2);
   await page.getByRole('button',{name:'Undo',exact:true}).click(); await expect(page.locator('#watch-values li')).toHaveCount(3);
 });
 
@@ -85,7 +86,7 @@ test('large stage preserves the worker, maps pointer coordinates and keeps quest
 });
 
 test('a narrow large-stage playthrough answers, uses touch, wins and replays without leaving the play view', async ({ page }, info) => {
-  await page.setViewportSize({width:390,height:844}); await page.goto('/'); await page.locator('#scene-input-example').click(); await page.locator('#play-expand').click(); await page.locator('#play-run').click();
+  await page.setViewportSize({ width: 744, height: 1000 }); await page.goto('/'); await (await reveal(page, '#scene-input-example')).click(); await page.locator('#play-expand').click(); await page.locator('#play-run').click();
   await expect(page.locator('#question-answer')).toBeFocused({timeout:60_000}); await page.locator('#question-answer').fill('Scout'); await page.locator('#question-answer').press('Enter');
   await page.locator('#touch-toggle').click(); await page.locator('[data-control="ArrowRight"]').scrollIntoViewIfNeeded(); const r = (await page.locator('[data-control="ArrowRight"]').boundingBox())!;
   const cdp = await page.context().newCDPSession(page); await cdp.send('Input.dispatchTouchEvent',{type:'touchStart',touchPoints:[{x:r.x+r.width/2,y:r.y+r.height/2,id:1}]});
@@ -96,14 +97,14 @@ test('a narrow large-stage playthrough answers, uses touch, wins and replays wit
 });
 
 test('narrow keyboard authoring selects sprites, pins readable values and preserves a pending artwork draft', async ({ page }, info) => {
-  await page.setViewportSize({width:390,height:844}); await page.goto('/'); await page.locator('#scene-story-example').click();
+  await page.setViewportSize({ width: 744, height: 1000 }); await page.goto('/'); await (await reveal(page, '#scene-story-example')).click();
   const s = (await saved(page)).workspace.pythonScene, second = s.sprites[1];
-  await page.locator('#scene-filter').fill(second.name); const card = page.locator('#scene-cards button:visible'); await card.focus(); await card.press('Enter'); await expect(page.locator('#scene-selection')).toHaveValue(second.id);
-  await page.locator('#scene-edit-costume').focus(); await page.keyboard.press('Enter'); await expect(page.locator('#art-assets')).toHaveValue(second.costume);
+  await (await reveal(page, '#scene-filter')).fill(second.name); const card = page.locator('#scene-cards button:visible'); await card.focus(); await card.press('Enter'); await expect(page.locator('#scene-selection')).toHaveValue(second.id);
+  await (await reveal(page, '#scene-edit-costume')).focus(); await page.keyboard.press('Enter'); await expect(page.locator('#art-assets')).toHaveValue(second.costume);
   await page.locator('#art-name').fill('My unfinished art'); await page.locator('#art-close').click();
-  await page.locator('#scene-selection').selectOption(s.sprites[0].id); await page.locator('#scene-edit-costume').click(); await expect(page.locator('#art-name')).toHaveValue('My unfinished art'); await expect(page.locator('#art-state')).toContainText('unsaved artwork draft'); await page.locator('#art-close').click();
-  await page.locator('#watch-settings summary').focus(); await page.keyboard.press('Enter'); await page.locator('#watch-sprite').selectOption(second.id); await page.locator('#watch-property').selectOption('size'); await page.locator('#watch-add').focus(); await page.keyboard.press('Enter');
-  await expect(page.locator('#watch-values output')).toHaveText(String(second.size)); await page.locator('#watch-readouts').scrollIntoViewIfNeeded();
-  expect(await page.locator('.scene-editor').evaluate(e => e.scrollWidth <= e.clientWidth+1)).toBe(true); await page.screenshot({path:info.outputPath('watcher-authoring-mobile.png')});
+  await (await reveal(page, '#scene-selection')).selectOption(s.sprites[0].id); await (await reveal(page, '#scene-edit-costume')).click(); await expect(page.locator('#art-name')).toHaveValue('My unfinished art'); await expect(page.locator('#art-state')).toContainText('unsaved artwork draft'); await page.locator('#art-close').click();
+  await (await reveal(page, '#watch-settings summary')).focus(); await page.keyboard.press('Enter'); await (await reveal(page, '#watch-sprite')).selectOption(second.id); await (await reveal(page, '#watch-property')).selectOption('size'); await (await reveal(page, '#watch-add')).focus(); await page.keyboard.press('Enter');
+  await expect(page.locator('#watch-values output')).toHaveText(String(second.size)); await (await reveal(page, '#watch-readouts')).scrollIntoViewIfNeeded();
+  expect(await page.locator('#panel-output').evaluate(e => e.scrollWidth <= e.clientWidth+1)).toBe(true); await page.screenshot({path:info.outputPath('watcher-authoring-mobile.png')});
   await page.reload(); await expect(page.locator('#watch-values li')).toHaveCount(1); await expect(page.locator('#watch-values')).toContainText(second.name);
 });

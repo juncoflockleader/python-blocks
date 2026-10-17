@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import path from 'node:path';
 import { readFile } from 'node:fs/promises';
+import { menu } from './shell';
 
 const fixture = (name: string) => path.resolve('tests/fixtures/lambdas', name);
 async function open(page: Page, name = 'parameters.json') { await page.goto('/'); await page.locator('#project-file').setInputFiles(fixture(name)); }
@@ -89,7 +90,7 @@ test('a lambda failure highlights its defining statement and retains the lambda 
 
 test('saved module lambdas preserve scope and execute in Pyodide after reload', async ({ page }) => {
   await open(page, 'module-consumer.json'); await page.reload(); await run(page); await expect(page.locator('#output')).toHaveText('7\n');
-  await page.getByRole('button', { name: 'Modules', exact: true }).click(); await page.getByRole('button', { name: 'Inspect module', exact: true }).click();
+  await menu(page, 'Modules'); await page.getByRole('button', { name: 'Inspect module', exact: true }).click();
   await expect(page.locator('#module-inspector-blocks')).toContainText('left (parameter)'); await expect(page.locator('#module-inspector-source')).toContainText('lambda left, right:');
 });
 

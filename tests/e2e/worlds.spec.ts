@@ -1,5 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
+import { reveal } from './shell';
 const fixture = JSON.parse(readFileSync('src/scene/world-example.json', 'utf8'));
 const b = (type: string, fields: Record<string, unknown> = {}, inputs: Record<string, any> = {}): any => ({ type, fields, inputs: Object.fromEntries(Object.entries(inputs).map(([k, v]) => [k, { block: v }])) });
 const n = (v: number) => b('py_number', { VALUE: String(v) });
@@ -23,7 +24,7 @@ async function key(page: Page, value: string) { await page.locator('#stage').foc
 
 // Inspector tests interact with the shipped editor, including keyboard painting.
 test('authors named maps, paints and fills with Undo, resizes and persists at a narrow width', async ({ page }, info) => {
-  await page.goto('/'); await page.locator('#scene-worlds').click(); await page.locator('#world-new').click();
+  await page.goto('/'); await (await reveal(page, '#scene-worlds')).click(); await page.locator('#world-new').click();
   await page.locator('#world-name').fill('Test garden'); await page.locator('#world-columns').fill('40'); await page.locator('#world-rows').fill('10'); await page.locator('#world-size').selectOption('32'); await page.getByRole('button', { name: 'Apply world settings' }).click();
   await page.locator('#world-costume').selectOption('star'); await page.locator('#world-solid').check(); await page.locator('#world-map').focus(); await page.keyboard.press('Enter'); await page.keyboard.press('ArrowRight'); await page.keyboard.press('Enter');
   await expect.poll(async () => (await saved(page)).workspace.pythonScene.worlds[0].map.tiles.slice(0, 3)).toEqual(['star', 'star', null]);
@@ -38,29 +39,29 @@ test('authors named maps, paints and fills with Undo, resizes and persists at a 
   await expect.poll(async () => (await saved(page)).workspace.pythonScene.worlds[0].map.tiles.slice(82, 85)).toEqual(['ball', 'ball', 'ball']);
   await page.locator('#world-undo').click(); await expect.poll(async () => (await saved(page)).workspace.pythonScene.worlds[0].map.tiles[82]).toBeNull();
   await page.locator('#world-copy').click(); await expect(page.locator('#world-select option')).toHaveCount(3); await page.locator('#world-name').fill('Copy garden'); await page.getByRole('button', { name: 'Apply world settings' }).click();
-  await page.setViewportSize({ width: 390, height: 844 }); await page.screenshot({ path: info.outputPath('world-editor-mobile.png'), fullPage: true });
+  await page.setViewportSize({ width: 744, height: 1000 }); await page.screenshot({ path: info.outputPath('world-editor-mobile.png'), fullPage: true });
   await page.locator('#world-map').scrollIntoViewIfNeeded(); await page.screenshot({ path: info.outputPath('world-map-mobile.png') });
   await page.locator('#world-zoom').selectOption('32'); await expect.poll(async () => page.locator('#world-map').evaluate(c => c.clientWidth)).toBeGreaterThan(1000);
   expect(await page.locator('#world-dialog').evaluate(e => e.scrollWidth <= e.clientWidth + 1)).toBe(true);
-  await page.locator('#world-close').click(); await page.reload(); await page.locator('#scene-worlds').click(); await expect(page.locator('#world-name')).toHaveValue('Copy garden');
+  await page.locator('#world-close').click(); await page.reload(); await (await reveal(page, '#scene-worlds')).click(); await expect(page.locator('#world-name')).toHaveValue('Copy garden');
   const project = await saved(page); expect(project.workspace.pythonScene.worlds[0].map.tiles[0]).toBe('ball'); expect(project.workspace.pythonScene.worlds[1].map.walls[0]).toBe(true);
 });
 
 test('camera overview and local sprite placement survive save and reload', async ({ page }, info) => {
-  await install(page); await page.locator('#scene-worlds').click(); await page.locator('#world-tool').selectOption('view');
+  await install(page); await (await reveal(page, '#scene-worlds')).click(); await page.locator('#world-tool').selectOption('view');
   await page.locator('#world-map').scrollIntoViewIfNeeded(); const box = (await page.locator('#world-map').boundingBox())!; await page.mouse.click(box.x + box.width * 28.5 / 40, box.y + box.height * 5.5 / 10); await page.locator('#world-close').click();
   await expect.poll(async () => Number(await page.locator('#stage').getAttribute('data-camera-x'))).toBe(672);
-  await page.locator('#scene-add').click(); await page.locator('#scene-name').fill('Far beacon'); await page.getByRole('button', { name: 'Apply sprite', exact: true }).click();
+  await (await reveal(page, '#scene-add')).click(); await (await reveal(page, '#scene-name')).fill('Far beacon'); await page.keyboard.press('Enter');
   await expect(page.locator('#scene-world')).toHaveValue('meadow'); await expect(page.locator('#scene-x')).toHaveValue('672');
   await page.locator('#stage').scrollIntoViewIfNeeded(); const stage = (await page.locator('#stage').boundingBox())!;
   await page.mouse.move(stage.x + stage.width / 2, stage.y + stage.height / 2); await page.mouse.down(); await page.mouse.move(stage.x + stage.width * .6, stage.y + stage.height / 2); await page.mouse.up();
   await expect(page.locator('#scene-x')).toHaveValue('720'); await page.screenshot({ path: info.outputPath('world-placement.png'), fullPage: true });
-  await page.reload(); await page.locator('#scene-selection').selectOption({ label: 'Far beacon · Meadow passage' }); await expect(page.locator('#scene-x')).toHaveValue('720');
+  await page.reload(); await (await reveal(page, '#scene-selection')).selectOption({ label: 'Far beacon · Meadow passage' }); await expect(page.locator('#scene-x')).toHaveValue('720');
   const project = await saved(page); expect(project.workspace.pythonScene.worlds[0].camera.follow).toBeNull(); expect(project.workspace.pythonScene.sprites.at(-1).world).toBe('meadow');
 });
 
 test('the editable adventure opens a tile gate, scrolls, enters a second world and restarts cleanly', async ({ page }, info) => {
-  await page.goto('/'); await page.locator('#scene-world-example').click(); await run(page); await expect(page.locator('#stage')).toHaveAttribute('data-world', 'meadow');
+  await page.goto('/'); await (await reveal(page, '#scene-world-example')).click(); await run(page); await expect(page.locator('#stage')).toHaveAttribute('data-world', 'meadow');
   await page.locator('#stage').focus(); await page.keyboard.down('ArrowRight'); await expect(page.locator('#output')).toContainText('Gate opened!', { timeout: 5000 });
   await expect.poll(async () => Number(await page.locator('#stage').getAttribute('data-camera-x'))).toBeGreaterThan(250);
   await page.screenshot({ path: info.outputPath('scrolling-meadow.png'), fullPage: true });

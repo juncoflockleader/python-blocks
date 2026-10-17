@@ -1,0 +1,80 @@
+{
+  "id": "say-something",
+  "title": "Say something",
+  "group": "look",
+  "level": "starter",
+  "concepts": [
+    "sprite",
+    "event"
+  ],
+  "phrases": [
+    "say something",
+    "talk",
+    "speech bubble",
+    "say hello",
+    "make it speak",
+    "show words above my sprite"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Use “when sprite clicked” so the sprite talks when you tap it."
+    },
+    {
+      "say": "Say a message for two seconds. Change the words to your own."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "click"
+      },
+      "stack": [
+        {
+          "type": "scene_say_for",
+          "fields": {
+            "STYLE": "say"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            },
+            "TEXT": {
+              "shadow": {
+                "type": "text",
+                "fields": {
+                  "TEXT": "Hello!"
+                }
+              }
+            },
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "2"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "say-something.webm",
+  "demo": [
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 1200
+    }
+  ],
+  "tryNext": [
+    "grow-shrink",
+    "play-sound"
+  ]
+}

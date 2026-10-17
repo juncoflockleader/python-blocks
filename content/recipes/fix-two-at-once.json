@@ -1,0 +1,28 @@
+{
+  "id": "fix-two-at-once",
+  "title": "Two things happen at once",
+  "group": "fix",
+  "level": "starter",
+  "concepts": [
+    "event",
+    "wait"
+  ],
+  "phrases": [
+    "two things happen at once",
+    "both run at the same time",
+    "everything happens together",
+    "order is wrong",
+    "happens too early"
+  ],
+  "steps": [
+    {
+      "say": "Each hat block starts its own script, and they run at the same time."
+    },
+    {
+      "say": "To do things one after another, put them in the same script in order."
+    },
+    {
+      "say": "Glide and wait blocks pause their own script while others keep going."
+    }
+  ]
+}

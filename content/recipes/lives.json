@@ -1,0 +1,121 @@
+{
+  "id": "lives",
+  "title": "Lives and losing one",
+  "group": "game",
+  "level": "starter",
+  "concepts": [
+    "game",
+    "collision"
+  ],
+  "phrases": [
+    "lives",
+    "lose a life",
+    "hearts",
+    "three tries",
+    "health"
+  ],
+  "needs": {
+    "sprites": 2
+  },
+  "steps": [
+    {
+      "say": "When the game starts, set lives to 3, show them, and end the game when they reach zero."
+    },
+    {
+      "say": "Select the player: when it overlaps the enemy, lose a life and move back to the start."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "game_set",
+          "fields": {
+            "FIELD": "lives"
+          },
+          "inputs": {
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "3"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "game_show",
+          "fields": {
+            "SHOW": "TRUE",
+            "FIELD": "lives"
+          }
+        },
+        {
+          "type": "game_lives_rule",
+          "fields": {
+            "ACTION": "lose"
+          }
+        }
+      ]
+    },
+    {
+      "handler": {
+        "kind": "overlap",
+        "other": "$other"
+      },
+      "stack": [
+        {
+          "type": "game_change",
+          "fields": {
+            "FIELD": "lives"
+          },
+          "inputs": {
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "-1"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_go",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            },
+            "X": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "-180"
+                }
+              }
+            },
+            "Y": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "0"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "lives.webm",
+  "tryNext": [
+    "game-over",
+    "countdown"
+  ]
+}

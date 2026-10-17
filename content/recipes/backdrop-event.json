@@ -1,0 +1,87 @@
+{
+  "id": "backdrop-event",
+  "title": "When the backdrop changes",
+  "group": "look",
+  "level": "builder",
+  "concepts": [
+    "event",
+    "sprite"
+  ],
+  "phrases": [
+    "when the backdrop changes",
+    "when the scene changes",
+    "react to a new background",
+    "when it becomes night",
+    "scene change event"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Use “when backdrop switches to” and pick a backdrop, or any backdrop."
+    },
+    {
+      "say": "Here the sprite thinks something each time the scene changes, then shows its next costume."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "backdrop",
+        "backdrop": ""
+      },
+      "stack": [
+        {
+          "type": "scene_say_for",
+          "fields": {
+            "STYLE": "think"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "TEXT": {
+              "shadow": {
+                "type": "text",
+                "fields": {
+                  "TEXT": "Where am I?"
+                }
+              }
+            },
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "1"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_next_costume",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "backdrop-event.webm",
+  "tryNext": [
+    "switch-backdrop"
+  ]
+}

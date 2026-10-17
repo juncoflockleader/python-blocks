@@ -1,0 +1,103 @@
+{
+  "id": "shoot-projectile",
+  "title": "Shoot a projectile",
+  "group": "game",
+  "level": "builder",
+  "concepts": [
+    "motion",
+    "input"
+  ],
+  "phrases": [
+    "shoot",
+    "fire a laser",
+    "throw a ball",
+    "shoot bullets",
+    "launch something"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "When space is pressed, fire a projectile from the sprite."
+    },
+    {
+      "say": "Choose its costume, speed and how many seconds it lives."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "key",
+        "key": "Space"
+      },
+      "stack": [
+        {
+          "type": "scene_fire",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "COSTUME": {
+              "shadow": {
+                "type": "scene_costume",
+                "fields": {
+                  "COSTUME_ID": "ball"
+                }
+              }
+            },
+            "VX": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "320"
+                }
+              }
+            },
+            "VY": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "0"
+                }
+              }
+            },
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "2"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "shoot-projectile.webm",
+  "demo": [
+    {
+      "key": "Space",
+      "ms": 60
+    },
+    {
+      "wait": 400
+    },
+    {
+      "key": "Space",
+      "ms": 60
+    },
+    {
+      "wait": 400
+    }
+  ],
+  "tryNext": [
+    "touch-enemy"
+  ]
+}

@@ -1,0 +1,123 @@
+{
+  "id": "collect-coin",
+  "title": "Collect a coin",
+  "group": "touch",
+  "level": "starter",
+  "concepts": [
+    "collision",
+    "game"
+  ],
+  "phrases": [
+    "collect a coin",
+    "pick up the star",
+    "collect items",
+    "grab the coin and get points",
+    "eat the food",
+    "the coin disappears when I touch it",
+    "collectibles"
+  ],
+  "needs": {
+    "sprites": 2
+  },
+  "steps": [
+    {
+      "say": "Select the player. Use “when sprite overlaps” with the coin."
+    },
+    {
+      "say": "Add 1 to the score, then move the coin somewhere random so it can be collected again."
+    },
+    {
+      "say": "To make it disappear instead, use “destroy sprite”."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "overlap",
+        "other": "$other"
+      },
+      "stack": [
+        {
+          "type": "game_change",
+          "fields": {
+            "FIELD": "score"
+          },
+          "inputs": {
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "1"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_go",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$other"
+                }
+              }
+            },
+            "X": {
+              "block": {
+                "type": "math_random_int",
+                "inputs": {
+                  "FROM": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "-200"
+                      }
+                    }
+                  },
+                  "TO": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "200"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "Y": {
+              "block": {
+                "type": "math_random_int",
+                "inputs": {
+                  "FROM": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "-130"
+                      }
+                    }
+                  },
+                  "TO": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "130"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "collect-coin.webm",
+  "tryNext": [
+    "keep-score",
+    "win-screen"
+  ]
+}

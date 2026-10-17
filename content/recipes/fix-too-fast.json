@@ -1,0 +1,28 @@
+{
+  "id": "fix-too-fast",
+  "title": "It moves too fast",
+  "group": "fix",
+  "level": "starter",
+  "concepts": [
+    "motion",
+    "wait"
+  ],
+  "phrases": [
+    "it moves too fast",
+    "too quick",
+    "slow it down",
+    "goes too fast to see",
+    "zooms off the screen"
+  ],
+  "steps": [
+    {
+      "say": "Use smaller numbers: move 2 steps instead of 10."
+    },
+    {
+      "say": "Inside repeat loops, add a short wait, like 0.05 seconds, so you can see each step."
+    },
+    {
+      "say": "Glide for more seconds to make a slower movement."
+    }
+  ]
+}

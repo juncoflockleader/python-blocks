@@ -1,0 +1,56 @@
+{
+  "id": "reach-goal",
+  "title": "Win when I reach the goal",
+  "group": "game",
+  "level": "starter",
+  "concepts": [
+    "game",
+    "collision"
+  ],
+  "phrases": [
+    "reach the goal",
+    "win at the finish line",
+    "get to the flag",
+    "touch the goal to win",
+    "end of the level"
+  ],
+  "needs": {
+    "sprites": 2
+  },
+  "steps": [
+    {
+      "say": "Select the player. When it overlaps the goal sprite, finish the game as a win."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "overlap",
+        "other": "$other"
+      },
+      "stack": [
+        {
+          "type": "game_finish",
+          "fields": {
+            "WON": "TRUE"
+          },
+          "inputs": {
+            "TEXT": {
+              "shadow": {
+                "type": "text",
+                "fields": {
+                  "TEXT": "You made it!"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "reach-goal.webm",
+  "tryNext": [
+    "countdown",
+    "next-level"
+  ]
+}

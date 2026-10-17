@@ -1,0 +1,97 @@
+{
+  "id": "click-sprite",
+  "title": "Do something when clicked",
+  "group": "touch",
+  "level": "starter",
+  "concepts": [
+    "event",
+    "input"
+  ],
+  "phrases": [
+    "click a sprite",
+    "when I tap it",
+    "press on the character",
+    "touch the sprite with my finger",
+    "clicking makes it react"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Use “when sprite clicked”. It runs each time the sprite or one of its clones is tapped."
+    },
+    {
+      "say": "Here it says something and spins a little."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "click"
+      },
+      "stack": [
+        {
+          "type": "scene_say_for",
+          "fields": {
+            "STYLE": "say"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            },
+            "TEXT": {
+              "shadow": {
+                "type": "text",
+                "fields": {
+                  "TEXT": "You found me!"
+                }
+              }
+            },
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "1"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_turn",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "30"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "click-sprite.webm",
+  "demo": [
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 1100
+    }
+  ],
+  "tryNext": [
+    "keep-score",
+    "play-sound"
+  ]
+}

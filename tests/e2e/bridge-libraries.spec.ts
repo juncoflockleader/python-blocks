@@ -4,6 +4,7 @@ import { unzipSync, strFromU8 } from 'fflate';
 import type { ConvertedPython } from '../../src/bridge/converter';
 import type { Project } from '../../src/project';
 import { buildConverterHarness, prepare, convert, install } from './bridge-support';
+import { reveal } from './shell';
 
 test.beforeAll(buildConverterHarness);
 const errors = new WeakMap<Page, string[]>();
@@ -27,7 +28,7 @@ async function edited(page: Page, name: string, edit: (source: string) => string
   return result;
 }
 async function exported(page: Page, result: ConvertedPython) {
-  const download = page.waitForEvent('download'); await page.locator('#export').click();
+  const download = page.waitForEvent('download'); await (await reveal(page, '#export')).click();
   const files = unzipSync(readFileSync((await (await download).path())!));
   expect(strFromU8(files['program.py'])).toBe(result.compilation.source);
   expect(JSON.parse(strFromU8(files['scene.json']))).toEqual(result.project.workspace.pythonScene);

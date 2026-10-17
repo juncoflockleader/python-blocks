@@ -1,0 +1,145 @@
+{
+  "id": "spawn-clones",
+  "title": "Make a new one every second",
+  "group": "game",
+  "level": "starter",
+  "concepts": [
+    "loop",
+    "sprite",
+    "wait"
+  ],
+  "phrases": [
+    "spawn every second",
+    "make lots of copies",
+    "clone",
+    "more enemies keep coming",
+    "create new ones",
+    "keep appearing"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Repeat ten times: clone the sprite and move the clone to a random place."
+    },
+    {
+      "say": "Wait one second between clones."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "controls_repeat_ext",
+          "inputs": {
+            "TIMES": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "10"
+                }
+              }
+            },
+            "DO": {
+              "block": {
+                "type": "scene_go",
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_clone",
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_sprite",
+                            "fields": {
+                              "SPRITE_ID": "$sprite"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "X": {
+                    "block": {
+                      "type": "math_random_int",
+                      "inputs": {
+                        "FROM": {
+                          "shadow": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "-200"
+                            }
+                          }
+                        },
+                        "TO": {
+                          "shadow": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "200"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Y": {
+                    "block": {
+                      "type": "math_random_int",
+                      "inputs": {
+                        "FROM": {
+                          "shadow": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "-130"
+                            }
+                          }
+                        },
+                        "TO": {
+                          "shadow": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "130"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "py_wait",
+                    "inputs": {
+                      "SECONDS": {
+                        "shadow": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "1"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "spawn-clones.webm",
+  "demo": [
+    {
+      "wait": 1500
+    }
+  ],
+  "tryNext": [
+    "collect-coin",
+    "shoot-projectile"
+  ]
+}

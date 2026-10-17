@@ -1,0 +1,56 @@
+{
+  "id": "next-level",
+  "title": "Go to the next level",
+  "group": "game",
+  "level": "pro",
+  "concepts": [
+    "world",
+    "collision"
+  ],
+  "phrases": [
+    "next level",
+    "go to level 2",
+    "change world",
+    "enter the next room",
+    "move to another map"
+  ],
+  "needs": {
+    "sprites": 2,
+    "worlds": 2
+  },
+  "steps": [
+    {
+      "say": "Make two worlds in Worlds & tilemaps."
+    },
+    {
+      "say": "Select the player: when it overlaps the goal, switch to the other world."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "overlap",
+        "other": "$other"
+      },
+      "stack": [
+        {
+          "type": "scene_world_set",
+          "inputs": {
+            "WORLD": {
+              "block": {
+                "type": "scene_world",
+                "fields": {
+                  "WORLD_ID": "$world2"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "next-level.webm",
+  "tryNext": [
+    "win-screen"
+  ]
+}

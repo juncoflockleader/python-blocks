@@ -1,0 +1,28 @@
+{
+  "id": "fix-not-moving",
+  "title": "My sprite does not move",
+  "group": "fix",
+  "level": "starter",
+  "concepts": [
+    "input",
+    "event"
+  ],
+  "phrases": [
+    "my sprite does not move",
+    "nothing happens when I press keys",
+    "it will not move",
+    "keys don’t work",
+    "stuck"
+  ],
+  "steps": [
+    {
+      "say": "Click the stage before pressing keys: the stage only hears keys while it has focus."
+    },
+    {
+      "say": "Check the handler: a “when sprite …” block belongs to one sprite. Is it the sprite you expect?"
+    },
+    {
+      "say": "Is the script inside a hat block? Loose blocks are drafts and do not run."
+    }
+  ]
+}

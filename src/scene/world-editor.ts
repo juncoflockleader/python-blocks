@@ -5,7 +5,7 @@ import { sceneState, changeScene } from './state';
 import { cameraPosition, defaultCamera, newMap, resizeMap, type World } from './world';
 
 export function installWorldEditor(workspace: Blockly.WorkspaceSvg, editable: () => boolean, openLibrary: () => void) {
-  document.getElementById('scene-art')!.insertAdjacentHTML('afterend', '<button id="scene-worlds" class="button secondary">Worlds & tilemaps</button>');
+  document.getElementById('scene-art')!.insertAdjacentHTML('afterend', '<button id="scene-worlds" class="button secondary level-pro">Worlds & tilemaps</button>');
   document.body.insertAdjacentHTML('beforeend', `<dialog id="world-dialog" aria-labelledby="world-title"><h2 id="world-title">Worlds & tilemaps</h2>
     <p>Each world has its own tiles, backdrop and local sprites. Global sprites stay when worlds change. Choose the starting world here, then close to place sprites on the stage.</p>
     <div class="scene-toolbar"><label>Starting / editing world <select id="world-select"></select></label><button id="world-stock" class="button primary">World library</button><button id="world-new" class="button secondary">New world</button><button id="world-copy" class="button secondary">Duplicate world</button><button id="world-delete" class="button secondary">Remove world (keep sprites)</button></div>

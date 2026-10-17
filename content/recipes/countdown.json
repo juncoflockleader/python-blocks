@@ -1,0 +1,61 @@
+{
+  "id": "countdown",
+  "title": "Countdown timer",
+  "group": "game",
+  "level": "starter",
+  "concepts": [
+    "game",
+    "event"
+  ],
+  "phrases": [
+    "countdown timer",
+    "time limit",
+    "timer",
+    "seconds left",
+    "beat the clock"
+  ],
+  "steps": [
+    {
+      "say": "When the game starts, count down 20 seconds; when time runs out the game ends."
+    },
+    {
+      "say": "Show the countdown on the screen."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "game_countdown",
+          "fields": {
+            "ACTION": "lose"
+          },
+          "inputs": {
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "20"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "game_show",
+          "fields": {
+            "SHOW": "TRUE",
+            "FIELD": "countdown"
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "countdown.webm",
+  "tryNext": [
+    "win-screen"
+  ]
+}

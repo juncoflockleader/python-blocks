@@ -1,0 +1,108 @@
+/* Guidance: idea cards, the wish box, guided builds, nudges and the start card. */
+.recipe-list { display: grid; gap: 10px; }
+.recipe-card { display: grid; grid-template-columns: minmax(0, 1fr); gap: 0; border: 1px solid #d6dfca; border-radius: 12px; background: #fffef9; overflow: hidden; }
+/* Previews stay short in a narrow column so a card never fills the whole tab. */
+.recipe-card .recipe-preview { width: 100%; aspect-ratio: 3 / 2; max-height: 150px; display: block; background: #edf2e8; object-fit: cover; }
+.recipe-body { padding: 10px 12px; }
+/* Secondary matches: a thumbnail beside the title instead of a full preview. */
+.recipe-card-compact { grid-template-columns: 104px minmax(0, 1fr); align-items: stretch; }
+.recipe-card-compact .recipe-preview { height: 100%; min-height: 88px; max-height: 120px; aspect-ratio: auto; }
+.recipe-card-compact .recipe-body { padding: 8px 10px; }
+.recipe-card-compact h3 { font-size: 14px; }
+.recipe-card h3 { margin: 0 0 4px; font-size: 15px; }
+.recipe-tags { display: flex; flex-wrap: wrap; gap: 4px; margin: 4px 0 6px; padding: 0; }
+.recipe-tags span { font-size: 11px; padding: 2px 8px; border-radius: 999px; background: #edf2e1; color: #3c5034; }
+.recipe-tags .recipe-level { background: #fff1dd; color: #7a4a14; }
+.recipe-steps { margin: 6px 0; padding-left: 20px; font-size: 13px; line-height: 1.5; }
+.recipe-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 6px; }
+.recipe-status { font-size: 12px; color: #2b5a4b; margin: 6px 0 0; }
+.recipe-status:empty { display: none; }
+.recipe-status.recipe-error { color: #a13824; }
+.idea-chips { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; margin: 8px 0; font-size: 12px; }
+.idea-chip { min-height: 36px; padding: 4px 12px; border: 1px solid #c9d8bb; border-radius: 999px; background: #fffef8; color: #26382f; font: 500 13px inherit; cursor: pointer; }
+.idea-chip:hover { background: #edf2e1; }
+.block-search .recipe-card { grid-template-columns: 120px minmax(0, 1fr); }
+.block-search .recipe-card .recipe-preview { height: 100%; max-height: none; aspect-ratio: auto; }
+
+.ideas { margin-bottom: 14px; }
+.ideas h2, .guide h2 { font-size: 14px; margin: 0 0 6px; }
+#ideas-form { display: flex; gap: 6px; }
+#ideas-input { flex: 1; min-width: 0; padding: 0 12px; border: 1px solid #cbd4b4; border-radius: 10px; font: inherit; }
+#ideas-status { font-size: 12px; color: #4e5f49; margin: 4px 0 8px; }
+#ideas-status:empty { display: none; }
+
+.guide { margin: 6px 0 14px; padding-top: 10px; border-top: 1px solid #e4e7dd; }
+.guide-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.guide-list[hidden] { display: none; }
+.guide-card { width: 100%; display: grid; gap: 2px; padding: 8px 12px; text-align: left; border: 1px solid #d6dfca; border-radius: 10px; background: #fffef9; color: #26382f; cursor: pointer; font: inherit; }
+.guide-card:hover { background: #f0f6e9; }
+.guide-card span { font-size: 12px; color: #4e5f49; }
+.guide-active { border: 2px solid #267c70; border-radius: 12px; padding: 10px 12px; background: #f4faf6; }
+.guide-active[hidden] { display: none; }
+.guide-head { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; }
+.guide-head h3 { margin: 0; font-size: 15px; }
+.guide-head span { font-size: 12px; color: #2b5a4b; }
+.guide-meter { height: 6px; margin: 6px 0; border-radius: 3px; background: #dce8df; overflow: hidden; }
+.guide-meter span { display: block; height: 100%; width: 0; background: #267c70; transition: width .3s; }
+.guide-step { font-size: 14px; line-height: 1.5; margin: 6px 0; }
+.guide-check { font-size: 12px; color: #4e5f49; margin: 4px 0; }
+.guide-check.guide-done { color: #1f6b3c; font-weight: 600; }
+.guide-check.guide-done::before { content: '✓ '; }
+.guide-actions { display: flex; flex-wrap: wrap; gap: 6px; }
+.guide-actions [hidden] { display: none; }
+.guide-confirm { margin: 0 0 8px; padding: 10px 12px; border: 1px solid #e5cfaa; border-radius: 10px; background: #fff8ed; font-size: 13px; }
+.guide-confirm p { margin: 0 0 8px; color: #7a3a1e; line-height: 1.45; }
+.guide-confirm[hidden], #guide-finish[hidden] { display: none; }
+#guide-active-slot .guide-active { margin-bottom: 10px; }
+#guide-finish h4 { margin: 8px 0 4px; font-size: 13px; }
+.guide-time { font-size: 13px; color: #2b5a4b; margin: 4px 0; }
+#guide-remix { margin: 0 0 8px; padding-left: 18px; font-size: 13px; line-height: 1.5; }
+.guide-target { outline: 3px solid #e2a43c !important; outline-offset: 2px; border-radius: 10px; animation: guide-pulse 1.4s ease-in-out infinite; }
+@keyframes guide-pulse { 50% { outline-color: #f6d79c; } }
+@media (prefers-reduced-motion: reduce) { .guide-target { animation: none; } }
+
+/* Fix flows: the popover a warning tap opens, and the Help-tab panel that walks through the fix. */
+.fix-popover { position: absolute; z-index: 90; width: min(300px, calc(100% - 16px)); padding: 12px 14px; border: 1px solid #e5cfaa; border-radius: 14px; background: #fff8ed; box-shadow: 0 12px 32px #26382f33; font-size: 13px; }
+.fix-popover[hidden] { display: none; }
+.fix-popover h3 { margin: 0 0 4px; font-size: 15px; }
+.fix-popover p { margin: 0 0 10px; color: #7a3a1e; line-height: 1.45; overflow-wrap: anywhere; }
+.fix-popover .guide-actions .button { min-height: 40px; }
+.fix-active { margin-bottom: 10px; padding: 10px 12px; border: 2px solid #dd9250; border-radius: 12px; background: #fff8ed; }
+.fix-active[hidden] { display: none; }
+.fix-active .guide-head span { color: #7a3a1e; }
+.fix-why { margin: 6px 0; font-size: 13px; line-height: 1.45; color: #3e4f3c; }
+.fix-steps { margin: 6px 0; padding-left: 20px; font-size: 13px; line-height: 1.5; }
+.fix-steps li { margin-bottom: 6px; }
+.fix-steps li > span { display: block; }
+.fix-steps .fix-action { display: inline-flex; margin: 6px 0 2px; }
+.fix-active [hidden] { display: none; }
+.fix-target > .blocklyPath { stroke: #e2a43c; stroke-width: 3px; }
+
+.nudges { display: grid; gap: 8px; margin-bottom: 10px; }
+.nudges:empty { display: none; }
+.nudge { position: relative; padding: 8px 52px 6px 12px; border: 1px solid #e5cfaa; border-radius: 10px; background: #fff8ed; font-size: 13px; }
+.nudge p { margin: 0 0 4px; }
+.nudge .idea-chips { margin: 4px 0; }
+.nudge-list { margin: 2px 0 4px; padding-left: 18px; line-height: 1.5; }
+.nudge-close { position: absolute; top: 2px; right: 2px; }
+
+.start-card { position: absolute; z-index: 4; left: 50%; top: 40%; transform: translate(-50%, -50%); width: min(440px, calc(100% - 140px)); padding: 16px 18px; border: 1px solid #cbd4b4; border-radius: 16px; background: #fafbf6f2; box-shadow: 0 12px 32px #26382f24; }
+.start-card[hidden] { display: none; }
+.start-card h2 { margin: 0 0 4px; font: 700 18px 'Space Grotesk', system-ui, sans-serif; }
+.start-card p { font-size: 13px; color: #4e5f49; margin: 4px 0 8px; }
+.start-picks { display: flex; flex-wrap: wrap; gap: 6px; }
+.start-pick { min-height: 44px; padding: 6px 12px; border: 1px solid #d6dfca; border-radius: 10px; background: #fffef9; font: 600 13px inherit; cursor: pointer; }
+.start-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+
+.example-card { display: flex; flex-direction: column; gap: 4px; height: 100%; }
+.example-thumb { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 8px; background: #edf2e8; display: block; }
+.example-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 6px; }
+.example-actions .button { flex: 1 1 auto; padding-inline: 10px; }
+.example-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; }
+.example-filters .idea-chips { margin: 0; flex: 1; }
+.example-filters .idea-chip[aria-pressed=true] { background: #267c70; border-color: #267c70; color: #fff; }
+.example-search { display: flex; align-items: center; min-width: 160px; }
+.example-search input { width: 100%; min-height: 40px; padding: 0 12px; border: 1px solid #cbd4b4; border-radius: 10px; font: inherit; }
+.example-list li[hidden] { display: none; }
+.recipe-target { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+.recipe-target select { min-height: 40px; padding: 0 8px; border: 1px solid #cbd4b4; border-radius: 8px; font: inherit; background: #fff; }

@@ -1,0 +1,101 @@
+{
+  "id": "list-of-enemies",
+  "title": "Do something to every enemy",
+  "group": "data",
+  "level": "builder",
+  "concepts": [
+    "list",
+    "loop"
+  ],
+  "phrases": [
+    "list of enemies",
+    "all the enemies",
+    "every enemy at once",
+    "each sprite of a kind",
+    "loop through sprites"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Give enemies the kind “enemy” in More settings → Game motion."
+    },
+    {
+      "say": "For each sprite of that kind, make it say something."
+    }
+  ],
+  "variables": [
+    "enemy"
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "py_for_each",
+          "fields": {
+            "SYMBOL": "$var:enemy"
+          },
+          "inputs": {
+            "ITERABLE": {
+              "block": {
+                "type": "scene_of_kind",
+                "inputs": {
+                  "KIND": {
+                    "shadow": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "sprite"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "DO": {
+              "block": {
+                "type": "scene_say_for",
+                "fields": {
+                  "STYLE": "say"
+                },
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "py_get",
+                      "fields": {
+                        "SYMBOL": "$var:enemy"
+                      }
+                    }
+                  },
+                  "TEXT": {
+                    "shadow": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "Ready!"
+                      }
+                    }
+                  },
+                  "SECONDS": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "list-of-enemies.webm",
+  "tryNext": [
+    "count-how-many"
+  ]
+}

@@ -1,5 +1,7 @@
 import * as Blockly from 'blockly/core';
 import { callState, defineFunction, referenceState } from '../blocks/core/functions';
+import { numberInput } from '../blocks/core';
+import { askName } from '../ui/name-sheet';
 import { allSymbols, createVariable, editSignature, enclosingFunction, nameError, refreshSymbols, signatureOf, type FunctionBlock, type Parameter } from './functions';
 import { installLanguageClipboard } from './clipboard';
 import { installEventEditor } from './event-editor';
@@ -10,8 +12,8 @@ import { installLambdaEditor } from './lambda-editor';
  * stays in the model/compiler, so files and headless compilation use it too. */
 export function installLanguageEditor(workspace: Blockly.WorkspaceSvg) {
   installLanguageClipboard();
-  document.querySelector('.blocks-panel .panel-heading')!.insertAdjacentHTML('beforeend', '<button class="button secondary" id="language-manage">Functions &amp; variables</button>');
-  document.querySelector('.blocks-panel .panel-footer')!.insertAdjacentHTML('beforeend', '<button id="language-undo" class="button secondary">Undo</button><button id="language-redo" class="button secondary">Redo</button>');
+  document.getElementById('menu-tools')!.insertAdjacentHTML('beforeend', '<button class="button secondary" id="language-manage">Functions &amp; variables</button>');
+  document.getElementById('top-history')!.insertAdjacentHTML('beforeend', '<button id="language-undo" class="button secondary ui-icon-only" title="Undo">Undo</button><button id="language-redo" class="button secondary ui-icon-only" title="Redo">Redo</button>');
   document.body.insertAdjacentHTML('beforeend', `<dialog id="language-dialog" aria-labelledby="language-title">
     <h2 id="language-title">Functions and variables</h2>
     <p>Functions have their own parameters and local variables. Project variables are shared.</p>
@@ -148,7 +150,43 @@ export function installLanguageEditor(workspace: Blockly.WorkspaceSvg) {
     refreshSymbols(workspace); dialog.close();
   }));
   workspace.registerButtonCallback('PY_MANAGE_FUNCTIONS', open);
+  /** Put a newly made block where the learner is looking, as one Undo step with what it needs. */
+  const place = (block: Blockly.BlockSvg) => {
+    const metrics = workspace.getMetrics();
+    block.moveTo(new Blockly.utils.Coordinate((metrics.viewLeft + metrics.viewWidth / 3) / workspace.scale, (metrics.viewTop + 40) / workspace.scale));
+    block.select(); workspace.centerOnBlock(block.id);
+  };
+  const free = (base: string) => { const taken = new Set([...workspace.getProcedureMap().getProcedures().map(f => f.getName()), ...allSymbols(workspace).map(s => s.name)]); let name = base; for (let n = 2; taken.has(name); n++) name = `${base}${n}`; return name; };
+  async function makeVariable() {
+    const selectedBlock = Blockly.common.getSelected();
+    const context = selectedBlock instanceof Blockly.Block ? enclosingFunction(selectedBlock) : undefined;
+    const owner = context?.functionId && workspace.getProcedureMap().get(context.functionId);
+    const answer = await askName({
+      title: 'Make a variable', value: free('score'), confirm: 'Create', hint: 'Adds a “set” block for it. Rename or delete variables later with Manage variables.',
+      scopes: owner ? [{ label: 'Whole project', value: '' }, { label: `Only inside ${owner.getName()}`, value: owner.getId() }] : undefined,
+      validate: (value, scope) => nameError(value) ?? (allSymbols(workspace).some(s => s.name === value && (s.owner ?? '') === scope) || !scope && workspace.getProcedureMap().getProcedures().some(f => f.getName() === value) ? `“${value}” is already used. Choose another name.` : null),
+    });
+    if (!answer) return;
+    const group = Blockly.Events.getGroup(); Blockly.Events.setGroup(group || true);
+    try {
+      const variable = createVariable(workspace, answer.name, answer.scope || undefined); refreshSymbols(workspace);
+      place(Blockly.serialization.blocks.append({ type: 'py_set', fields: { SYMBOL: variable.getId() }, inputs: { VALUE: numberInput(0) } }, workspace, { recordUndo: true }) as Blockly.BlockSvg);
+    } finally { Blockly.Events.setGroup(group); }
+  }
+  async function makeFunction() {
+    const answer = await askName({
+      title: 'Make a function', value: free('do_something'), confirm: 'Create', hint: 'Adds a “define” block. Its call block appears in Functions. Add parameters later with Manage functions.',
+      validate: value => nameError(value) ?? (workspace.getProcedureMap().getProcedures().some(f => f.getName() === value) || allSymbols(workspace).some(s => s.kind === 'project' && s.name === value) ? `“${value}” is already used. Choose another name.` : null),
+    });
+    if (!answer) return;
+    const group = Blockly.Events.getGroup(); Blockly.Events.setGroup(group || true);
+    try { place(defineFunction(workspace, { id: Blockly.utils.idGenerator.genUid(), name: answer.name, parameters: [] }) as Blockly.BlockSvg & FunctionBlock); }
+    finally { Blockly.Events.setGroup(group); }
+  }
+  workspace.registerButtonCallback('PB_MAKE_VARIABLE', () => { void makeVariable(); });
+  workspace.registerButtonCallback('PB_MAKE_FUNCTION', () => { void makeFunction(); });
   workspace.registerToolboxCategoryCallback('PY_FUNCTIONS', () => [
+    { kind: 'button', text: 'Make a function', callbackkey: 'PB_MAKE_FUNCTION' },
     { kind: 'button', text: 'Manage functions', callbackkey: 'PY_MANAGE_FUNCTIONS' },
     ...workspace.getProcedureMap().getProcedures().filter(model => !signatureOf(model).handler).flatMap(model => {
       const signature = signatureOf(model);
@@ -157,6 +195,7 @@ export function installLanguageEditor(workspace: Blockly.WorkspaceSvg) {
     { kind: 'block', type: 'py_return' }, { kind: 'block', type: 'py_return_value' },
   ]);
   workspace.registerToolboxCategoryCallback('PY_VARIABLES', () => [
+    { kind: 'button', text: 'Make a variable', callbackkey: 'PB_MAKE_VARIABLE' },
     { kind: 'button', text: 'Manage variables', callbackkey: 'PY_MANAGE_FUNCTIONS' },
     ...allSymbols(workspace).flatMap(s => ['py_get', 'py_set'].map(type => ({ kind: 'block', type, fields: { SYMBOL: s.id } }))),
   ]);

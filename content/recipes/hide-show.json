@@ -1,0 +1,85 @@
+{
+  "id": "hide-show",
+  "title": "Hide then show",
+  "group": "look",
+  "level": "starter",
+  "concepts": [
+    "sprite",
+    "wait"
+  ],
+  "phrases": [
+    "hide then show",
+    "disappear and come back",
+    "blink",
+    "make it invisible",
+    "vanish"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "When clicked, hide the sprite, wait one second, then show it again."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "click"
+      },
+      "stack": [
+        {
+          "type": "scene_visibility",
+          "fields": {
+            "ACTION": "hide"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            }
+          }
+        },
+        {
+          "type": "py_wait",
+          "inputs": {
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "0.6"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_visibility",
+          "fields": {
+            "ACTION": "show"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "hide-show.webm",
+  "demo": [
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 900
+    }
+  ],
+  "tryNext": [
+    "grow-shrink"
+  ]
+}

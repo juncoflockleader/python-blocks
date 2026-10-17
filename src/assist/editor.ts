@@ -1,14 +1,16 @@
-import { asksForAuthoring, concepts, questions, type Guidance } from './catalog';
+import { asksForAuthoring, concepts, questions, type Guidance, type IdeaRef } from './catalog';
 import { requestHelp, validateRequest, type HelpRequest, type SharedContext } from './provider';
 
 interface AssistOptions {
   read(kind: keyof SharedContext): string;
   pilotActive(): boolean;
+  /** Reviewed ideas: matched locally first; the model may only point to one by ID. */
+  ideas?: { list: IdeaRef[]; match(text: string): string[]; show(id: string): void; chips: string[] };
 }
 // This module receives text readers only. There is deliberately no workspace,
 // runner, project loader, dispatch function, or generic tool bridge here.
 export function installAssist(options: AssistOptions) {
-  const panel = document.createElement('details'); panel.id = 'assist-panel'; panel.className = 'learning-panel';
+  const panel = document.createElement('details'); panel.id = 'assist-panel'; panel.className = 'learning-panel level-builder';
   panel.innerHTML = `<summary>AI assist <span>Understand, predict, investigate · you make every change</span></summary>
     <p id="assist-pilot-notice" hidden>AI assist is off during the learner pilot. Finish the session to enable it.</p>
     <p>This optional helper chooses a concept and a question to think about. It cannot write code, solve your project, make artwork, edit, or Run. Its suggested focus can be wrong.</p>
@@ -23,7 +25,7 @@ export function installAssist(options: AssistOptions) {
     </div><p>Check your model’s <a href="https://developers.openai.com/api/docs/pricing" target="_blank" rel="noreferrer">current pricing</a> and <a href="https://platform.openai.com/settings/organization/limits" target="_blank" rel="noreferrer">provider spending limits</a>. Each request allows at most 400 output tokens. The request count is a local guard, not an account spending limit.</p><button id="assist-enable" class="button secondary">Enable for this tab</button></fieldset></form>
     <p id="assist-connection"></p><button id="assist-disable" class="button secondary" hidden>Disable & clear key and conversation</button>
     <fieldset id="assist-question-fields" disabled><legend>Ask for help</legend><div class="learning-fields">
-      <label>Help with <select id="assist-mode"><option value="explain">Understanding</option><option value="predict">Making a prediction</option><option value="debug">Investigating an error</option></select></label>
+      <label>Help with <select id="assist-mode"><option value="explain">Understanding</option><option value="predict">Making a prediction</option><option value="debug">Investigating an error</option><option value="idea">Making something happen</option></select></label>
       <label>Your question <textarea id="assist-question" rows="3" maxlength="1500" placeholder="What did you expect? What surprised you?"></textarea></label>
     </div><div class="learning-actions"><label><input id="assist-share-python" type="checkbox"> Python selection, or current Python file</label><label><input id="assist-share-blocks" type="checkbox"> Last selected block description</label><label><input id="assist-share-diagnostics" type="checkbox"> Visible errors and output</label></div>
     <p>All sharing starts off. Select text in Python or a block before reviewing. A snapshot can include your names, comments, messages, and printed values. Images, sounds, pilot notes, recovery copies, and other modules are not included.</p>
@@ -38,6 +40,16 @@ export function installAssist(options: AssistOptions) {
   let preview: HelpRequest | null = null, pending: AbortController | null = null, epoch = 0;
   let pilot = options.pilotActive();
   const status = (text: string) => { el('status').textContent = text; };
+  // Wishes ("make it jump") resolve to reviewed ideas locally before any request.
+  if (options.ideas) {
+    el('question-fields').querySelector('.learning-fields')!.insertAdjacentHTML('afterend', '<div class="idea-chips" id="assist-chips" aria-label="Wish suggestions"><span>What do you want to make happen?</span></div>');
+    for (const text of options.ideas.chips) {
+      const chip = document.createElement('button'); chip.type = 'button'; chip.className = 'idea-chip'; chip.textContent = text;
+      chip.addEventListener('click', () => { el<HTMLSelectElement>('mode').value = 'idea'; el<HTMLTextAreaElement>('question').value = text; invalidate(); });
+      el('chips').append(chip);
+    }
+  }
+  const placeholder = () => { el<HTMLTextAreaElement>('question').placeholder = el<HTMLSelectElement>('mode').value === 'idea' ? 'What do you want to make happen?' : 'What did you expect? What surprised you?'; };
   const showError = (error: unknown) => status(error instanceof Error ? error.message : 'The request could not be completed.');
   function usage() {
     el('usage').textContent = `${requests}/${limit} requests sent in this tab · ${input} input + ${output} output tokens reported. ${rates ? `Estimated known cost: $${estimated.toFixed(6)} (your entered rates).` : 'Cost unavailable: enter your model’s rates to estimate future requests.'}${uncertain ? ` ${uncertain} request(s) have unknown usage or cost; check your provider bill.` : ''}`;
@@ -89,11 +101,14 @@ export function installAssist(options: AssistOptions) {
   });
   el('disable').addEventListener('click', disable);
   el('question-fields').addEventListener('input', invalidate);
+  el('mode').addEventListener('change', placeholder); placeholder();
   el('review').addEventListener('click', () => {
     if (!key || pending || pilot || options.pilotActive()) return;
     try {
       const request = capture();
-      if (asksForAuthoring(request.question)) { invalidate(); render({ concept: 'authorship', question: 'clarify', line: 0 }); status('No request sent. Ask for an explanation, prediction question, or debugging hint.'); return; }
+      const local = request.mode === 'idea' || asksForAuthoring(request.question) ? options.ideas?.match(request.question) ?? [] : [];
+      if (local.length) { invalidate(); options.ideas!.show(local[0]); render({ concept: 'authorship', question: 'clarify', line: 0 }); status('No request sent. A reviewed idea matches your wish; it is shown in Ideas above. You choose whether to insert it.'); return; }
+      if (asksForAuthoring(request.question)) { invalidate(); render({ concept: 'authorship', question: 'clarify', line: 0 }); status('No request sent. Ask for an explanation, prediction question, or debugging hint, or describe what you want to make happen.'); return; }
       preview = request;
       const context = Object.entries(request.context).map(([kind, value]: [string, string]) => {
         const title = kind === 'python' ? 'Python excerpt (line numbers are for guidance)' : kind === 'blocks' ? 'Block description' : 'Errors and output';
@@ -114,13 +129,15 @@ export function installAssist(options: AssistOptions) {
     pending = controller; requests++; uncertain++; el('answer').hidden = true; status('Asking for a guiding idea…'); controls();
     const timeout = setTimeout(() => controller.abort(new DOMException('Timed out', 'TimeoutError')), 30_000);
     try {
-      const result = await requestHelp(key, model, request, controller.signal);
+      const result = await requestHelp(key, model, request, controller.signal, fetch, options.ideas?.list ?? []);
       if (generation !== epoch || controller.signal.aborted) return;
       if (result.usage) {
         input += result.usage.input; output += result.usage.output;
         if (rates) { estimated += (result.usage.input * rates.input + result.usage.output * rates.output) / 1_000_000; uncertain--; }
       }
-      render(result.guidance); status('A concept and a question to investigate. Your project is unchanged.');
+      render(result.guidance);
+      if (result.guidance.recipe && options.ideas) { options.ideas.show(result.guidance.recipe); status('A reviewed idea (shown in Ideas above), a concept and a question. Your project is unchanged.'); }
+      else status('A concept and a question to investigate. Your project is unchanged.');
     } catch (error) {
       if (generation === epoch) {
         if (controller.signal.aborted) status('Request timed out. No guidance was shown. Check provider usage before retrying.');
@@ -131,5 +148,12 @@ export function installAssist(options: AssistOptions) {
   el('cancel').addEventListener('click', () => cancel());
   window.addEventListener('pagehide', disable);
   controls();
-  return { setPilotActive(active: boolean) { pilot = active; if (active) disable(); controls(); }, dispose() { disable(); window.removeEventListener('pagehide', disable); panel.remove(); } };
+  return {
+    /** Prepare a wish for the AI helper; the learner still reviews and sends it. */
+    prepare(wish: string) {
+      panel.open = true; el<HTMLSelectElement>('mode').value = 'idea'; placeholder(); el<HTMLTextAreaElement>('question').value = wish; invalidate();
+      if (!key) { status('Enable AI assist with your key below, then Review and Send. Your wish is filled in.'); el('key').focus(); return; }
+      el('review').click(); el('send').focus();
+    },
+    setPilotActive(active: boolean) { pilot = active; if (active) disable(); controls(); }, dispose() { disable(); window.removeEventListener('pagehide', disable); panel.remove(); } };
 }

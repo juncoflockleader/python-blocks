@@ -2,14 +2,15 @@ import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { strFromU8, unzipSync } from 'fflate';
+import { menu, reveal } from './shell';
 
 const fixture = (name: string) => path.resolve('tests/fixtures/modules', name);
 async function open(page: Page, name: string) { await page.goto('/'); await page.locator('#project-file').setInputFiles(fixture(name)); }
-async function manage(page: Page) { await page.getByRole('button', { name: 'Modules', exact: true }).click(); }
+async function manage(page: Page) { await menu(page, 'Modules'); }
 async function close(page: Page) { await page.locator('#modules-close').click(); }
 async function run(page: Page) { await page.getByRole('button', { name: 'Run code' }).click(); await expect(page.locator('#status')).toHaveText('Finished', { timeout: 60_000 }); }
 async function download(page: Page, button: string) {
-  const promise = page.waitForEvent('download'); await page.getByRole('button', { name: button, exact: true }).click(); const result = await promise;
+  const promise = page.waitForEvent('download'); await (await reveal(page, page.getByRole('button', { name: button, exact: true }))).click(); const result = await promise;
   const chunks: Buffer[] = []; for await (const chunk of (await result.createReadStream())!) chunks.push(Buffer.from(chunk));
   return { name: result.suggestedFilename(), data: Buffer.concat(chunks) };
 }

@@ -1,0 +1,106 @@
+{
+  "id": "arrow-keys",
+  "title": "Move with the arrow keys",
+  "group": "move",
+  "level": "starter",
+  "concepts": [
+    "input",
+    "motion"
+  ],
+  "phrases": [
+    "arrow keys move me",
+    "move with arrow keys",
+    "control my character",
+    "use the keyboard to move",
+    "walk around with keys",
+    "make my player move",
+    "press buttons to walk"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Start from “when game starts” so the controls are ready as soon as the game runs."
+    },
+    {
+      "say": "Control the sprite with the arrow keys and choose how fast it goes."
+    },
+    {
+      "say": "Click the stage, then hold the arrow keys to try it."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "scene_control",
+          "fields": {
+            "SCHEME": "arrows"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "VX": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "180"
+                }
+              }
+            },
+            "VY": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "180"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_motion_edges",
+          "fields": {
+            "MODE": "stop"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "arrow-keys.webm",
+  "demo": [
+    {
+      "key": "ArrowRight",
+      "ms": 700
+    },
+    {
+      "key": "ArrowUp",
+      "ms": 500
+    }
+  ],
+  "tryNext": [
+    "jump-gravity",
+    "collect-coin",
+    "face-left-right"
+  ]
+}

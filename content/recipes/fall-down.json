@@ -1,0 +1,145 @@
+{
+  "id": "fall-down",
+  "title": "Fall down the screen",
+  "group": "move",
+  "level": "starter",
+  "concepts": [
+    "motion",
+    "coordinates",
+    "condition"
+  ],
+  "phrases": [
+    "fall down",
+    "drop from the sky",
+    "rain down",
+    "things falling from the top",
+    "move down the screen"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Select the falling sprite. Each update, change its y by -5 so it moves down."
+    },
+    {
+      "say": "When y is below -170, move it back to the top at a random x."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "update"
+      },
+      "stack": [
+        {
+          "type": "scene_change",
+          "fields": {
+            "PROPERTY": "y"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_self"
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "-5"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "controls_if",
+          "inputs": {
+            "IF0": {
+              "block": {
+                "type": "logic_compare",
+                "fields": {
+                  "OP": "LT"
+                },
+                "inputs": {
+                  "A": {
+                    "block": {
+                      "type": "scene_get",
+                      "fields": {
+                        "PROPERTY": "y"
+                      },
+                      "inputs": {
+                        "SPRITE": {
+                          "block": {
+                            "type": "scene_self"
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "B": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "-170"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "DO0": {
+              "block": {
+                "type": "scene_go",
+                "inputs": {
+                  "SPRITE": {
+                    "block": {
+                      "type": "scene_self"
+                    }
+                  },
+                  "X": {
+                    "block": {
+                      "type": "math_random_int",
+                      "inputs": {
+                        "FROM": {
+                          "shadow": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "-220"
+                            }
+                          }
+                        },
+                        "TO": {
+                          "shadow": {
+                            "type": "py_number",
+                            "fields": {
+                              "VALUE": "220"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  },
+                  "Y": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "170"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "fall-down.webm",
+  "tryNext": [
+    "spawn-clones",
+    "lives"
+  ]
+}

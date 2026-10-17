@@ -3,6 +3,7 @@ import { readFile, writeFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { strFromU8 } from 'fflate';
 import { exported, isolated, key, openProject, run } from './playable-support';
+import { reveal } from './shell';
 
 test('an exported input game runs offline on its own server, asks, watches, wins by touch and replays', async ({page,browser},info) => {
   const project = JSON.parse(await readFile('src/scene/input-example.json','utf8'));
@@ -37,7 +38,7 @@ test('an exported input game runs offline on its own server, asks, watches, wins
     expect(play.blocked).toEqual([]); expect(play.errors).toEqual([]);
   } finally { await play.close(); }
   // The captured editable project still reopens through the normal migration/validation path.
-  await page.locator('#example').click(); await page.locator('#project-file').setInputFiles({name:'captured.json',mimeType:'application/json',buffer:Buffer.from(files['project.python-blocks.json'])});
+  await (await reveal(page, '#example')).click(); await page.locator('#project-file').setInputFiles({name:'captured.json',mimeType:'application/json',buffer:Buffer.from(files['project.python-blocks.json'])});
   await expect(page.locator('#watch-values')).toContainText(project.workspace.pythonScene.sprites[0].name + ' · x');
 });
 
@@ -130,16 +131,16 @@ test('export capture survives later edits; cancellation and damaged runtime file
   let release!: () => void; const held = new Promise<void>(resolve => { release = resolve; });
   await page.route('**/player/bundle.json',async route => { await held; await route.continue(); });
   const pending = exported(page); await expect(page.locator('#export-cancel')).toBeVisible();
-  await page.locator('#example').click(); release(); const files = await pending;
+  await (await reveal(page, '#example')).click(); release(); const files = await pending;
   const captured = JSON.parse(strFromU8(files['project.python-blocks.json'])); expect(captured.workspace.pythonScene.sprites.length).toBeGreaterThan(0);
   expect(strFromU8(files['program.py'])).not.toBe(await page.locator('#python').textContent());
   await page.unroute('**/player/bundle.json');
   let cancelRelease!: () => void; const cancelled = new Promise<void>(resolve => { cancelRelease = resolve; });
   await page.route('**/player/bundle.json',async route => { await cancelled; await route.continue().catch(() => {}); });
-  const before = await page.locator('#python').textContent(); await page.locator('#export-playable').click(); await page.locator('#export-cancel').click();
+  const before = await page.locator('#python').textContent(); await (await reveal(page, '#export-playable')).click(); await page.locator('#export-cancel').click();
   await expect(page.locator('#export-state')).toHaveText('Export cancelled.'); await expect(page.locator('#export-playable')).toBeEnabled(); cancelRelease(); await page.unroute('**/player/bundle.json');
   await page.route('**/player/pyodide/pyodide.mjs',route => route.fulfill({status:200,body:'broken'}));
-  await page.locator('#export-playable').click(); await expect(page.locator('#export-state')).toContainText('changed or is incomplete');
+  await (await reveal(page, '#export-playable')).click(); await expect(page.locator('#export-state')).toContainText('changed or is incomplete');
   await expect(page.locator('#export-playable')).toBeEnabled(); expect(await page.locator('#python').textContent()).toBe(before);
   await page.unroute('**/player/pyodide/pyodide.mjs'); await exported(page); await expect(page.locator('#export-state')).toContainText('Playable ZIP saved');
 });

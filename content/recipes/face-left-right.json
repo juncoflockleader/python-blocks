@@ -1,0 +1,190 @@
+{
+  "id": "face-left-right",
+  "title": "Face left and right",
+  "group": "look",
+  "level": "starter",
+  "concepts": [
+    "sprite",
+    "input",
+    "coordinates"
+  ],
+  "phrases": [
+    "face left and right",
+    "turn around when going left",
+    "flip my sprite",
+    "look the way I walk",
+    "point left"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Let the sprite flip only left and right, so it never walks upside down."
+    },
+    {
+      "say": "The left arrow points it to 180° and moves left; the right arrow points it to 0° and moves right."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "scene_rotation",
+          "fields": {
+            "STYLE": "left-right"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "handler": {
+        "kind": "key",
+        "key": "ArrowLeft"
+      },
+      "stack": [
+        {
+          "type": "scene_set",
+          "fields": {
+            "PROPERTY": "direction"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "180"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_change",
+          "fields": {
+            "PROPERTY": "x"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "-12"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
+    {
+      "handler": {
+        "kind": "key",
+        "key": "ArrowRight"
+      },
+      "stack": [
+        {
+          "type": "scene_set",
+          "fields": {
+            "PROPERTY": "direction"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "0"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_change",
+          "fields": {
+            "PROPERTY": "x"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "12"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "face-left-right.webm",
+  "demo": [
+    {
+      "key": "ArrowLeft",
+      "ms": 60
+    },
+    {
+      "wait": 300
+    },
+    {
+      "key": "ArrowLeft",
+      "ms": 60
+    },
+    {
+      "wait": 300
+    },
+    {
+      "key": "ArrowRight",
+      "ms": 60
+    }
+  ],
+  "tryNext": [
+    "walk-animation"
+  ]
+}

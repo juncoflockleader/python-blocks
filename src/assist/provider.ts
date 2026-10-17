@@ -1,7 +1,7 @@
-import { checkGuidance, instructions, responseSchema, type Guidance } from './catalog';
+import { checkGuidance, instructionsFor, responseSchemaFor, type Guidance, type IdeaRef } from './catalog';
 
 export interface SharedContext { python?: string; blocks?: string; diagnostics?: string }
-export interface HelpRequest { mode: 'explain' | 'predict' | 'debug'; question: string; context: SharedContext }
+export interface HelpRequest { mode: 'idea' | 'explain' | 'predict' | 'debug'; question: string; context: SharedContext }
 export interface Usage { input: number; output: number }
 export interface HelpResult { guidance: Guidance; usage: Usage | null }
 export const ENDPOINT = 'https://api.openai.com/v1/responses';
@@ -12,7 +12,7 @@ export function validateRequest(request: HelpRequest, key: string) {
   const text = JSON.stringify(request);
   if (Object.values(request.context).join('').length > MAX_CONTEXT) throw new Error('Selected context exceeds 12,000 characters. Share a smaller Python excerpt or fewer items.');
   if ((key && text.includes(key)) || /\bsk-[A-Za-z0-9_-]{12,}/.test(text)) throw new Error('The selected text appears to contain an API key. Remove it before sharing.');
-  if (!['explain', 'predict', 'debug'].includes(request.mode)) throw new Error('Choose a supported help mode.');
+  if (!['idea', 'explain', 'predict', 'debug'].includes(request.mode)) throw new Error('Choose a supported help mode.');
 }
 
 async function boundedJson(response: Response): Promise<any> {
@@ -32,7 +32,7 @@ async function boundedJson(response: Response): Promise<any> {
   catch { throw new Error('The provider returned an unreadable response. Nothing was shown.'); }
 }
 
-export async function requestHelp(key: string, model: string, request: HelpRequest, signal: AbortSignal, fetcher = fetch): Promise<HelpResult> {
+export async function requestHelp(key: string, model: string, request: HelpRequest, signal: AbortSignal, fetcher = fetch, ideas: readonly IdeaRef[] = []): Promise<HelpResult> {
   validateRequest(request, key);
   signal.throwIfAborted();
   if (!key || key.length > 512 || /\s/.test(key)) throw new Error('Enter a valid API key.');
@@ -41,9 +41,9 @@ export async function requestHelp(key: string, model: string, request: HelpReque
   try {
     response = await fetcher(ENDPOINT, { method: 'POST', signal, credentials: 'omit', redirect: 'error', referrerPolicy: 'no-referrer',
       headers: { 'Authorization': `Bearer ${key}`, 'Content-Type': 'application/json' },
-      body: JSON.stringify({ model, store: false, stream: false, max_output_tokens: 400, instructions,
+      body: JSON.stringify({ model, store: false, stream: false, max_output_tokens: 400, instructions: instructionsFor(ideas),
         input: [{ role: 'user', content: JSON.stringify(request) }],
-        text: { format: { type: 'json_schema', name: 'learner_guidance', strict: true, schema: responseSchema } },
+        text: { format: { type: 'json_schema', name: 'learner_guidance', strict: true, schema: responseSchemaFor(ideas) } },
       }),
     });
   } catch { signal.throwIfAborted(); throw new Error('Could not reach OpenAI. Check your connection and browser access, then try again.'); }
@@ -70,7 +70,7 @@ export async function requestHelp(key: string, model: string, request: HelpReque
   let parsed: unknown;
   try { parsed = JSON.parse(messages[0].content[0].text); }
   catch { throw new Error('The provider returned unsupported guidance. Nothing was shown.'); }
-  const guidance = checkGuidance(parsed, request.context.python ? request.context.python.split('\n').length : 0);
+  const guidance = checkGuidance(parsed, request.context.python ? request.context.python.split('\n').length : 0, ideas);
   const input = body.usage?.input_tokens, output = body.usage?.output_tokens;
   const usage = [input, output].every(n => Number.isSafeInteger(n) && n >= 0 && n < 1e8) ? { input, output } : null;
   return { guidance, usage };

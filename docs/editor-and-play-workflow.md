@@ -1,10 +1,10 @@
 # Editor navigation, watchers and large-stage play
 
-This increment addresses D12 in the [2D parity plan](2d-parity-plan.md). It builds on the existing artwork, world, sound, input and mapped-error tools. Saved authoring data remains separate from runtime output.
+This increment addresses D12 in the [2D parity plan](2d-parity-plan.md). Since the one-screen editor (Track A of the [learner experience plan](learner-experience-plan.md#210-implementation-record)), the sprite browser is the tray under the stage, the inspector is the **Sprite** tab plus its **More settings** sheet, and watch readouts appear in the **Output** tab. It builds on the existing artwork, world, sound, input and mapped-error tools. Saved authoring data remains separate from runtime output.
 
 ## Find blocks and sprites
 
-The former long Sprites palette is split into smaller categories:
+The former long Sprites palette is split into smaller categories (the Pro level shows them all; Starter and Builder group them, see [levels](learner-experience-plan.md#25-progressive-disclosure-through-levels)):
 
 | Category | Contents |
 | --- | --- |
@@ -19,15 +19,17 @@ The former long Sprites palette is split into smaller categories:
 
 Sprite inputs in newly opened palettes default to the selected authored sprite. Object/world reference blocks use dropdowns, so a large project does not create dozens of duplicate palette entries. Every existing block remains supported; saved programs do not change during palette navigation.
 
-The scene inspector includes a thumbnail browser. **Find sprite** filters by name, kind or world. Cards and the existing Sprite dropdown select the same stable object. **Edit costume** opens that sprite's current artwork, even if the artwork editor previously showed a backdrop or another costume. An unfinished artwork draft is preserved with an explanatory message; selecting another sprite does not discard it.
+The sprite tray shows a thumbnail for every sprite. **Find sprite** in the Sprite tab filters it by name, kind or world. Cards and the existing Sprite dropdown select the same stable object. **Edit costume** opens that sprite's current artwork, even if the artwork editor previously showed a backdrop or another costume. An unfinished artwork draft is preserved with an explanatory message; selecting another sprite does not discard it.
 
 **Starting world** changes the authored starting world and participates in Undo/save. **Find on stage** switches to a selected sprite's owning world if necessary, then temporarily centers the camera on it within map bounds. World selection is saved; the framing itself does not change the saved camera profile. Reset stage or another scene refresh restores that profile. The operation never changes sprite coordinates. Global sprites can be framed in the current world.
 
-**Scripts for sprite** lists its direct handlers, matching kind handlers and shared project handlers. **Go to script** highlights and centers the selected handler in the blocks workspace. Existing Events tools still create/edit handler ownership and order. The scene inspector scrolls independently and the blocks workspace has a bounded height, keeping controls usable as projects and library tools grow.
+**Scripts for sprite** lists its direct handlers, matching kind handlers and shared project handlers. **Go to script** highlights and centers the selected handler in the blocks workspace. Existing Events tools still create/edit handler ownership and order. The Sprite tab scrolls independently of the workspace, keeping controls usable as projects and library tools grow.
+
+The workspace corner also provides **Find blocks** for the current level's palette and the current project. **Debug code** adds real Python pause/step controls and local/global values. See [block search and debugging](debugging-and-search.md).
 
 ## Watch live values
 
-Open **Watch sprite values**, choose an authored sprite and a property, and select **Add watcher**. Supported properties are x, y, direction, size, visibility, costume ID, kind, layer, horizontal/vertical velocity, grounded state, and a named data key. Up to 12 watches can be pinned. Remove a watcher in the same panel; both addition and removal participate in project Undo. Watch definitions save with the project, preserve sprite IDs across rename and are included in captured source exports.
+Open **Watch sprite values** (Sprite tab → More settings, Builder and Pro levels), choose an authored sprite and a property, and select **Add watcher**. Supported properties are x, y, direction, size, visibility, costume ID, kind, layer, horizontal/vertical velocity, grounded state, and a named data key. Up to 12 watches can be pinned. Remove a watcher in the same panel; both addition and removal participate in project Undo. Watch definitions save with the project, preserve sprite IDs across rename and are included in captured source exports.
 
 | Phase | Display |
 | --- | --- |
@@ -44,6 +46,8 @@ Watch outputs use literal text, wrap long previews and avoid announcing ten upda
 ## Play on a larger stage
 
 **Large stage** opens a modal play view containing the existing canvas, HUD/results, touch controller, questions, watches, dialogue and audio controls. It moves those same live elements, preserving the worker and its state. Logical coordinates remain 480 × 320; pointer input scales to the displayed rectangle and still accounts for the world camera.
+
+On a touch screen, Run opens this view by itself whenever the program listens for keys (key handlers, key sensing or an arrow-key controller), because the on-screen controller docks under the stage here instead of covering the small editor stage; it is hidden again when the run ends. The stage is sized so the header, stage, controller and help line fit the viewport without scrolling.
 
 The play header provides Run code, Stop and **Return to editor**. Keyboard focus remains in the modal. Escape on the stage returns to the editor; Escape inside a question first cancels that question, following its input contract. Entering/leaving the view releases held input to prevent stuck movement. Closing it restores the elements to their previous editor locations and returns focus to Large stage. Run and captured **Play again** retain their existing distinction.
 

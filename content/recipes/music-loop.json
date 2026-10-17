@@ -1,0 +1,178 @@
+{
+  "id": "music-loop",
+  "title": "Background music loop",
+  "group": "sound",
+  "level": "starter",
+  "concepts": [
+    "sound",
+    "loop"
+  ],
+  "phrases": [
+    "background music",
+    "music loop",
+    "play a song",
+    "music that keeps playing",
+    "theme tune"
+  ],
+  "steps": [
+    {
+      "say": "When the game starts, repeat forever: play a short tune."
+    },
+    {
+      "say": "Each note waits for its beats, so the loop keeps time."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "controls_whileUntil",
+          "fields": {
+            "MODE": "WHILE"
+          },
+          "inputs": {
+            "BOOL": {
+              "shadow": {
+                "type": "logic_boolean",
+                "fields": {
+                  "BOOL": "TRUE"
+                }
+              }
+            },
+            "DO": {
+              "block": {
+                "type": "sound_note",
+                "fields": {
+                  "INSTRUMENT": "triangle"
+                },
+                "inputs": {
+                  "NOTE": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "60"
+                      }
+                    }
+                  },
+                  "BEATS": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "0.5"
+                      }
+                    }
+                  },
+                  "OWNER": {
+                    "shadow": {
+                      "type": "py_none"
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "sound_note",
+                    "fields": {
+                      "INSTRUMENT": "triangle"
+                    },
+                    "inputs": {
+                      "NOTE": {
+                        "shadow": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "64"
+                          }
+                        }
+                      },
+                      "BEATS": {
+                        "shadow": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "0.5"
+                          }
+                        }
+                      },
+                      "OWNER": {
+                        "shadow": {
+                          "type": "py_none"
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "sound_note",
+                        "fields": {
+                          "INSTRUMENT": "triangle"
+                        },
+                        "inputs": {
+                          "NOTE": {
+                            "shadow": {
+                              "type": "py_number",
+                              "fields": {
+                                "VALUE": "67"
+                              }
+                            }
+                          },
+                          "BEATS": {
+                            "shadow": {
+                              "type": "py_number",
+                              "fields": {
+                                "VALUE": "0.5"
+                              }
+                            }
+                          },
+                          "OWNER": {
+                            "shadow": {
+                              "type": "py_none"
+                            }
+                          }
+                        },
+                        "next": {
+                          "block": {
+                            "type": "sound_note",
+                            "fields": {
+                              "INSTRUMENT": "triangle"
+                            },
+                            "inputs": {
+                              "NOTE": {
+                                "shadow": {
+                                  "type": "py_number",
+                                  "fields": {
+                                    "VALUE": "72"
+                                  }
+                                }
+                              },
+                              "BEATS": {
+                                "shadow": {
+                                  "type": "py_number",
+                                  "fields": {
+                                    "VALUE": "0.5"
+                                  }
+                                }
+                              },
+                              "OWNER": {
+                                "shadow": {
+                                  "type": "py_none"
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "music-loop.webm",
+  "tryNext": [
+    "stop-sounds"
+  ]
+}

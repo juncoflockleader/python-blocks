@@ -5,6 +5,8 @@ import inspect
 import time
 
 _current = ContextVar('sprite_behavior', default=None)
+# Longest a new sprite waits for its created handlers before moving anyway.
+STARTING_LIMIT = .25
 
 
 def current_sprite():
@@ -20,6 +22,7 @@ class Behaviors:
         self.contacts = set(); self.tile_contacts = set()
         self.overlap_targets = []
         self.signals = {}
+        self.starting = {}
         self.clock_started = False
 
     def ensure_clock(self):
@@ -56,8 +59,9 @@ class Behaviors:
                 targets = [s for s in self.scene.items.values() if matches(s) and (event != 'start' or not s.is_clone)]
             result = []
             for sprite in targets:
-                async def deliver(value, sprite=sprite):
+                async def deliver(value, sprite=sprite, starting=name == '_pb:created'):
                     if not sprite._alive: return
+                    if starting: self.started(sprite)
                     token = _current.set(sprite)
                     try: await handler(value)
                     finally: _current.reset(token)
@@ -89,7 +93,7 @@ class Behaviors:
 
     def scan_contacts(self, emit):
         current = set()
-        sprites = list(self.scene.items.values())
+        sprites = [s for s in self.scene.items.values() if not self.holding(s)]
         for sprite in sprites:
             if not any(matches(sprite) for matches in self.overlap_targets) or not sprite.visible: continue
             for other in sprites:
@@ -103,7 +107,7 @@ class Behaviors:
     def scan_tiles(self, emit=None):
         current = set()
         for sprite in self.scene.items.values():
-            if not any(matches(sprite) for matches in self.signals.get('tile:overlap', [])): continue
+            if not any(matches(sprite) for matches in self.signals.get('tile:overlap', [])) or self.holding(sprite): continue
             for tile in self.scene.worlds.overlaps(sprite):
                 key = (sprite.id, tile['column'], tile['row'], tile['costume'])
                 current.add(key)
@@ -118,7 +122,24 @@ class Behaviors:
         # Setup creations must be retained even before a matching registration.
         if self.events.state in ('setup', 'running'):
             payload = {'sprite': sprite.id, 'source': sprite.template_id, 'kind': sprite.kind, 'clone': sprite.is_clone, 'epoch': self.scene.worlds.epoch}
+            # Created handlers usually resize or restyle the new sprite first, so it
+            # holds still and stays out of contact checks until they have started.
+            handlers = sum(1 for matches in self.signals.get('created', []) if matches(sprite)) + (sum(1 for matches in self.signals.get('clone', []) if matches(sprite)) if sprite.is_clone else 0)
+            if handlers: self.starting[sprite.id] = [handlers, self.scene.worlds.epoch, time.monotonic() + STARTING_LIMIT]
             self.events._enqueue('_pb:created', payload)
 
+    def holding(self, sprite):
+        entry = self.starting.get(sprite.id)
+        if entry is None: return False
+        if entry[1] != self.scene.worlds.epoch or time.monotonic() > entry[2]: del self.starting[sprite.id]; return False
+        return True
+
+    def started(self, sprite):
+        entry = self.starting.get(sprite.id)
+        if entry is not None:
+            entry[0] -= 1
+            if entry[0] <= 0: del self.starting[sprite.id]
+
     def destroyed(self, sprite, defer_current=False):
+        self.starting.pop(sprite._state['id'], None)
         self.events._cancel_owner(sprite._state['id'], defer_current)

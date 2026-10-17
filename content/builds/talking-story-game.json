@@ -1,0 +1,294 @@
+{
+ "format": "python-blocks",
+ "formatVersion": 1,
+ "languageVersion": 19,
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "py_handler",
+     "id": "on_start_handler_block",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_start_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "bird"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Hello, Star! You shine so brightly."
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_say_for",
+          "fields": {
+           "STYLE": "say"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "star"
+             }
+            }
+           },
+           "TEXT": {
+            "shadow": {
+             "type": "text",
+             "fields": {
+              "TEXT": "Thank you! Wait until it gets dark."
+             }
+            }
+           },
+           "SECONDS": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "2"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "sound_note",
+            "fields": {
+             "INSTRUMENT": "triangle"
+            },
+            "inputs": {
+             "NOTE": {
+              "shadow": {
+               "type": "py_number",
+               "fields": {
+                "VALUE": "67"
+               }
+              }
+             },
+             "BEATS": {
+              "shadow": {
+               "type": "py_number",
+               "fields": {
+                "VALUE": "0.5"
+               }
+              }
+             },
+             "OWNER": {
+              "shadow": {
+               "type": "py_none"
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "sound_note",
+              "fields": {
+               "INSTRUMENT": "triangle"
+              },
+              "inputs": {
+               "NOTE": {
+                "shadow": {
+                 "type": "py_number",
+                 "fields": {
+                  "VALUE": "72"
+                 }
+                }
+               },
+               "BEATS": {
+                "shadow": {
+                 "type": "py_number",
+                 "fields": {
+                  "VALUE": "1"
+                 }
+                }
+               },
+               "OWNER": {
+                "shadow": {
+                 "type": "py_none"
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "scene_backdrop_set",
+                "inputs": {
+                 "BACKDROP": {
+                  "shadow": {
+                   "type": "scene_backdrop",
+                   "fields": {
+                    "BACKDROP_ID": "backdrop_night"
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_backdrop_night_handler_block",
+     "x": 480,
+     "y": 290,
+     "extraState": {
+      "functionId": "on_backdrop_night_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "think"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "bird"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Now I can shine too!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "1"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_next_costume",
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "bird"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  "pythonScene": {
+   "version": 1,
+   "background": "#fdfdf9",
+   "assets": [],
+   "sprites": [
+    {
+     "id": "bird",
+     "name": "Bird",
+     "x": -120,
+     "y": -40,
+     "direction": 0,
+     "size": 100,
+     "layer": 0,
+     "visible": true,
+     "costume": "bird",
+     "costumes": [
+      "bird",
+      "star"
+     ]
+    },
+    {
+     "id": "star",
+     "name": "Star",
+     "x": 130,
+     "y": 60,
+     "direction": 0,
+     "size": 100,
+     "layer": 0,
+     "visible": true,
+     "costume": "star"
+    }
+   ],
+   "backdrop": "backdrop_meadow"
+  },
+  "procedures": [
+   {
+    "id": "on_start_handler",
+    "name": "on_start",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_start_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "start",
+     "order": 0
+    }
+   },
+   {
+    "id": "on_backdrop_night_handler",
+    "name": "on_backdrop_night",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_backdrop_night_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "backdrop:backdrop_night",
+     "order": 1
+    }
+   }
+  ]
+ }
+}

@@ -3,7 +3,7 @@ import { validData } from './model';
 import { changeScene, sceneState } from './state';
 
 export function installDataEditor(workspace: Blockly.WorkspaceSvg, selected: () => string, editable: () => boolean) {
-  document.getElementById('scene-properties')!.insertAdjacentHTML('afterend', `<details id="scene-data"><summary>Sprite data & behavior</summary>
+  document.getElementById('sprite-settings-body')!.insertAdjacentHTML('beforeend', `<details id="scene-data"><summary>Sprite data & behavior</summary>
     <p>Each sprite has its own data dictionary. Clones start with a separate copy. Running blocks can change these values without changing the saved starting data.</p>
     <form id="data-form"><fieldset id="data-fields"><legend>Starting data</legend>
       <div class="scene-properties-grid"><label>Entry <select id="data-entry"></select></label><label>Name <input id="data-name" maxlength="100" required></label>

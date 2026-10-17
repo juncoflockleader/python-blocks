@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { unzipSync, strFromU8 } from 'fflate';
+import { reveal } from './shell';
 
 type B = { type: string; fields?: Record<string, string>; inputs?: Record<string, { block: B }>; next?: { block: B }; [key: string]: unknown };
 const b = (type: string, fields: Record<string, string> = {}, inputs: Record<string, B> = {}): B => ({ type, fields, inputs: Object.fromEntries(Object.entries(inputs).map(([k, v]) => [k, { block: v }])) });
@@ -25,15 +26,15 @@ async function position(page: Page) {
 }
 
 test('game presets run without a handler, survive Undo and export, and fit narrow screens', async ({ page }, info) => {
-  await install(page); await page.locator('#scene-motion summary').click(); await page.locator('#motion-preset').selectOption('bouncing'); await page.locator('#motion-use-preset').click();
-  await page.locator('#motion-vx').fill('170'); await page.getByRole('button', { name: 'Apply game settings', exact: true }).click(); await expect(page.locator('#python')).toContainText('_pb_scene.enable_motion()');
+  await install(page); await (await reveal(page, '#scene-motion summary')).click(); await (await reveal(page, '#motion-preset')).selectOption('bouncing'); await (await reveal(page, '#motion-use-preset')).click();
+  await (await reveal(page, '#motion-vx')).fill('170'); await (await reveal(page, page.getByRole('button', { name: 'Apply game settings', exact: true }))).click(); await expect(page.locator('#python')).toContainText('_pb_scene.enable_motion()');
   await page.getByRole('button', { name: 'Undo', exact: true }).click(); await expect(page.locator('#motion-body')).toHaveValue('off');
   await page.getByRole('button', { name: 'Redo', exact: true }).click(); await expect(page.locator('#motion-vx')).toHaveValue('170'); await page.reload();
   await run(page); await expect.poll(async () => (await position(page)).x).toBeGreaterThan(-70);
   await page.locator('#stop').click(); const stopped = await position(page); await page.waitForTimeout(100); expect(await position(page)).toEqual(stopped);
   await page.locator('#scene-reset').click(); expect(await position(page)).toEqual({ x: -100, y: 0 });
-  const download = page.waitForEvent('download'); await page.locator('#export').click(); const files = unzipSync(await readFile((await (await download).path())!)); expect(JSON.parse(strFromU8(files['scene.json'])).sprites[0].motion.vx).toBe(170);
-  await page.locator('#scene-motion summary').click(); await page.setViewportSize({ width: 390, height: 844 }); await page.locator('#scene-motion').scrollIntoViewIfNeeded();
+  const download = page.waitForEvent('download'); await (await reveal(page, '#export')).click(); const files = unzipSync(await readFile((await (await download).path())!)); expect(JSON.parse(strFromU8(files['scene.json'])).sprites[0].motion.vx).toBe(170);
+  await (await reveal(page, '#scene-motion summary')).click(); await page.setViewportSize({ width: 744, height: 1000 }); await page.locator('#scene-motion').scrollIntoViewIfNeeded();
   expect(await page.locator('#scene-motion').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true); await page.screenshot({ path: info.outputPath('game-settings-mobile.png'), fullPage: true });
   const original = await saved(page), invalid = structuredClone(original); invalid.workspace.pythonScene.sprites[0].motion.vx = 2001;
   await page.locator('#project-file').setInputFiles({ name: 'bad-motion.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(invalid)) }); await expect(page.locator('#save-state')).toContainText('Sprite motion needs'); expect((await saved(page)).workspace.pythonScene).toEqual(original.workspace.pythonScene);
@@ -43,7 +44,7 @@ test('controller focus, opposing buttons and gravity work with the stage floor',
   await install(page, p => Object.assign(p.workspace.pythonScene.sprites[0], { y: -140, motion: { body: 'moving', ay: -600, edges: 'stop', controller: 'arrows', speedX: 120, speedY: 0 } }));
   await run(page); await page.locator('#stage').focus(); await page.keyboard.down('ArrowRight'); await expect.poll(async () => (await position(page)).x).toBeGreaterThan(-65);
   await page.keyboard.down('ArrowLeft'); await expect(page.locator('#scene-live')).toContainText('vx 0'); await page.keyboard.up('ArrowLeft'); await expect(page.locator('#scene-live')).toContainText('vx 120');
-  await page.locator('#event-name').focus(); await expect(page.locator('#scene-live')).toContainText('vx 0'); const paused = await position(page); await page.waitForTimeout(120); expect(await position(page)).toEqual(paused); await page.keyboard.up('ArrowRight');
+  await (await reveal(page, '#event-name')).focus(); await expect(page.locator('#scene-live')).toContainText('vx 0'); const paused = await position(page); await page.waitForTimeout(120); expect(await position(page)).toEqual(paused); await page.keyboard.up('ArrowRight');
   expect((await position(page)).y).toBe(-140); await page.locator('#stop').click(); await run(page); await expect(page.locator('#scene-live')).toContainText('vx 0');
 });
 
@@ -71,7 +72,7 @@ test('kind handlers configure fresh projectiles and lifetime cancels their waiti
 });
 
 test('kind handler forms persist metadata and reject conflicting or invalid imports', async ({ page }, info) => {
-  await install(page); await page.locator('#events-manage').click(); await page.locator('#handler-name').fill('new_shot'); await page.locator('#handler-sprite').selectOption(':kind');
+  await install(page); await (await reveal(page, '#events-manage')).click(); await page.locator('#handler-name').fill('new_shot'); await page.locator('#handler-sprite').selectOption(':kind');
   await page.locator('#handler-kind').fill('projectile'); await page.locator('#handler-input-source').selectOption('created'); await page.screenshot({ path: info.outputPath('kind-handler-editor.png'), fullPage: true });
   await page.locator('#handler-apply').click(); await expect(page.locator('#python')).toContainText('_pb_scene.on_kind("projectile", "created", new_shot)');
   await page.getByRole('button', { name: 'Undo', exact: true }).click(); await expect(page.locator('#python')).not.toContainText('new_shot'); await page.getByRole('button', { name: 'Redo', exact: true }).click(); await page.reload();
@@ -88,7 +89,7 @@ test('invalid motion reports its block and an old project still runs after recov
 });
 
 test('the editable platformer can shoot its target and jump all the way to the goal', async ({ page }, info) => {
-  await page.goto('/'); await page.locator('#scene-game-example').click(); await run(page); await expect(page.locator('#output')).toContainText('Arrow keys move');
+  await page.goto('/'); await (await reveal(page, '#scene-game-example')).click(); await run(page); await expect(page.locator('#output')).toContainText('Arrow keys move');
   await key(page, 'f'); await expect(page.locator('#output')).toContainText('Target hit!');
   async function jumpTo(x: number, floorY: number) {
     await page.locator('#stage').focus(); await page.keyboard.down('ArrowRight'); await page.keyboard.press('Space');

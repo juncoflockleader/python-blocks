@@ -1,0 +1,100 @@
+{
+  "id": "walk-animation",
+  "title": "Change costume when I move",
+  "group": "look",
+  "level": "starter",
+  "concepts": [
+    "sprite",
+    "input"
+  ],
+  "phrases": [
+    "walk animation",
+    "animate when moving",
+    "change costume when I move",
+    "legs move when walking",
+    "switch pictures as it walks"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Each time the right arrow is pressed, move a little and show the next costume."
+    },
+    {
+      "say": "Paint more frames in Artwork & frames to see the animation."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "key",
+        "key": "ArrowRight"
+      },
+      "stack": [
+        {
+          "type": "scene_change",
+          "fields": {
+            "PROPERTY": "x"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "12"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_next_costume",
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "walk-animation.webm",
+  "demo": [
+    {
+      "key": "ArrowRight",
+      "ms": 60
+    },
+    {
+      "wait": 250
+    },
+    {
+      "key": "ArrowRight",
+      "ms": 60
+    },
+    {
+      "wait": 250
+    },
+    {
+      "key": "ArrowRight",
+      "ms": 60
+    }
+  ],
+  "tryNext": [
+    "face-left-right",
+    "arrow-keys"
+  ]
+}

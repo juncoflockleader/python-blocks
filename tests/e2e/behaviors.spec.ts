@@ -1,5 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
+import { reveal } from './shell';
 
 type B = { type: string; fields?: Record<string, string>; inputs?: Record<string, { block: B }>; next?: { block: B }; [key: string]: unknown };
 const b = (type: string, fields: Record<string, string> = {}, inputs: Record<string, B> = {}): B => ({ type, fields, inputs: Object.fromEntries(Object.entries(inputs).map(([k, v]) => [k, { block: v }])) });
@@ -95,31 +96,31 @@ test('pixel contact and click targeting ignore transparent holes and honor ghost
 
 test('saved sprite data supports types, rename, Undo, reload and malformed import recovery', async ({ page }, info) => {
   await install(page, [['start', 'player', print(get())]]);
-  await page.locator('#scene-data summary').click(); await page.locator('#data-entry').selectOption('count'); await page.locator('#data-value').fill('7'); await page.getByRole('button', { name: 'Save entry', exact: true }).click();
+  await (await reveal(page, '#scene-data summary')).click(); await (await reveal(page, '#data-entry')).selectOption('count'); await (await reveal(page, '#data-value')).fill('7'); await (await reveal(page, page.getByRole('button', { name: 'Save entry', exact: true }))).click();
   await page.getByRole('button', { name: 'Undo', exact: true }).click(); await expect(page.locator('#data-value')).toHaveValue('1');
   await page.getByRole('button', { name: 'Redo', exact: true }).click(); await expect(page.locator('#data-value')).toHaveValue('7');
   for (const [name, type, value] of [['note', 'text', 'hello'], ['ready', 'boolean', 'true'], ['items', 'list', '[1, 2]'], ['settings', 'dictionary', '{"speed": 3}'], ['empty', 'none', '']]) {
-    await page.locator('#data-entry').selectOption(''); await page.locator('#data-name').fill(name); await page.locator('#data-type').selectOption(type); if (type !== 'none') await page.locator('#data-value').fill(value); await page.getByRole('button', { name: 'Save entry', exact: true }).click(); await expect(page.locator('#data-error')).toBeEmpty();
+    await (await reveal(page, '#data-entry')).selectOption(''); await (await reveal(page, '#data-name')).fill(name); await (await reveal(page, '#data-type')).selectOption(type); if (type !== 'none') await (await reveal(page, '#data-value')).fill(value); await (await reveal(page, page.getByRole('button', { name: 'Save entry', exact: true }))).click(); await expect(page.locator('#data-error')).toBeEmpty();
   }
-  await page.locator('#data-entry').selectOption('note'); await page.locator('#data-name').fill('greeting'); await page.getByRole('button', { name: 'Save entry', exact: true }).click();
+  await (await reveal(page, '#data-entry')).selectOption('note'); await (await reveal(page, '#data-name')).fill('greeting'); await (await reveal(page, page.getByRole('button', { name: 'Save entry', exact: true }))).click();
   await expect.poll(async () => (await saved(page)).workspace.pythonScene.sprites[0].data).toEqual({ count: 7, greeting: 'hello', ready: true, items: [1, 2], settings: { speed: 3 }, empty: null });
-  await page.reload(); await page.locator('#scene-data summary').click(); await page.locator('#data-entry').selectOption('greeting'); await expect(page.locator('#data-value')).toHaveValue('hello');
-  await page.locator('#data-type').selectOption('boolean'); await page.locator('#data-value').fill('"true"'); await page.getByRole('button', { name: 'Save entry', exact: true }).click(); await expect(page.locator('#data-error')).toContainText('does not match');
+  await page.reload(); await (await reveal(page, '#scene-data summary')).click(); await (await reveal(page, '#data-entry')).selectOption('greeting'); await expect(page.locator('#data-value')).toHaveValue('hello');
+  await (await reveal(page, '#data-type')).selectOption('boolean'); await (await reveal(page, '#data-value')).fill('"true"'); await (await reveal(page, page.getByRole('button', { name: 'Save entry', exact: true }))).click(); await expect(page.locator('#data-error')).toContainText('does not match');
   const before = await saved(page), invalid = structuredClone(before); invalid.workspace.pythonScene.sprites[0].data = { huge: 'x'.repeat(20000) };
   await page.locator('#project-file').setInputFiles({ name: 'bad-data.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(invalid)) });
   await expect(page.locator('#save-state')).toContainText('Sprite starting data'); expect((await saved(page)).workspace.pythonScene).toEqual(before.workspace.pythonScene);
-  await page.setViewportSize({ width: 390, height: 844 }); await page.locator('#scene-data').scrollIntoViewIfNeeded(); expect(await page.locator('#scene-data').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
+  await page.setViewportSize({ width: 744, height: 1000 }); await page.locator('#scene-data').scrollIntoViewIfNeeded(); expect(await page.locator('#scene-data').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
   await page.screenshot({ path: info.outputPath('sprite-data-mobile.png'), fullPage: true });
 });
 
 test('the behavior editor attaches to the selected sprite and preserves identity through rename and Undo', async ({ page }, info) => {
-  await install(page, [['start', null, print('ready')]]); await page.locator('#scene-data summary').click(); await page.locator('#data-behavior').click();
+  await install(page, [['start', null, print('ready')]]); await (await reveal(page, '#scene-data summary')).click(); await (await reveal(page, '#data-behavior')).click();
   await expect(page.locator('#handler-sprite')).toHaveValue('player'); await page.locator('#handler-name').fill('move_each_update'); await page.locator('#handler-input-source').selectOption('update');
   await page.screenshot({ path: info.outputPath('sprite-behavior-editor.png'), fullPage: true });
   await page.locator('#handler-apply').click(); await expect(page.locator('#python')).toContainText('_pb_scene.on("player", "update", move_each_update)');
-  await page.locator('#scene-name').fill('My bird'); await page.getByRole('button', { name: 'Apply sprite', exact: true }).click(); await page.locator('#events-manage').click();
+  await (await reveal(page, '#scene-name')).fill('My bird'); await page.keyboard.press('Enter'); await (await reveal(page, '#events-manage')).click();
   await expect(page.locator('#handler-order')).toContainText('My bird'); await page.locator('#events-close').click();
-  await page.locator('#scene-delete').click(); await expect(page.locator('#diagnostics')).toContainText('missing authored sprite'); await expect(page.locator('#run')).toBeDisabled();
+  await (await reveal(page, '#scene-delete')).click(); await expect(page.locator('#diagnostics')).toContainText('missing authored sprite'); await expect(page.locator('#run')).toBeDisabled();
   await page.getByRole('button', { name: 'Undo', exact: true }).click(); await expect(page.locator('#run')).toBeEnabled();
   await page.reload(); await expect(page.locator('#python')).toContainText('_pb_scene.on("player", "update", move_each_update)');
 });
@@ -133,7 +134,7 @@ test('behavior errors point to the failing data block after an await', async ({ 
 });
 
 test('behavior example runs independent clones and restores authored state on reset', async ({ page }, info) => {
-  const errors: string[] = []; page.on('pageerror', e => errors.push(e.message)); await page.goto('/'); await page.locator('#scene-behavior-example').click(); await run(page);
+  const errors: string[] = []; page.on('pageerror', e => errors.push(e.message)); await page.goto('/'); await (await reveal(page, '#scene-behavior-example')).click(); await run(page);
   await expect(page.locator('#output')).toContainText('Space adds a bird'); await expect(page.locator('#scene-live')).not.toContainText('x -100, y 0');
   await key(page, 'Space'); await page.screenshot({ path: info.outputPath('behavior-example.png'), fullPage: true });
   await page.locator('#stop').click(); await page.locator('#scene-reset').click(); await expect(page.locator('#scene-live')).toContainText('x -100, y 0');

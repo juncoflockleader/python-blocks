@@ -1,9 +1,10 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { unzipSync, strFromU8 } from 'fflate';
+import { reveal } from './shell';
 
 async function saved(page: Page) { return page.evaluate(() => JSON.parse(localStorage.getItem('python-blocks.project.v1')!)); }
-async function open(page: Page) { await page.goto('/'); await page.locator('#project-file').setInputFiles('tests/fixtures/scene/sequential.json'); await page.locator('#scene-art').click(); await expect(page.locator('#art-name')).toHaveValue('Bird'); }
+async function open(page: Page) { await page.goto('/'); await page.locator('#project-file').setInputFiles('tests/fixtures/scene/sequential.json'); await (await reveal(page, '#scene-art')).click(); await expect(page.locator('#art-name')).toHaveValue('Bird'); }
 async function point(page: Page, x: number, y: number) { const c = page.locator('#art-canvas'); await c.scrollIntoViewIfNeeded(); const r = (await c.boundingBox())!, size = await c.evaluate(c => ({ width: (c as HTMLCanvasElement).width, height: (c as HTMLCanvasElement).height })); return { x: r.x + (x + .5) / size.width * r.width, y: r.y + (y + .5) / size.height * r.height }; }
 async function draw(page: Page, tool: string, x: number, y: number, ex = x, ey = y) {
   await page.locator('#art-tool').selectOption(tool); const start = await point(page, x, y), end = await point(page, ex, ey);
@@ -44,7 +45,7 @@ test('paints original artwork with stroke Undo, persists pixels and manages stab
   await page.locator('#art-duplicate').click(); await expect(page.locator('#art-name')).toHaveValue('Red actor waving copy');
   await page.locator('#art-delete').click(); await page.locator('#art-project-undo').click();
   await expect.poll(async () => (await saved(page)).workspace.pythonScene.assets.length).toBe(2);
-  await page.locator('#art-close').click(); await page.reload(); await page.locator('#scene-art').click();
+  await page.locator('#art-close').click(); await page.reload(); await (await reveal(page, '#scene-art')).click();
   await page.locator('#art-assets').selectOption(original.id); await expect(page.locator('#art-name')).toHaveValue('Red actor waving'); expect(await pixel(page, 25, 20)).toEqual([32, 64, 255, 255]);
   expect((await saved(page)).workspace.pythonScene.assets.find((a: any) => a.id === original.id).id).toBe(original.id); expect(errors).toEqual([]);
 });
@@ -73,7 +74,7 @@ test('orders painted frames, previews them and plays the saved animation in real
   await install(page, handlers(project, [['start', chain(b('scene_play_animation', {}, { SPRITE: ref() }), print(b('scene_get', { PROPERTY: 'costume_id' }, { SPRITE: ref() })))]]));
   await page.locator('#run').click(); await expect(page.locator('#output')).toHaveText(redId + '\n', { timeout: 60_000 });
   await expect.poll(() => page.locator('#stage').evaluate(c => Array.from((c as HTMLCanvasElement).getContext('2d')!.getImageData(140, 160, 1, 1).data))).toEqual([255, 0, 0, 255]); await page.locator('#stop').click();
-  const downloading = page.waitForEvent('download'); await page.locator('#export').click(); const files = unzipSync(await readFile((await (await downloading).path())!)); expect(JSON.parse(strFromU8(files['scene.json'])).sprites[0].costumes).toEqual(actor.costumes);
+  const downloading = page.waitForEvent('download'); await (await reveal(page, '#export')).click(); const files = unzipSync(await readFile((await (await downloading).path())!)); expect(JSON.parse(strFromU8(files['scene.json'])).sprites[0].costumes).toEqual(actor.costumes);
 });
 
 test('paints a backdrop, switches it with events and restores the authored backdrop on restart', async ({ page }, info) => {
@@ -95,13 +96,13 @@ test('paints a backdrop, switches it with events and restores the authored backd
 test('retains drafts across closing and protects them from project changes and asset navigation', async ({ page }) => {
   await open(page); await page.locator('#art-new').click(); await draw(page, 'rectangle', 5, 5, 15, 15); await page.locator('#art-assets').selectOption('star');
   await expect(page.locator('#art-error')).toContainText('Save artwork or discard'); await page.locator('#art-close').click();
-  await page.locator('#scene-x').fill('30'); await page.getByRole('button', { name: 'Apply sprite', exact: true }).click(); await page.locator('#scene-art').click();
+  await (await reveal(page, '#scene-x')).fill('30'); await page.keyboard.press('Enter'); await (await reveal(page, '#scene-art')).click();
   expect(await pixel(page, 10, 10)).toEqual([71, 139, 148, 255]); await page.locator('#art-save').click(); await expect(page.locator('#art-error')).toContainText('project changed');
   await page.locator('#art-save-copy').click(); await expect(page.locator('#art-error')).toBeEmpty(); await expect(page.locator('#art-state')).toContainText('Artwork saved');
 });
 
 test('artwork tools fit a narrow viewport and retain original drawing pixels', async ({ page }, info) => {
-  await page.setViewportSize({ width: 390, height: 844 }); await open(page); await paintFrame(page, 'Tiny friend', '#20abef');
+  await page.setViewportSize({ width: 744, height: 1000 }); await open(page); await paintFrame(page, 'Tiny friend', '#20abef');
   expect(await page.locator('#art-dialog').evaluate(el => el.scrollWidth <= el.clientWidth)).toBe(true);
   await page.locator('#art-canvas').scrollIntoViewIfNeeded(); await page.screenshot({ path: info.outputPath('artwork-mobile.png'), fullPage: true });
   expect(await pixel(page, 25, 25)).toEqual([32, 171, 239, 255]);
@@ -124,12 +125,12 @@ test('previous-frame overlay remains a preview and never changes saved pixels', 
   expect(await pixel(page, 25, 25)).toEqual([0, 0, 0, 0]); await page.locator('#art-onion').check();
   await expect.poll(() => pixel(page, 25, 25)).toEqual([255, 0, 0, 64]); await page.locator('#art-save').click();
   await page.locator('#art-onion').uncheck(); expect(await pixel(page, 25, 25)).toEqual([0, 0, 0, 0]);
-  await page.locator('#art-close').click(); await page.reload(); await page.locator('#scene-art').click();
+  await page.locator('#art-close').click(); await page.reload(); await (await reveal(page, '#scene-art')).click();
   expect(await pixel(page, 25, 25)).toEqual([0, 0, 0, 0]); expect(await pixel(page, 20, 20)).toEqual([0, 0, 255, 255]);
 });
 
 test('the story example exposes backdrop events and editable frame sequences', async ({ page }, info) => {
-  await page.goto('/'); await page.locator('#scene-story-example').click(); await page.locator('#scene-art').click(); await expect(page.locator('#art-frames option')).toHaveCount(4); await page.locator('#art-close').click();
+  await page.goto('/'); await (await reveal(page, '#scene-story-example')).click(); await (await reveal(page, '#scene-art')).click(); await expect(page.locator('#art-frames option')).toHaveCount(4); await page.locator('#art-close').click();
   await page.locator('#run').click(); await expect(page.locator('#status')).toHaveText('Event session running', { timeout: 60_000 });
   await expect(page.locator('#stage')).toHaveAttribute('data-backdrop', 'backdrop_meadow'); await page.locator('#stage').focus(); await page.keyboard.press('Space'); await expect(page.locator('#stage-dialogue')).toContainText('Friend thinks: Night');
   await page.screenshot({ path: info.outputPath('story-example.png'), fullPage: true }); await page.locator('#stop').click();

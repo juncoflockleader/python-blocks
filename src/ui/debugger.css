@@ -1,0 +1,17 @@
+.debug-panel { margin: 18px 0; padding: 18px; border: 1px solid #c6d4bd; border-radius: 12px; background: #f6f9f1; }
+.debug-heading { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
+.debug-heading h2 { font-size: 1.1rem; margin: 0; }
+.debug-controls { display: flex; flex-wrap: wrap; gap: 6px; }
+.debug-layout { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: 20px; }
+.debug-layout select { display: block; width: 100%; padding: 8px; font: inherit; }
+.debug-layout h3 { font-size: .9rem; margin: 0 0 8px; }
+#debug-source { margin: 0; padding: 8px 0; max-height: 330px; overflow: auto; background: #fff; border: 1px solid #d6dece; font-size: .82rem; }
+.debug-source-line { display: block; min-width: max-content; padding: 3px 12px 3px 0; }
+.debug-current-line { background: #e6f2c4; box-shadow: inset 4px 0 #4e7d2d; font-weight: bold; }
+.debug-line-number { display: inline-block; width: 4em; padding-right: 1em; text-align: right; color: #647259; user-select: none; }
+.debug-layout dl { display: grid; grid-template-columns: minmax(65px, 1fr) minmax(0, 2fr); font: .82rem ui-monospace, monospace; max-height: 260px; overflow: auto; }
+.debug-layout dt, .debug-layout dd { margin: 0; padding: 6px; border-bottom: 1px solid #dce4d6; overflow-wrap: anywhere; white-space: pre-wrap; }
+.debug-layout dd:only-child { grid-column: 1 / -1; }
+.debug-note, #debug-location, #debug-status, #debug-stale { font-size: .82rem; }
+#debug-stale { border-left: 3px solid #b8872d; padding: 8px; background: #fff6df; }
+@media (max-width: 700px) { .debug-layout { grid-template-columns: minmax(0, 1fr); } .debug-panel { padding: 12px; } }

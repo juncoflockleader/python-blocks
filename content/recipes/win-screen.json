@@ -1,0 +1,105 @@
+{
+  "id": "win-screen",
+  "title": "Win screen",
+  "group": "game",
+  "level": "starter",
+  "concepts": [
+    "game",
+    "condition",
+    "wait"
+  ],
+  "phrases": [
+    "win screen",
+    "you win",
+    "win the game",
+    "level complete",
+    "show a victory message"
+  ],
+  "steps": [
+    {
+      "say": "When the game starts, wait until the score reaches 5, checking ten times a second."
+    },
+    {
+      "say": "Then finish the game as a win with your own message. It works however you score points."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "controls_whileUntil",
+          "fields": {
+            "MODE": "UNTIL"
+          },
+          "inputs": {
+            "BOOL": {
+              "block": {
+                "type": "logic_compare",
+                "fields": {
+                  "OP": "EQ"
+                },
+                "inputs": {
+                  "A": {
+                    "block": {
+                      "type": "game_get",
+                      "fields": {
+                        "FIELD": "score"
+                      }
+                    }
+                  },
+                  "B": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "5"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "DO": {
+              "block": {
+                "type": "py_wait",
+                "inputs": {
+                  "SECONDS": {
+                    "shadow": {
+                      "type": "py_number",
+                      "fields": {
+                        "VALUE": "0.1"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "game_finish",
+          "fields": {
+            "WON": "TRUE"
+          },
+          "inputs": {
+            "TEXT": {
+              "shadow": {
+                "type": "text",
+                "fields": {
+                  "TEXT": "You win!"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "win-screen.webm",
+  "tryNext": [
+    "countdown",
+    "next-level"
+  ]
+}

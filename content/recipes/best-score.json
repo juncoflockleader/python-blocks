@@ -1,0 +1,141 @@
+{
+  "id": "best-score",
+  "title": "Remember the best score",
+  "group": "data",
+  "level": "builder",
+  "concepts": [
+    "assignment",
+    "condition",
+    "game"
+  ],
+  "phrases": [
+    "remember the best score",
+    "high score",
+    "best score",
+    "record",
+    "save my top score"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "Make a variable called best."
+    },
+    {
+      "say": "After each point, if the score is bigger than best, set best to the score and show it."
+    }
+  ],
+  "variables": [
+    "best"
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "click"
+      },
+      "stack": [
+        {
+          "type": "game_change",
+          "fields": {
+            "FIELD": "score"
+          },
+          "inputs": {
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "1"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "controls_if",
+          "inputs": {
+            "IF0": {
+              "block": {
+                "type": "logic_compare",
+                "fields": {
+                  "OP": "GT"
+                },
+                "inputs": {
+                  "A": {
+                    "block": {
+                      "type": "game_get",
+                      "fields": {
+                        "FIELD": "score"
+                      }
+                    }
+                  },
+                  "B": {
+                    "block": {
+                      "type": "py_get",
+                      "fields": {
+                        "SYMBOL": "$var:best"
+                      }
+                    }
+                  }
+                }
+              }
+            },
+            "DO0": {
+              "block": {
+                "type": "py_set",
+                "fields": {
+                  "SYMBOL": "$var:best"
+                },
+                "inputs": {
+                  "VALUE": {
+                    "block": {
+                      "type": "game_get",
+                      "fields": {
+                        "FIELD": "score"
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "scene_say_for",
+                    "fields": {
+                      "STYLE": "say"
+                    },
+                    "inputs": {
+                      "SPRITE": {
+                        "block": {
+                          "type": "scene_self"
+                        }
+                      },
+                      "TEXT": {
+                        "shadow": {
+                          "type": "text",
+                          "fields": {
+                            "TEXT": "New best!"
+                          }
+                        }
+                      },
+                      "SECONDS": {
+                        "shadow": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "1"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "best-score.webm",
+  "tryNext": [
+    "count-how-many"
+  ]
+}

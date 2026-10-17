@@ -7,7 +7,7 @@ import { installPythonVariables } from './variables';
 import { signatureOf } from './functions';
 
 export function installModuleEditor(workspace: Blockly.WorkspaceSvg) {
-  document.querySelector('.blocks-panel .panel-heading')!.insertAdjacentHTML('beforeend', '<button class="button secondary" id="modules-manage">Modules</button>');
+  document.getElementById('menu-tools')!.insertAdjacentHTML('beforeend', '<button class="button secondary level-pro" id="modules-manage">Modules</button>');
   document.body.insertAdjacentHTML('beforeend', `<dialog id="modules-dialog" aria-labelledby="modules-title">
     <h2 id="modules-title">Reusable function modules</h2>
     <p>Import a saved copy of functions and their helpers. Each namespace keeps its own names. Imports stay pinned until you explicitly choose another revision.</p>

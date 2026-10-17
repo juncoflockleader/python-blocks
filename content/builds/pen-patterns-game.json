@@ -1,0 +1,129 @@
+{
+ "format": "python-blocks",
+ "formatVersion": 1,
+ "languageVersion": 19,
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "py_handler",
+     "id": "on_start_handler_block",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_start_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_repeat_ext",
+        "inputs": {
+         "TIMES": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "12"
+           }
+          }
+         },
+         "DO": {
+          "block": {
+           "type": "pen_color",
+           "fields": {
+            "COLOR": "#8066ba"
+           },
+           "next": {
+            "block": {
+             "type": "controls_repeat_ext",
+             "inputs": {
+              "TIMES": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "4"
+                }
+               }
+              },
+              "DO": {
+               "block": {
+                "type": "pen_move",
+                "inputs": {
+                 "STEPS": {
+                  "shadow": {
+                   "type": "py_number",
+                   "fields": {
+                    "VALUE": "100"
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "pen_turn",
+                  "inputs": {
+                   "DEGREES": {
+                    "shadow": {
+                     "type": "py_number",
+                     "fields": {
+                      "VALUE": "90"
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "pen_turn",
+               "inputs": {
+                "DEGREES": {
+                 "shadow": {
+                  "type": "py_number",
+                  "fields": {
+                   "VALUE": "30"
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  "pythonScene": {
+   "version": 1,
+   "background": "#fdfdf9",
+   "assets": [],
+   "sprites": []
+  },
+  "procedures": [
+   {
+    "id": "on_start_handler",
+    "name": "on_start",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_start_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "start",
+     "order": 0
+    }
+   }
+  ]
+ }
+}

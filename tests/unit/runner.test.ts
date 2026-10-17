@@ -145,3 +145,49 @@ describe('host event boundaries', () => {
     for (const name of ['', 'x'.repeat(eventLimits.eventNameLength + 1), 'start']) expect(() => encodeHostEvent(name, null)).toThrow();
   });
 });
+
+describe('debugger worker control', () => {
+  beforeEach(() => vi.stubGlobal('crossOriginIsolated', true));
+  it('uses shared controls, excludes paused time from watchdogs, and rejects input while paused', async () => {
+    const audio = {begin: vi.fn(), accept: vi.fn(), stop: vi.fn(), pause: vi.fn().mockResolvedValue(undefined)};
+    const receive = vi.fn(), runner = new PythonRunner(receive, audio);
+    runner.run('x = 1', 'events', {}, undefined, undefined, {lines: {'program.py': [1]}});
+    const worker = FakeWorker.instances[0], control = new Int32Array(worker.postMessage.mock.calls[0][0].debug.control);
+    worker.emit({type:'started'}); worker.emit({type:'ready'});
+    Atomics.store(control, 1, 1);
+    worker.emit({type:'debug-paused',snapshot:{frames:[],truncated:false}});
+    vi.advanceTimersByTime(120_000); expect(worker.terminate).not.toHaveBeenCalled();
+    expect(runner.emit('message', 'ignored')).toBe(false);
+    expect(runner.input({kind:'reset'})).toBe(false); expect(audio.pause).toHaveBeenCalledWith(true);
+    expect(await runner.debug('into')).toBe(true);
+    expect(Atomics.load(control, 0)).toBe(2); expect(Atomics.load(control, 1)).toBe(0);
+    expect(audio.pause).toHaveBeenLastCalledWith(false);
+    worker.emit({type:'debug-running'}); vi.advanceTimersByTime(eventLimits.watchdogMs);
+    expect(worker.terminate).toHaveBeenCalledOnce();
+  });
+  it('does not wake a replaced worker after audio resumption and ignores stale pauses', async () => {
+    let resume!: () => void;
+    const audio = {begin: vi.fn(), accept: vi.fn(), stop: vi.fn(), pause: (paused: boolean) => paused ? Promise.resolve() : new Promise<void>(resolve => {resume = resolve;})};
+    const receive = vi.fn(), runner = new PythonRunner(receive, audio);
+    runner.run('x = 1', 'sequential', {}, undefined, undefined, {lines:{'program.py':[1]}});
+    const old = FakeWorker.instances[0], control = new Int32Array(old.postMessage.mock.calls[0][0].debug.control);
+    Atomics.store(control,1,1); old.emit({type:'debug-paused',snapshot:{frames:[],truncated:false}});
+    const pending = runner.debug('resume'); runner.run('print(2)'); resume();
+    expect(await pending).toBe(false); expect(Atomics.load(control,1)).toBe(1);
+    receive.mockClear(); old.emit({type:'debug-paused',snapshot:{frames:[],truncated:false}}); expect(receive).not.toHaveBeenCalled();
+  });
+  it('requests pause through shared memory even when Python cannot process messages', async () => {
+    const runner = new PythonRunner(vi.fn());
+    runner.run('while True: pass', 'sequential', {}, undefined, undefined, {lines:{'program.py':[1]}});
+    const worker = FakeWorker.instances[0], control = new Int32Array(worker.postMessage.mock.calls[0][0].debug.control);
+    expect(await runner.debug('pause')).toBe(true); expect(Atomics.load(control,0)).toBe(1);
+    expect(worker.postMessage).toHaveBeenLastCalledWith({type:'debug-pause'});
+    runner.stop(); expect(await runner.debug('resume')).toBe(false);
+  });
+  it('reports unavailable isolation without creating a worker and leaves normal Run available', () => {
+    vi.stubGlobal('crossOriginIsolated', false); const receive = vi.fn(), runner = new PythonRunner(receive);
+    runner.run('x = 1', 'sequential', {}, undefined, undefined, {lines:{'program.py':[1]}});
+    expect(FakeWorker.instances).toHaveLength(0); expect(receive).toHaveBeenLastCalledWith(expect.objectContaining({type:'error'}));
+    runner.run('x = 1'); expect(FakeWorker.instances).toHaveLength(1);
+  });
+});

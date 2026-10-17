@@ -4,6 +4,7 @@ export interface AudioHost {
   begin(sounds: Sound[], complete: (id: number, error?: string) => void): void;
   accept(command: AudioCommand): void;
   stop(): void;
+  pause?(paused: boolean): Promise<void>;
 }
 interface Voice { owner: string; source: AudioBufferSourceNode; gain: GainNode; pan: StereoPannerNode }
 
@@ -16,6 +17,7 @@ export class SoundPlayer implements AudioHost {
   private buffers = new Map<string, AudioBuffer>();
   private complete: (id: number, error?: string) => void = () => {};
   private muted = false;
+  private debugPaused = false;
   onChange: () => void = () => {};
   get count() { return this.voices.size; }
   get state() { return this.context?.state ?? 'idle'; }
@@ -30,10 +32,17 @@ export class SoundPlayer implements AudioHost {
       this.master.connect(this.context.destination);
       this.context.onstatechange = () => this.onChange();
     }
-    if (this.context.state !== 'running') await this.context.resume();
+    if (!this.debugPaused && this.context.state !== 'running') await this.context.resume();
     this.onChange();
   }
   mute(value: boolean) { this.muted = value; if (this.master && this.context) this.master.gain.setTargetAtTime(value ? 0 : .5, this.context.currentTime, .005); this.onChange(); }
+  async pause(paused: boolean) {
+    this.debugPaused = paused;
+    if (!this.context) return;
+    if (paused) await this.context.suspend();
+    else await this.context.resume();
+    this.onChange();
+  }
   begin(sounds: Sound[], complete: (id: number, error?: string) => void) {
     this.stop(); this.sounds = new Map(sounds.map(s => [s.id, structuredClone(s)])); this.buffers.clear(); this.complete = complete;
   }
@@ -76,6 +85,6 @@ export class SoundPlayer implements AudioHost {
     v.source.disconnect(); v.gain.disconnect(); v.pan.disconnect();
     if (notify) this.complete(id); this.onChange();
   }
-  stop() { for (const id of this.voices.keys()) this.end(id, true, false); this.complete = () => {}; this.sounds.clear(); this.buffers.clear(); }
+  stop() { this.debugPaused = false; for (const id of this.voices.keys()) this.end(id, true, false); this.complete = () => {}; this.sounds.clear(); this.buffers.clear(); }
   dispose() { this.stop(); if (this.context) { this.context.onstatechange = null; void this.context.close(); } this.context = null; this.master = null; }
 }

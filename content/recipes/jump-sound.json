@@ -1,0 +1,146 @@
+{
+  "id": "jump-sound",
+  "title": "Make a jump sound",
+  "group": "sound",
+  "level": "starter",
+  "concepts": [
+    "sound",
+    "input"
+  ],
+  "phrases": [
+    "jump sound",
+    "boing",
+    "sound when jumping",
+    "hop with a sound",
+    "spring noise",
+    "space bar sound"
+  ],
+  "needs": {
+    "sprites": 1
+  },
+  "steps": [
+    {
+      "say": "When space is pressed, play a quick square-wave note."
+    },
+    {
+      "say": "Move up, wait a moment, and come back down."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "key",
+        "key": "Space"
+      },
+      "stack": [
+        {
+          "type": "sound_note",
+          "fields": {
+            "INSTRUMENT": "square"
+          },
+          "inputs": {
+            "NOTE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "76"
+                }
+              }
+            },
+            "BEATS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "0.25"
+                }
+              }
+            },
+            "OWNER": {
+              "shadow": {
+                "type": "py_none"
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_change",
+          "fields": {
+            "PROPERTY": "y"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "50"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_wait",
+          "inputs": {
+            "SECONDS": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "0.2"
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "scene_change",
+          "fields": {
+            "PROPERTY": "y"
+          },
+          "inputs": {
+            "SPRITE": {
+              "block": {
+                "type": "scene_sprite",
+                "fields": {
+                  "SPRITE_ID": "$sprite"
+                }
+              }
+            },
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "-50"
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "jump-sound.webm",
+  "demo": [
+    {
+      "key": "Space",
+      "ms": 60
+    },
+    {
+      "wait": 600
+    },
+    {
+      "key": "Space",
+      "ms": 60
+    }
+  ],
+  "tryNext": [
+    "jump-gravity"
+  ]
+}

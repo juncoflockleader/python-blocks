@@ -1,0 +1,264 @@
+{
+  "id": "rainbow-pen",
+  "title": "Rainbow pen",
+  "group": "draw",
+  "level": "starter",
+  "concepts": [
+    "loop",
+    "sequence"
+  ],
+  "phrases": [
+    "rainbow pen",
+    "colorful lines",
+    "change pen color",
+    "many colors",
+    "rainbow drawing"
+  ],
+  "steps": [
+    {
+      "say": "Repeat for each pen color: set the color, then draw a few short lines with turns."
+    },
+    {
+      "say": "Nested repeats draw a ring of color."
+    }
+  ],
+  "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "controls_repeat_ext",
+          "inputs": {
+            "TIMES": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "2"
+                }
+              }
+            },
+            "DO": {
+              "block": {
+                "type": "pen_color",
+                "fields": {
+                  "COLOR": "#267c70"
+                },
+                "next": {
+                  "block": {
+                    "type": "controls_repeat_ext",
+                    "inputs": {
+                      "TIMES": {
+                        "shadow": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "9"
+                          }
+                        }
+                      },
+                      "DO": {
+                        "block": {
+                          "type": "pen_move",
+                          "inputs": {
+                            "STEPS": {
+                              "shadow": {
+                                "type": "py_number",
+                                "fields": {
+                                  "VALUE": "25"
+                                }
+                              }
+                            }
+                          },
+                          "next": {
+                            "block": {
+                              "type": "pen_turn",
+                              "inputs": {
+                                "DEGREES": {
+                                  "shadow": {
+                                    "type": "py_number",
+                                    "fields": {
+                                      "VALUE": "5"
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "pen_color",
+                        "fields": {
+                          "COLOR": "#e47d4b"
+                        },
+                        "next": {
+                          "block": {
+                            "type": "controls_repeat_ext",
+                            "inputs": {
+                              "TIMES": {
+                                "shadow": {
+                                  "type": "py_number",
+                                  "fields": {
+                                    "VALUE": "9"
+                                  }
+                                }
+                              },
+                              "DO": {
+                                "block": {
+                                  "type": "pen_move",
+                                  "inputs": {
+                                    "STEPS": {
+                                      "shadow": {
+                                        "type": "py_number",
+                                        "fields": {
+                                          "VALUE": "25"
+                                        }
+                                      }
+                                    }
+                                  },
+                                  "next": {
+                                    "block": {
+                                      "type": "pen_turn",
+                                      "inputs": {
+                                        "DEGREES": {
+                                          "shadow": {
+                                            "type": "py_number",
+                                            "fields": {
+                                              "VALUE": "5"
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            },
+                            "next": {
+                              "block": {
+                                "type": "pen_color",
+                                "fields": {
+                                  "COLOR": "#8066ba"
+                                },
+                                "next": {
+                                  "block": {
+                                    "type": "controls_repeat_ext",
+                                    "inputs": {
+                                      "TIMES": {
+                                        "shadow": {
+                                          "type": "py_number",
+                                          "fields": {
+                                            "VALUE": "9"
+                                          }
+                                        }
+                                      },
+                                      "DO": {
+                                        "block": {
+                                          "type": "pen_move",
+                                          "inputs": {
+                                            "STEPS": {
+                                              "shadow": {
+                                                "type": "py_number",
+                                                "fields": {
+                                                  "VALUE": "25"
+                                                }
+                                              }
+                                            }
+                                          },
+                                          "next": {
+                                            "block": {
+                                              "type": "pen_turn",
+                                              "inputs": {
+                                                "DEGREES": {
+                                                  "shadow": {
+                                                    "type": "py_number",
+                                                    "fields": {
+                                                      "VALUE": "5"
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    },
+                                    "next": {
+                                      "block": {
+                                        "type": "pen_color",
+                                        "fields": {
+                                          "COLOR": "#487dc9"
+                                        },
+                                        "next": {
+                                          "block": {
+                                            "type": "controls_repeat_ext",
+                                            "inputs": {
+                                              "TIMES": {
+                                                "shadow": {
+                                                  "type": "py_number",
+                                                  "fields": {
+                                                    "VALUE": "9"
+                                                  }
+                                                }
+                                              },
+                                              "DO": {
+                                                "block": {
+                                                  "type": "pen_move",
+                                                  "inputs": {
+                                                    "STEPS": {
+                                                      "shadow": {
+                                                        "type": "py_number",
+                                                        "fields": {
+                                                          "VALUE": "25"
+                                                        }
+                                                      }
+                                                    }
+                                                  },
+                                                  "next": {
+                                                    "block": {
+                                                      "type": "pen_turn",
+                                                      "inputs": {
+                                                        "DEGREES": {
+                                                          "shadow": {
+                                                            "type": "py_number",
+                                                            "fields": {
+                                                              "VALUE": "5"
+                                                            }
+                                                          }
+                                                        }
+                                                      }
+                                                    }
+                                                  }
+                                                }
+                                              }
+                                            }
+                                          }
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "preview": "rainbow-pen.webm",
+  "tryNext": [
+    "spiral",
+    "stamp-trail"
+  ]
+}

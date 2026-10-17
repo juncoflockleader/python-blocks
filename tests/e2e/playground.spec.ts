@@ -1,4 +1,5 @@
 import { expect, test } from '@playwright/test';
+import { reveal } from './shell';
 
 test('blocks generate Python and real Python draws a square', async ({ page }, testInfo) => {
   const errors: string[] = [];
@@ -26,7 +27,7 @@ test('Stop cancels startup and a subsequent run succeeds', async ({ page }) => {
 test('exports Python source with its dependency requirement', async ({ page }) => {
   await page.goto('/');
   const downloadPromise = page.waitForEvent('download');
-  await page.getByRole('button', { name: 'Export Python' }).click();
+  await (await reveal(page, page.getByRole('button', { name: 'Export Python' }))).click();
   const download = await downloadPromise;
   expect(download.suggestedFilename()).toBe('my-drawing.py');
   const stream = await download.createReadStream();
