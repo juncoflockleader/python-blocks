@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-import { menu, openHelp, openTab, reveal } from './shell';
+import { blockIcons, menu, openHelp, openTab, reveal } from './shell';
 
 // A new browser: Starter level, where Ideas is the default search scope.
 test.use({ storageState: { cookies: [], origins: [] }, viewport: { width: 1024, height: 700 } });
@@ -64,7 +64,7 @@ test('the gallery opens examples with thumbnails, Play and three things to try',
   const card = page.locator('#examples-dialog [data-example="catch-the-star-game"]');
   await expect(card.locator('img')).toHaveJSProperty('complete', true);
   expect(await card.locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(240);
-  await expect(page.locator('#examples-dialog .example-card')).toHaveCount(16);
+  await expect(page.locator('#examples-dialog .example-card')).toHaveCount(17);
   await page.locator('#catch-the-star-game').click();
   await expect(page.locator('#project-title')).toHaveText('Catch the star');
   await openTab(page, 'help'); await expect(page.locator('[data-nudge="try"]')).toContainText('Win at 10 stars instead of 5.');
@@ -219,20 +219,20 @@ test('Pen patterns: hats and loops dragged from the palette, nested by hand', as
   await showAndInsert(page, 'draw-square'); await nextStep(page);
   await runUntil(page, /Event session running|Finished/); await page.locator('#stop').click(); await nextStep(page);
   // Step 4, in the visible script: a new repeat at the top, then the square's repeat moved inside it.
-  const visibleWhen = async () => { const boxes = (await Promise.all((await workspaceText(page, /^when$/).all()).map(l => l.boundingBox()))).filter(b => b && b.x > canvas.x + 120); return boxes.sort((a, b) => b!.x - a!.x)[0]!; };
+  // Blocks are found by their symbols, which start each block's first row.
+  const visibleWhen = async () => (await blockIcons(page, 'flag')).filter(b => b.x > canvas.x + 120).sort((a, b) => b.x - a.x)[0];
   await page.getByRole('treeitem', { name: 'Control', exact: true }).click();
   const repeat = page.locator('.blocklyToolboxFlyout g.blocklyDraggable').filter({ has: page.locator('text.blocklyText', { hasText: /^repeat$/ }) }).first();
   const repeatBox = (await repeat.boundingBox())!, when = await visibleWhen();
   await dragTo(page, { x: repeatBox.x + 6, y: repeatBox.y + 12 }, { x: when.x + 20, y: when.y + when.height + 20 });
   await expect(workspaceText(page, /^repeat$/)).toHaveCount(2);
-  const repeats = (await Promise.all((await workspaceText(page, /^repeat$/).all()).map(l => l.boundingBox()))).sort((a, b) => a!.y - b!.y);
-  const [outer, square] = repeats;
+  const [outer, square] = await blockIcons(page, 'loop');
   await dragTo(page, { x: square!.x - 5, y: square!.y + square!.height / 2 }, { x: outer!.x + 29, y: outer!.y + outer!.height + 22 });
   await nextStep(page);
   // Step 5: a pen color at the top of the outer repeat.
   await page.getByRole('treeitem', { name: 'Draw', exact: true }).click();
   const color = page.locator('.blocklyToolboxFlyout g.blocklyDraggable').filter({ has: page.locator('text.blocklyText', { hasText: /^set\spen\scolor$/ }) }).first();
-  const colorBox = (await color.boundingBox())!, outerNow = (await Promise.all((await workspaceText(page, /^repeat$/).all()).map(l => l.boundingBox()))).sort((a, b) => a!.y - b!.y)[0]!;
+  const colorBox = (await color.boundingBox())!, [outerNow] = await blockIcons(page, 'loop');
   await dragTo(page, { x: colorBox.x + 6, y: colorBox.y + colorBox.height / 2 }, { x: outerNow.x + 35, y: outerNow.y + outerNow.height + 24 });
   await nextStep(page);
   await runUntil(page, /Event session running|Finished/); await nextStep(page);
@@ -285,5 +285,5 @@ test('Talking story: a conversation, a scene change, a new costume and a backdro
   await nextStep(page);
   await showAndInsert(page, 'backdrop-event'); await nextStep(page);
   await runUntil(page, /Event session running/); await nextStep(page);
-  await expect(page.locator('#guide-finish')).toBeVisible(); await expect(page.locator('#guide-next-build')).toHaveText('Next build: Jump quest');
+  await expect(page.locator('#guide-finish')).toBeVisible(); await expect(page.locator('#guide-next-build')).toHaveText('Next lesson: Brick Breaker');
 });

@@ -276,5 +276,24 @@
       "Make the explorer slower."
     ],
     "build": "maze-run"
+  },
+  {
+    "id": "brick-breaker-game",
+    "title": "Brick Breaker",
+    "description": "Bounce the ball off your paddle and clear a wall of 24 bricks.",
+    "kind": "game",
+    "project": "content/builds/brick-breaker-game.json",
+    "level": "builder",
+    "tags": [
+      "motion",
+      "loop",
+      "collision"
+    ],
+    "tryChanging": [
+      "Make the ball faster: change its vx and vy.",
+      "Add a fourth row of bricks, and change the winning score to match.",
+      "Make the paddle wider in Artwork & frames."
+    ],
+    "build": "brick-breaker"
   }
 ]

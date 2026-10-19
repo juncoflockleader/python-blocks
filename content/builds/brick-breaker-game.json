@@ -1,0 +1,835 @@
+{
+ "format": "python-blocks",
+ "formatVersion": 1,
+ "languageVersion": 19,
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "py_handler",
+     "id": "on_start_handler_block",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_start_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_control",
+        "fields": {
+         "SCHEME": "arrows"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "paddle"
+           }
+          }
+         },
+         "VX": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "200"
+           }
+          }
+         },
+         "VY": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_motion_edges",
+          "fields": {
+           "MODE": "stop"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "paddle"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "scene_motion_set",
+            "fields": {
+             "PROPERTY": "vx"
+            },
+            "inputs": {
+             "SPRITE": {
+              "block": {
+               "type": "scene_sprite",
+               "fields": {
+                "SPRITE_ID": "ball"
+               }
+              }
+             },
+             "VALUE": {
+              "shadow": {
+               "type": "py_number",
+               "fields": {
+                "VALUE": "150"
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "scene_motion_set",
+              "fields": {
+               "PROPERTY": "vy"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "fields": {
+                  "SPRITE_ID": "ball"
+                 }
+                }
+               },
+               "VALUE": {
+                "shadow": {
+                 "type": "py_number",
+                 "fields": {
+                  "VALUE": "200"
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "scene_motion_edges",
+                "fields": {
+                 "MODE": "bounce"
+                },
+                "inputs": {
+                 "SPRITE": {
+                  "block": {
+                   "type": "scene_sprite",
+                   "fields": {
+                    "SPRITE_ID": "ball"
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "game_set",
+                  "fields": {
+                   "FIELD": "score"
+                  },
+                  "inputs": {
+                   "VALUE": {
+                    "shadow": {
+                     "type": "py_number",
+                     "fields": {
+                      "VALUE": "0"
+                     }
+                    }
+                   }
+                  },
+                  "next": {
+                   "block": {
+                    "type": "game_show",
+                    "fields": {
+                     "SHOW": "TRUE",
+                     "FIELD": "score"
+                    },
+                    "next": {
+                     "block": {
+                      "type": "game_set",
+                      "fields": {
+                       "FIELD": "lives"
+                      },
+                      "inputs": {
+                       "VALUE": {
+                        "shadow": {
+                         "type": "py_number",
+                         "fields": {
+                          "VALUE": "3"
+                         }
+                        }
+                       }
+                      },
+                      "next": {
+                       "block": {
+                        "type": "game_show",
+                        "fields": {
+                         "SHOW": "TRUE",
+                         "FIELD": "lives"
+                        },
+                        "next": {
+                         "block": {
+                          "type": "controls_repeat_ext",
+                          "inputs": {
+                           "TIMES": {
+                            "shadow": {
+                             "type": "py_number",
+                             "fields": {
+                              "VALUE": "3"
+                             }
+                            }
+                           },
+                           "DO": {
+                            "block": {
+                             "type": "controls_repeat_ext",
+                             "inputs": {
+                              "TIMES": {
+                               "shadow": {
+                                "type": "py_number",
+                                "fields": {
+                                 "VALUE": "8"
+                                }
+                               }
+                              },
+                              "DO": {
+                               "block": {
+                                "type": "scene_visibility",
+                                "fields": {
+                                 "ACTION": "show"
+                                },
+                                "inputs": {
+                                 "SPRITE": {
+                                  "block": {
+                                   "type": "scene_clone",
+                                   "inputs": {
+                                    "SPRITE": {
+                                     "block": {
+                                      "type": "scene_sprite",
+                                      "fields": {
+                                       "SPRITE_ID": "brick"
+                                      }
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                },
+                                "next": {
+                                 "block": {
+                                  "type": "scene_change",
+                                  "fields": {
+                                   "PROPERTY": "x"
+                                  },
+                                  "inputs": {
+                                   "SPRITE": {
+                                    "block": {
+                                     "type": "scene_sprite",
+                                     "fields": {
+                                      "SPRITE_ID": "brick"
+                                     }
+                                    }
+                                   },
+                                   "VALUE": {
+                                    "shadow": {
+                                     "type": "py_number",
+                                     "fields": {
+                                      "VALUE": "50"
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             },
+                             "next": {
+                              "block": {
+                               "type": "scene_set",
+                               "fields": {
+                                "PROPERTY": "x"
+                               },
+                               "inputs": {
+                                "SPRITE": {
+                                 "block": {
+                                  "type": "scene_sprite",
+                                  "fields": {
+                                   "SPRITE_ID": "brick"
+                                  }
+                                 }
+                                },
+                                "VALUE": {
+                                 "shadow": {
+                                  "type": "py_number",
+                                  "fields": {
+                                   "VALUE": "-175"
+                                  }
+                                 }
+                                }
+                               },
+                               "next": {
+                                "block": {
+                                 "type": "scene_change",
+                                 "fields": {
+                                  "PROPERTY": "y"
+                                 },
+                                 "inputs": {
+                                  "SPRITE": {
+                                   "block": {
+                                    "type": "scene_sprite",
+                                    "fields": {
+                                     "SPRITE_ID": "brick"
+                                    }
+                                   }
+                                  },
+                                  "VALUE": {
+                                   "shadow": {
+                                    "type": "py_number",
+                                    "fields": {
+                                     "VALUE": "-24"
+                                    }
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_win_handler_block",
+     "x": 40,
+     "y": 229,
+     "extraState": {
+      "functionId": "on_win_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_whileUntil",
+        "fields": {
+         "MODE": "UNTIL"
+        },
+        "inputs": {
+         "BOOL": {
+          "block": {
+           "type": "logic_compare",
+           "fields": {
+            "OP": "EQ"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "game_get",
+              "fields": {
+               "FIELD": "score"
+              }
+             }
+            },
+            "B": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "24"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO": {
+          "block": {
+           "type": "py_wait",
+           "inputs": {
+            "SECONDS": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "0.1"
+              }
+             }
+            }
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "game_finish",
+          "fields": {
+           "WON": "TRUE"
+          },
+          "inputs": {
+           "TEXT": {
+            "shadow": {
+             "type": "text",
+             "fields": {
+              "TEXT": "You cleared the wall!"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_paddle_overlap_handler_block",
+     "x": 520,
+     "y": 326,
+     "extraState": {
+      "functionId": "on_paddle_overlap_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "scene_overlaps",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_self"
+             }
+            },
+            "OTHER": {
+             "block": {
+              "type": "scene_sprite",
+              "fields": {
+               "SPRITE_ID": "ball"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "scene_motion_set",
+           "fields": {
+            "PROPERTY": "vy"
+           },
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_sprite",
+              "fields": {
+               "SPRITE_ID": "ball"
+              }
+             }
+            },
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "220"
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_brick_overlap_handler_block",
+     "x": 520,
+     "y": 418,
+     "extraState": {
+      "functionId": "on_brick_overlap_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "scene_overlaps",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_self"
+             }
+            },
+            "OTHER": {
+             "block": {
+              "type": "scene_sprite",
+              "fields": {
+               "SPRITE_ID": "ball"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "game_change",
+           "fields": {
+            "FIELD": "score"
+           },
+           "inputs": {
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "1"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "scene_motion_set",
+             "fields": {
+              "PROPERTY": "vy"
+             },
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "fields": {
+                 "SPRITE_ID": "ball"
+                }
+               }
+              },
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "-220"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_destroy",
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_self"
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_ball_update_handler_block",
+     "x": 520,
+     "y": 523,
+     "extraState": {
+      "functionId": "on_ball_update_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "logic_compare",
+           "fields": {
+            "OP": "LT"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "scene_get",
+              "fields": {
+               "PROPERTY": "y"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_self"
+                }
+               }
+              }
+             }
+            },
+            "B": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "-145"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "game_change",
+           "fields": {
+            "FIELD": "lives"
+           },
+           "inputs": {
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "-1"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "scene_go",
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_self"
+               }
+              },
+              "X": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "0"
+                }
+               }
+              },
+              "Y": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "-60"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_motion_set",
+               "fields": {
+                "PROPERTY": "vy"
+               },
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_self"
+                 }
+                },
+                "VALUE": {
+                 "shadow": {
+                  "type": "py_number",
+                  "fields": {
+                   "VALUE": "220"
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  "pythonScene": {
+   "version": 1,
+   "background": "#22394a",
+   "assets": [
+    {
+     "id": "paddle_art",
+     "name": "Paddle bar",
+     "width": 80,
+     "height": 12,
+     "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAMCAYAAAD1XTohAAAATklEQVR42mNgQAPH7/f8H8W4MQMuMBo4FATkaIBQGIijgUFBAI4GBIWBOBoIowE4GoCj5eBoLTwaGBS3BefsTv4/ionHOHsko4FDWsABANUvTOZqvEj2AAAAAElFTkSuQmCC"
+    },
+    {
+     "id": "brick_art",
+     "name": "Brick",
+     "width": 44,
+     "height": 14,
+     "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAOCAYAAABU4P48AAAAOUlEQVR42mNgAIIPi2v+DwUMcivDk1rv/0MJjzp41MGjDh518KiDRx08zB28M8Hq/1DC4PbEUHIsANI2U38+V7l6AAAAAElFTkSuQmCC"
+    },
+    {
+     "id": "ball_art",
+     "name": "Ball",
+     "width": 14,
+     "height": 14,
+     "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAQ0lEQVR42mNgQAM71k7+jw0z4AMwRf9/fUDBeDVj04DNAJI1YWjG5Tx8GsGaSdGEYusQ00hW4JAdHRQlAIqSHKmJHABeYzgTgFfLZAAAAABJRU5ErkJggg=="
+    }
+   ],
+   "sprites": [
+    {
+     "id": "paddle",
+     "name": "Paddle",
+     "x": 0,
+     "y": -135,
+     "direction": 0,
+     "size": 100,
+     "layer": 1,
+     "visible": true,
+     "costume": "paddle_art",
+     "rotationStyle": "none"
+    },
+    {
+     "id": "ball",
+     "name": "Ball",
+     "x": 0,
+     "y": -100,
+     "direction": 0,
+     "size": 100,
+     "layer": 2,
+     "visible": true,
+     "costume": "ball_art",
+     "rotationStyle": "none"
+    },
+    {
+     "id": "brick",
+     "name": "Brick",
+     "x": -175,
+     "y": 120,
+     "direction": 0,
+     "size": 100,
+     "layer": 1,
+     "visible": false,
+     "costume": "brick_art",
+     "rotationStyle": "none"
+    }
+   ]
+  },
+  "procedures": [
+   {
+    "id": "on_start_handler",
+    "name": "on_start",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_start_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "start",
+     "order": 0
+    }
+   },
+   {
+    "id": "on_win_handler",
+    "name": "on_win",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_win_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "start",
+     "order": 1
+    }
+   },
+   {
+    "id": "on_paddle_overlap_handler",
+    "name": "on_paddle_overlap",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_paddle_overlap_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "overlap",
+     "order": 2,
+     "sprite": "paddle"
+    }
+   },
+   {
+    "id": "on_brick_overlap_handler",
+    "name": "on_brick_overlap",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_brick_overlap_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "overlap",
+     "order": 3,
+     "sprite": "brick"
+    }
+   },
+   {
+    "id": "on_ball_update_handler",
+    "name": "on_ball_update",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_ball_update_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "update",
+     "order": 4,
+     "sprite": "ball"
+    }
+   }
+  ]
+ }
+}

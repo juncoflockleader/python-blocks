@@ -18,6 +18,8 @@ export const needsSprite = (kind: HatKind) => SPRITE_HATS.has(kind);
 export interface HatTemplate { kind: HatKind; key?: string; sprite?: string; other?: string; message?: string; backdrop?: string }
 type State = Blockly.serialization.blocks.State;
 interface HatBlock extends Blockly.Block { hatKind: HatKind; build(this: HatBlock): void }
+/** A palette event hat (it becomes a handler when dropped). */
+export const isEventHat = (block: Blockly.Block): block is HatBlock => block.type === HAT_TYPE;
 
 function spriteMenu(any: boolean) {
   return function (this: Blockly.FieldDropdown): Blockly.MenuOption[] {

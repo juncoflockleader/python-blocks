@@ -68,7 +68,7 @@ export function placement(workspace: Blockly.Workspace, recipe: Recipe, selected
   const sprite = scene.sprites.find(s => s.id === selected) ?? scene.sprites[0];
   const other = scene.sprites.find(s => s.id === target && s.id !== sprite?.id) ?? scene.sprites.find(s => s.id !== sprite?.id);
   const sprites = recipe.needs?.sprites ?? 0, worlds = recipe.needs?.worlds ?? 0;
-  if (sprites && scene.sprites.length < sprites) throw new Error(sprites === 1 ? 'Add a sprite first: use Sprite library under the stage.' : `This idea needs ${sprites} sprites. Add another from the Sprite library under the stage.`);
+  if (sprites && scene.sprites.length < sprites) throw new Error(sprites === 1 ? 'Add a sprite first: press Sprites under the stage.' : `This idea needs ${sprites} sprites. Add another with Sprites under the stage.`);
   if (worlds && (scene.worlds?.length ?? 0) < worlds) throw new Error(`This idea needs ${worlds} worlds. Open Worlds & tilemaps in the Sprite tab to add them.`);
   return { sprite: sprite?.id, other: other?.id ?? sprite?.id, world2: scene.worlds?.find(w => w.id !== scene.world)?.id, variables: new Map() };
 }

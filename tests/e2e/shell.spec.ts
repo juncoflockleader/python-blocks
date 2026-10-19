@@ -1,6 +1,6 @@
 import { test, expect, type Locator, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-import { menu, openExample, openSearch, openSpriteSettings, openTab, setSpriteField } from './shell';
+import { blockIcons, menu, openExample, openSearch, openSpriteSettings, openTab, setSpriteField } from './shell';
 
 // These tests start like a new browser: no stored level, so the Starter palette.
 test.use({ storageState: { cookies: [], origins: [] } });
@@ -41,10 +41,10 @@ test.describe('iPad landscape', () => {
     for (const selector of ['#run', '#stop', '#stage', '#tab-output', '#blockly']) await inView(page, page.locator(selector));
     await load(page, project([{ ...b('py_program'), x: 420, y: 40 }]), 'start.json');
     await expect.poll(async () => (await saved(page)).workspace.blocks.blocks.length).toBe(1);
-    const label = (await page.locator('#blockly text.blocklyText', { hasText: /^Program$/ }).boundingBox())!;
+    const [label] = await blockIcons(page, 'play'); // the Program block's symbol starts its first row
     await dragFromPalette(page, 'Control', flyoutBlock(page, /^repeat$/), { x: label.x + 10, y: label.y + label.height + 8 });
     await expect.poll(async () => (await saved(page)).workspace.blocks.blocks[0].inputs?.BODY?.block?.type).toBe('controls_repeat_ext');
-    const repeat = (await page.locator('#blockly .blocklyDraggable:not(.blocklyFlyout *) text.blocklyText', { hasText: /^repeat$/ }).first().boundingBox())!;
+    const [repeat] = await blockIcons(page, 'loop');
     await dragFromPalette(page, 'Draw', flyoutBlock(page, /^move$/), { x: repeat.x + 14, y: repeat.y + repeat.height + 10 });
     await expect.poll(async () => (await saved(page)).workspace.blocks.blocks[0].inputs.BODY.block.inputs?.DO?.block?.type).toBe('pen_move');
     await openTab(page, 'python'); await expect(page.locator('#python')).toContainText(/for _\w* in range\(10\):\n\s+pen\.move\(100\)/);

@@ -43,7 +43,7 @@
  },
  "steps": [
   {
-   "text": "Add a star: press Sprite library under the stage and choose Star.",
+   "text": "Add a star: press Sprites under the stage and choose Star.",
    "check": {
     "costume": "star"
    },

@@ -1,4 +1,4 @@
-import { iconArt, iconSvg, type IconName } from './icon-art';
+import { iconMarkup, iconSvg, type IconName } from './icon-art';
 import './icons.css';
 
 // Keep action identity separate from its label: buttons such as Run and Python
@@ -44,7 +44,7 @@ const actionGroups: Partial<Record<IconName, string>> = {
   move: 'scene-motion-example',
   message: 'scene-story-example assist-send',
   physics: 'scene-behavior-example data-behavior',
-  library: 'scene-stock world-stock',
+  library: 'world-stock', spriteAdd: 'scene-stock',
   eraser: 'appearance-clear art-clear',
   selection: 'art-deselect sound-select-all',
   flipX: 'art-flip-x', flipY: 'art-flip-y', rotate: 'art-rotate',
@@ -57,7 +57,8 @@ for (const [icon, ids] of Object.entries(actionGroups)) {
   for (const id of ids.split(' ')) actions[id] = icon as IconName;
 }
 
-const categories: Record<string, IconName> = {
+/** Each palette category's symbol, by its label; blocks show it too (block-icons.ts). */
+export const categoryIcons: Record<string, IconName> = {
   Program: 'play', Control: 'loop', 'Sensing & input': 'keyboard', Sounds: 'music', Game: 'game',
   Worlds: 'world', Sprites: 'sprite', Motion: 'move', Looks: 'eye', Physics: 'physics',
   'Sprite pen': 'pen', Draw: 'palette', Loops: 'loop', Logic: 'logic', Numbers: 'number',
@@ -132,12 +133,12 @@ export function installIcons(root: HTMLElement = document.body) {
       svg.setAttribute('y', String((Number(background.getAttribute('height')) - 16) / 2));
       svg.setAttribute('fill', 'none'); svg.setAttribute('stroke', 'currentColor');
       svg.setAttribute('stroke-width', '1.8'); svg.setAttribute('stroke-linecap', 'round'); svg.setAttribute('stroke-linejoin', 'round');
-      svg.innerHTML = iconArt[name]; // Trusted, local SVG constants only.
+      svg.innerHTML = iconMarkup(name); // Trusted, local SVG constants only.
       element.append(svg); return;
     }
     if (!(element instanceof HTMLElement)) return;
     if (element.matches('.blocklyToolboxCategory')) {
-      const name = categories[element.querySelector('.blocklyToolboxCategoryLabel')?.textContent?.trim() ?? ''];
+      const name = categoryIcons[element.querySelector('.blocklyToolboxCategoryLabel')?.textContent?.trim() ?? ''];
       const icon = element.querySelector<HTMLElement>('.blocklyToolboxCategoryIcon');
       if (name && icon) { icon.setAttribute('aria-hidden', 'true'); decorate(icon, name); }
       // The palette shows each category as a coloured disc; Blockly keeps the colour on the row border.

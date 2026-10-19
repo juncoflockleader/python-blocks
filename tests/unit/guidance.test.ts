@@ -4,10 +4,10 @@ import { Blockly } from '../../src/blocks';
 import { prepareProject, restore } from '../../src/project';
 import { compile } from '../../src/language/compiler';
 import { sceneState } from '../../src/scene/state';
-import { builds, buildById, type Build } from '../../src/guide/builds';
+import { builds, buildById, chapterOf, type Build } from '../../src/guide/builds';
 import { passes, type Check } from '../../src/guide/checks';
 import { GALLERY_KINDS, entries } from '../../src/guide/gallery';
-import { recipeById, recipes } from '../../src/guide/recipes';
+import { appendRecipe, placement, recipeById, recipes, type Recipe } from '../../src/guide/recipes';
 import { atLeast, palette, requiredLevel } from '../../src/ui/levels';
 import { checkGuidance, concepts, instructionsFor, responseSchemaFor } from '../../src/assist/catalog';
 import { paletteWorkspace } from './palette-workspace';
@@ -20,20 +20,23 @@ function loaded(project: unknown) {
   return w;
 }
 const game = (build: Build) => JSON.parse(readFileSync(`content/builds/${build.id}-game.json`, 'utf8'));
-const dynamic = (check: Check): boolean => 'ran' in check || 'finished' in check || ('all' in check && check.all.some(dynamic)) || ('any' in check && check.any.every(dynamic));
+const dynamic = (check: Check): boolean => 'ran' in check || 'finished' in check || 'score' in check || 'predicted' in check || ('all' in check && check.all.some(dynamic)) || ('any' in check && check.any.every(dynamic));
 const finished = { ran: true, finished: 'won' as const };
 
 describe('guided builds', () => {
-  it('are the six planned games, each with a minute budget and a next step', () => {
-    expect(builds.map(b => b.title)).toEqual(['Catch the star', 'Dodge the balls', 'Pen patterns', 'Maze run', 'Jump quest', 'Talking story']);
+  it('are the six planned games and the first lesson, each with a minute budget and a next step', () => {
+    // Lessons are listed first.
+    expect(builds.map(b => b.title)).toEqual(['Brick Breaker', 'Catch the star', 'Dodge the balls', 'Pen patterns', 'Maze run', 'Jump quest', 'Talking story']);
     for (const build of builds) {
       expect(build.minutes, build.id).toBeGreaterThan(0);
       expect(build.finish.remix, build.id).toHaveLength(3);
       if (build.next) expect(buildById(build.next), build.id).toBeDefined();
       expect(build.steps.length, build.id).toBeGreaterThanOrEqual(4);
     }
-    // Every build is reachable by following "next" from the first one.
-    const seen = new Set<string>(); for (let b: Build | undefined = builds[0]; b && !seen.has(b.id); b = b.next ? buildById(b.next) : undefined) seen.add(b.id);
+    // Every build is reachable by following "next" from the one nothing leads to.
+    const roots = builds.filter(b => !builds.some(other => other.next === b.id));
+    expect(roots.map(b => b.id)).toEqual(['catch-the-star']);
+    const seen = new Set<string>(); for (let b: Build | undefined = roots[0]; b && !seen.has(b.id); b = b.next ? buildById(b.next) : undefined) seen.add(b.id);
     expect(seen.size).toBe(builds.length);
   });
 
@@ -63,6 +66,64 @@ describe('guided builds', () => {
     }
   });
 
+  it('lessons have chapters, live checklists, hints, sound predictions and repairable plants', () => {
+    const lessons = builds.filter(b => b.kind === 'lesson');
+    expect(lessons.map(b => b.id)).toEqual(['brick-breaker']);
+    for (const lesson of lessons) {
+      expect(lesson.chapters!.reduce((sum, c) => sum + c.steps, 0), lesson.id).toBe(lesson.steps.length);
+      expect(lesson.learn!.length, lesson.id).toBeGreaterThanOrEqual(3);
+      const w = loaded(game(lesson));
+      for (const [index, step] of lesson.steps.entries()) {
+        const where = `${lesson.id} step ${index + 1}`;
+        expect(chapterOf(lesson, index), where).not.toBeNull();
+        expect(step.why, where).toBeTruthy();
+        if (step.kind !== 'play') {
+          expect(step.checklist?.length, where).toBeGreaterThan(0);
+          expect(step.hints, where).toHaveLength(2);
+          expect(step.recipe || step.solution || step.plant, `${where} needs a last rung or a planted puzzle`).toBeTruthy();
+          // The finished game ticks every part that does not depend on a run.
+          for (const part of step.checklist!) if (!dynamic(part.check)) expect(passes(part.check, w, finished), `${where}: ${part.text}`).toBe(true);
+        }
+        if (step.predict) {
+          expect(step.predict.choices.length, where).toBeGreaterThanOrEqual(3);
+          expect(step.predict.choices[step.predict.answer], where).toBeDefined();
+        }
+        if (step.kind === 'play') expect(dynamic(step.check), where).toBe(true);
+        if (step.goal) expect(step.check, where).toEqual({ score: step.goal.score });
+        if (step.solution?.replacesPlant !== undefined) expect(lesson.steps[step.solution.replacesPlant].plant, where).toBeDefined();
+      }
+    }
+  });
+
+  it('plant a puzzle that compiles but does not pass, and add solutions that resolve every placeholder', () => {
+    const lesson = buildById('brick-breaker')!;
+    for (const [index, step] of lesson.steps.entries()) {
+      for (const parts of [step.plant, step.solution?.parts]) {
+        if (!parts) continue;
+        const w = loaded(lesson.starter);
+        const recipe = { id: 'lesson', title: 'Lesson', group: 'game', phrases: [], level: 'pro', concepts: ['event'], steps: [], blocks: parts } as Recipe;
+        appendRecipe(w, recipe, placement(w, recipe, step.select ?? '', step.other));
+        expect(compile(w).diagnostics.filter(d => d.severity === 'error'), `step ${index + 1}`).toEqual([]);
+        expect(JSON.stringify(Blockly.serialization.workspaces.save(w)), `step ${index + 1}`).not.toMatch(/"\$(sprite|other)"/);
+        if (parts === step.plant) expect(passes(step.check, w, finished), `step ${index + 1} plant already passes`).toBe(false);
+      }
+    }
+  });
+
+  it('checks block fields, numbers, handler owners, the last block and run scores', () => {
+    const w = loaded(game(buildById('brick-breaker')!));
+    expect(passes({ field: ['scene_motion_edges', 'MODE', 'bounce'] }, w, finished)).toBe(true);
+    expect(passes({ field: ['scene_motion_edges', 'MODE', 'destroy'] }, w, finished)).toBe(false);
+    expect(passes({ number: ['scene_control', 'VY', 0] }, w, finished)).toBe(true);
+    expect(passes({ number: ['scene_control', 'VY', 180] }, w, finished)).toBe(false);
+    expect(passes({ handler: 'overlap', sprite: 'brick', last: 'scene_destroy' }, w, finished)).toBe(true);
+    expect(passes({ handler: 'overlap', sprite: 'paddle', last: 'scene_destroy' }, w, finished)).toBe(false);
+    expect(passes({ handler: 'update', sprite: 'paddle' }, w, finished)).toBe(false);
+    expect(passes({ score: 5 }, w, { ran: true, finished: null, score: 4 })).toBe(false);
+    expect(passes({ score: 5 }, w, { ran: true, finished: null, score: 5 })).toBe(true);
+    expect(passes({ predicted: true }, w, { ran: true, finished: null })).toBe(false);
+  });
+
   it('checks read run facts and handler kinds, not just block presence', () => {
     const w = loaded(game(buildById('catch-the-star')!));
     expect(passes({ ran: true }, w, { ran: false, finished: null })).toBe(false);
@@ -77,9 +138,9 @@ describe('guided builds', () => {
 });
 
 describe('gallery', () => {
-  it('keeps the ten examples and adds the six guided-build games, with three things to try', () => {
-    expect(entries).toHaveLength(16);
-    expect(new Set(entries.map(e => e.id)).size).toBe(16);
+  it('keeps the ten examples and adds the seven guided-build games, with three things to try', () => {
+    expect(entries).toHaveLength(17);
+    expect(new Set(entries.map(e => e.id)).size).toBe(17);
     for (const id of ['scene-example', 'scene-motion-example', 'scene-story-example', 'scene-drawing-example', 'scene-behavior-example', 'scene-game-example', 'scene-world-example', 'scene-star-game', 'sound-example', 'scene-input-example']) expect(entries.some(e => e.id === id), id).toBe(true);
     for (const entry of entries) {
       expect(entry.tryChanging, entry.id).toHaveLength(3);

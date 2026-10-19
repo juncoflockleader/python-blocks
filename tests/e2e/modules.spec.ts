@@ -58,7 +58,8 @@ test('removing a module retains calls and Undo restores the pinned copy across r
 });
 
 test('rejects incompatible pins and missing dependencies without changing the project', async ({ page }) => {
-  await open(page, 'consumer.json'); const before = await page.locator('#python').textContent(); await manage(page);
+  // The Python preview updates just after the project opens: wait for it before taking the baseline.
+  await open(page, 'consumer.json'); await expect(page.locator('#python')).toContainText('as tools'); const before = await page.locator('#python').textContent(); await manage(page);
   const bundle = JSON.parse(await readFile(fixture('arithmetic.module.json'), 'utf8')); bundle.definitions[0].name = 'changed_contents';
   await page.locator('#module-file').setInputFiles({ name: 'conflict.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(bundle)) });
   await expect(page.locator('#module-import')).toBeEnabled(); await page.locator('#module-import-alias').fill('new_name'); await page.getByRole('button', { name: 'Import module', exact: true }).click();

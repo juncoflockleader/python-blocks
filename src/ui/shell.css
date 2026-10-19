@@ -66,8 +66,9 @@ input[type=checkbox], input[type=radio] { width: 20px; height: 20px; }
 .blocklyToolboxCategoryGroup { display: flex; flex-direction: column; gap: 2px; }
 .blocklyToolboxCategory { width: 80px; min-height: 52px; padding: 4px 2px !important; border-radius: 10px; border-left-width: 0 !important; }
 .blocklyToolboxCategory .blocklyTreeRowContentContainer { flex-direction: column; justify-content: center; gap: 3px; min-height: 44px; }
-.blocklyToolboxCategoryIcon[data-ui-icon] { width: 26px; height: 26px; flex-basis: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #fff; background: var(--category-colour, #6c7c64); }
-.blocklyToolboxCategoryIcon[data-ui-icon]::before { width: 16px; height: 16px; }
+/* Blockly writes display: inline-block on the icon span; the disc must stay a flex box to centre its symbol. */
+.blocklyToolboxCategoryIcon[data-ui-icon] { width: 26px; height: 26px; flex-basis: 26px; border-radius: 50%; display: inline-flex !important; align-items: center; justify-content: center; color: #fff; background: var(--category-colour, #6c7c64); }
+.blocklyToolboxCategoryIcon[data-ui-icon]::before { width: 16px; height: 16px; vertical-align: 0; }
 .blocklyToolboxCategoryLabel { font: 600 11px 'DM Sans', system-ui, sans-serif; color: #26382f; text-align: center; white-space: normal; line-height: 1.15; }
 .blocklyToolboxSelected { background: #e3eacf !important; }
 .blocklyToolboxSelected .blocklyToolboxCategoryLabel { color: #26382f; }
@@ -119,6 +120,10 @@ input[type=checkbox], input[type=radio] { width: 20px; height: 20px; }
 #scene-cards strong { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; font-weight: 600; }
 #scene-cards small { display: none; }
 .tray-button { flex: none; width: 56px; min-height: 50px; padding: 4px; flex-direction: column; font-size: 11px; border-style: dashed; white-space: normal; line-height: 1.1; }
+/* Adding sprites is the tray's main action: a filled button with a large character icon. */
+.tray-button.tray-sprites { width: 64px; gap: 3px; border: 1px solid #267c70; background: #e5f2e8; color: #1d5f56; font-size: 12px; font-weight: 700; }
+.tray-button.tray-sprites:hover { background: #d6ebdc; }
+.tray-button.tray-sprites[data-ui-icon]::before { width: 24px; height: 24px; flex-basis: 24px; }
 
 /* Tabs */
 .tab-bar { flex: none; display: flex; border-bottom: 1px solid #e4e7dd; }
