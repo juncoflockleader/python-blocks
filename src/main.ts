@@ -37,7 +37,7 @@ import { installFixes, type RuntimeFault } from './guide/fixes';
 import { installGallery } from './guide/gallery';
 import { installLessons } from './guide/lessons';
 import { atLeast, installLevels, levelNames, requiredLevel, storedLevel, toolboxFor, LEVEL_KEY, type Level } from './ui/levels';
-import { installHelpSections, installInputHints, installLevelControl, installMenu, installPaletteHint, installPythonPlacement, installTabs, shellMarkup, trackKeyboard } from './ui/shell';
+import { installHelpSections, installInputHints, installLevelControl, installMenu, installPaletteHint, installPythonPlacement, installTabs, installViewSwitch, shellMarkup, trackKeyboard } from './ui/shell';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = shellMarkup + `<dialog id="migration-dialog"><h2>Choose startup order</h2><p>This older project has several loose stacks. Choose their order inside Program.</p><ol id="migration-order"></ol><p id="migration-error" role="alert"></p><button id="migration-apply" class="button primary">Use this order</button><button id="migration-cancel" class="button secondary">Cancel</button></dialog>`;
 
@@ -101,6 +101,7 @@ const gameView = new GameView(element('#game-overlay'), () => {
 stage.onReset = () => gameView.reset();
 let eventReady = false;
 let sceneEditor: ReturnType<typeof installSceneEditor> | undefined;
+let viewSwitch: ReturnType<typeof installViewSwitch> | undefined;
 const updateEventControls = () => {
   element('#event-input').hidden = (runningCompilation ?? compilation)?.executionMode !== 'events';
   element<HTMLButtonElement>('#event-send').disabled = !eventReady || !runningCompilation || !!debuggerView?.paused;
@@ -230,7 +231,8 @@ const nudges = installNudges({
 });
 const guide = installGuide({
   workspace, level: () => level, setLevel: next => levelControl.set(next),
-  load(project, title) { if (!installProject(prepareProject(JSON.stringify(project)).project)) return false; setTitle(title); return true; },
+  // A guided build works in the blocks, so it starts in Blocks view.
+  load(project, title) { if (!installProject(prepareProject(JSON.stringify(project)).project)) return false; setTitle(title); viewSwitch?.show('blocks'); return true; },
   select: id => sceneEditor?.select(id), prefer: id => { preferredTarget = id; }, showRecipe: recipe => ideas.show(recipe), reveal: list => { if (list) showHelp('builds'); else tabs.activate('help'); }, notify: helpDot,
   finished: () => helpDot(),
   stopped: () => nudges.empty(!workspace.getTopBlocks(false).length),
@@ -296,6 +298,14 @@ pythonEditor = installPythonEditor(workspace, {
 });
 
 const pythonPlacement = installPythonPlacement(() => Blockly.svgResize(workspace));
+viewSwitch = installViewSwitch(view => {
+  Blockly.hideChaff(); pythonPlacement.refresh();
+  // The workspace was hidden in Stage view: let Blockly measure it again.
+  if (view === 'blocks') { Blockly.svgResize(workspace); paletteHint.refresh(); }
+  sceneEditor?.view.refresh();
+});
+// "Go to script" centres a script in the workspace, so it opens Blocks view first.
+element('#scene-script-find').addEventListener('click', () => viewSwitch?.show('blocks'), { capture: true });
 
 debuggerView = installDebugger(workspace, {
   reveal: () => tabs.activate('output'),
@@ -367,7 +377,7 @@ function installProject(project: ReturnType<typeof snapshot>) {
   soundEditor.close();
   pythonEditor?.reset();
   restore(workspace, project);
-  runner.stop(); idle(); sceneEditor?.restore(); paint();
+  runner.stop(); idle(); sceneEditor?.restore(true); paint();
   autosaveEnabled = true; recoveryText = null; element('#recover').hidden = true;
   output.textContent = ''; outputPanel.hidden = true; element('#error-details').hidden = true; badge.hidden = true; tabs.mark('output', false);
   status.textContent = 'Ready'; updateCode();
@@ -451,7 +461,7 @@ assist = installAssist({
     return element('#python').textContent ?? '';
   },
 });
-let updatePending = false;
+let updatePending = false, updateGroup = '';
 workspace.addChangeListener(event => {
   if (event.type === Blockly.Events.SELECTED) {
     const id = (event as Blockly.Events.Selected).newElementId;
@@ -459,9 +469,17 @@ workspace.addChangeListener(event => {
     pythonEditor?.follow(id && workspace.getBlockById(id) ? id : null);
   }
   if (!event.isUiEvent) nudges.activity();
-  if (event.isUiEvent || updatePending) return;
+  if (event.isUiEvent) return;
+  updateGroup = event.group;
+  if (updatePending) return;
   updatePending = true;
-  queueMicrotask(() => { updatePending = false; updateCode(); });
+  queueMicrotask(() => {
+    updatePending = false;
+    // A block that gains or loses a warning re-renders and may bump a neighbour. That move
+    // belongs to the change that caused it, so a single Undo reverts both.
+    const group = Blockly.Events.getGroup(); Blockly.Events.setGroup(updateGroup || false);
+    try { updateCode(); } finally { Blockly.Events.setGroup(group || false); }
+  });
 });
 const resizeObserver = new ResizeObserver(() => Blockly.svgResize(workspace));
 resizeObserver.observe(element('#blockly'));
@@ -558,4 +576,4 @@ element<HTMLInputElement>('#project-file').addEventListener('change', async even
     else if (installProject(prepared.project)) { setTitle(file.name.replace(/\.python-blocks\.json$|\.json$/i, '') || 'My project'); offerLevel(); }
   } catch (error) { notice.textContent = `Could not open project: ${error instanceof Error ? error.message : error}. Your current work is unchanged.`; }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); blockSearch.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); blockSearch.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });

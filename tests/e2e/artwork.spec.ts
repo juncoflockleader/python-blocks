@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { unzipSync, strFromU8 } from 'fflate';
 import { reveal } from './shell';
+import { stagePixels } from './stage-pixels';
 
 async function saved(page: Page) { return page.evaluate(() => JSON.parse(localStorage.getItem('python-blocks.project.v1')!)); }
 async function open(page: Page) { await page.goto('/'); await page.locator('#project-file').setInputFiles('tests/fixtures/scene/sequential.json'); await (await reveal(page, '#scene-art')).click(); await expect(page.locator('#art-name')).toHaveValue('Bird'); }
@@ -73,7 +74,7 @@ test('orders painted frames, previews them and plays the saved animation in real
   expect(actor.frameSeconds).toBe(.08); expect(actor.costumes[1]).toBe(redId);
   await install(page, handlers(project, [['start', chain(b('scene_play_animation', {}, { SPRITE: ref() }), print(b('scene_get', { PROPERTY: 'costume_id' }, { SPRITE: ref() })))]]));
   await page.locator('#run').click(); await expect(page.locator('#output')).toHaveText(redId + '\n', { timeout: 60_000 });
-  await expect.poll(() => page.locator('#stage').evaluate(c => Array.from((c as HTMLCanvasElement).getContext('2d')!.getImageData(140, 160, 1, 1).data))).toEqual([255, 0, 0, 255]); await page.locator('#stop').click();
+  await expect.poll(() => page.locator('#stage').evaluate(stagePixels, [140, 160, 1, 1])).toEqual([255, 0, 0, 255]); await page.locator('#stop').click();
   const downloading = page.waitForEvent('download'); await (await reveal(page, '#export')).click(); const files = unzipSync(await readFile((await (await downloading).path())!)); expect(JSON.parse(strFromU8(files['scene.json'])).sprites[0].costumes).toEqual(actor.costumes);
 });
 
@@ -90,7 +91,7 @@ test('paints a backdrop, switches it with events and restores the authored backd
   await page.locator('#stage').focus(); await page.keyboard.press('Space'); await expect(page.locator('#output')).toHaveText('Night\n'); await expect(page.locator('#stage')).toHaveAttribute('data-backdrop', 'backdrop_night');
   await page.screenshot({ path: info.outputPath('backdrop-story.png'), fullPage: true }); await page.locator('#stop').click(); await page.locator('#run').click(); await expect(page.locator('#status')).toHaveText('Event session running'); await expect(page.locator('#stage')).toHaveAttribute('data-backdrop', id); await page.locator('#stop').click();
   await page.reload(); await expect(page.locator('#scene-backdrop option:checked')).toHaveText('My purple sky');
-  await expect.poll(() => page.locator('#stage').evaluate(c => Array.from((c as HTMLCanvasElement).getContext('2d')!.getImageData(10, 10, 1, 1).data))).toEqual([85, 51, 136, 255]);
+  await expect.poll(() => page.locator('#stage').evaluate(stagePixels, [10, 10, 1, 1])).toEqual([85, 51, 136, 255]);
 });
 
 test('retains drafts across closing and protects them from project changes and asset navigation', async ({ page }) => {

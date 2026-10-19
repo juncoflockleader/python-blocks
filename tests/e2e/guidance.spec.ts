@@ -63,7 +63,7 @@ test('Examples holds finished projects to play and change, with thumbnails and t
   await page.goto('/'); await page.locator('#examples-open').click();
   const card = page.locator('#examples-dialog [data-example="scene-star-game"]');
   await expect(card.locator('img')).toHaveJSProperty('complete', true);
-  expect(await card.locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(240);
+  expect(await card.locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(480); // the stage's own size, rendered on a 2× screen
   // The games that lessons build are under Lessons, not here.
   await expect(page.locator('#examples-dialog .example-card')).toHaveCount(10);
   await expect(page.locator('#examples-dialog [data-example="catch-the-star-game"]')).toHaveCount(0);

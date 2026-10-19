@@ -5,6 +5,7 @@ import type { ConvertedPython } from '../../src/bridge/converter';
 import type { Project } from '../../src/project';
 import { buildConverterHarness, prepare, convert, install } from './bridge-support';
 import { reveal } from './shell';
+import { stagePixels } from './stage-pixels';
 
 test.beforeAll(buildConverterHarness);
 const errors = new WeakMap<Page, string[]>();
@@ -62,8 +63,7 @@ test('edited drawing keeps independent pens, stamps and event erasure', async ({
   await expect.poll(async () => Number(await page.locator('#stage').getAttribute('data-ink-count')), { timeout: 8000 }).toBeGreaterThan(500);
   // Ink count is a cumulative work budget, not the number of visible marks.
   // Inspect the hidden flower sprite's green trail in the rendered stage.
-  const greenPixels = () => page.locator('#stage').evaluate(canvas => {
-    const data = (canvas as HTMLCanvasElement).getContext('2d')!.getImageData(10, 10, 220, 300).data;
+  const greenPixels = () => page.locator('#stage').evaluate(stagePixels, [10, 10, 220, 300]).then(data => {
     let count = 0; for (let i = 0; i < data.length; i += 4) if (data[i + 1] > data[i] * 1.3 && data[i + 1] > data[i + 2]) count++;
     return count;
   });

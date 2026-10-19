@@ -94,6 +94,11 @@ export const iconArt = {
   sprout: '<path d="M12 21V11M8 21h8M12 13C12 8 9 5 4 5c0 5 3 8 8 8Zm0-2c0-4 3-7 8-7 0 4-3 7-8 7Z"/>',
   bricks: '<rect x="3" y="13" width="8" height="7" rx="1"/><rect x="13" y="13" width="8" height="7" rx="1"/><rect x="8" y="4" width="8" height="7" rx="1"/>',
   rocket: '<path d="M12 2c3.5 2.5 5 6.5 5 10.5L15 16H9l-2-3.5C7 8.5 8.5 4.5 12 2Z"/><circle cx="12" cy="9" r="1.8"/><path d="m9 16-3 3 1-4.5M15 16l3 3-1-4.5M10.5 19l1.5 3 1.5-3"/>',
+  // Stage view: the view switch, the pan hand, fit the world and screen lines.
+  stage: '<rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M2 15l6-5 4 3 3-2 7 5"/>',
+  hand: '<path d="M7 12V6a1.5 1.5 0 0 1 3 0v5m0-1V4.5a1.5 1.5 0 0 1 3 0V10m0 0V5.5a1.5 1.5 0 0 1 3 0V11m0 0V8a1.5 1.5 0 0 1 3 0v6c0 4.5-3 8-7.5 8-2.5 0-4-1-5.5-3l-3-4.5a1.6 1.6 0 0 1 2.6-1.9L7 14"/>',
+  fit: '<path d="M3 9V3h6m6 0h6v6m0 6v6h-6m-6 0H3v-6"/><rect x="8" y="9" width="8" height="6" rx="1"/>',
+  grid: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 4v16M2 12h20"/>',
 } as const;
 export type IconName = keyof typeof iconArt;
 /** Moves that centre each drawing's bounds on the 24px grid, measured with
@@ -103,7 +108,7 @@ export const iconOffsets: Partial<Record<IconName, [number, number]>> = {
   folder: [-0.5, 0], upload: [0, -0.5], play: [-1, 0], restart: [0, -0.25], check: [-0.5, 0.5], search: [-0.5, -0.5], function: [-0.5, 0],
   volume: [-0.5, 0], mute: [-0.5, 0], music: [0, 0.75], sprite: [0, -0.5], keyboard: [0, -0.5], game: [0, -1], pen: [-0.5, 0.5], brush: [0, 0.25],
   eraser: [-0.5, 0], fill: [-0.5, 0.5], rotate: [0.25, 0.25], book: [0, -0.25], clock: [0, 0.5], learn: [0, 0.5], assist: [-0.5, 0.5], logic: [0, 1],
-  library: [-0.5, 0], unlock: [0, 0.25], spriteAdd: [-0.25, 0.5], sprout: [0, -0.5],
+  library: [-0.5, 0], unlock: [0, 0.25], spriteAdd: [-0.25, 0.5], sprout: [0, -0.5], stage: [0, -0.5], hand: [1.15, -0.5],
 };
 /** An icon's drawing, moved so it sits in the middle of its grid. */
 export function iconMarkup(name: IconName) {

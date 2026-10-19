@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs';
 import { strFromU8 } from 'fflate';
 import { exported, isolated, run } from './playable-support';
 import { reveal } from './shell';
+import { stagePixels } from './stage-pixels';
 
 const saved = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem('python-blocks.project.v1')!).workspace.pythonScene);
 async function open(page: Page) {
@@ -70,7 +71,7 @@ test('world templates preserve previous work, embed reusable artwork, undo toget
   try {
     await play.page.goto(play.url); await run(play.page); await expect(play.page.locator('#stage')).toHaveAttribute('data-world',scene.world);
     await expect(play.page.locator('#stage')).toHaveAttribute('data-backdrop',scene.worlds[1].backdrop);
-    const color=await play.page.locator('#stage').evaluate(canvas=>Array.from((canvas as HTMLCanvasElement).getContext('2d')!.getImageData(5,5,1,1).data)); expect(color[3]).toBe(255); expect(color.slice(0,3)).not.toEqual([253,253,249]);
+    const color=await play.page.locator('#stage').evaluate(stagePixels, [5,5,1,1]); expect(color[3]).toBe(255); expect(color.slice(0,3)).not.toEqual([253,253,249]);
     await play.page.screenshot({path:info.outputPath('stock-world-player.png'),fullPage:true}); expect(play.blocked).toEqual([]); expect(play.errors).toEqual([]);
   } finally { await play.close(); }
   await page.reload(); expect(await saved(page)).toEqual(scene);

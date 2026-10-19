@@ -9,6 +9,7 @@ import { handlerSignatures } from '../../src/language/functions';
 import { describeEvent } from '../../src/language/event-names';
 import { HAT_KINDS, HAT_TYPE, STARTER_HATS, handlerSignature, handlerState, hatItem, templateOf } from '../../src/language/hats';
 import { LEVELS, levelTypes, palette, requiredLevel, toolboxFor } from '../../src/ui/levels';
+import { resizeWorld } from '../../src/scene/world-size';
 import { paletteWorkspace } from './palette-workspace';
 
 type Item = Blockly.utils.toolbox.FlyoutItemInfo;
@@ -70,6 +71,9 @@ describe('levels', () => {
     expect(requiredLevel(w)).toMatchObject({ level: 'pro', uses: expect.arrayContaining([{ name: 'Worlds', level: 'pro' }]) });
     restore(w, prepareProject(readFileSync('src/scene/drawing-example.json', 'utf8')).project);
     expect(requiredLevel(w)).toEqual({ level: 'starter', uses: [] }); // pens, stamps and effects are all Starter tools
+    // One world bigger than the stage (screens added in Stage view) is a Builder tool; several worlds are Pro.
+    changeScene(w, resizeWorld(sceneState(w), 2, 1));
+    expect(requiredLevel(w)).toEqual({ level: 'builder', uses: [{ name: 'Big world', level: 'builder' }] });
     changeScene(w, { ...sceneState(w), watchers: [{ id: 'watch', sprite: sceneState(w).sprites[0].id, property: 'x' }] });
     expect(requiredLevel(w).uses).toContainEqual({ name: 'Watch values', level: 'builder' });
   });

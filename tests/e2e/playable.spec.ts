@@ -4,6 +4,7 @@ import { join } from 'node:path';
 import { strFromU8 } from 'fflate';
 import { exported, isolated, key, openProject, run } from './playable-support';
 import { reveal } from './shell';
+import { stagePixels } from './stage-pixels';
 
 test('an exported input game runs offline on its own server, asks, watches, wins by touch and replays', async ({page,browser},info) => {
   const project = JSON.parse(await readFile('src/scene/input-example.json','utf8'));
@@ -65,7 +66,7 @@ test('portable drawing preserves pen trails and stamps and clears them from keyb
     await expect.poll(async () => Number(await play.page.locator('#stage').getAttribute('data-ink-count'))).toBeGreaterThan(490);
     await play.page.screenshot({path:info.outputPath('portable-drawing.png'),fullPage:true});
     await expect(play.page.locator('#stage')).toHaveAttribute('data-ink-count','501');
-    const inkPixels = () => play.page.locator('#stage').evaluate(c => { const data = (c as HTMLCanvasElement).getContext('2d')!.getImageData(0,0,220,320).data; let colored = 0; for (let i=0;i<data.length;i+=4) if (data[i]<190 || data[i+1]<190 || data[i+2]<190) colored++; return colored; });
+    const inkPixels = () => play.page.locator('#stage').evaluate(stagePixels, [0,0,220,320]).then(data => { let colored = 0; for (let i=0;i<data.length;i+=4) if (data[i]<190 || data[i+1]<190 || data[i+2]<190) colored++; return colored; });
     expect(await inkPixels()).toBeGreaterThan(1000);
     await key(play.page,'Space'); await expect.poll(inkPixels).toBe(0);
     expect(play.blocked).toEqual([]); expect(play.errors).toEqual([]);

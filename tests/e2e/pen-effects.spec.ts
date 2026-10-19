@@ -2,6 +2,7 @@ import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { unzipSync, strFromU8 } from 'fflate';
 import { reveal } from './shell';
+import { stagePixels } from './stage-pixels';
 
 type B = { type: string; fields?: Record<string, string>; inputs?: Record<string, { block: B }>; next?: { block: B }; [key: string]: unknown };
 const b = (type: string, fields: Record<string, string> = {}, inputs: Record<string, B> = {}): B => ({ type, fields, inputs: Object.fromEntries(Object.entries(inputs).map(([k, v]) => [k, { block: v }])) });
@@ -14,7 +15,7 @@ const pen = (id: string, down: boolean) => actor(id, 'scene_pen_state', { ACTION
 const effect = (id: string, name: string, value: number) => actor(id, 'scene_effect_set', { EFFECT: name }, { VALUE: num(value) });
 const hide = (id: string) => actor(id, 'scene_visibility', { ACTION: 'hide' });
 const print = (s: string) => b('text_print', {}, { TEXT: txt(s) });
-const pixel = (page: Page, x: number, y: number) => page.locator('#stage').evaluate((c, p) => Array.from((c as HTMLCanvasElement).getContext('2d')!.getImageData(p.x, p.y, 1, 1).data), { x: x + 240, y: 160 - y });
+const pixel = (page: Page, x: number, y: number) => page.locator('#stage').evaluate(stagePixels, [x + 240, 160 - y, 1, 1]);
 const saved = (page: Page) => page.evaluate(() => JSON.parse(localStorage.getItem('python-blocks.project.v1')!));
 async function install(page: Page, entries: [string, B][], configure?: (data: any) => void) {
   const data = JSON.parse(await readFile('tests/fixtures/scene/sequential.json', 'utf8')); data.languageVersion = 11; data.workspace.pythonScene.background = '#ffffff';
@@ -61,7 +62,7 @@ test('all seven sprite effects change real pixels and clear restores the source'
   const values: [string, number][] = [['color', 120], ['brightness', -50], ['ghost', 65], ['whirl', 180], ['fisheye', 100], ['pixelate', 12], ['mosaic', 2]];
   const entries: [string, B][] = [['start', hide('friend')], ...values.map(([name, value], i): [string, B] => [`key:${i}`, chain(actor('player', 'scene_effect_clear'), effect('player', name, value), print(name))]), ['key:c', actor('player', 'scene_effect_clear')]];
   await install(page, entries, p => { p.workspace.pythonScene.sprites[0].size = 200; }); await run(page);
-  const pixels = () => page.locator('#stage').evaluate(c => Array.from((c as HTMLCanvasElement).getContext('2d')!.getImageData(90, 115, 100, 90).data));
+  const pixels = () => page.locator('#stage').evaluate(stagePixels, [90, 115, 100, 90]);
   const before = await pixels();
   for (let i = 0; i < 7; i++) { await key(page, String(i)); await expect.poll(pixels).not.toEqual(before); await key(page, 'c'); await expect.poll(pixels).toEqual(before); }
   await expect(page.locator('#output')).toHaveText('color\nbrightness\nghost\nwhirl\nfisheye\npixelate\nmosaic\n'); await page.locator('#stop').click();

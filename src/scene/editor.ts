@@ -16,6 +16,8 @@ import { installScenePalette } from './palette';
 import { Stage } from '../stage';
 import { backdrops, builtins, costumes, spriteFrames, type SceneInput, type RotationStyle } from './model';
 import { changeScene, sceneState } from './state';
+import { installStageView } from './stage-view';
+import { resizeWorld, screenLimits, worldScreens } from './world-size';
 
 const numberField = (id: string, label: string, min: number, max: number) => `<label>${label} <input id="${id}" type="number" inputmode="decimal" min="${min}" max="${max}" step="any" required></label>`;
 const nameAttributes = 'autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"';
@@ -40,6 +42,9 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     <p id="scene-live"></p><p id="scene-error" role="alert"></p>
     <section class="stage-settings" aria-labelledby="stage-settings-title"><h3 id="stage-settings-title">Stage &amp; assets</h3>
       <label class="level-pro">Starting world <select id="scene-browse-world"></select></label>
+      <div class="world-screens level-builder" role="group" aria-labelledby="world-screens-title"><span id="world-screens-title" class="world-screens-title">World size</span>
+        ${(['wide', 'tall'] as const).map(side => `<span class="stepper"><span id="world-${side}-label">Screens ${side}</span><button id="world-${side}-less" class="button secondary ui-icon-only" type="button" aria-label="One screen ${side === 'wide' ? 'narrower' : 'shorter'}" title="One screen ${side === 'wide' ? 'narrower' : 'shorter'}">Fewer</button><output id="world-${side}" aria-labelledby="world-${side}-label">1</output><button id="world-${side}-more" class="button secondary ui-icon-only" type="button" aria-label="One screen ${side === 'wide' ? 'wider' : 'taller'}" title="One screen ${side === 'wide' ? 'wider' : 'taller'}">More</button></span>`).join('')}
+        <p class="tab-note">One screen is the stage. Removing a screen moves its sprites onto the screens that stay; Undo brings it back.</p></div>
       <div class="scene-toolbar"><label>Backdrop <select id="scene-backdrop"></select></label><label>Background <input id="scene-background" type="color" value="#fdfdf9"></label></div>
       <div class="scene-toolbar" id="stage-assets"><button id="scene-stock-backdrop" class="button secondary">Backdrop library</button><button id="scene-art" class="button secondary">Artwork & frames</button><button id="scene-import" class="button secondary">Import costume</button><input id="scene-image" type="file" accept="image/png,image/jpeg,image/webp" hidden></div>
     </section>`;
@@ -57,6 +62,27 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
   let running = false, ready = false, editing = true, saved = '', selected = '';
   document.querySelector('.stage-wrap')!.insertAdjacentHTML('beforeend', '<div id="touch-controls" class="touch-controls"></div>');
   const playInput = new PlayInput(canvas, stage, el('touch-controls'), input);
+  // The editing view (pan, zoom, map) is installed before the sprite drag below, so it claims pans first.
+  let layout = { world: '', wide: 1, tall: 1, maxWide: 1, maxTall: 1 }, cameraWorld: string | null = null, cameraKey = '';
+  const view = installStageView(stage, canvas, {
+    editing: () => editing, world: () => layout.world, screens: () => layout,
+    resize: (wide, tall) => resize(wide, tall), selectedName: () => stage.getSprite(selected)?.name ?? '',
+  });
+  /** Grow or shrink the current world, in screens. One Undo step; false when it was refused. */
+  const resize = (wide: number, tall: number) => {
+    let done = false;
+    attempt(() => { if (!editing) return; changeScene(workspace, resizeWorld(sceneState(workspace), wide, tall)); done = true; render(true); });
+    return done;
+  };
+  /** The World size steppers show the current world's screens and stop at its limits. */
+  const steppers = () => {
+    for (const side of ['wide', 'tall'] as const) {
+      el(`world-${side}`).textContent = String(layout[side]);
+      el<HTMLButtonElement>(`world-${side}-less`).disabled = !editing || layout[side] <= 1;
+      el<HTMLButtonElement>(`world-${side}-more`).disabled = !editing || layout[side] >= layout[side === 'wide' ? 'maxWide' : 'maxTall'];
+    }
+  };
+  for (const side of ['wide', 'tall'] as const) for (const [delta, id] of [[-1, 'less'], [1, 'more']] as const) el(`world-${side}-${id}`).addEventListener('click', () => resize(layout.wide + (side === 'wide' ? delta : 0), layout.tall + (side === 'tall' ? delta : 0)));
   el('audio-controls').append(el('touch-toggle'));
   el('help-slot').insertAdjacentHTML('beforeend', '<details class="scene-input-settings"><summary>Input help & touch buttons</summary><p>Focus the stage for keys; hold touch buttons to move. A and B send the chosen keys. Answering questions or leaving the window releases held controls.</p><label>Action A key <select id="touch-key-a"></select></label><label>Action B key <select id="touch-key-b"></select></label></details>');
   for (const action of ['a', 'b'] as const) { const select = el<HTMLSelectElement>('touch-key-' + action); select.replaceChildren(...keys.map(([label, key]) => new Option(label, key))); select.addEventListener('change', () => attempt(() => { if (!editing) return; const next = sceneState(workspace); next.controls = { ...(next.controls ?? defaultControls()), [action]: select.value }; changeScene(workspace, next); render(true); })); }
@@ -86,7 +112,7 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
   const navigation = installSceneNavigation(workspace, choose, id => attempt(() => { if (!editing) return; const state = sceneState(workspace); state.world = id || null; changeScene(workspace,state); render(true); }), () => attempt(() => {
     if (!editing) return; const state = sceneState(workspace), sprite = state.sprites.find(s => s.id === selected); if (!sprite) return;
     if (sprite.world && sprite.world !== state.world) { state.world = sprite.world; changeScene(workspace,state); render(true); }
-    stage.previewCamera(sprite.x,sprite.y); canvas.scrollIntoView({block:'nearest'}); canvas.focus({preventScroll:true});
+    view.centerOn(sprite.x,sprite.y); canvas.scrollIntoView({block:'nearest'}); canvas.focus({preventScroll:true});
   }), () => { const sprite = sceneState(workspace).sprites.find(s => s.id === selected); if (sprite) artwork.open({kind:'costume',id:sprite.costume}); });
   const appearance = installAppearanceEditor(workspace, () => selected, () => editing);
   const dataEditor = installDataEditor(workspace, () => selected, () => editing);
@@ -118,7 +144,7 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     for (const id of ['scene-copy', 'scene-delete']) el<HTMLButtonElement>(id).disabled = !editing || !sprite;
     for (const action of ['a', 'b'] as const) { el<HTMLSelectElement>('touch-key-' + action).value = (scene.controls ?? defaultControls())[action]; el<HTMLSelectElement>('touch-key-' + action).disabled = !editing; }
     if (editing) playInput.configure(scene.controls);
-    stage.selected = editing ? selected : null; stage.paint(); live();
+    stage.selected = editing ? selected : null; stage.paint(); live(); view.refresh();
   }
   function live() {
     const sprite = stage.getSprite(selected);
@@ -132,15 +158,22 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     saved = json;
     if (!scene.sprites.some(s => s.id === selected)) selected = scene.sprites[0]?.id ?? '';
     select.replaceChildren(...(scene.sprites.length ? scene.sprites.map(s => new Option(s.name + (s.world ? ` · ${scene.worlds?.find(w => w.id === s.world)?.name ?? 'world'}` : ''), s.id)) : [new Option('No sprites yet', '')])); select.value = selected;
-    if (editing) stage.reset(scene);
+    const screens = worldScreens(scene), limits = screenLimits(scene);
+    layout = { world: scene.world ?? '', ...screens, maxWide: limits.wide, maxTall: limits.tall };
+    steppers();
+    // When the world's camera settings change (as with “Move camera here”), show where the game now starts.
+    const camera = JSON.stringify((scene.worlds?.find(w => w.id === scene.world) ?? scene).camera ?? null), moved = layout.world === cameraWorld && camera !== cameraKey;
+    cameraWorld = layout.world; cameraKey = camera;
+    if (editing) { stage.reset(scene); view.sync(); if (moved) view.home(false); }
     loadProperties();
   }
   function controls() {
     for (const id of ['scene-add', 'scene-stock', 'tray-paint', 'scene-stock-backdrop', 'scene-import', 'scene-background', 'scene-backdrop', 'scene-art', 'scene-worlds']) (el(id) as HTMLButtonElement).disabled = !editing;
+    steppers();
     el<HTMLButtonElement>('scene-reset').disabled = running;
-    el('scene-mode').textContent = editing ? 'Drag sprites on the stage to place them before running.' : running ? 'Running. Runtime movement does not change your saved layout.' : 'Run result. Reset stage to edit the saved starting layout.';
+    el('scene-mode').textContent = editing ? 'Drag sprites on the stage to place them before running. Drag empty space to look around.' : running ? 'Running. Runtime movement does not change your saved layout.' : 'Run result. Reset stage to edit the saved starting layout.';
     el('scene-mode').dataset.state = editing ? 'editing' : running ? 'running' : 'result';
-    canvas.setAttribute('aria-label', editing ? 'Sprite placement and drawing stage' : 'Interactive stage. Click to focus, then use arrow keys, letters, numbers, or space.');
+    canvas.setAttribute('aria-label', editing ? 'Sprite placement and drawing stage. Arrow keys look around; plus and minus zoom.' : 'Interactive stage. Click to focus, then use arrow keys, letters, numbers, or space.');
     loadProperties();
   }
   const uniqueName = (base: string) => { const names = sceneState(workspace).sprites.map(s => s.name); let n = 1; while (names.includes(`${base} ${n}`)) n++; return `${base} ${n}`; };
@@ -234,11 +267,14 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     openLibrary(kind: 'costume' | 'backdrop' | 'world') { if (editing) stock.open(kind); },
     /** On touch screens, show the on-screen controller when the program listens for keys. */
     touchControls(show: boolean) { playInput.showTouch(show); },
-    start(scene = sceneState(workspace)) { stock.close(); worlds.close(); artwork.close(); settings.close(); clearKeys(); drag = null; editing = false; running = true; ready = false; stage.selected = null; stage.reset(scene); playInput.configure(scene.controls); playInput.setEnabled(false); watchers.start(scene); controls(); },
+    start(scene = sceneState(workspace)) { stock.close(); worlds.close(); artwork.close(); settings.close(); clearKeys(); drag = null; editing = false; running = true; ready = false; stage.selected = null; stage.reset(scene); view.sync(); playInput.configure(scene.controls); playInput.setEnabled(false); watchers.start(scene); controls(); },
     ready() { ready = true; playInput.setEnabled(true); },
     pause(paused: boolean) { clearKeys(); playInput.setEnabled(ready && !paused); },
     stop() { clearKeys(); playInput.setEnabled(false); ready = false; running = false; watchers.stop(); controls(); },
-    restore() { clearKeys(); playInput.setEnabled(false); ready = false; running = false; editing = true; watchers.restore(); render(true); controls(); },
-    dispose() { settings.remove(); stock.dispose(); worlds.dispose(); artwork.dispose(); playInput.dispose(); workspace.removeChangeListener(changed); window.removeEventListener('pointerup', endDrag); canvas.removeEventListener('pointerdown', pointerDown); canvas.removeEventListener('pointermove', pointerMove); for (const event of ['pointerup', 'pointercancel', 'lostpointercapture']) canvas.removeEventListener(event, endDrag as EventListener); },
+    /** Back to editing. A newly opened project (`fresh`) starts from its own starting views. */
+    restore(fresh = false) { clearKeys(); playInput.setEnabled(false); ready = false; running = false; editing = true; if (fresh) view.forget(); watchers.restore(); render(true); controls(); },
+    /** The stage's editing view: pan, zoom, fit and the tools rail. */
+    view,
+    dispose() { view.dispose(); settings.remove(); stock.dispose(); worlds.dispose(); artwork.dispose(); playInput.dispose(); workspace.removeChangeListener(changed); window.removeEventListener('pointerup', endDrag); canvas.removeEventListener('pointerdown', pointerDown); canvas.removeEventListener('pointermove', pointerMove); for (const event of ['pointerup', 'pointercancel', 'lostpointercapture']) canvas.removeEventListener(event, endDrag as EventListener); },
   };
 }

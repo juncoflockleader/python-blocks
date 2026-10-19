@@ -12,7 +12,7 @@ export function installStockLibrary(add: (kind: StockKind, id: string, signal: A
   const dialog = el<HTMLDialogElement>('stock-dialog'), kind = el<HTMLSelectElement>('stock-kind'), search = el<HTMLInputElement>('stock-search'), category = el<HTMLSelectElement>('stock-category');
   let generation = 0, operation: AbortController | undefined;
   async function preview(type: StockKind, id: string) {
-    if (type !== 'world') return stockCanvas(stockArtwork.find(a => a.kind === type && a.id === id)!);
+    if (type !== 'world') return stockCanvas(stockArtwork.find(a => a.kind === type && a.id === id)!, 2);
     const template = worldTemplates.find(t => t.id === id)!, world = templateLayout(template);
     const canvas = document.createElement('canvas'); canvas.width = world.map.columns * 32; canvas.height = 320;
     const c = canvas.getContext('2d')!; c.drawImage(await stockCanvas(stockArtwork.find(a => a.kind === 'backdrop' && a.id === template.backdrop)!),0,0,canvas.width,canvas.height);

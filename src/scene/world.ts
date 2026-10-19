@@ -2,6 +2,9 @@ export interface Camera { x: number; y: number; follow?: string | null; clamp: b
 export interface Tilemap { columns: number; rows: number; tileSize: number; tiles: (string | null)[]; walls: boolean[] }
 export interface World { id: string; name: string; background: string; backdrop?: string | null; map: Tilemap; camera: Camera }
 export const defaultCamera = (): Camera => ({ x: 0, y: 0, follow: null, clamp: true });
+/** Up to 256 tiles a side, and never more than 4096 pixels: the pen layer follows the map. */
+export const MAX_TILES = 256, MAX_PIXELS = 4096;
+const fits = (n: number, tileSize: number) => Number.isInteger(n) && n >= 1 && n <= MAX_TILES && n * tileSize <= MAX_PIXELS;
 export const newMap = (columns = 30, rows = 20, tileSize = 16): Tilemap => ({ columns, rows, tileSize, tiles: Array(columns * rows).fill(null), walls: Array(columns * rows).fill(false) });
 export function validCamera(value: unknown): value is Camera {
   const c = value as Camera;
@@ -9,10 +12,10 @@ export function validCamera(value: unknown): value is Camera {
 }
 export function validMap(value: unknown, assets?: Set<string>): value is Tilemap {
   const m = value as Tilemap;
-  return !!m && [m.columns, m.rows].every(n => Number.isInteger(n) && n >= 1 && n <= 64) && [8, 16, 32, 64].includes(m.tileSize) && Array.isArray(m.tiles) && m.tiles.length === m.columns * m.rows && m.tiles.every(t => t === null || typeof t === 'string' && /^[A-Za-z0-9_-]{1,48}$/.test(t) && (!assets || assets.has(t))) && Array.isArray(m.walls) && m.walls.length === m.tiles.length && m.walls.every(w => typeof w === 'boolean');
+  return !!m && [8, 16, 32, 64].includes(m.tileSize) && [m.columns, m.rows].every(n => fits(n, m.tileSize)) && Array.isArray(m.tiles) && m.tiles.length === m.columns * m.rows && m.tiles.every(t => t === null || typeof t === 'string' && /^[A-Za-z0-9_-]{1,48}$/.test(t) && (!assets || assets.has(t))) && Array.isArray(m.walls) && m.walls.length === m.tiles.length && m.walls.every(w => typeof w === 'boolean');
 }
 export function resizeMap(old: Tilemap, columns: number, rows: number, tileSize: number): Tilemap {
-  if (![columns, rows].every(n => Number.isInteger(n) && n >= 1 && n <= 64) || ![8, 16, 32, 64].includes(tileSize)) throw new Error('Maps need 1–64 columns/rows and tiles of 8, 16, 32 or 64 pixels.');
+  if (![8, 16, 32, 64].includes(tileSize) || ![columns, rows].every(n => fits(n, tileSize))) throw new Error(`Maps need 1–${MAX_TILES} columns and rows, tiles of 8, 16, 32 or 64 pixels, and at most ${MAX_PIXELS} pixels a side.`);
   const next = newMap(columns, rows, tileSize);
   for (let r = 0; r < Math.min(rows, old.rows); r++) for (let c = 0; c < Math.min(columns, old.columns); c++) { next.tiles[r * columns + c] = old.tiles[r * old.columns + c]; next.walls[r * columns + c] = old.walls[r * old.columns + c]; }
   return next;

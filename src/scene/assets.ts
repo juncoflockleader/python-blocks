@@ -36,7 +36,7 @@ export async function assetCanvas(asset: Asset, kind: AssetKind) {
   const canvas = document.createElement('canvas'); canvas.width = asset.width; canvas.height = asset.height;
   const ctx = canvas.getContext('2d')!;
   if (asset.data) {
-    const image = new Image(); image.src = asset.data; await image.decode(); ctx.drawImage(image, 0, 0);
+    const image = new Image(); image.src = asset.data; await image.decode(); ctx.drawImage(image, 0, 0, asset.width, asset.height);
   } else if (kind === 'backdrop') paintBuiltinBackdrop(ctx, asset.id);
   else { ctx.translate(asset.width / 2, asset.height / 2); paintBuiltinCostume(ctx, asset.id); }
   return canvas;

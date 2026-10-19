@@ -26,6 +26,7 @@ export const shellMarkup = `
       <a class="brand-mark" href="./" aria-label="Python Blocks home">pb</a>
       <div class="project-title"><strong id="project-title">My project</strong><span id="save-state" class="project-notice" role="status"></span></div>
       <div class="top-history" id="top-history" aria-label="Edit history"></div>
+      <div class="view-switch" id="view-switch" role="group" aria-label="View"><button id="view-blocks" class="view-option" type="button" aria-pressed="true" title="Blocks view: code first, with a small stage">Blocks</button><button id="view-stage" class="view-option" type="button" aria-pressed="false" title="Stage view: a large stage to place sprites, build big worlds and play">Stage</button></div>
       <span class="top-spacer"></span>
       <button id="run" class="button primary run-button">Run code</button><button id="stop" class="button secondary" disabled>Stop</button>
       <span class="top-divider" aria-hidden="true"></span>
@@ -34,7 +35,7 @@ export const shellMarkup = `
         <select id="level-select" class="level-native" aria-hidden="true" tabindex="-1">${LEVELS.map(level => `<option value="${level}">${levelNames[level]}</option>`).join('')}</select>
         <ul id="level-list" class="level-list" role="listbox" aria-label="Level" tabindex="-1" hidden>${LEVELS.map(level => `<li id="level-option-${level}" role="option" data-level="${level}" aria-selected="false"><span class="level-icon" aria-hidden="true"></span><span class="level-text"><strong>${levelNames[level]}</strong><small>${levelDescriptions[level]}</small></span></li>`).join('')}</ul>
       </div>
-      <button id="examples-open" class="button secondary">Examples</button><button id="lessons-open" class="button secondary">Lessons</button>
+      <button id="examples-open" class="button secondary" title="Examples to play and remix">Examples</button><button id="lessons-open" class="button secondary" title="Step-by-step lessons">Lessons</button>
       <div class="menu-wrap"><button id="menu-button" class="button secondary ui-icon-only" aria-haspopup="true" aria-expanded="false" aria-controls="app-menu" title="More actions">More actions</button>
         <div id="app-menu" class="app-menu" hidden>
           <div class="menu-group" role="group" aria-label="Project file"><button id="save" class="button secondary">Save project</button><button id="open" class="button secondary">Open project</button><input id="project-file" type="file" accept=".json,application/json" hidden><button id="export" class="button secondary">Export Python</button><button id="export-playable" class="button secondary level-builder">Export playable</button><button id="example" class="button secondary">Reset example</button><button id="menu-examples" class="button secondary">Examples…</button><button id="menu-lessons" class="button secondary">Lessons…</button></div>
@@ -51,6 +52,8 @@ export const shellMarkup = `
         <div class="workspace-tools" id="workspace-tools" aria-label="Workspace tools"><button id="block-search-toggle" class="button secondary ui-icon-only" aria-expanded="false" aria-controls="block-search" title="Find blocks">Find blocks</button><button id="zoom-in" class="button secondary ui-icon-only" title="Zoom in">Zoom in</button><button id="zoom-out" class="button secondary ui-icon-only" title="Zoom out">Zoom out</button><button id="zoom-reset" class="button secondary ui-icon-only" title="Center blocks">Center blocks</button></div>
       </section>
       <section class="python-side" id="python-side" aria-label="Python beside blocks" hidden></section>
+      <nav class="stage-rail" id="stage-rail" aria-label="Stage tools"></nav>
+      <section class="stage-main" id="stage-main" aria-label="Stage view"></section>
       <aside class="right-column" aria-label="Stage and tools">
         <section class="stage-panel" aria-labelledby="stage-title"><h2 id="stage-title" class="visually-hidden">Stage</h2>
           <div class="stage-wrap"><div class="stage-surface"><canvas id="stage" width="480" height="320" aria-label="Drawing stage">Your drawing appears here.</canvas><div id="game-overlay"></div></div>
@@ -186,6 +189,38 @@ export function installMenu() {
   return { open: () => set(true), close: () => set(false), dispose: () => document.removeEventListener('pointerdown', outside) };
 }
 
+export const VIEWS = ['blocks', 'stage'] as const;
+export type ShellView = typeof VIEWS[number];
+const VIEW_KEY = 'python-blocks.view.v1';
+/** Blocks view (code first, small stage) or Stage view (a large stage between a
+ * tools rail and the sprite column). Same project and Undo; only the layout
+ * changes. The choice is remembered per browser; Stage view needs 900 px. */
+export function installViewSwitch(changed: (view: ShellView) => void) {
+  const root = document.documentElement, wide = matchMedia('(min-width: 900px)');
+  const panel = document.querySelector<HTMLElement>('.stage-panel')!, main = document.getElementById('stage-main')!, column = document.querySelector<HTMLElement>('.right-column')!;
+  let wanted: ShellView = 'blocks', current: ShellView | null = null;
+  try { if (localStorage.getItem(VIEW_KEY) === 'stage') wanted = 'stage'; } catch { /* Blocks view */ }
+  const place = () => {
+    const next: ShellView = wanted === 'stage' && wide.matches ? 'stage' : 'blocks';
+    for (const view of VIEWS) document.getElementById(`view-${view}`)!.setAttribute('aria-pressed', String(view === next));
+    if (next === current) return;
+    current = next; root.dataset.view = next;
+    // The hidden workspace can be neither focused nor reached by assistive technology.
+    document.querySelector<HTMLElement>('.blocks-panel')!.inert = next === 'stage';
+    // The stage keeps its element (and canvas) as it moves; only its place in the layout changes.
+    if (next === 'stage') main.append(panel); else column.prepend(panel);
+    changed(next);
+  };
+  const show = (view: ShellView) => {
+    wanted = view;
+    try { localStorage.setItem(VIEW_KEY, view); } catch { /* this tab still switches */ }
+    place();
+  };
+  for (const view of VIEWS) document.getElementById(`view-${view}`)!.addEventListener('click', () => show(view));
+  wide.addEventListener('change', place); place();
+  return { show, get current() { return current ?? 'blocks'; }, dispose: () => wide.removeEventListener('change', place) };
+}
+
 /** Python lives in its tab; on wide screens it can sit beside the workspace. */
 export function installPythonPlacement(resize: () => void) {
   const toggle = document.getElementById('python-side-toggle') as HTMLButtonElement, side = document.getElementById('python-side')!;
@@ -194,16 +229,17 @@ export function installPythonPlacement(resize: () => void) {
   const wide = matchMedia('(min-width: 1080px)');
   let wanted = false;
   const place = () => {
-    const beside = wanted && wide.matches;
+    // Stage view has no workspace to sit beside, so Python goes back to its tab.
+    const blocks = document.documentElement.dataset.view !== 'stage', beside = wanted && wide.matches && blocks;
     (beside ? side : home).append(panel); side.hidden = !beside; note.hidden = !beside;
     document.getElementById('shell')!.toggleAttribute('data-python-side', beside);
-    toggle.setAttribute('aria-pressed', String(beside)); toggle.disabled = !wide.matches;
-    toggle.title = wide.matches ? '' : 'Side by side needs a window at least 1080 pixels wide.';
+    toggle.setAttribute('aria-pressed', String(beside)); toggle.disabled = !wide.matches || !blocks;
+    toggle.title = !blocks ? 'Side by side shows Python beside the blocks, in Blocks view.' : wide.matches ? '' : 'Side by side needs a window at least 1080 pixels wide.';
     resize();
   };
   toggle.addEventListener('click', () => { wanted = !(wanted && wide.matches); place(); });
   wide.addEventListener('change', place); place();
-  return { dispose: () => wide.removeEventListener('change', place) };
+  return { refresh: place, dispose: () => wide.removeEventListener('change', place) };
 }
 
 /** Level control, persisted per browser, plus the one-time prompt shown when a

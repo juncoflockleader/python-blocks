@@ -98,7 +98,8 @@ export function installArtEditor(workspace: Blockly.WorkspaceSvg, selectedSprite
     const state = scene(), assets = kind === 'costume' ? state.assets : state.backdrops ??= [];
     const existing = copy ? undefined : assets.find(a => a.id === identity), id = existing?.id ?? crypto.randomUUID();
     const asset: Costume = { id, name, width: raster.width, height: raster.height, data: draftCanvas().toDataURL('image/png') };
-    if (existing) Object.assign(existing, asset); else assets.push(asset);
+    // This editor paints at stage size, so a saved draft is 1× even if it began as 2× library art.
+    if (existing) { Object.assign(existing, asset); delete existing.resolution; } else assets.push(asset);
     if (kind === 'backdrop') state.backdrop = id;
     else {
       const sprite = state.sprites.find(s => s.id === spriteSelect.value);

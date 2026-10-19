@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { reveal } from './shell';
+import { stagePixels } from './stage-pixels';
 const fixture = JSON.parse(readFileSync('src/scene/input-example.json','utf8'));
 const b = (type: string, fields: Record<string, unknown> = {}, inputs: Record<string, any> = {}): any => ({type,fields,inputs:Object.fromEntries(Object.entries(inputs).map(([k,v]) => [k,{block:v}]))});
 const n = (v: number) => b('py_number',{VALUE:String(v)}), t = (v: string) => b('text',{TEXT:v});
@@ -133,7 +134,7 @@ test('color contact includes immediate pen/stamp/turtle erasure, tiles, camera c
     s.backdrops = [{...s.assets[1],id:'solid_blue',name:'Blue backdrop'}];
   });
   await run(page); await expect.poll(() => lines(page)).toEqual(['False','True','False','True','False','True','False','True','False','True','False','True','False','True','False','True','True','False','done']);
-  await expect.poll(() => page.locator('#stage').evaluate(c => Array.from((c as HTMLCanvasElement).getContext('2d')!.getImageData(101,101,1,1).data))).toEqual([224,70,70,255]);
+  await expect.poll(() => page.locator('#stage').evaluate(stagePixels, [101,101,1,1])).toEqual([224,70,70,255]);
 });
 
 test('transparent holes, transformed masks and translucent occluders follow visible color pixels', async ({ page }) => {

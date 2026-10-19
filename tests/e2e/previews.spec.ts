@@ -8,6 +8,8 @@ import { reveal } from './shell';
  * do. Each is cached by a hash of its inputs: in CI a stale preview fails, and
  * locally it is re-rendered and written next to the app's public files. */
 test.describe.configure({ mode: 'serial' });
+// A 2× screen draws the stage at 960 × 640; previews keep the stage's own 480 × 320.
+test.use({ deviceScaleFactor: 2 });
 const stale = (what: string) => { if (process.env.CI) throw new Error(`${what} is out of date. Run the previews spec locally and commit the result.`); };
 const gallery = JSON.parse(readFileSync('content/gallery.json', 'utf8')) as { id: string; project: string }[];
 
@@ -22,9 +24,9 @@ function record(page: Page) {
     // Copy the stage every frame: a canvas stream only emits frames when it is drawn,
     // and a still scene would otherwise record almost nothing.
     const stage = document.querySelector<HTMLCanvasElement>('#stage')!, copy = document.createElement('canvas');
-    copy.width = stage.width; copy.height = stage.height; copy.style.cssText = 'position:fixed;left:-9999px;top:0'; document.body.append(copy);
+    copy.width = 480; copy.height = 320; copy.style.cssText = 'position:fixed;left:-9999px;top:0'; document.body.append(copy);
     const context = copy.getContext('2d')!; let frame = 0;
-    const draw = () => { context.drawImage(stage, 0, 0); frame = requestAnimationFrame(draw); }; draw();
+    const draw = () => { context.drawImage(stage, 0, 0, 480, 320); frame = requestAnimationFrame(draw); }; draw();
     const stream = copy.captureStream(24);
     const start = (mimeType: string) => {
       const recorder = new MediaRecorder(stream, { mimeType, videoBitsPerSecond: 350_000 }), chunks: Blob[] = [];
@@ -36,7 +38,7 @@ function record(page: Page) {
     const stops = [start('video/webm;codecs=vp9'), start('video/mp4;codecs=avc1')];
     await new Promise(resolve => setTimeout(resolve, 2000));
     const blobs = await Promise.all(stops.map(stop => stop()));
-    const still = document.createElement('canvas'); still.width = 240; still.height = 160; still.getContext('2d')!.drawImage(stage, 0, 0, 240, 160);
+    const still = document.createElement('canvas'); still.width = 480; still.height = 320; still.getContext('2d')!.drawImage(stage, 0, 0, 480, 320);
     cancelAnimationFrame(frame); copy.remove();
     const base64 = async (blob: Blob) => { const bytes = new Uint8Array(await blob.arrayBuffer()); let binary = ''; for (const byte of bytes) binary += String.fromCharCode(byte); return btoa(binary); };
     return { webm: await base64(blobs[0]), mp4: await base64(blobs[1]), poster: still.toDataURL('image/png').split(',')[1] };
@@ -86,7 +88,7 @@ for (const entry of gallery) test(`gallery thumbnail: ${entry.id}`, async ({ pag
   await page.waitForTimeout(1200);
   const data = await page.evaluate(() => {
     const source = document.querySelector<HTMLCanvasElement>('#stage')!, small = document.createElement('canvas');
-    small.width = 240; small.height = 160; small.getContext('2d')!.drawImage(source, 0, 0, 240, 160);
+    small.width = 480; small.height = 320; small.getContext('2d')!.drawImage(source, 0, 0, 480, 320);
     return small.toDataURL('image/png').split(',')[1];
   });
   writeFileSync(file, Buffer.from(data, 'base64'));

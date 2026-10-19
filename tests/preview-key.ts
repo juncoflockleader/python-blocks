@@ -4,7 +4,7 @@ import { readFileSync, readdirSync } from 'node:fs';
 /** Recipe previews and gallery thumbnails are rendered by the browser suite and
  * cached by a hash of everything that affects them. Change the renderer version
  * to re-render every preview. */
-export const PREVIEW_RENDERER = 2; // 2: WebM plus MP4 (H.264) and a PNG still of the last frame.
+export const PREVIEW_RENDERER = 3; // 2: WebM plus MP4 (H.264) and a PNG still of the last frame. 3: rendered on a 2× screen and saved at 480 × 320.
 /** The files one recipe preview consists of, from its `preview` name (`chase.webm`). */
 export const previewOutputs = (preview: string) => { const stem = preview.replace(/\.webm$/, ''); return { webm: `public/recipes/${stem}.webm`, mp4: `public/recipes/${stem}.mp4`, poster: `public/recipes/${stem}.png` }; };
 export interface RecipeFile { id: string; title: string; blocks?: unknown[]; variables?: string[]; needs?: { sprites?: number; worlds?: number }; demo?: unknown[]; preview?: string }

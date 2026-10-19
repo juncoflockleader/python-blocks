@@ -100,10 +100,11 @@ function paintBackdrop(c: Context, id: string) {
   }
 }
 
-export async function stockCanvas(art: StockArtwork) {
+/** Paint stock artwork at `pixels` pixels per stage unit (2 for what goes into a project, so it stays sharp). */
+export async function stockCanvas(art: StockArtwork, pixels = 1) {
   if (art.builtin) return assetCanvas(art, art.kind);
-  const canvas = document.createElement('canvas'); canvas.width = art.width; canvas.height = art.height;
-  const c = canvas.getContext('2d')!;
+  const canvas = document.createElement('canvas'); canvas.width = art.width * pixels; canvas.height = art.height * pixels;
+  const c = canvas.getContext('2d')!; c.scale(pixels, pixels);
   if (art.kind === 'backdrop') paintBackdrop(c,art.id);
   else { c.translate(art.width/2,art.height/2); paintCostume(c,art.id); }
   return canvas;
@@ -115,10 +116,10 @@ export async function includeStock(scene: SceneState, kind: AssetKind, id: strin
   const art = stockArtwork.find(a => a.id === id && a.kind === kind);
   if (!art) throw new Error('Choose available stock artwork.');
   if (art.builtin) return art.id;
-  const data = (await stockCanvas(art)).toDataURL('image/png');
+  const data = (await stockCanvas(art, 2)).toDataURL('image/png');
   const assets = kind === 'costume' ? scene.assets : (scene.backdrops ??= []);
   const found = assets.find(a => a.data === data && a.width === art.width && a.height === art.height);
   if (found) return found.id;
-  const asset: Costume = { id: crypto.randomUUID(), name: art.name, width: art.width, height: art.height, data };
+  const asset: Costume = { id: crypto.randomUUID(), name: art.name, width: art.width, height: art.height, data, resolution: 2 };
   assets.push(asset); return asset.id;
 }

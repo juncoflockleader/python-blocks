@@ -5,7 +5,11 @@ import { validGame, validGameEffect, type GameState, type GameEffect } from './g
 import { validMap, validCamera, type World, type Camera } from './world';
 import { validMotion, validKind, type Motion } from './motion';
 import { validEffects, type Effects } from './effects';
-export interface Costume { id: string; name: string; width: number; height: number; data: string }
+/** Artwork. `width` and `height` are its size on the stage; a `resolution` of 2
+ * means the PNG holds twice as many pixels each way, so it stays sharp on high-density screens. */
+export interface Costume { id: string; name: string; width: number; height: number; data: string; resolution?: 2 }
+/** Pixels per stage unit in an artwork's PNG (1 unless it is stored at 2×). */
+export const resolutionOf = (asset: object) => (asset as { resolution?: number }).resolution === 2 ? 2 : 1;
 export interface SpritePen { down: boolean; color: string; width: number; opacity: number }
 export const defaultPen = (): SpritePen => ({ down: false, color: '#267c70', width: 3, opacity: 100 });
 export type RotationStyle = 'all' | 'left-right' | 'none';
@@ -70,11 +74,13 @@ export function validateScene(value: unknown): asserts value is SceneState {
   if (s.backdrops !== undefined && (!Array.isArray(s.backdrops) || s.backdrops.length > 12)) throw new Error('Use at most 12 painted or imported backdrops.');
   for (const [assets, ids, maxWidth, maxHeight, limit] of [[s.assets, assetIds, 256, 256, 350_000], [s.backdrops ?? [], backdropIds, 480, 320, 900_000]] as const) for (const asset of assets) {
     if (asset?.id === 'change' && ids === backdropIds) throw new Error('The backdrop ID change is reserved for the change event.');
-    if (!asset || !id(asset.id) || allIds.has(asset.id) || !name(asset.name) || !Number.isInteger(asset.width) || !Number.isInteger(asset.height) || !finite(asset.width, 1, maxWidth) || !finite(asset.height, 1, maxHeight) || typeof asset.data !== 'string' || asset.data.length > limit || !/^data:image\/png;base64,[A-Za-z0-9+/]+={0,2}$/.test(asset.data)) throw new Error(`Artwork needs distinct IDs and a PNG image of at most ${maxWidth} × ${maxHeight} pixels.`);
+    // A 2× artwork may hold four times the pixels of its stage size, so its data may be four times larger.
+    const scale = asset?.resolution === 2 ? 2 : 1;
+    if (!asset || !id(asset.id) || allIds.has(asset.id) || !name(asset.name) || !Number.isInteger(asset.width) || !Number.isInteger(asset.height) || !finite(asset.width, 1, maxWidth) || !finite(asset.height, 1, maxHeight) || (asset.resolution !== undefined && asset.resolution !== 2) || typeof asset.data !== 'string' || asset.data.length > limit * scale * scale || !/^data:image\/png;base64,[A-Za-z0-9+/]+={0,2}$/.test(asset.data)) throw new Error(`Artwork needs distinct IDs and a PNG image of at most ${maxWidth} × ${maxHeight} pixels.`);
     const bytes = Uint8Array.from(atob(asset.data.slice(22)), c => c.charCodeAt(0));
     if (bytes.length < 24 || [137,80,78,71,13,10,26,10].some((b,i) => bytes[i] !== b)) throw new Error('Invalid PNG artwork.');
     const view = new DataView(bytes.buffer);
-    if (view.getUint32(16) !== asset.width || view.getUint32(20) !== asset.height) throw new Error('Artwork dimensions do not match its PNG.');
+    if (view.getUint32(16) !== asset.width * scale || view.getUint32(20) !== asset.height * scale) throw new Error('Artwork dimensions do not match its PNG.');
     allIds.add(asset.id); ids.add(asset.id);
   }
   if (s.backdrop !== undefined && s.backdrop !== null && !backdropIds.has(s.backdrop)) throw new Error('Choose an available starting backdrop.');
@@ -103,7 +109,7 @@ export function isSceneCommand(value: unknown): value is SceneCommand {
   if (v.type === 'game_effect_clear') return true;
   if (v.type === 'world') return v.id === null || id(v.id);
   if (v.type === 'camera') return finite(v.x, -1e6, 1e6) && finite(v.y, -1e6, 1e6);
-  if (v.type === 'tile') return Number.isInteger(v.column) && finite(v.column, 0, 63) && Number.isInteger(v.row) && finite(v.row, 0, 63) && (v.costume === null || id(v.costume)) && typeof v.solid === 'boolean';
+  if (v.type === 'tile') return Number.isInteger(v.column) && finite(v.column, 0, 255) && Number.isInteger(v.row) && finite(v.row, 0, 255) && (v.costume === null || id(v.costume)) && typeof v.solid === 'boolean';
   if (v.type === 'pen_clear') return true;
   if (v.type === 'effects') return validEffects(v.effects);
   if (v.type === 'stamp') return validSprite(v.sprite);

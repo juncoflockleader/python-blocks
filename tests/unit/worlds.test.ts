@@ -27,7 +27,11 @@ describe('tile worlds, camera and persistence', () => {
     ];
     for (const corrupt of bads) { const bad = structuredClone(data); corrupt(bad); expect(() => validateScene(bad)).toThrow(); }
     expect(validMap(newMap(64, 64, 64))).toBe(true); expect(() => resizeMap(newMap(), 1.5, 4, 16)).toThrow();
-    expect(isSceneCommand({ type: 'tile', column: 64, row: 0, costume: null, solid: false })).toBe(false);
+    // Up to 256 tiles a side, never more than 4096 pixels.
+    expect(validMap(newMap(256, 40, 16))).toBe(true); expect(validMap(newMap(257, 1, 8))).toBe(false); expect(validMap(newMap(128, 1, 64))).toBe(false);
+    expect(() => resizeMap(newMap(), 200, 10, 32)).toThrow('4096 pixels');
+    expect(isSceneCommand({ type: 'tile', column: 255, row: 0, costume: null, solid: false })).toBe(true);
+    expect(isSceneCommand({ type: 'tile', column: 256, row: 0, costume: null, solid: false })).toBe(false);
     expect(isSceneCommand({ type: 'camera', x: 100, y: Infinity })).toBe(false);
     expect(() => validateInput({ kind: 'click', x: 600, y: -300, sprite: null })).not.toThrow();
   });
@@ -47,7 +51,7 @@ describe('tile worlds, camera and persistence', () => {
     expect(w.getBlockById(blockForLine(result, 'program.py', sourceLine)!)!.type).toBe('scene_world_set');
     const bundle = unzipSync(pythonExport(result).content as Uint8Array); const saved = JSON.parse(strFromU8(bundle['scene.json'])); expect(saved.worlds).toHaveLength(2); expect(saved.sprites[1].world).toBe('meadow'); expect(saved.assets[0].data).toMatch(/^data:image/);
     const restored = ws(); restore(restored, snapshot(w)); expect(compile(restored).source).toEqual(result.source);
-    const legacy = prepareProject(JSON.stringify({ ...example(), languageVersion: 13 })); expect(legacy.project.languageVersion).toBe(19);
+    const legacy = prepareProject(JSON.stringify({ ...example(), languageVersion: 13 })); expect(legacy.project.languageVersion).toBe(20);
   });
   it('keeps world references through rename, deletion diagnostics and Undo; deletes referenced art atomically', async () => {
     const w = ws(); restore(w, prepareProject(JSON.stringify(example())).project); const original = sceneState(w);

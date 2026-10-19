@@ -3,6 +3,7 @@ import { readFile } from 'node:fs/promises';
 import path from 'node:path';
 import { unzipSync, strFromU8 } from 'fflate';
 import { reveal, menu } from './shell';
+import { stagePixels } from './stage-pixels';
 
 const sceneFile = path.resolve('tests/fixtures/scene/sequential.json');
 async function saved(page: Page) { return page.evaluate(() => JSON.parse(localStorage.getItem('python-blocks.project.v1')!).workspace.pythonScene); }
@@ -66,7 +67,7 @@ test('imports image costumes and preserves their pixels through save and reload'
   await expect.poll(async () => (await saved(page)).assets.length).toBe(1);
   const before = await saved(page); expect(before.assets[0].width).toBe(64); expect(before.sprites[0].costume).toBe(before.assets[0].id);
   await page.reload(); await expect(page.locator('#scene-costume option:checked')).toHaveText('red-square.png');
-  await expect.poll(() => page.locator('#stage').evaluate(canvas => Array.from((canvas as HTMLCanvasElement).getContext('2d')!.getImageData(140, 160, 1, 1).data))).toEqual([240, 32, 48, 255]);
+  await expect.poll(() => page.locator('#stage').evaluate(stagePixels, [140, 160, 1, 1])).toEqual([240, 32, 48, 255]);
   await run(page); await expect(page.locator('#output')).toHaveText('-80\n');
 });
 

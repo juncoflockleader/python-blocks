@@ -8,7 +8,7 @@ The 2D editor supports original bitmap artwork, saved sprite frame sequences, an
 
 **Backdrop library** offers Meadow, Night, Forest, Coral reef, City park and Space. Choosing one changes the starting backdrop of the current world or base stage. **Worlds & tilemaps → World library** adds a complete editable map; see the [world guide](worlds-tilemaps-and-cameras.md).
 
-The new stock art is original code-drawn artwork. Choosing it rasterizes a PNG into the project using the existing saved-art format; it needs no external asset service. The original six built-ins keep their existing IDs. New artwork receives a fresh ID, so a learner's asset named or identified as `cat`, for example, is never overwritten. An identical saved stock image is reused on later additions. Editing a shared image changes every sprite using it; duplicate the artwork for an independent variation.
+The new stock art is original code-drawn artwork. Choosing it rasterizes a PNG into the project at 2× (a 64-unit costume is stored as 128 × 128 pixels and marked `resolution: 2`), so it stays sharp on high-density screens; it needs no external asset service. The original six built-ins keep their existing IDs. New artwork receives a fresh ID, so a learner's asset named or identified as `cat`, for example, is never overwritten. An identical saved stock image is reused on later additions. Editing a shared image changes every sprite using it; duplicate the artwork for an independent variation.
 
 Adding a sprite and its art is one project Undo action. Added copies remain available in **Artwork & frames**, save/reload and independent playable exports. They count toward the existing limits of 24 saved costumes and 12 saved backdrops. A limit or concurrent project edit rejects the addition without partially changing the scene.
 
@@ -66,10 +66,11 @@ Reusable modules can use built-in backdrop IDs. Pass project-owned backdrop IDs 
 
 ## Storage and bounds
 
-Backdrops and frame operations were introduced in language version **10**; current exports use version **18**, also preserving pen/effects, instance behavior/sensing, game motion, worlds/cameras, game presentation, sound/music, touch controls and watchers. Projects from versions 1–17 and pinned modules from versions 5–17 remain readable. Existing scenes without frame metadata use their current costume as a one-frame sequence with a 0.1-second duration; missing backdrop metadata means plain color.
+Backdrops and frame operations were introduced in language version **10**; current project exports use version **20**, also preserving pen/effects, instance behavior/sensing, game motion, worlds/cameras, game presentation, sound/music, touch controls, watchers and 2× artwork. Projects from versions 1–19 and pinned modules from versions 5–19 remain readable. Existing scenes without frame metadata use their current costume as a one-frame sequence with a 0.1-second duration; missing backdrop metadata means plain color.
 
-- Up to 24 custom costumes, each at most 256 × 256 pixels and 350,000 PNG data-URL characters.
-- Up to 12 custom backdrops, each at most 480 × 320 pixels and 900,000 PNG data-URL characters.
+- Up to 24 custom costumes, each at most 256 × 256 stage units and 350,000 PNG data-URL characters.
+- Up to 12 custom backdrops, each at most 480 × 320 stage units and 900,000 PNG data-URL characters.
+- Artwork may be stored at 2× (`resolution: 2`, since language version 20): its PNG is then twice its stage size each way and may use four times the characters. Sizes, positions, collisions and colour sensing always use the stage size. **Artwork & frames** still paints at stage size, so saving an edited 2× costume stores it at 1×.
 - Up to 64 saved frames per sprite, including repeats; 0.02–10 seconds per frame. The runtime `animate` API separately accepts up to 100 frames.
 - Import accepts PNG/JPEG/WebP files up to 2 MB and scales them to the appropriate dimensions. Saved artwork is embedded PNG.
 - All scene data must fit within 12 MB UTF-8 and the entire project within 16 MB. Saving beyond these bounds fails without replacing the saved scene.

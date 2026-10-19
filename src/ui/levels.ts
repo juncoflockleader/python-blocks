@@ -194,7 +194,9 @@ export function requiredLevel(workspace: Blockly.WorkspaceSvg): LevelNeed {
     if (index > 0) need(maps.at(-1)!.get(b.type) ?? maps[index].get(b.type)!, LEVELS[index]);
   }
   const scene = sceneState(workspace);
-  if (scene.worlds?.length) need('Worlds', 'pro');
+  // One world bigger than the stage (screens added in Stage view) is a Builder tool; several worlds are Pro.
+  if ((scene.worlds?.length ?? 0) > 1) need('Worlds', 'pro');
+  else if (scene.worlds?.length) need('Big world', 'builder');
   if (moduleState(workspace).imports.length) need('Modules', 'pro');
   if (scene.watchers?.length) need('Watch values', 'builder');
   if (scene.sprites.some(s => s.motion && (s.motion.body && s.motion.body !== 'off' || s.motion.controller && s.motion.controller !== 'none' || (s.motion.lifetime ?? 0) > 0))) need('Physics', 'builder');

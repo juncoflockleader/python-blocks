@@ -29,7 +29,9 @@ Blockly.registry.register(Blockly.registry.Type.EVENT, 'py_scene', SceneEvent);
 export function changeScene(workspace: Blockly.Workspace, next: SceneState) {
   const before = sceneState(workspace); if (JSON.stringify(before) === JSON.stringify(next)) return;
   if (new TextEncoder().encode(JSON.stringify({ ...Blockly.serialization.workspaces.save(workspace), pythonScene: next })).length > 15_990_000) throw new Error('The scene would exceed the 16 MB project limit. Use shorter sounds or smaller images.');
-  apply(workspace, next); Blockly.Events.fire(new SceneEvent(workspace, before, structuredClone(next)));
+  // A group of its own, so changes that follow from it (a block bumped as warnings update) undo with it.
+  const group = Blockly.Events.getGroup(); if (!group) Blockly.Events.setGroup(true);
+  try { apply(workspace, next); Blockly.Events.fire(new SceneEvent(workspace, before, structuredClone(next))); } finally { if (!group) Blockly.Events.setGroup(false); }
 }
 Blockly.serialization.registry.register('pythonScene', {
   priority: 95,
