@@ -64,5 +64,14 @@
   "preview": "camera-follow.webm",
   "tryNext": [
     "next-level"
+  ],
+  "demo": [
+    {
+      "wait": 300
+    },
+    {
+      "key": "ArrowRight",
+      "ms": 1400
+    }
   ]
 }

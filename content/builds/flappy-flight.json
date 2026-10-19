@@ -4,7 +4,7 @@
  "kind": "lesson",
  "level": "builder",
  "minutes": 25,
- "order": 1,
+ "order": 6,
  "summary": "Tap to flap a bird through gaps in the pipes. Gravity pulls, you push, and every pipe you pass scores once.",
  "ideas": [
   "gravity",
@@ -214,7 +214,7 @@
     }
    ],
    "hints": [
-    "In Physics, “set sprite … vx to …” has a menu: choose ay. Put it under “when game starts” from Events.",
+    "In {{Physics}}, “set sprite … vx to …” has a menu: choose ay. Put it under “when game starts” from {{Events}}.",
     "Set the Bird’s ay to −900. Then add “sprite Bird at stage edge stop” from Motion."
    ],
    "select": "bird",
@@ -333,7 +333,7 @@
     }
    ],
    "hints": [
-    "From Events, drag “when space key pressed”. In Physics, use “set sprite … vy to …” for the Bird.",
+    "From {{Events}}, drag “when space key pressed”. In {{Physics}}, use “set sprite … vy to …” for the Bird.",
     "Under it, add “play sprite Bird animation once and wait” from Looks. The Bird has two costumes: wings down, then wings up."
    ],
    "select": "bird",
@@ -686,7 +686,7 @@
     }
    ],
    "hints": [
-    "Select Pipe, then from Events drag “when Pipe overlaps …” and choose Bird. Inside, put “finish game lose” from Game.",
+    "Select Pipe, then from {{Events}} drag “when Pipe overlaps …” and choose Bird. Inside, put “finish game lose” from {{Game}}.",
     "Select Bird and drag “when Bird updates”. Inside: if Bird’s y < −115, finish game lose."
    ],
    "select": "pipe",
@@ -1006,7 +1006,7 @@
     }
    ],
    "hints": [
-    "Select Pipe, press More settings and open “Sprite data & behavior”: its starting data has passed: false. In Game, “sprite … data named …” reads it and “set sprite … data named … to …” changes it.",
+    "Select Pipe, press [[More settings]] and open [[Sprite data & behavior]]: its starting data has passed: false. In {{Game}}, “sprite … data named …” reads it and “set sprite … data named … to …” changes it.",
     "From Logic, put “… and …” in the if: the x check on one side, “not (sprite this sprite data named passed)” on the other. Inside, after “change score by 1”, set this sprite’s data named passed to True (Logic)."
    ],
    "select": "pipe",

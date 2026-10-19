@@ -70,7 +70,7 @@ describe('recipes', () => {
   it('explain what is missing instead of inserting a half-working idea', () => {
     const w = paletteWorkspace(); spaces.push(w);
     expect(() => placement(w, recipeById('chase')!, '')).toThrow(/needs 2 sprites/);
-    changeScene(w, { ...sceneState(w), sprites: scene('src/scene/example.json').sprites.slice(0, 1) });
+    const example = scene('src/scene/example.json'); changeScene(w, { ...sceneState(w), assets: example.assets, sprites: example.sprites.slice(0, 1) });
     expect(() => placement(w, recipeById('chase')!, '')).toThrow(/needs 2 sprites/);
     expect(() => placement(w, recipeById('next-level')!, '')).toThrow(/needs 2 sprites|needs 2 worlds/);
     expect(placement(w, recipeById('draw-square')!, '').sprite).toBe('player');

@@ -113,7 +113,7 @@
       "coordinates"
     ],
     "tryChanging": [
-      "Paint a new wall in Worlds & tilemaps.",
+      "Paint a new wall in [[Worlds & tilemaps]].",
       "Make the camera stop following.",
       "Move the flag to a new spot."
     ]
@@ -292,7 +292,7 @@
     "tryChanging": [
       "Make the ball faster: change its vx and vy.",
       "Add a fourth row of bricks, and change the winning score to match.",
-      "Make the paddle wider: select it, press Paint, then More, Canvas size."
+      "Make the paddle wider: select it, press [[Paint]], then More, Canvas size."
     ],
     "build": "brick-breaker"
   },
@@ -330,7 +330,7 @@
     "tryChanging": [
       "Jump higher: change the 520 in the jump block.",
       "Make the beetles faster: change their vx from −60 to −120.",
-      "Make the level longer: in Stage view, press Add screen and paint more ground."
+      "Make the level longer: in [[Stage view]], press [[Add screen]] and paint more ground."
     ],
     "build": "super-hopper"
   }

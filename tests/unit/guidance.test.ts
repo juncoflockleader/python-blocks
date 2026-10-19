@@ -11,6 +11,7 @@ import { appendRecipe, placement, recipeById, recipes, type Recipe } from '../..
 import { atLeast, palette, requiredLevel } from '../../src/ui/levels';
 import { checkGuidance, concepts, instructionsFor, responseSchemaFor } from '../../src/assist/catalog';
 import { paletteWorkspace } from './palette-workspace';
+import { knownCategory, knownControl, plainText } from '../../src/guide/ui-refs';
 
 const spaces: Blockly.Workspace[] = [];
 afterEach(() => spaces.splice(0).forEach(w => w.dispose()));
@@ -26,7 +27,7 @@ const finished = { ran: true, finished: 'won' as const };
 describe('guided builds', () => {
   it('are the six planned games and three lessons, each with a minute budget and a next step', () => {
     // Lessons are listed first.
-    expect(builds.map(b => b.title)).toEqual(['Brick Breaker', 'Flappy Flight', 'Super Hopper', 'Catch the star', 'Dodge the balls', 'Pen patterns', 'Maze run', 'Jump quest', 'Talking story']);
+    expect(builds.map(b => b.title)).toEqual(['Brick Breaker', 'Flappy Flight', 'Super Hopper', 'Catch the star', 'Dodge the balls', 'Pen patterns', 'Talking story', 'Jump quest', 'Maze run']);
     for (const build of builds) {
       expect(build.minutes, build.id).toBeGreaterThan(0);
       expect(build.finish.remix, build.id).toHaveLength(3);
@@ -38,6 +39,16 @@ describe('guided builds', () => {
     expect(roots.map(b => b.id)).toEqual(['catch-the-star']);
     const seen = new Set<string>(); for (let b: Build | undefined = roots[0]; b && !seen.has(b.id); b = b.next ? buildById(b.next) : undefined) seen.add(b.id);
     expect(seen.size).toBe(builds.length);
+    // One order: "Next" goes through the builds in `order`, which also sorts the list within lessons and builds.
+    expect([...seen].map(id => buildById(id)!.order)).toEqual([...seen].map((_, i) => i + 1));
+  });
+
+  it('name real controls and palette categories, which show as chips with their icons', () => {
+    const texts = [...builds.flatMap(b => [...b.steps.flatMap(s => [s.text, s.why ?? '', ...(s.hints ?? []), ...(s.checklist ?? []).map(c => c.text)]), b.finish.text, ...b.finish.remix]), ...entries.flatMap(e => e.tryChanging)];
+    const refs = texts.flatMap(text => [...text.matchAll(/\[\[([^\]]+)\]\]|\{\{([^}]+)\}\}/g)]);
+    expect(refs.length).toBeGreaterThan(25);
+    for (const [, control, category] of refs) expect(control !== undefined ? knownControl(control) : knownCategory(category), control ?? category).toBe(true);
+    expect(plainText('Press [[Run code]], then drag from {{Events}}.')).toBe('Press Run code, then drag from Events.');
   });
 
   it('point at real recipes, sprites and palette categories of their level', () => {

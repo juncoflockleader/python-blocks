@@ -4,7 +4,7 @@ This module adds named worlds, tilemap painting, local sprite placement, scrolli
 
 ## Author and play a world
 
-Choose **Worlds example** and Run. Arrow keys move Explorer. In Meadow passage, touch the purple switch to remove a gate, continue through the scrolling level, and touch the star portal. The second world has its own artwork and local marker. Find its star to finish. R restarts the current world; Stop and Run reconstructs the whole project. All artwork and blocks are embedded and editable.
+Choose **Worlds example** and Run. Arrow keys move Explorer (Ruby). In Meadow passage, a hedge maze on the Forest backdrop, touch the key to remove the gate of crates, continue through the scrolling level, and touch the star portal. The second world, Starlit cavern, is built from the library's cave tiles on the Cave backdrop and has its own local marker. Find its star to finish. R restarts the current world; Stop and Run reconstructs the whole project. The hedge is the project's own 8 × 8 tile and the rest is library art; all of it and every block are editable.
 
 Open **Worlds & tilemaps** to create, name, duplicate, remove or choose a world. **Starting / editing world** controls both the editor view and where the next Run starts. The base stage remains available without a tilemap. Each world has its own background, backdrop, map and starting camera. Artwork is shared with costumes: choose a tile artwork and press **Paint tile** to draw or change it in the Paint editor, which opens tiles in Pixel mode with the world's other tiles beside it. Tiles stretch the entire costume into a square; transparency affects their appearance, while solidity is a separate setting.
 

@@ -60,7 +60,8 @@ test('world templates preserve previous work, embed reusable artwork, undo toget
   await page.locator('#stock-dialog').screenshot({path:info.outputPath('stock-worlds.png')}); await add(page,'forest');
   await expect(page.locator('#world-name')).toHaveValue('Forest trail'); const first=await saved(page);
   expect(first.sprites).toEqual(before.sprites); expect(first.worlds).toHaveLength(1); expect(first.worlds[0].map.walls.some(Boolean)).toBe(true);
-  expect(first.assets.length).toBe(before.assets.length+3); expect(first.backdrops).toHaveLength(1);
+  // Forest trail places grass tops and platforms, a coin and flowers: four pictures.
+  expect(first.assets.length).toBe(before.assets.length+4); expect(first.backdrops).toHaveLength(1);
   const ids=new Set(first.assets.map((a:any)=>a.id)); expect(first.worlds[0].map.tiles.every((id:string|null)=>id===null||ids.has(id))).toBe(true);
   await page.locator('#world-undo').click(); await expect.poll(() => saved(page)).toEqual(before);
   await page.locator('#world-redo').click(); await expect.poll(() => saved(page)).toEqual(first);

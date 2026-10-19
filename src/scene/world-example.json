@@ -1,7 +1,7 @@
 {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 14,
+  "languageVersion": 21,
   "workspace": {
     "pythonScene": {
       "version": 1,
@@ -71,7 +71,7 @@
               null,
               null,
               null,
-              "box",
+              "stock-crate",
               null,
               null,
               null,
@@ -111,7 +111,7 @@
               null,
               null,
               null,
-              "box",
+              "stock-crate",
               null,
               null,
               null,
@@ -151,7 +151,7 @@
               null,
               null,
               null,
-              "box",
+              "stock-crate",
               null,
               null,
               null,
@@ -191,7 +191,7 @@
               null,
               null,
               null,
-              "box",
+              "stock-crate",
               null,
               null,
               null,
@@ -226,12 +226,12 @@
               null,
               null,
               null,
-              "ball",
+              "stock-key",
               null,
               null,
               null,
               null,
-              "box",
+              "stock-crate",
               null,
               null,
               null,
@@ -271,7 +271,7 @@
               null,
               null,
               null,
-              "box",
+              "stock-crate",
               null,
               null,
               null,
@@ -311,7 +311,7 @@
               null,
               null,
               null,
-              "box",
+              "stock-crate",
               null,
               null,
               null,
@@ -341,6 +341,7 @@
               null,
               null,
               null,
+              "stock-flower",
               null,
               null,
               null,
@@ -350,9 +351,7 @@
               null,
               null,
               null,
-              null,
-              "box",
-              null,
+              "stock-crate",
               null,
               null,
               null,
@@ -360,12 +359,12 @@
               null,
               null,
               null,
+              "stock-flower",
               null,
               null,
               null,
               null,
-              null,
-              null,
+              "stock-flower",
               null,
               null,
               null,
@@ -374,6 +373,7 @@
               null,
               null,
               null,
+              "stock-flower",
               null,
               null,
               "grass",
@@ -826,7 +826,8 @@
             "y": 0,
             "follow": "player",
             "clamp": true
-          }
+          },
+          "backdrop": "stock-forest"
         },
         {
           "id": "cavern",
@@ -837,31 +838,31 @@
             "rows": 10,
             "tileSize": 32,
             "tiles": [
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-middle",
+              "stock-cave-right",
               null,
               null,
               null,
@@ -884,8 +885,8 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
+              "stock-cave-left",
+              "stock-cave-right",
               null,
               null,
               null,
@@ -908,8 +909,8 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
+              "stock-cave-left",
+              "stock-cave-right",
               null,
               null,
               null,
@@ -932,8 +933,8 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
+              "stock-cave-left",
+              "stock-cave-right",
               null,
               null,
               null,
@@ -956,8 +957,8 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
+              "stock-cave-left",
+              "stock-cave-right",
               null,
               null,
               null,
@@ -980,8 +981,8 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
+              "stock-cave-left",
+              "stock-cave-right",
               null,
               null,
               null,
@@ -1004,8 +1005,8 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
+              "stock-cave-left",
+              "stock-cave-right",
               null,
               null,
               null,
@@ -1028,8 +1029,8 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
+              "stock-cave-left",
+              "stock-cave-right",
               null,
               null,
               null,
@@ -1052,31 +1053,31 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass"
+              "stock-cave-left",
+              "stock-cave-middle",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-top",
+              "stock-cave-middle"
             ],
             "walls": [
               true,
@@ -1326,7 +1327,8 @@
             "y": 0,
             "follow": "player",
             "clamp": true
-          }
+          },
+          "backdrop": "stock-cave"
         }
       ],
       "assets": [
@@ -1335,7 +1337,119 @@
           "name": "Grass tile",
           "width": 8,
           "height": 8,
-          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAG0lEQVR4nGMIaIn4H9MT8R8XzYBPEkQzDAsTAKDgjUEoLXHBAAAAAElFTkSuQmCC"
+          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAnklEQVR4ATSOMQrCQBREh38C0VLEIOkVLAQbK60FC0t7vYmHEWvBA1gI6RWJiGBjSJM6yfvwF3Z3Zv7szFq6mdeL49b3+LD0G7477Wtm1p8NlKQ9rVdTdYZdle/C+WSUiJmpXfnzr+yVt0huCo7ZOJgggkkLTqJxhAjGSF1oXkFfCKScL3dhBHtFCJhIoSKwVb/Kf44Yr8DZ9aHv7aMGAAD//3rmKVsAAAAGSURBVAMAG7lXaE1mXJYAAAAASUVORK5CYII="
+        },
+        {
+          "id": "stock-key",
+          "name": "Key",
+          "width": 32,
+          "height": 32,
+          "stock": "props/key@1"
+        },
+        {
+          "id": "stock-crate",
+          "name": "Crate",
+          "width": 32,
+          "height": 32,
+          "stock": "props/crate@1"
+        },
+        {
+          "id": "stock-flower",
+          "name": "Flower",
+          "width": 64,
+          "height": 64,
+          "stock": "props/flower@1"
+        },
+        {
+          "id": "stock-cave-middle",
+          "name": "Cave middle",
+          "width": 32,
+          "height": 32,
+          "stock": "tiles/cave-middle@1"
+        },
+        {
+          "id": "stock-cave-right",
+          "name": "Cave right",
+          "width": 32,
+          "height": 32,
+          "stock": "tiles/cave-right@1"
+        },
+        {
+          "id": "stock-cave-left",
+          "name": "Cave left",
+          "width": 32,
+          "height": 32,
+          "stock": "tiles/cave-left@1"
+        },
+        {
+          "id": "stock-cave-top",
+          "name": "Cave top",
+          "width": 32,
+          "height": 32,
+          "stock": "tiles/cave-top@1"
+        },
+        {
+          "id": "stock-explorer-ruby-idle-1",
+          "name": "Ruby idle 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-idle-1@1"
+        },
+        {
+          "id": "stock-explorer-ruby-idle-2",
+          "name": "Ruby idle 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-idle-2@1"
+        },
+        {
+          "id": "stock-explorer-ruby-walk-1",
+          "name": "Ruby walk 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-walk-1@1"
+        },
+        {
+          "id": "stock-explorer-ruby-walk-2",
+          "name": "Ruby walk 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-walk-2@1"
+        },
+        {
+          "id": "stock-explorer-ruby-walk-3",
+          "name": "Ruby walk 3",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-walk-3@1"
+        },
+        {
+          "id": "stock-explorer-ruby-walk-4",
+          "name": "Ruby walk 4",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-walk-4@1"
+        },
+        {
+          "id": "stock-explorer-ruby-jump",
+          "name": "Ruby jump",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-jump@1"
+        },
+        {
+          "id": "stock-explorer-ruby-happy",
+          "name": "Ruby happy",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-happy@1"
+        },
+        {
+          "id": "stock-gem-1",
+          "name": "Gem 1",
+          "width": 32,
+          "height": 32,
+          "stock": "props/gem-1@1"
         }
       ],
       "sprites": [
@@ -1344,12 +1458,12 @@
           "name": "Explorer",
           "x": -128,
           "y": -16,
-          "costume": "bird",
-          "size": 50,
+          "costume": "stock-explorer-ruby-idle-1",
+          "size": 45,
           "direction": 0,
           "layer": 0,
           "visible": true,
-          "rotationStyle": "none",
+          "rotationStyle": "left-right",
           "kind": "player",
           "motion": {
             "body": "moving",
@@ -1357,7 +1471,14 @@
             "speedX": 200,
             "speedY": 200,
             "response": "slide"
-          }
+          },
+          "costumes": [
+            "stock-explorer-ruby-walk-1",
+            "stock-explorer-ruby-walk-2",
+            "stock-explorer-ruby-walk-3",
+            "stock-explorer-ruby-walk-4"
+          ],
+          "frameSeconds": 0.12
         },
         {
           "id": "meadow_flag",
@@ -1377,13 +1498,49 @@
           "name": "Cave marker",
           "x": 32,
           "y": 64,
-          "costume": "ball",
-          "size": 50,
+          "costume": "stock-gem-1",
+          "size": 100,
           "direction": 0,
           "layer": 0,
           "visible": true,
           "rotationStyle": "none",
           "world": "cavern"
+        }
+      ],
+      "backdrops": [
+        {
+          "id": "stock-forest",
+          "name": "Forest",
+          "width": 480,
+          "height": 320,
+          "stock": "backdrops/forest@1"
+        },
+        {
+          "id": "stock-cave",
+          "name": "Cave",
+          "width": 480,
+          "height": 320,
+          "stock": "backdrops/cave@1"
+        }
+      ],
+      "sounds": [
+        {
+          "id": "powerup",
+          "name": "Power-up",
+          "kind": "clip",
+          "stock": "effects/powerup@1"
+        },
+        {
+          "id": "whoosh",
+          "name": "Whoosh",
+          "kind": "clip",
+          "stock": "effects/whoosh@1"
+        },
+        {
+          "id": "win",
+          "name": "Win",
+          "kind": "clip",
+          "stock": "effects/win@1"
         }
       ]
     },
@@ -1448,6 +1605,22 @@
           "order": 3,
           "kind": "player"
         }
+      },
+      {
+        "id": "animate_explorer_handler",
+        "name": "animate_explorer",
+        "parameters": [
+          {
+            "id": "animate_explorer_handler_payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "start",
+          "order": 4
+        },
+        "returnTypes": null,
+        "async": true
       }
     ],
     "blocks": {
@@ -1472,7 +1645,7 @@
                       "type": "text",
                       "id": "world_block_1",
                       "fields": {
-                        "TEXT": "Arrow keys explore. Touch the purple switch to open the gate, then find the star portal. R restarts this world."
+                        "TEXT": "Arrow keys explore. Touch the key to open the gate of crates, then find the star portal. R restarts this world."
                       }
                     }
                   }
@@ -1712,7 +1885,7 @@
                             "type": "text",
                             "id": "world_block_20",
                             "fields": {
-                              "TEXT": "ball"
+                              "TEXT": "stock-key"
                             }
                           }
                         }
@@ -1799,15 +1972,42 @@
                           },
                           "next": {
                             "block": {
-                              "type": "text_print",
-                              "id": "world_block_33",
+                              "type": "sound_play",
+                              "id": "world_example_3c_3",
+                              "fields": {},
                               "inputs": {
-                                "TEXT": {
+                                "SOUND": {
                                   "block": {
-                                    "type": "text",
-                                    "id": "world_block_32",
+                                    "type": "sound_asset",
+                                    "id": "world_example_3c_1",
                                     "fields": {
-                                      "TEXT": "Gate opened!"
+                                      "SOUND_ID": "powerup"
+                                    },
+                                    "inputs": {}
+                                  }
+                                },
+                                "OWNER": {
+                                  "block": {
+                                    "type": "py_none",
+                                    "id": "world_example_3c_2",
+                                    "fields": {},
+                                    "inputs": {}
+                                  }
+                                }
+                              },
+                              "next": {
+                                "block": {
+                                  "type": "text_print",
+                                  "id": "world_block_33",
+                                  "inputs": {
+                                    "TEXT": {
+                                      "block": {
+                                        "type": "text",
+                                        "id": "world_block_32",
+                                        "fields": {
+                                          "TEXT": "Gate opened!"
+                                        }
+                                      }
                                     }
                                   }
                                 }
@@ -1923,15 +2123,42 @@
                             },
                             "DO0": {
                               "block": {
-                                "type": "scene_world_set",
-                                "id": "world_block_46",
+                                "type": "sound_play",
+                                "id": "world_example_3c_6",
+                                "fields": {},
                                 "inputs": {
-                                  "WORLD": {
+                                  "SOUND": {
                                     "block": {
-                                      "type": "scene_world",
-                                      "id": "world_block_45",
+                                      "type": "sound_asset",
+                                      "id": "world_example_3c_4",
                                       "fields": {
-                                        "WORLD_ID": "cavern"
+                                        "SOUND_ID": "whoosh"
+                                      },
+                                      "inputs": {}
+                                    }
+                                  },
+                                  "OWNER": {
+                                    "block": {
+                                      "type": "py_none",
+                                      "id": "world_example_3c_5",
+                                      "fields": {},
+                                      "inputs": {}
+                                    }
+                                  }
+                                },
+                                "next": {
+                                  "block": {
+                                    "type": "scene_world_set",
+                                    "id": "world_block_46",
+                                    "inputs": {
+                                      "WORLD": {
+                                        "block": {
+                                          "type": "scene_world",
+                                          "id": "world_block_45",
+                                          "fields": {
+                                            "WORLD_ID": "cavern"
+                                          }
+                                        }
                                       }
                                     }
                                   }
@@ -1976,15 +2203,42 @@
                                     },
                                     "next": {
                                       "block": {
-                                        "type": "text_print",
-                                        "id": "world_block_53",
+                                        "type": "sound_play",
+                                        "id": "world_example_3c_9",
+                                        "fields": {},
                                         "inputs": {
-                                          "TEXT": {
+                                          "SOUND": {
                                             "block": {
-                                              "type": "text",
-                                              "id": "world_block_52",
+                                              "type": "sound_asset",
+                                              "id": "world_example_3c_7",
                                               "fields": {
-                                                "TEXT": "Journey complete!"
+                                                "SOUND_ID": "win"
+                                              },
+                                              "inputs": {}
+                                            }
+                                          },
+                                          "OWNER": {
+                                            "block": {
+                                              "type": "py_none",
+                                              "id": "world_example_3c_8",
+                                              "fields": {},
+                                              "inputs": {}
+                                            }
+                                          }
+                                        },
+                                        "next": {
+                                          "block": {
+                                            "type": "text_print",
+                                            "id": "world_block_53",
+                                            "inputs": {
+                                              "TEXT": {
+                                                "block": {
+                                                  "type": "text",
+                                                  "id": "world_block_52",
+                                                  "fields": {
+                                                    "TEXT": "Journey complete!"
+                                                  }
+                                                }
                                               }
                                             }
                                           }
@@ -1998,6 +2252,243 @@
                           },
                           "extraState": {
                             "hasElse": true
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "animate_explorer_handler_block",
+          "x": 960,
+          "y": 40,
+          "extraState": {
+            "functionId": "animate_explorer_handler"
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "controls_whileUntil",
+                "id": "world_example_3c_29",
+                "fields": {
+                  "MODE": "WHILE"
+                },
+                "inputs": {
+                  "BOOL": {
+                    "block": {
+                      "type": "logic_boolean",
+                      "id": "world_example_3c_28",
+                      "fields": {
+                        "BOOL": "TRUE"
+                      },
+                      "inputs": {}
+                    }
+                  },
+                  "DO": {
+                    "block": {
+                      "type": "controls_if",
+                      "id": "world_example_3c_18",
+                      "fields": {},
+                      "inputs": {
+                        "IF0": {
+                          "block": {
+                            "type": "scene_key",
+                            "id": "world_example_3c_15",
+                            "fields": {
+                              "KEY": "ArrowRight"
+                            },
+                            "inputs": {}
+                          }
+                        },
+                        "DO0": {
+                          "block": {
+                            "type": "scene_set",
+                            "id": "world_example_3c_17",
+                            "fields": {
+                              "PROPERTY": "direction"
+                            },
+                            "inputs": {
+                              "SPRITE": {
+                                "block": {
+                                  "type": "scene_sprite",
+                                  "id": "world_example_3c_16",
+                                  "fields": {
+                                    "SPRITE_ID": "player"
+                                  },
+                                  "inputs": {}
+                                }
+                              },
+                              "VALUE": {
+                                "shadow": {
+                                  "type": "py_number",
+                                  "fields": {
+                                    "VALUE": "0"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "controls_if",
+                          "id": "world_example_3c_22",
+                          "fields": {},
+                          "inputs": {
+                            "IF0": {
+                              "block": {
+                                "type": "scene_key",
+                                "id": "world_example_3c_19",
+                                "fields": {
+                                  "KEY": "ArrowLeft"
+                                },
+                                "inputs": {}
+                              }
+                            },
+                            "DO0": {
+                              "block": {
+                                "type": "scene_set",
+                                "id": "world_example_3c_21",
+                                "fields": {
+                                  "PROPERTY": "direction"
+                                },
+                                "inputs": {
+                                  "SPRITE": {
+                                    "block": {
+                                      "type": "scene_sprite",
+                                      "id": "world_example_3c_20",
+                                      "fields": {
+                                        "SPRITE_ID": "player"
+                                      },
+                                      "inputs": {}
+                                    }
+                                  },
+                                  "VALUE": {
+                                    "shadow": {
+                                      "type": "py_number",
+                                      "fields": {
+                                        "VALUE": "180"
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
+                          },
+                          "next": {
+                            "block": {
+                              "type": "controls_if",
+                              "id": "world_example_3c_26",
+                              "fields": {},
+                              "inputs": {
+                                "IF0": {
+                                  "block": {
+                                    "type": "logic_operation",
+                                    "id": "world_example_3c_12",
+                                    "fields": {
+                                      "OP": "OR"
+                                    },
+                                    "inputs": {
+                                      "A": {
+                                        "block": {
+                                          "type": "scene_key",
+                                          "id": "world_example_3c_10",
+                                          "fields": {
+                                            "KEY": "ArrowLeft"
+                                          },
+                                          "inputs": {}
+                                        }
+                                      },
+                                      "B": {
+                                        "block": {
+                                          "type": "scene_key",
+                                          "id": "world_example_3c_11",
+                                          "fields": {
+                                            "KEY": "ArrowRight"
+                                          },
+                                          "inputs": {}
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "DO0": {
+                                  "block": {
+                                    "type": "scene_next_costume",
+                                    "id": "world_example_3c_14",
+                                    "fields": {},
+                                    "inputs": {
+                                      "SPRITE": {
+                                        "block": {
+                                          "type": "scene_sprite",
+                                          "id": "world_example_3c_13",
+                                          "fields": {
+                                            "SPRITE_ID": "player"
+                                          },
+                                          "inputs": {}
+                                        }
+                                      }
+                                    }
+                                  }
+                                },
+                                "ELSE": {
+                                  "block": {
+                                    "type": "scene_costume_set",
+                                    "id": "world_example_3c_25",
+                                    "fields": {},
+                                    "inputs": {
+                                      "SPRITE": {
+                                        "block": {
+                                          "type": "scene_sprite",
+                                          "id": "world_example_3c_23",
+                                          "fields": {
+                                            "SPRITE_ID": "player"
+                                          },
+                                          "inputs": {}
+                                        }
+                                      },
+                                      "COSTUME": {
+                                        "block": {
+                                          "type": "scene_costume",
+                                          "id": "world_example_3c_24",
+                                          "fields": {
+                                            "COSTUME_ID": "stock-explorer-ruby-idle-1"
+                                          },
+                                          "inputs": {}
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "extraState": {
+                                "elseIfCount": 0,
+                                "hasElse": true
+                              },
+                              "next": {
+                                "block": {
+                                  "type": "py_wait",
+                                  "id": "world_example_3c_27",
+                                  "fields": {},
+                                  "inputs": {
+                                    "SECONDS": {
+                                      "shadow": {
+                                        "type": "py_number",
+                                        "fields": {
+                                          "VALUE": "0.1"
+                                        }
+                                      }
+                                    }
+                                  }
+                                }
+                              }
+                            }
                           }
                         }
                       }

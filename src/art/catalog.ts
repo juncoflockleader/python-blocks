@@ -56,8 +56,10 @@ export const STOCK_ASSETS: readonly StockAsset[] = assets;
 export const STOCK_ENTRIES: readonly StockEntry[] = entries;
 /** The entries the library dialog lists (single tiles for templates are not listed). */
 export const LIBRARY = entries.filter(e => !(e.id in SINGLE));
-const byRef = new Map(assets.map(a => [a.ref, a]));
+const byRef = new Map(assets.map(a => [a.ref, a])), byId = new Map(assets.map(a => [a.id, a]));
 export const stockAsset = (reference: string) => byRef.get(reference);
+/** One picture by its project id (`stock-grass-top`), as world templates and examples place them. */
+export const stockAssetById = (id: string) => byId.get(id);
 export const stockEntry = (kind: StockEntry['kind'], id: string) => entries.find(e => e.kind === kind && e.id === id);
 /** How many pixels per stage unit library art is rendered at on the page: 4 for
  * costumes up to 128 units (sharp even in Large stage on a 2× screen), 2 for

@@ -1,4 +1,5 @@
 import { recipeById, type Recipe } from './recipes';
+import { setRichText } from './ui-refs';
 
 /** Small, deterministic prompts in the Help tab (never modal), plus the card
  * an empty workspace shows. Each prompt offers reviewed ideas as chips. */
@@ -39,7 +40,7 @@ export function installNudges(host: NudgeHost) {
     const close = document.createElement('button'); close.className = 'nudge-close button secondary ui-icon-only'; close.textContent = 'Dismiss'; close.title = 'Dismiss';
     close.addEventListener('click', () => item.remove());
     const bullets = document.createElement('ul'); bullets.className = 'nudge-list';
-    for (const text of items) { const li = document.createElement('li'); li.textContent = text; bullets.append(li); }
+    for (const text of items) { const li = document.createElement('li'); setRichText(li, text); bullets.append(li); }
     item.append(close, message, ...(items.length ? [bullets] : []), ...(chips.length ? [row] : [])); list.prepend(item);
     while (list.children.length > 3) list.lastElementChild!.remove();
     host.notify();

@@ -96,7 +96,8 @@ test('the editable platformer can shoot its target and jump all the way to the g
     await expect.poll(async () => (await position(page)).x, { intervals: [20], timeout: 3000 }).toBeGreaterThan(x);
     await page.keyboard.up('ArrowRight'); await expect.poll(async () => Math.abs((await position(page)).y - floorY), { intervals: [30], timeout: 3000 }).toBeLessThan(.2);
   }
-  await jumpTo(-90, -63); await jumpTo(20, -5);
+  // Each landing height is a ledge top (-74, -16) plus half the explorer's 38.4-unit box.
+  await jumpTo(-90, -54.8); await jumpTo(20, 3.2);
   await page.locator('#stage').focus(); await page.keyboard.down('ArrowRight'); await expect.poll(async () => (await position(page)).x, { intervals: [20] }).toBeGreaterThan(55); await page.keyboard.up('ArrowRight');
   await page.keyboard.down('ArrowRight'); await page.keyboard.press('Space'); await expect(page.locator('#output')).toContainText('Course complete!', { timeout: 5000 }); await page.keyboard.up('ArrowRight');
   await expect(page.locator('#stage-dialogue')).toContainText('You reached the star!'); await page.screenshot({ path: info.outputPath('platformer-complete.png'), fullPage: true });

@@ -4,7 +4,7 @@
  "kind": "lesson",
  "level": "builder",
  "minutes": 30,
- "order": 0,
+ "order": 5,
  "summary": "Bounce a ball off your paddle and clear a wall of bricks. You build the whole game yourself, one checked step at a time.",
  "ideas": [
   "velocity",
@@ -226,7 +226,7 @@
    ],
    "hints": [
     "In Motion, “sprite … at stage edge …” decides what happens at the edge.",
-    "Add it for the Paddle with “stop”, press Run code, click the stage and hold the arrow keys."
+    "Add it for the Paddle with “stop”, press [[Run code]], click the stage and hold the arrow keys."
    ],
    "select": "paddle",
    "highlight": {
@@ -515,7 +515,7 @@
     }
    ],
    "hints": [
-    "From Events, drag “when … overlaps …” and choose Paddle and Ball.",
+    "From {{Events}}, drag “when … overlaps …” and choose Paddle and Ball.",
     "Inside it, set the Ball’s vy to 220, then run it and catch the ball."
    ],
    "select": "paddle",
@@ -1012,7 +1012,7 @@
     }
    ],
    "hints": [
-    "Select Brick, then from Events drag “when Brick overlaps …” and choose Ball.",
+    "Select Brick, then from {{Events}} drag “when Brick overlaps …” and choose Ball.",
     "Inside: change score by 1 (Game), set the Ball’s vy to −220 (Physics), and last, destroy sprite “this sprite” (Game)."
    ],
    "select": "brick",

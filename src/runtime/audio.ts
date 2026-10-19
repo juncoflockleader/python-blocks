@@ -1,4 +1,5 @@
-import { decodeWave, SOUND_RATE, synthesize, synthesizeTone, validAudioCommand, type AudioCommand, type Sound, type SoundSettings } from '../scene/sound';
+import { SOUND_RATE, synthesizeTone, validAudioCommand, type AudioCommand, type Sound, type SoundSettings } from '../scene/sound';
+import { soundSamples } from '../scene/sound-library';
 
 export interface AudioHost {
   begin(sounds: Sound[], complete: (id: number, error?: string) => void): void;
@@ -61,7 +62,7 @@ export class SoundPlayer implements AudioHost {
         if (command.type === 'tone') samples = synthesizeTone(command.pitch, command.seconds, command.instrument);
         else {
           const sound = this.sounds.get(command.sound); if (!sound) throw new Error('This sound is unavailable. Choose another sound in the block’s menu.');
-          samples = sound.kind === 'clip' ? decodeWave(sound.data) : synthesize(sound);
+          samples = soundSamples(sound);
         }
         buffer = this.context.createBuffer(1, samples.length, SOUND_RATE); buffer.copyToChannel(new Float32Array(samples), 0);
         if (command.type === 'play') { if (this.buffers.size >= 8) this.buffers.delete(this.buffers.keys().next().value!); this.buffers.set(command.sound, buffer); }

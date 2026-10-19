@@ -29,7 +29,7 @@ test('typing “chase” shows a preview and inserts a working chase in one step
   const start = await live(page);
   await page.locator('#run').click(); await expect(page.locator('#status')).toHaveText('Event session running', { timeout: 60_000 });
   await page.waitForTimeout(800);
-  const moved = await live(page), hero = { x: -150, y: -30 };
+  const moved = await live(page), hero = { x: -150, y: -70 };
   expect(Math.hypot(moved.x - hero.x, moved.y - hero.y)).toBeLessThan(Math.hypot(start.x - hero.x, start.y - hero.y) - 40);
   await page.locator('#stop').click();
   // Ideas come first; matching blocks follow them.
@@ -109,6 +109,9 @@ test('Catch the star can be built step by step, with checks, highlights and a fi
   await expect(page.locator('#guide-progress')).toHaveText('Step 1 of 7'); await expect(page.locator('#guide-next')).toBeDisabled();
   await expect(page.locator('#start-card')).toBeHidden(); // the starter's empty workspace belongs to the build, not the start card
   await expect(page.locator('#scene-stock')).toHaveClass(/guide-target/);
+  // The step names the Sprites button as it looks: a chip with the button's own icon and label.
+  await expect(page.locator('#guide-step')).toHaveText('Add a star: press Sprites under the stage and choose Star.');
+  const chip = page.locator('#guide-step .ui-ref'); await expect(chip).toHaveText('Sprites'); await expect(chip.locator('svg')).toHaveCount(1);
   // 1. Add a star from the library.
   await page.locator('#scene-stock').click(); await page.locator('#stock-dialog .stock-card[data-stock-id="star"]').click(); await expect(page.locator('#stock-dialog')).toBeHidden();
   await openTab(page, 'help'); await expect(page.locator('#guide-check')).toHaveText(/Done/); await page.locator('#guide-next').click();

@@ -6,17 +6,20 @@ import { BLUSH, CREAM, INK, LINE, box, curve, ellipse, eyes, limb, line, mouth, 
 export const FRAMES = ['idle-1', 'idle-2', 'walk-1', 'walk-2', 'walk-3', 'walk-4', 'jump', 'happy'] as const;
 export type Frame = typeof FRAMES[number];
 export const ANIMATIONS: Record<string, Frame[]> = { idle: ['idle-1', 'idle-2'], walk: ['walk-1', 'walk-2', 'walk-3', 'walk-4'], jump: ['jump'], happy: ['happy'] };
-export interface Pose { bob: number; legs: [number, number]; arms: [number, number]; squash: number; eyes: Eyes; mouth: Mouth; swing: number; flap: number }
-const base: Pose = { bob: 0, legs: [0, 0], arms: [0.3, -0.2], squash: 0, eyes: 'open', mouth: 'smile', swing: 0, flap: 0 };
+/** Angles are radians from straight down, forward positive. `arms` are the explorers' and the robot's;
+ * `paws` are the animals' short arms, [back, front]: at the front of the tummy, swinging when they walk,
+ * reaching up in a jump, out in a cheer. */
+export interface Pose { bob: number; legs: [number, number]; arms: [number, number]; paws: [number, number]; squash: number; eyes: Eyes; mouth: Mouth; swing: number; flap: number }
+const base: Pose = { bob: 0, legs: [0, 0], arms: [0.3, -0.2], paws: [0.3, 0.5], squash: 0, eyes: 'open', mouth: 'smile', swing: 0, flap: 0 };
 export const POSES: Record<Frame, Pose> = {
   'idle-1': base,
-  'idle-2': { ...base, bob: 0.8, squash: 0.05, arms: [0.36, -0.12], swing: 0.08, flap: 1 },
-  'walk-1': { ...base, bob: -1.4, legs: [0.55, -0.5], arms: [-0.55, 0.6], swing: 0.18, flap: 0 },
-  'walk-2': { ...base, bob: 0.8, legs: [0.1, -0.05], arms: [0.05, 0.1], swing: 0.06, flap: 1 },
-  'walk-3': { ...base, bob: -1.4, legs: [-0.5, 0.55], arms: [0.6, -0.55], swing: -0.18, flap: 2 },
-  'walk-4': { ...base, bob: 0.8, legs: [-0.05, 0.1], arms: [0.1, 0.05], swing: -0.06, flap: 3 },
-  jump: { ...base, bob: -4, legs: [0.8, 1.15], arms: [-2.3, -1.65], mouth: 'open', swing: 0.35, flap: 0 },
-  happy: { ...base, bob: -2.5, legs: [0.18, -0.18], arms: [2.15, 1.85], eyes: 'happy', mouth: 'open', swing: 0.25, flap: 2 },
+  'idle-2': { ...base, bob: 0.8, squash: 0.05, arms: [0.36, -0.12], paws: [0.4, 0.62], swing: 0.08, flap: 1 },
+  'walk-1': { ...base, bob: -1.4, legs: [0.55, -0.5], arms: [-0.55, 0.6], paws: [-0.3, 1.1], swing: 0.18, flap: 0 },
+  'walk-2': { ...base, bob: 0.8, legs: [0.1, -0.05], arms: [0.05, 0.1], paws: [0.35, 0.55], swing: 0.06, flap: 1 },
+  'walk-3': { ...base, bob: -1.4, legs: [-0.5, 0.55], arms: [0.6, -0.55], paws: [0.9, -0.15], swing: -0.18, flap: 2 },
+  'walk-4': { ...base, bob: 0.8, legs: [-0.05, 0.1], arms: [0.1, 0.05], paws: [0.4, 0.45], swing: -0.06, flap: 3 },
+  jump: { ...base, bob: -4, legs: [0.8, 1.15], arms: [-2.3, -1.65], paws: [2.5, 2.2], mouth: 'open', swing: 0.35, flap: 0 },
+  happy: { ...base, bob: -2.5, legs: [0.18, -0.18], arms: [2.15, 1.85], paws: [1.9, 1.65], eyes: 'happy', mouth: 'open', swing: 0.25, flap: 2 },
 };
 
 interface Animal { fur: string; light: string; dark: string; belly: string; ears: 'pointed' | 'long' | 'round'; earInner: string; tail: 'bushy' | 'thin' | 'puff'; tailTip?: string; muzzle?: string; nose: string; stripes?: string; socks?: string }
@@ -37,32 +40,33 @@ function animal(c: Ctx, a: Animal, p: Pose) {
   // back leg and arm
   const foot = { rx: 3.4, ry: 2.4, fill: a.socks ?? a.dark, dx: 1 };
   limb(c, -4, hipY, p.legs[0], legLength, 5, a.dark, foot);
-  limb(c, -2, 7 + y, p.arms[0], 7, 4.2, a.dark, { rx: 2.4, ry: 2.4, fill: a.socks ?? a.dark });
+  limb(c, -2, 7.5 + y, p.paws[0], 4.5, 3.6, a.dark, { rx: 2.3, ry: 2.3, fill: a.socks ?? a.dark });
   // body
   ellipse(c, 0, 10 + y + p.squash * 3, 11 - p.squash * 2, 10 + p.squash * 3, shade(c, 0, 20 + y, a.light, a.fur));
   ellipse(c, 2, 12 + y + p.squash * 3, 6, 6.5, a.belly, null);
   if (a.stripes) for (const dx of [-6, -2]) curve(c, [dx, 2 + y], [dx - 2, 6 + y], [dx, 10 + y], a.stripes, 1.6);
   // front leg
   limb(c, 4, hipY, p.legs[1], legLength, 5, a.fur, { ...foot, fill: a.socks ?? a.fur });
-  // head and ears
-  const ear = (x: number, angle: number, inner: boolean) => {
-    c.save(); c.translate(headX + x, headY - 10); c.rotate(angle);
-    if (a.ears === 'pointed') { shape(c, [[-5, 2], [0, -10], [5, 2]], a.fur); if (inner) shape(c, [[-2.6, 1], [0, -5.5], [2.6, 1]], a.earInner, null); }
-    else if (a.ears === 'long') { ellipse(c, 0, -9, 4, 11, a.fur); if (inner) ellipse(c, 0, -9, 2, 7.5, a.earInner, null); }
-    else { ellipse(c, 0, -2, 5, 5, a.fur); if (inner) ellipse(c, 0, -2, 2.8, 2.8, a.earInner, null); }
+  // Ears sit on the head's outline, both behind it, so the head hides their bases.
+  const headRy = 13.5 - p.squash * 2;
+  const ear = (near: boolean) => {
+    const at = (a.ears === 'long' ? 0.3 : 0.6) * (near ? 1 : -0.85), size = near ? 1 : 0.9;
+    c.save(); c.translate(headX + Math.sin(at) * 13, headY - Math.cos(at) * (headRy - 1.5)); c.rotate(at * 0.8 - p.swing * 0.3); c.scale(size, size);
+    if (a.ears === 'pointed') { shape(c, [[-5.5, 4], [0, -10], [5.5, 4]], a.fur); shape(c, [[-2.8, 2.5], [0, -5.5], [2.8, 2.5]], a.earInner, null); }
+    else if (a.ears === 'long') { ellipse(c, 0, -9, 4, 11, a.fur); ellipse(c, 0, -9, 2, 7.5, a.earInner, null); }
+    else { ellipse(c, 0, -1, 5, 5, a.fur); ellipse(c, 0, -1, 2.8, 2.8, a.earInner, null); }
     c.restore();
   };
-  ear(-7, -0.32 - p.swing * 0.3, false);
-  ellipse(c, headX, headY, 14.5, 13.5 - p.squash * 2, shade(c, headY - 13, headY + 13, a.light, a.fur));
-  ear(4, 0.22 - p.swing * 0.3, true);
+  ear(false); ear(true);
+  ellipse(c, headX, headY, 14.5, headRy, shade(c, headY - 13, headY + 13, a.light, a.fur));
   if (a.stripes) for (const dx of [-3, 1]) line(c, [[headX + dx, headY - 13], [headX + dx + 0.6, headY - 9]], a.stripes, 1.6);
   if (a.muzzle) ellipse(c, headX + 6, headY + 5, 7.5, 5.5, a.muzzle, null);
   eyes(c, headX + 1, headY - 1, p.eyes, 1, 8.5);
   ellipse(c, headX + 6, headY + 2.6, 2, 1.5, a.nose, null);
   mouth(c, headX + 6, headY + 6, p.mouth, 0.9);
   ellipse(c, headX - 4.5, headY + 4, 2.3, 1.4, BLUSH, null);
-  // front arm, over the body
-  limb(c, 3, 7 + y, p.arms[1], 7, 4.2, a.fur, { rx: 2.5, ry: 2.5, fill: a.socks ?? a.fur });
+  // front arm: a short arm from the shoulder under the chin
+  limb(c, 6, 7.5 + y, p.paws[1], 4.5, 3.6, a.fur, { rx: 2.4, ry: 2.4, fill: a.socks ?? a.fur });
 }
 
 interface Kid { skin: string; hair: string; top: string; topLight: string; trousers: string; shoes: string; style: 'hood' | 'ponytail' }
@@ -79,7 +83,6 @@ function kid(c: Ctx, k: Kid, p: Pose) {
   if (k.style === 'hood') {
     c.beginPath(); c.arc(headX, headY, 12.5, Math.PI * 0.92, Math.PI * 2.06); c.strokeStyle = k.top; c.lineWidth = 4.2; c.stroke();
     c.beginPath(); c.arc(headX, headY, 14.6, Math.PI * 0.92, Math.PI * 2.06); c.strokeStyle = INK; c.lineWidth = LINE; c.stroke();
-    shape(c, [[headX - 7, headY - 11], [headX - 4, headY - 17], [headX - 1, headY - 12.5]], k.top);
   } else {
     c.beginPath(); c.moveTo(headX - 12.5, headY + 1); c.quadraticCurveTo(headX - 12, headY - 14, headX + 2, headY - 13); c.quadraticCurveTo(headX + 12, headY - 12, headX + 12, headY - 4);
     c.quadraticCurveTo(headX + 4, headY - 8, headX - 4, headY - 6); c.quadraticCurveTo(headX - 8, headY - 3, headX - 8, headY + 2); c.closePath();

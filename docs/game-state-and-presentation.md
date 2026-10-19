@@ -4,7 +4,7 @@ The **Game** palette adds score, lives, a countdown, fixed screen text, win/loss
 
 ## Try a complete game
 
-Choose **Examples → Star game**, Run, and focus the stage. Arrow keys move the explorer through a scrolling garden. Collect three stars before the 20-second countdown expires; purple balls each cost one life. The balls disappear on contact, so a straight path is playable, while steering around them preserves lives. A fixed HUD shows the score, lives, time and instructions. Collecting the final star wins; reaching zero lives or running out of time loses. **Play again** works by mouse, touch or keyboard and rebuilds the entire run.
+Choose **Examples → Star game**, Run, and focus the stage. Arrow keys move the fox through a scrolling garden. Collect three stars before the 20-second countdown expires; bees each cost one life. The bees disappear on contact, so a straight path is playable, while steering around them preserves lives. Each star, sting and the win plays a library sound. A fixed HUD shows the score, lives, time and instructions. Collecting the final star wins; reaching zero lives or running out of time loses. **Play again** works by mouse, touch or keyboard and rebuilds the entire run.
 
 All art, sprites, tile walls, motion settings and rules in [the example](../src/scene/star-game-example.json) are editable. No assets are downloaded during play. The game demonstrates finite bursts at collected objects and a screen-centered celebration.
 

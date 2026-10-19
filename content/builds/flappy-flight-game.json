@@ -1,7 +1,7 @@
 {
  "format": "python-blocks",
  "formatVersion": 1,
- "languageVersion": 20,
+ "languageVersion": 21,
  "workspace": {
   "blocks": {
    "languageVersion": 0,
@@ -103,6 +103,33 @@
              "type": "scene_sprite",
              "fields": {
               "SPRITE_ID": "bird"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "sound_play",
+            "id": "flappy_flight_game_3c_3",
+            "fields": {},
+            "inputs": {
+             "SOUND": {
+              "block": {
+               "type": "sound_asset",
+               "id": "flappy_flight_game_3c_1",
+               "fields": {
+                "SOUND_ID": "jump"
+               },
+               "inputs": {}
+              }
+             },
+             "OWNER": {
+              "block": {
+               "type": "py_none",
+               "id": "flappy_flight_game_3c_2",
+               "fields": {},
+               "inputs": {}
+              }
              }
             }
            }
@@ -266,16 +293,43 @@
          },
          "DO0": {
           "block": {
-           "type": "game_finish",
-           "fields": {
-            "WON": "FALSE"
-           },
+           "type": "sound_play",
+           "id": "flappy_flight_game_3c_6",
+           "fields": {},
            "inputs": {
-            "TEXT": {
-             "shadow": {
-              "type": "text",
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "flappy_flight_game_3c_4",
               "fields": {
-               "TEXT": "Bonk! Game over."
+               "SOUND_ID": "hit"
+              },
+              "inputs": {}
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "flappy_flight_game_3c_5",
+              "fields": {},
+              "inputs": {}
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "game_finish",
+             "fields": {
+              "WON": "FALSE"
+             },
+             "inputs": {
+              "TEXT": {
+               "shadow": {
+                "type": "text",
+                "fields": {
+                 "TEXT": "Bonk! Game over."
+                }
+               }
               }
              }
             }
@@ -335,16 +389,43 @@
          },
          "DO0": {
           "block": {
-           "type": "game_finish",
-           "fields": {
-            "WON": "FALSE"
-           },
+           "type": "sound_play",
+           "id": "flappy_flight_game_3c_9",
+           "fields": {},
            "inputs": {
-            "TEXT": {
-             "shadow": {
-              "type": "text",
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "flappy_flight_game_3c_7",
               "fields": {
-               "TEXT": "Splat! Game over."
+               "SOUND_ID": "hit"
+              },
+              "inputs": {}
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "flappy_flight_game_3c_8",
+              "fields": {},
+              "inputs": {}
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "game_finish",
+             "fields": {
+              "WON": "FALSE"
+             },
+             "inputs": {
+              "TEXT": {
+               "shadow": {
+                "type": "text",
+                "fields": {
+                 "TEXT": "Splat! Game over."
+                }
+               }
               }
              }
             }
@@ -441,42 +522,69 @@
          },
          "DO0": {
           "block": {
-           "type": "game_change",
-           "fields": {
-            "FIELD": "score"
-           },
+           "type": "sound_play",
+           "id": "flappy_flight_game_3c_12",
+           "fields": {},
            "inputs": {
-            "VALUE": {
-             "shadow": {
-              "type": "py_number",
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "flappy_flight_game_3c_10",
               "fields": {
-               "VALUE": "1"
-              }
+               "SOUND_ID": "coin"
+              },
+              "inputs": {}
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "flappy_flight_game_3c_11",
+              "fields": {},
+              "inputs": {}
              }
             }
            },
            "next": {
             "block": {
-             "type": "scene_data_set",
+             "type": "game_change",
+             "fields": {
+              "FIELD": "score"
+             },
              "inputs": {
-              "SPRITE": {
-               "block": {
-                "type": "scene_self"
-               }
-              },
-              "KEY": {
-               "shadow": {
-                "type": "text",
-                "fields": {
-                 "TEXT": "passed"
-                }
-               }
-              },
               "VALUE": {
                "shadow": {
-                "type": "logic_boolean",
+                "type": "py_number",
                 "fields": {
-                 "BOOL": "TRUE"
+                 "VALUE": "1"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_data_set",
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_self"
+                 }
+                },
+                "KEY": {
+                 "shadow": {
+                  "type": "text",
+                  "fields": {
+                   "TEXT": "passed"
+                  }
+                 }
+                },
+                "VALUE": {
+                 "shadow": {
+                  "type": "logic_boolean",
+                  "fields": {
+                   "BOOL": "TRUE"
+                  }
+                 }
                 }
                }
               }
@@ -602,16 +710,43 @@
         },
         "next": {
          "block": {
-          "type": "game_finish",
-          "fields": {
-           "WON": "TRUE"
-          },
+          "type": "sound_play",
+          "id": "flappy_flight_game_3c_15",
+          "fields": {},
           "inputs": {
-           "TEXT": {
-            "shadow": {
-             "type": "text",
+           "SOUND": {
+            "block": {
+             "type": "sound_asset",
+             "id": "flappy_flight_game_3c_13",
              "fields": {
-              "TEXT": "Ten pipes! You win!"
+              "SOUND_ID": "win"
+             },
+             "inputs": {}
+            }
+           },
+           "OWNER": {
+            "block": {
+             "type": "py_none",
+             "id": "flappy_flight_game_3c_14",
+             "fields": {},
+             "inputs": {}
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "game_finish",
+            "fields": {
+             "WON": "TRUE"
+            },
+            "inputs": {
+             "TEXT": {
+              "shadow": {
+               "type": "text",
+               "fields": {
+                "TEXT": "Ten pipes! You win!"
+               }
+              }
              }
             }
            }
@@ -696,6 +831,32 @@
      "data": {
       "passed": false
      }
+    }
+   ],
+   "sounds": [
+    {
+     "id": "jump",
+     "name": "Jump",
+     "kind": "clip",
+     "stock": "effects/jump@1"
+    },
+    {
+     "id": "coin",
+     "name": "Coin",
+     "kind": "clip",
+     "stock": "effects/coin@1"
+    },
+    {
+     "id": "hit",
+     "name": "Hit",
+     "kind": "clip",
+     "stock": "effects/hit@1"
+    },
+    {
+     "id": "win",
+     "name": "Win",
+     "kind": "clip",
+     "stock": "effects/win@1"
     }
    ]
   },

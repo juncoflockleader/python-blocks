@@ -55,6 +55,9 @@ for (const [icon, ids] of Object.entries(actionGroups)) {
   for (const id of ids.split(' ')) actions[id] = icon as IconName;
 }
 
+/** The icon a control shows, by its element id or label (lesson text points at controls this way). */
+export const controlIcon = (id: string, label = ''): IconName | undefined => actions[id] ?? labels[label];
+
 /** Each palette category's symbol, by its label; blocks show it too (block-icons.ts). */
 export const categoryIcons: Record<string, IconName> = {
   Program: 'play', Control: 'loop', 'Sensing & input': 'keyboard', Sounds: 'music', Game: 'game',

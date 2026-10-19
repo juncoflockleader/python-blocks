@@ -2,6 +2,7 @@ import type { Controls } from './touch';
 import { stockAsset, stockScale } from '../art/catalog';
 import { validWatches, type Watch } from './watch-model';
 import { validateSounds, type Sound } from './sound';
+import { isStockSound, knownSound } from './sound-library';
 import { validGame, validGameEffect, type GameState, type GameEffect } from './game';
 import { validMap, validCamera, type World, type Camera } from './world';
 import { validMotion, validKind, type Motion } from './motion';
@@ -72,7 +73,7 @@ export function validateScene(value: unknown): asserts value is SceneState {
   if (!s || s.version !== 1 || !isColor(s.background) || !Array.isArray(s.sprites) || s.sprites.length > 64 || !Array.isArray(s.assets) || s.assets.filter(a => !isStock(a)).length > 24 || s.assets.filter(a => isStock(a)).length > STOCK_LIMITS.costumes) throw new Error(`A scene needs a supported format, background color, up to 64 sprites, up to 24 imported costumes and up to ${STOCK_LIMITS.costumes} from the library.`);
   if (s.controls !== undefined && (!s.controls || !validKey(s.controls.a) || !validKey(s.controls.b))) throw new Error('Touch actions need valid keys.');
   if (s.watchers !== undefined && !validWatches(s.watchers)) throw new Error('Use up to 12 valid sprite/property watchers with unique identities.');
-  if (s.sounds !== undefined) validateSounds(s.sounds);
+  if (s.sounds !== undefined) { validateSounds(s.sounds); if (s.sounds.some(x => isStockSound(x) && !knownSound(x.stock))) throw new Error('This project uses a library sound from a newer version of Python Blocks.'); }
   const assetIds = new Set<string>(builtins.map(a => a.id));
   const backdropIds = new Set<string>(builtinBackdrops.map(a => a.id));
   const allIds = new Set([...assetIds, ...backdropIds]);

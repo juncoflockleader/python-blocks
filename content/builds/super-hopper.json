@@ -4,7 +4,7 @@
  "kind": "lesson",
  "level": "builder",
  "minutes": 35,
- "order": 2,
+ "order": 8,
  "summary": "Run, jump and stomp across a scrolling level five screens wide. Collect coins, mind the pits and reach the flag.",
  "ideas": [
   "gravity",
@@ -1787,7 +1787,7 @@
     }
    ],
    "hints": [
-    "In Physics, use “set sprite … vx to …” and choose ay in its menu. Put it under “when game starts”.",
+    "In {{Physics}}, use “set sprite … vx to …” and choose ay in its menu. Put it under “when game starts”.",
     "Choose Hero in the sprite menu and type −1200."
    ],
    "select": "hero",
@@ -1892,7 +1892,7 @@
     }
    ],
    "hints": [
-    "In Motion, find “control sprite … with arrow keys …” and add it under “when game starts”.",
+    "In {{Motion}}, find “control sprite … with arrow keys …” and add it under “when game starts”.",
     "Choose Hero, set the horizontal speed to 180 and the vertical speed to 0. Click the stage before you press the keys."
    ],
    "select": "hero",
@@ -2021,7 +2021,7 @@
     }
    ],
    "hints": [
-    "From Events, drag “when space key pressed” and change the key to the left arrow. In Motion, “set sprite … x to …” has a menu: choose direction.",
+    "From {{Events}}, drag “when space key pressed” and change the key to the left arrow. In {{Motion}}, “set sprite … x to …” has a menu: choose direction.",
     "Make two scripts: left arrow sets the Hero’s direction to 180, right arrow sets it to 0."
    ],
    "select": "hero",
@@ -2141,7 +2141,7 @@
     }
    ],
    "hints": [
-    "In Physics, find “sprite … jump if grounded at speed …”.",
+    "In {{Physics}}, find “sprite … jump if grounded at speed …”.",
     "Put it under “when space key pressed”, choose Hero and type 520."
    ],
    "select": "hero",
@@ -2245,7 +2245,7 @@
     }
    ],
    "hints": [
-    "Select Coin, then from Events drag “when Coin overlaps …” and choose Hero.",
+    "Select Coin, then from {{Events}} drag “when Coin overlaps …” and choose Hero.",
     "Inside: change score by 1 (Game), then destroy sprite “this sprite” (Game). Destroy goes last."
    ],
    "select": "coin",
@@ -3260,7 +3260,7 @@
     }
    ],
    "hints": [
-    "Select Hero, then from Events drag “when Hero overlaps …” and choose Flag.",
+    "Select Hero, then from {{Events}} drag “when Hero overlaps …” and choose Flag.",
     "Inside, put “finish game win” from Game, with your own message."
    ],
    "recipe": "reach-goal",
@@ -3283,7 +3283,7 @@
   "text": "A hero who runs, jumps and stomps through a five-screen level, with coins, pits, beetles and a flag.",
   "remix": [
    "Checkpoint: after the first beetle, make the Hero start again from there instead.",
-   "Bigger level: in Stage view, press Add screen and paint more ledges, pits and blocks.",
+   "Bigger level: in [[Stage view]], press [[Add screen]] and paint more ledges, pits and blocks.",
    "Bounce pad: paint a new tile and make the Hero jump extra high when it lands on it."
   ]
  },

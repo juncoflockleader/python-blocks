@@ -1,7 +1,7 @@
 {
  "format": "python-blocks",
  "formatVersion": 1,
- "languageVersion": 19,
+ "languageVersion": 21,
  "workspace": {
   "blocks": {
    "languageVersion": 0,
@@ -142,6 +142,33 @@
            }
           }
          }
+        },
+        "next": {
+         "block": {
+          "type": "sound_play",
+          "id": "jump_quest_game_3c_3",
+          "fields": {},
+          "inputs": {
+           "SOUND": {
+            "block": {
+             "type": "sound_asset",
+             "id": "jump_quest_game_3c_1",
+             "fields": {
+              "SOUND_ID": "jump"
+             },
+             "inputs": {}
+            }
+           },
+           "OWNER": {
+            "block": {
+             "type": "py_none",
+             "id": "jump_quest_game_3c_2",
+             "fields": {},
+             "inputs": {}
+            }
+           }
+          }
+         }
         }
        }
       }
@@ -240,16 +267,339 @@
          },
          "DO0": {
           "block": {
-           "type": "game_finish",
-           "fields": {
-            "WON": "TRUE"
-           },
+           "type": "sound_play",
+           "id": "jump_quest_game_3c_6",
+           "fields": {},
            "inputs": {
-            "TEXT": {
-             "shadow": {
-              "type": "text",
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "jump_quest_game_3c_4",
               "fields": {
-               "TEXT": "You reached the top!"
+               "SOUND_ID": "win"
+              },
+              "inputs": {}
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "jump_quest_game_3c_5",
+              "fields": {},
+              "inputs": {}
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "game_finish",
+             "fields": {
+              "WON": "TRUE"
+             },
+             "inputs": {
+              "TEXT": {
+               "shadow": {
+                "type": "text",
+                "fields": {
+                 "TEXT": "You reached the top!"
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "animate_explorer_handler_block",
+     "x": 1380,
+     "y": 30,
+     "extraState": {
+      "functionId": "animate_explorer_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_whileUntil",
+        "id": "jump_quest_game_3c_32",
+        "fields": {
+         "MODE": "WHILE"
+        },
+        "inputs": {
+         "BOOL": {
+          "block": {
+           "type": "logic_boolean",
+           "id": "jump_quest_game_3c_31",
+           "fields": {
+            "BOOL": "TRUE"
+           },
+           "inputs": {}
+          }
+         },
+         "DO": {
+          "block": {
+           "type": "controls_if",
+           "id": "jump_quest_game_3c_21",
+           "fields": {},
+           "inputs": {
+            "IF0": {
+             "block": {
+              "type": "scene_key",
+              "id": "jump_quest_game_3c_18",
+              "fields": {
+               "KEY": "ArrowRight"
+              },
+              "inputs": {}
+             }
+            },
+            "DO0": {
+             "block": {
+              "type": "scene_set",
+              "id": "jump_quest_game_3c_20",
+              "fields": {
+               "PROPERTY": "direction"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "id": "jump_quest_game_3c_19",
+                 "fields": {
+                  "SPRITE_ID": "player"
+                 },
+                 "inputs": {}
+                }
+               },
+               "VALUE": {
+                "shadow": {
+                 "type": "py_number",
+                 "fields": {
+                  "VALUE": "0"
+                 }
+                }
+               }
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "controls_if",
+             "id": "jump_quest_game_3c_25",
+             "fields": {},
+             "inputs": {
+              "IF0": {
+               "block": {
+                "type": "scene_key",
+                "id": "jump_quest_game_3c_22",
+                "fields": {
+                 "KEY": "ArrowLeft"
+                },
+                "inputs": {}
+               }
+              },
+              "DO0": {
+               "block": {
+                "type": "scene_set",
+                "id": "jump_quest_game_3c_24",
+                "fields": {
+                 "PROPERTY": "direction"
+                },
+                "inputs": {
+                 "SPRITE": {
+                  "block": {
+                   "type": "scene_sprite",
+                   "id": "jump_quest_game_3c_23",
+                   "fields": {
+                    "SPRITE_ID": "player"
+                   },
+                   "inputs": {}
+                  }
+                 },
+                 "VALUE": {
+                  "shadow": {
+                   "type": "py_number",
+                   "fields": {
+                    "VALUE": "180"
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "controls_if",
+               "id": "jump_quest_game_3c_29",
+               "fields": {},
+               "inputs": {
+                "IF0": {
+                 "block": {
+                  "type": "logic_negate",
+                  "id": "jump_quest_game_3c_12",
+                  "fields": {},
+                  "inputs": {
+                   "BOOL": {
+                    "block": {
+                     "type": "scene_motion_get",
+                     "id": "jump_quest_game_3c_11",
+                     "fields": {
+                      "PROPERTY": "grounded"
+                     },
+                     "inputs": {
+                      "SPRITE": {
+                       "block": {
+                        "type": "scene_sprite",
+                        "id": "jump_quest_game_3c_10",
+                        "fields": {
+                         "SPRITE_ID": "player"
+                        },
+                        "inputs": {}
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                },
+                "DO0": {
+                 "block": {
+                  "type": "scene_costume_set",
+                  "id": "jump_quest_game_3c_15",
+                  "fields": {},
+                  "inputs": {
+                   "SPRITE": {
+                    "block": {
+                     "type": "scene_sprite",
+                     "id": "jump_quest_game_3c_13",
+                     "fields": {
+                      "SPRITE_ID": "player"
+                     },
+                     "inputs": {}
+                    }
+                   },
+                   "COSTUME": {
+                    "block": {
+                     "type": "scene_costume",
+                     "id": "jump_quest_game_3c_14",
+                     "fields": {
+                      "COSTUME_ID": "stock-explorer-ruby-jump"
+                     },
+                     "inputs": {}
+                    }
+                   }
+                  }
+                 }
+                },
+                "IF1": {
+                 "block": {
+                  "type": "logic_operation",
+                  "id": "jump_quest_game_3c_9",
+                  "fields": {
+                   "OP": "OR"
+                  },
+                  "inputs": {
+                   "A": {
+                    "block": {
+                     "type": "scene_key",
+                     "id": "jump_quest_game_3c_7",
+                     "fields": {
+                      "KEY": "ArrowLeft"
+                     },
+                     "inputs": {}
+                    }
+                   },
+                   "B": {
+                    "block": {
+                     "type": "scene_key",
+                     "id": "jump_quest_game_3c_8",
+                     "fields": {
+                      "KEY": "ArrowRight"
+                     },
+                     "inputs": {}
+                    }
+                   }
+                  }
+                 }
+                },
+                "DO1": {
+                 "block": {
+                  "type": "scene_next_costume",
+                  "id": "jump_quest_game_3c_17",
+                  "fields": {},
+                  "inputs": {
+                   "SPRITE": {
+                    "block": {
+                     "type": "scene_sprite",
+                     "id": "jump_quest_game_3c_16",
+                     "fields": {
+                      "SPRITE_ID": "player"
+                     },
+                     "inputs": {}
+                    }
+                   }
+                  }
+                 }
+                },
+                "ELSE": {
+                 "block": {
+                  "type": "scene_costume_set",
+                  "id": "jump_quest_game_3c_28",
+                  "fields": {},
+                  "inputs": {
+                   "SPRITE": {
+                    "block": {
+                     "type": "scene_sprite",
+                     "id": "jump_quest_game_3c_26",
+                     "fields": {
+                      "SPRITE_ID": "player"
+                     },
+                     "inputs": {}
+                    }
+                   },
+                   "COSTUME": {
+                    "block": {
+                     "type": "scene_costume",
+                     "id": "jump_quest_game_3c_27",
+                     "fields": {
+                      "COSTUME_ID": "stock-explorer-ruby-idle-1"
+                     },
+                     "inputs": {}
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "extraState": {
+                "elseIfCount": 1,
+                "hasElse": true
+               },
+               "next": {
+                "block": {
+                 "type": "py_wait",
+                 "id": "jump_quest_game_3c_30",
+                 "fields": {},
+                 "inputs": {
+                  "SECONDS": {
+                   "shadow": {
+                    "type": "py_number",
+                    "fields": {
+                     "VALUE": "0.1"
+                    }
+                   }
+                  }
+                 }
+                }
+               }
               }
              }
             }
@@ -271,20 +621,27 @@
      "id": "player",
      "name": "Explorer",
      "x": -190,
-     "y": -129,
-     "costume": "bird",
-     "size": 55,
+     "y": -120.8,
+     "costume": "stock-explorer-ruby-idle-1",
+     "size": 60,
      "kind": "player",
      "direction": 0,
      "layer": 0,
      "visible": true,
-     "rotationStyle": "none"
+     "rotationStyle": "left-right",
+     "costumes": [
+      "stock-explorer-ruby-walk-1",
+      "stock-explorer-ruby-walk-2",
+      "stock-explorer-ruby-walk-3",
+      "stock-explorer-ruby-walk-4"
+     ],
+     "frameSeconds": 0.12
     },
     {
      "id": "floor",
      "name": "Ground",
      "x": 0,
-     "y": -145,
+     "y": -150,
      "costume": "floor_art",
      "size": 200,
      "kind": "wall",
@@ -300,8 +657,8 @@
      "id": "step1",
      "name": "First ledge",
      "x": -90,
-     "y": -78,
-     "costume": "platform_art",
+     "y": -86.0,
+     "costume": "stock-platform",
      "size": 100,
      "kind": "wall",
      "direction": 0,
@@ -316,8 +673,8 @@
      "id": "step2",
      "name": "Second ledge",
      "x": 45,
-     "y": -20,
-     "costume": "platform_art",
+     "y": -28.0,
+     "costume": "stock-platform",
      "size": 100,
      "kind": "wall",
      "direction": 0,
@@ -332,8 +689,8 @@
      "id": "step3",
      "name": "Top ledge",
      "x": 165,
-     "y": 25,
-     "costume": "platform_art",
+     "y": 18.6,
+     "costume": "stock-platform",
      "size": 80,
      "kind": "wall",
      "direction": 0,
@@ -360,18 +717,96 @@
    ],
    "assets": [
     {
-     "id": "platform_art",
-     "name": "Green platform",
-     "width": 100,
-     "height": 8,
-     "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAICAYAAAAP1Fp1AAAAMElEQVR4nO3RMREAAAjDwDqsJZyDDDJk+D13SacrjnwHyCFoDoFxCIxDYBwC4xCYA184mvvhDLDhAAAAAElFTkSuQmCC"
-    },
-    {
      "id": "floor_art",
      "name": "Ground",
      "width": 240,
-     "height": 5,
-     "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAAAFCAYAAAB7CmE4AAAAMklEQVR4nO3TMQ0AMAwEsQAMgxIofwINhy7RSx6833J1bj8gU20HAP8MDMEMDMEMDMEGbzGiKKTqe20AAAAASUVORK5CYII="
+     "height": 10,
+     "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAAUCAYAAABVoO4uAAAFYElEQVR4AeyZwYscRRjFi96wpxyikJir5CBuDvGiXvSi3kTw6H8uXlQQPASDqKAQhLF/HbrrUdOZruruql6cF+bNvq766vvtvPlmm+x2z7/69nSU7r48js1rNt/5MwdHyfPn+Ttq9uB6/o6dP96D7uOvH4VUTz56HVC6nl5Tg9L19JoalK7fffbwjE0NtQh/SdSgSzXsUYPwKvOdv87D6JkVNF6/7Ss16G374zo1aLwev3r+PH/jLOhXZgXp2pynBs3t6Ro1SNfwnr9j54/3oHv2+Smk+uK7xwGl6+k1NShdT6+pQen6i29uztjUUIvwl0QNulTDHjUIr3phvvP3/J/NAJ8VpJ+VOU8NmtvTNWqQruH9+ffPP+YgFbOC0vX0mhqUrqfX1KB0/ej54/vpfvvr92A5A8+AZ8Az4BnwDLSdgS7437Um4NftBJyAE3ACBybgG/CB4RvtBJyAE3AC15tA996reA/GozEOPNrz+qnw8Hv3X+oHc3w9+KX6vfdhmv8mAbLYO9+lfjAHev+EX6rfex9mjx4e+L37L/WDOcD7J/xS/d77MHv08MDv3X+pH8wB3j/hl+r33ofZo4cHfu/+S/1gDvD+Cb9Uv/c+zB49PPB791/qB3OA90/4pfq992H26OGB7+5+fhAe/dmFd3rhUc3rD4WHr81L+8McXx8+3a99DdP8N/NGFrXzTvvDdP7On593zEI6H7WvYXr+PH/j/HW3/3bh0+9vwye98MjXzsPzcBv4LKD/4efBn3f/vPN89/e+oz/f8ffPw3+K/eQEnIATcAJOwAm0SMA34BYpm+EEnMD9ScDfiRO4Jwn4BnxP3gh/G07ACTgBJ3BdCfgGfF3vt1+tE3AC152AX/09SmD2Bvz3P6/Dry//GIRv/f3CNN/5MwPMguevbQJkTvYI35YeAkzYCG9+2wTInOwRvi39ut7/2RvwDz+9DD/+8moQvvUbANN8588MMAuev7YJkDnZI3xbeggwYSO8+W0TIHOyR/i29Mrvf8aL4TXz2hE+48jqktkb8M2DuKx+NaXwoDLVF7ZZXa5M9asbFh5UpvrCNqvLlal+dcPCg8pUX9hmdbky1a9uWHhQmeoL26wuV6b61Q0LDypTfWGb1eXKVL+6YeFBZaovbLO6XJnqVzcsPKhM9YVtVpcrU/3qhhcOxjutFD1/9jR88P6TQXjZamJhmu/8mQFmocnQCQQmbISXrSYWJmyEbwIVCEzYCC9bTSxM2AjfBCoQmLARXraaWJiwEb4JVCAwYSO8bDWxMGEjfBOoQGDCRnjZ2t3O3oBvbrrw+N2Hg/ClVP5uwN8PED6ez3MwzXf+zACzkDc1sYqZY/YQPu7kOZiwET7vVKyCCRvh406egwkb4fNOxSqYsBE+7uQ5mLARPu9UrIIJG+HjTp6DCRvh807FKpiwET7u5DmYsBE+71Ssggkb4eNOnoMJG+HzTsUqmLARPu7kOZiwET7vVKyCCRvh406egwkb4fNOxSqYsBE+7uQ5mLARPu9UrIIJG+HjzrmbvQGfl5Wt8Htzfn+O8GWnt1fDhI3w2zuWdYAJG+HLTm+vhgkb4bd3LOsAEzbCl53eXg0TNsJv71jWASZshC87vb0aJmyE396xrANM2Ahfdnp7NUzYCL+9Y1kHmLARvuz09mqYsBF+e8eyDjBhI3zZ6e3VMGEj/PaOZR1gwkb4S6er3IBPp9PEVD8tVjbKVF8ZO7VXpvqpoLJRpvrK2Km9MtVPBZWNMtVXxk7tlal+KqhslKm+MnZqr0z1U0Flo0z1lbFTe2WqnwoqG2Wqr4yd2itT/VRQ2ShTfWXs1F6Z6qcCMf8BAAD//6iTgscAAAAGSURBVAMACc0BqwoCatYAAAAASUVORK5CYII=",
+     "resolution": 2
+    },
+    {
+     "id": "stock-platform",
+     "name": "Platform",
+     "width": 96,
+     "height": 24,
+     "stock": "props/platform@1"
+    },
+    {
+     "id": "stock-crate",
+     "name": "Crate",
+     "width": 32,
+     "height": 32,
+     "stock": "props/crate@1"
+    },
+    {
+     "id": "stock-explorer-ruby-idle-1",
+     "name": "Ruby idle 1",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-ruby-idle-1@1"
+    },
+    {
+     "id": "stock-explorer-ruby-idle-2",
+     "name": "Ruby idle 2",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-ruby-idle-2@1"
+    },
+    {
+     "id": "stock-explorer-ruby-walk-1",
+     "name": "Ruby walk 1",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-ruby-walk-1@1"
+    },
+    {
+     "id": "stock-explorer-ruby-walk-2",
+     "name": "Ruby walk 2",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-ruby-walk-2@1"
+    },
+    {
+     "id": "stock-explorer-ruby-walk-3",
+     "name": "Ruby walk 3",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-ruby-walk-3@1"
+    },
+    {
+     "id": "stock-explorer-ruby-walk-4",
+     "name": "Ruby walk 4",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-ruby-walk-4@1"
+    },
+    {
+     "id": "stock-explorer-ruby-jump",
+     "name": "Ruby jump",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-ruby-jump@1"
+    },
+    {
+     "id": "stock-explorer-ruby-happy",
+     "name": "Ruby happy",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-ruby-happy@1"
+    }
+   ],
+   "sounds": [
+    {
+     "id": "jump",
+     "name": "Jump",
+     "kind": "clip",
+     "stock": "effects/jump@1"
+    },
+    {
+     "id": "win",
+     "name": "Win",
+     "kind": "clip",
+     "stock": "effects/win@1"
     }
    ]
   },
@@ -436,6 +871,22 @@
      "order": 3,
      "sprite": "player"
     }
+   },
+   {
+    "id": "animate_explorer_handler",
+    "name": "animate_explorer",
+    "parameters": [
+     {
+      "id": "animate_explorer_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "start",
+     "order": 4
+    },
+    "returnTypes": null,
+    "async": true
    }
   ]
  }

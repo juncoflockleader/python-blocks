@@ -137,5 +137,22 @@
   "preview": "best-score.webm",
   "tryNext": [
     "count-how-many"
+  ],
+  "demo": [
+    {
+      "wait": 300
+    },
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 300
+    },
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 500
+    }
   ]
 }

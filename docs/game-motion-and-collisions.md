@@ -4,7 +4,7 @@ This increment adds automatic velocity/acceleration, gravity, drag, controllers,
 
 ## Play and edit the example
 
-Choose **Platformer example**, Run, then focus the stage. Arrow keys move horizontally, Space jumps from a surface, and F fires a ball. Shoot the target and jump across the ledges to the star. The course reports completion with a bubble and output text. Stop and Run reconstructs the course and target. This example uses dialogue and blocks. The [Star game](game-state-and-presentation.md) demonstrates the dedicated score/lives/game-over UI.
+Choose **Platformer example**, Run, then focus the stage. Arrow keys move Sam horizontally, Space jumps from a surface, and F fires a ball. Knock out the crate and jump across the platforms to the star. A walking script turns Sam to face the way the arrows point, plays the walk cycle and shows the jump pose in the air. The course reports completion with a bubble and output text. Stop and Run reconstructs the course and target. This example uses dialogue and blocks. The [Star game](game-state-and-presentation.md) demonstrates the dedicated score/lives/game-over UI.
 
 The course is an ordinary [editable project](../src/scene/game-example.json). Its green ledges are embedded original rectangular PNG costumes and solid sprites. Select one and move it, change its size, or paint a replacement. Select Explorer to adjust its gravity or controller speed. Change the jump or projectile blocks to experiment with the course.
 

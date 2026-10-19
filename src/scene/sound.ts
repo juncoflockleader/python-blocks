@@ -4,7 +4,8 @@ export const SOUND_SECONDS = 60;
 export const instruments = ['sine', 'triangle', 'square', 'sawtooth', 'kick', 'snare', 'hat'] as const;
 export type Instrument = typeof instruments[number];
 export interface Note { at: number; beats: number; pitch: number; instrument: Instrument; volume: number }
-export interface Clip { id: string; name: string; kind: 'clip'; data: string }
+/** A recording or a made sound: WAV data, or `stock`, a library effect drawn from code (sound-library.ts). */
+export interface Clip { id: string; name: string; kind: 'clip'; data?: string; stock?: string }
 export interface Song { id: string; name: string; kind: 'song'; tempo: number; beats: number; notes: Note[] }
 export type Sound = Clip | Song;
 export interface SoundSettings { volume: number; pitch: number; pan: number }
@@ -22,7 +23,8 @@ export function validateSounds(sounds: unknown): asserts sounds is Sound[] {
   const ids = new Set<string>();
   for (const s of sounds) {
     if (!s || typeof s.id !== 'string' || !/^[A-Za-z0-9_-]{1,48}$/.test(s.id) || ids.has(s.id) || typeof s.name !== 'string' || !s.name.trim() || s.name !== s.name.trim() || s.name.length > 48 || /[\x00-\x1f]/.test(s.name)) throw new Error('Sounds need distinct IDs and names of 1–48 characters.');
-    if (s.kind === 'clip') decodeWave(s.data);
+    if (s.kind === 'clip' && s.stock !== undefined) { if (typeof s.stock !== 'string' || !/^effects\/[a-z-]{1,24}@[1-9][0-9]{0,3}$/.test(s.stock) || s.data !== undefined) throw new Error('A library sound needs a known reference and no recorded data.'); }
+    else if (s.kind === 'clip') decodeWave(s.data as string);
     else if (s.kind !== 'song' || !validSong(s)) throw new Error('Songs need a tempo of 30–300 BPM, up to 64 beats / 60 seconds and 256 notes (up to 16 simultaneous).');
     ids.add(s.id);
   }

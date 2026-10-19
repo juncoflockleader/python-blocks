@@ -1,4 +1,5 @@
 import type * as Blockly from 'blockly/core';
+import { plainText, setRichText } from './ui-refs';
 import { passes, type Check, type RunFacts } from './checks';
 import { recipeById, type Recipe, type RecipePart } from './recipes';
 import { atLeast, levelNames, type Level } from '../ui/levels';
@@ -90,6 +91,7 @@ interface Saved { id: string; index: number; timing?: Timing; planted?: Record<s
 const minutesText = (ms: number) => { const seconds = Math.round(ms / 1000); return `${Math.floor(seconds / 60)} min ${seconds % 60} s`; };
 const STORAGE = 'python-blocks.guide.v1';
 const item = (tag: string, className: string, text = '') => Object.assign(document.createElement(tag), { className, textContent: text });
+const richItem = (text: string) => { const li = document.createElement('li'); setRichText(li, text); return li; };
 
 export function installGuide(host: GuideHost) {
   const slot = document.getElementById('guide-slot')!;
@@ -243,8 +245,8 @@ export function installGuide(host: GuideHost) {
       el('guide-progress').textContent = `Step ${index + 1} of ${active.steps.length}`;
       el('guide-meter').querySelector('span')!.style.width = `${(index / active.steps.length) * 100}%`;
     }
-    el('guide-step').textContent = step.text;
-    el('guide-why').hidden = !step.why; el('guide-why').textContent = step.why ?? '';
+    setRichText(el('guide-step'), step.text);
+    el('guide-why').hidden = !step.why; setRichText(el('guide-why'), step.why ?? '');
     el('guide-stop').textContent = isLesson ? 'Leave lesson' : 'Leave build';
     el<HTMLButtonElement>('guide-back').disabled = index === 0;
     // Lessons offer "Show me how" as the last rung of the hint ladder.
@@ -276,8 +278,8 @@ export function installGuide(host: GuideHost) {
     }));
     const result = el('guide-predict-result');
     result.classList.remove('guide-right', 'guide-wrong');
-    if (chosen === undefined) result.textContent = early ? 'Choose what you think will happen first, then run it again.' : 'Choose an answer, then press Run code to find out.';
-    else if (!facts.ran) result.textContent = 'Now press Run code and watch.';
+    if (chosen === undefined) setRichText(result, early ? 'Choose what you think will happen first, then run it again.' : 'Choose an answer, then press [[Run code]] to find out.');
+    else if (!facts.ran) setRichText(result, 'Now press [[Run code]] and watch.');
     else {
       const right = chosen === prediction.answer;
       result.classList.add(right ? 'guide-right' : 'guide-wrong');
@@ -290,8 +292,9 @@ export function installGuide(host: GuideHost) {
     list.replaceChildren(...(step.checklist ?? []).map(part => {
       const li = item('li', ''), ok = passes(part.check, host.workspace, facts);
       li.classList.toggle('guide-ticked', ok);
-      li.append(item('span', 'guide-box'), item('span', '', part.text));
-      li.setAttribute('aria-label', `${part.text}: ${ok ? 'done' : 'not yet'}`);
+      const label = item('span', ''); setRichText(label, part.text);
+      li.append(item('span', 'guide-box'), label);
+      li.setAttribute('aria-label', `${plainText(part.text)}: ${ok ? 'done' : 'not yet'}`);
       return li;
     }));
     const goal = step.goal; el('guide-goal').hidden = !goal;
@@ -310,10 +313,10 @@ export function installGuide(host: GuideHost) {
     const level = hintLevel.get(index) ?? 0;
     el('guide-rungs').replaceChildren(...ladder.map((_, n) => item('span', n < level ? 'guide-rung-on' : '')));
     const shown = level > 0 ? ladder[level - 1] : '';
-    el('guide-hint-text').textContent = shown === 'show'
+    setRichText(el('guide-hint-text'), shown === 'show'
       ? (step.recipe ? 'The idea card is open in Ideas. Press its Insert, then check the numbers.'
         : step.solution?.replacesPlant !== undefined ? 'The lesson swapped in a working script. See what changed, then run it.' : 'The lesson added the blocks. See how they fit, then run it.')
-      : shown;
+      : shown);
     const next = ladder[level], button = el<HTMLButtonElement>('guide-hint');
     // After the last rung an idea card can be opened again; the lesson's own blocks are added once.
     if (next) button.textContent = next === 'show' ? 'Show me how' : level === 0 ? 'Give me a hint' : 'Another hint';
@@ -356,8 +359,8 @@ export function installGuide(host: GuideHost) {
     el('guide-progress').textContent = 'Finished';
     el('guide-step').textContent = ''; el('guide-check').textContent = '';
     for (const id of ['guide-why', 'guide-planted', 'guide-predict', 'guide-goal', 'guide-checklist', 'guide-hints', 'guide-chapters']) el(id).hidden = true;
-    el('guide-finish').hidden = false; el('guide-finish-text').textContent = build.finish.text;
-    el('guide-remix').replaceChildren(...build.finish.remix.map(text => item('li', '', text)));
+    el('guide-finish').hidden = false; setRichText(el('guide-finish-text'), build.finish.text);
+    el('guide-remix').replaceChildren(...build.finish.remix.map(richItem));
     const next = build.next ? buildById(build.next) : undefined;
     el('guide-next-build').hidden = !next; el('guide-next-build').textContent = next ? `${next.kind === 'lesson' ? 'Next lesson' : 'Next build'}: ${next.title}` : '';
     el('guide-next-build').onclick = () => { if (next) begin(next); };
@@ -367,7 +370,7 @@ export function installGuide(host: GuideHost) {
     el('guide-time').textContent = `Time: ${minutesText(total)} (planned ${build.minutes} min).`;
     record = JSON.stringify({
       build: build.id, title: build.title, plannedMinutes: build.minutes, started: timing?.started, finished: new Date().toISOString(), activeMinutes: Math.round(total / 600) / 100,
-      steps: build.steps.map((step, i) => ({ step: i + 1, text: step.text, activeSeconds: Math.round((timing?.steps[i] ?? 0) / 100) / 10, usedShowMeHow: timing?.shown[i] ?? false })),
+      steps: build.steps.map((step, i) => ({ step: i + 1, text: plainText(step.text), activeSeconds: Math.round((timing?.steps[i] ?? 0) / 100) / 10, usedShowMeHow: timing?.shown[i] ?? false })),
       note: 'Active time excludes time while the tab was hidden. Nothing is uploaded.', revision: host.revision, browser: navigator.userAgent,
     }, null, 2);
     active = null; timing = null; since = null; planted = {}; answers = {}; save(); host.prefer(undefined); host.tabLabel('Help');
@@ -377,9 +380,9 @@ export function installGuide(host: GuideHost) {
   /** The lesson's finish sheet: what was used, remixes, and where to go next. */
   function celebrate(build: Build, total: number, next: Build | undefined) {
     el('lesson-finish-title').textContent = `You built ${build.title}`;
-    el('lesson-finish-text').textContent = build.finish.text;
+    setRichText(el('lesson-finish-text'), build.finish.text);
     el('lesson-finish-learn').replaceChildren(...(build.chapters ?? []).map(chapter => { const li = item('li', ''); li.append(item('strong', '', chapter.title), item('span', '', chapter.idea)); return li; }));
-    el('lesson-finish-remix').replaceChildren(...build.finish.remix.map(text => item('li', '', text)));
+    el('lesson-finish-remix').replaceChildren(...build.finish.remix.map(richItem));
     el('lesson-finish-time').textContent = `Time: ${minutesText(total)} (planned ${build.minutes} min)`;
     el('lesson-finish-return').hidden = !host.kept();
     el('lesson-finish-next').hidden = !next; el('lesson-finish-next').textContent = next ? `Next: ${next.title}` : '';

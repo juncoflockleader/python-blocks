@@ -1,6 +1,6 @@
 # Creative tools and art: inventory and plan
 
-Status: approved 2026-10-18 with every recommendation in section 4 accepted. Phase 3a (sharp stage) is done ([record](#phase-3a-record)), and so is Phase 1, the Paint editor ([record](#phase-1-record)). Phase 2, the Sound editor, is built ([record](#phase-2-record)), and Phase 3b, the art pass, is wired in ([record](#phase-3b-record)); next is Phase 3c, the examples. The owner asked for three things:
+Status: approved 2026-10-18 with every recommendation in section 4 accepted. Phase 3a (sharp stage) is done ([record](#phase-3a-record)), and so is Phase 1, the Paint editor ([record](#phase-1-record)). Phase 2, the Sound editor, is built ([record](#phase-2-record)), Phase 3b, the art pass, is wired in ([record](#phase-3b-record)), and Phase 3c rebuilt the examples around it ([record](#phase-3c-record)). The owner asked for three things:
 
 1. Redo the **draw window** (Artwork & frames): it is hard to use, tools are hard to find, and some taps do nothing.
 2. A **sound editor** that records the learner's voice and lets them tune the waveform.
@@ -227,6 +227,41 @@ Phase 3c, examples:
 - Fix the content problems in 2.4: one level for Talking story, one lesson order, Maze run built from a template as its steps say.
 - Gallery cards show a short looping preview (2–3 frames) or a 2× still; recipe posters capture the moment the recipe's effect shows, so no two are the same generic still.
 - Acceptance: every example opens, runs and passes its existing browser test; each guided build still walks through end to end; a side-by-side before/after sheet of all 17 previews for review.
+
+#### Phase 3c record
+
+Built on 2026-10-19 with the cast, props, tiles and backdrops from Phase 3b. Every project keeps its sprite ids, names, order, frame counts, level and scripts; the art, backdrops and sizes changed, a few scripts gained a sound or a walking script, and three messages name the new art. A before/after sheet of every gallery card and recipe poster is on the design canvas (boards E0–E1).
+
+| Project | Now | Kept |
+| --- | --- | --- |
+| Sprites | Cat (walks and turns with the arrow keys) and Bee on the Meadow | Arrow, click and Space scripts |
+| Motion | Rabbit on City park; each glide toward the pointer is a walk step | The bouncing Ball |
+| Story | Sam (breathe, cheer, breathe) and Ruby standing on the Meadow | Meadow → Night on Space |
+| Drawing | Bee draws the flower and stamps itself on each petal | Plain paper (the test counts ink on it), the Star |
+| Behaviors | The Meadow behind the clones | The Bird |
+| Platformer | Sam (60%) walks, turns and shows the jump pose; library Platforms on painted grass, a Crate as the target; jump, hit and win sounds | Every ledge top, so the same jumps land |
+| Worlds | Ruby; a hedge border (the project's own 8 × 8 tile, still Pixel-mode editable), a gate of Crates, a Key that opens it, Flowers, the Forest backdrop; the Starlit cavern is cave tiles with crystals on the Cave backdrop; power-up, whoosh and win sounds | Both maps, the star portal, the scripts |
+| Star game | Fox collects Stars and dodges Bees; the garden is joined grass tiles; coin, hit and win sounds | The Stars, the rules |
+| Music | The Meadow behind the Singer | The Bird, the song first |
+| Input & color | Robot on the Meadow; a win sound | The red and blue squares (exact colours the tests sense) |
+| Catch the star, Talking story | Coin and win sounds | The Bird and the Star: the steps name them, and the redrawn built-ins are in the cast's style |
+| Dodge the balls | Rabbit dodging on the Night sky; hit and win sounds | The Balls |
+| Jump quest | Ruby on the Platformer's new course; jump and win sounds | The steps |
+| Maze run | Rebuilt as its steps say: the Forest trail template with three hedges of grass blocks to find a way through, an Exit door to the Space station template; Sam walks; a whoosh between worlds | The scripts |
+| Brick Breaker, Flappy Flight, Super Hopper | Sounds in the finished games (bounce, pop, coin, jump, hit, win) | Their own art and steps |
+
+| Part | What shipped | Where |
+| --- | --- | --- |
+| Library sounds | A sound clip may carry `stock: "effects/coin@1"` instead of WAV data: one of the Sound editor's ten effects as designed, made from code when it plays (in the app, the exported player and the editor). Five effects would otherwise add about 150 KB to each game, and the examples are bundled into the app. An effect added unchanged from **Make an effect** is saved the same way; tuning it bakes it in. Unknown references are refused on load. Folded into language version 21. | [sound-library.ts](../src/scene/sound-library.ts), [sound.ts](../src/scene/sound.ts), [model.ts](../src/scene/model.ts) |
+| World templates | Ground joins into shapes: each tile's piece (top, edge, corner, platform, block) comes from its neighbours, so ledges read as platforms and steps as stone; templates place library pictures by id | [world-templates.ts](../src/scene/world-templates.ts) |
+| Content | Talking story is Starter everywhere (its "When the backdrop changes" idea is now Starter, like the update hats Starter recipes already bring); `order` follows the Next chain (catch → dodge → pen → talking → Brick Breaker → Flappy → Jump quest → Super Hopper → Maze run), and the list shows lessons first, each group in that order; Maze run and Worlds no longer share a picture | [content/builds](../content/builds) |
+| Recipe posters | The demo scene is the Fox on the Meadow; recipes that react to touching get a version where the Fox walks into the Star. Recordings now include the score, lives, time, message, result card and a sound badge, which the page draws over the stage, and the poster is the frame that differs most from the stage before Run (renderer version 5). A recipe can name the scene its preview is recorded in (`previewScene`: the walking hero, a hero whose clicks score, Space switching the backdrop, or the Music example), and a recording lasts as long as its demo (2–6 s). 47 of the 50 posters now differ (before: 24, with 25 identical); the two remaining pairs show the same effect (a sound playing, night falling). Rendering them found a bug: Count how many made a sprite say a number, which stops with "Speech needs text"; it now says the count joined to text. | [previews.spec.ts](../tests/e2e/previews.spec.ts), [preview-key.ts](../tests/preview-key.ts) |
+| Lesson text | Steps, hints, checklists, finishes and Try changing ideas show the controls they name as chips with the control's own icon (`[[Paint]]`, `{{Events}}`), as the owner asked during review; Maze run's "Wall tool", which the app does not have, is now "tick Solid" | [ui-refs.ts](../src/guide/ui-refs.ts), [content/builds](../content/builds) |
+| Cast fixes | From the owner's review of G1: the animals' near ear was drawn over the forehead and read as a horn, so both ears now sit behind the head on its outline; their arms were long tubes across the tummy, so they are short paws with their own per-pose angles (out in a cheer, not over the mouth); Sam's hood lost its pointed tip | [cast.ts](../src/art/cast.ts) |
+
+Not done in this phase: looping gallery previews (cards keep a 2× still); restyling the three lessons' own art (their pixel-checked walkthroughs depend on it); a sound library browser in the Sound editor (library sounds come from Make an effect).
+
+Tests changed with the art: the platformer's landing heights (a ledge top plus half the explorer's box), the Forest trail template's picture count, the recipe test that copies the Sprites example's sprites now copies their costumes, the guidance hero stands on the grass, and the event-runtime harness serves the sound library.
 
 ### Sequencing
 

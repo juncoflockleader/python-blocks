@@ -3,7 +3,8 @@ import './paint.css';
 import './sound.css';
 import { SceneReferenceField } from '../blocks/scene';
 import { changeScene, sceneState } from './state';
-import { SOUND_RATE, decodeWave, encodeWave, synthesize, synthesizeTone, validSong, validateSounds, type Instrument, type Note, type Song, type Sound } from './sound';
+import { SOUND_RATE, encodeWave, synthesize, synthesizeTone, validSong, validateSounds, type Instrument, type Note, type Song, type Sound } from './sound';
+import { librarySound, soundSamples } from './sound-library';
 import { EFFECTS, MAX_SAMPLES, defaultEffect, makeEffect, peaks, trimSilence, tune, type EffectSettings, type Range, type Tune } from './sound-edit';
 
 /** The Sound editor: a full-screen editor for every sound in the project, in
@@ -212,7 +213,7 @@ export function installSoundEditor(workspace: Blockly.WorkspaceSvg, host: SoundH
 
   // ── Opening and closing ──
   function soundDraft(sound: Sound): Draft {
-    return sound.kind === 'clip' ? { id: sound.id, name: sound.name, kind: 'clip', samples: decodeWave(sound.data), song: null, source: sound, edited: false, made: 'sound' }
+    return sound.kind === 'clip' ? { id: sound.id, name: sound.name, kind: 'clip', samples: soundSamples(sound), song: null, source: sound, edited: false, made: 'sound' }
       : { id: sound.id, name: sound.name, kind: 'song', samples: null, song: structuredClone(sound), source: sound, edited: false, made: 'sound' };
   }
   function open(start: SoundStart = {}) {
@@ -738,8 +739,10 @@ export function installSoundEditor(workspace: Blockly.WorkspaceSvg, host: SoundH
   el('sound-effect-play').addEventListener('click', () => { if (playing?.what === 'effect') stop(); else play(effectSamples, 'effect'); });
   el('sound-effect-another').addEventListener('click', () => { effect = { ...effect, seed: effect.seed + 1 + Math.floor(Math.random() * 1000) }; setEffect(); });
   el('sound-effect-add').addEventListener('click', () => {
-    const kind = EFFECTS.find(e => e.id === effect.kind)!;
-    add({ id: identity(), name: uniqueName(kind.name), kind: 'clip', samples: effectSamples, song: null, source: null, edited: true, made: 'effect' });
+    const kind = EFFECTS.find(e => e.id === effect.kind)!, id = identity(), name = uniqueName(kind.name);
+    // An effect as designed is kept as a library reference, so it costs the project nothing; changing it later bakes it in.
+    const designed = JSON.stringify(effect) === JSON.stringify(defaultEffect(kind.id));
+    add({ id, name, kind: 'clip', samples: effectSamples, song: null, source: designed ? { ...librarySound(kind.id, id), name } : null, edited: !designed, made: 'effect' });
   });
   el('song-play').addEventListener('click', () => { const s = song(); if (!s) return; if (playing?.what === 'song') stop(); else play(synthesize(s), 'song', 0, undefined, s); });
   el<HTMLInputElement>('song-speed').addEventListener('input', () => { el('song-speed-label').textContent = `${el<HTMLInputElement>('song-speed').value} beats a minute`; });
@@ -797,20 +800,20 @@ export function installSoundList(workspace: Blockly.WorkspaceSvg, after: HTMLEle
   function play(sound: Sound) {
     const was = playingId; stop(); if (was === sound.id) return;
     context ??= new AudioContext(); if (context.state === 'suspended') void context.resume();
-    const samples = sound.kind === 'clip' ? decodeWave(sound.data) : synthesize(sound), buffer = context.createBuffer(1, samples.length, SOUND_RATE);
+    const samples = soundSamples(sound), buffer = context.createBuffer(1, samples.length, SOUND_RATE);
     buffer.copyToChannel(new Float32Array(samples), 0); source = context.createBufferSource(); source.buffer = buffer;
     const gain = context.createGain(); gain.gain.value = 0.8; source.connect(gain); gain.connect(context.destination); source.start();
     playingId = sound.id; source.onended = () => { source = null; playingId = null; render(true); }; render(true);
   }
   function render(force = false) {
-    const sounds = sceneState(workspace).sounds ?? [], key = JSON.stringify(sounds.map(s => [s.id, s.name, s.kind === 'clip' ? s.data.length : s.beats])) + playingId;
+    const sounds = sceneState(workspace).sounds ?? [], key = JSON.stringify(sounds.map(s => [s.id, s.name, s.kind === 'clip' ? s.stock ?? s.data!.length : s.beats])) + playingId;
     if (!force && key === last) return; last = key;
     empty.hidden = sounds.length > 0;
     list.replaceChildren(...sounds.map(sound => {
       const item = document.createElement('li'), playButton = document.createElement('button'), name = document.createElement('button');
       playButton.type = 'button'; playButton.className = 'button secondary sprite-sound-play'; playButton.setAttribute('aria-label', `${playingId === sound.id ? 'Stop' : 'Play'} ${sound.name}`);
       playButton.innerHTML = icon(playingId === sound.id ? ICONS.stop : ICONS.play, 16, true); playButton.addEventListener('click', () => play(sound));
-      const length = sound.kind === 'clip' ? (decodeWave(sound.data).length / SOUND_RATE).toFixed(1) + ' s' : `${sound.beats} beats`;
+      const length = sound.kind === 'clip' ? (soundSamples(sound).length / SOUND_RATE).toFixed(1) + ' s' : `${sound.beats} beats`;
       name.type = 'button'; name.className = 'sprite-sound-name'; name.innerHTML = '<strong></strong><span></span>';
       name.querySelector('strong')!.textContent = sound.name; name.querySelector('span')!.textContent = `${sound.kind === 'song' ? 'Song' : 'Sound'} · ${length}`;
       name.setAttribute('aria-label', `Edit ${sound.name}`); name.addEventListener('click', () => edit(sound.id));

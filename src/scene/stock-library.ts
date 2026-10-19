@@ -1,4 +1,6 @@
 import { findStock, stockArtwork, stockCanvas } from './stock-art';
+import { stockAssetById } from '../art/catalog';
+import { paintStockBox } from '../art/raster';
 import { templateLayout, worldTemplates } from './world-templates';
 
 export type StockKind = 'costume' | 'backdrop' | 'world';
@@ -17,7 +19,10 @@ export function installStockLibrary(add: (kind: StockKind, id: string, signal: A
     const canvas = document.createElement('canvas'); canvas.width = world.map.columns * 32; canvas.height = 320;
     const c = canvas.getContext('2d')!; c.drawImage(await stockCanvas(findStock('backdrop', template.backdrop)!),0,0,canvas.width,canvas.height);
     const images = new Map<string,HTMLCanvasElement>();
-    for(const id of new Set(world.map.tiles.filter((id): id is string => id !== null))) images.set(id,await stockCanvas(findStock('costume', id)!, 2));
+    for(const id of new Set(world.map.tiles.filter((id): id is string => id !== null))) {
+      const art = stockAssetById(id)!, image = document.createElement('canvas'); image.width = 64; image.height = 64;
+      const ic = image.getContext('2d')!; ic.scale(64 / art.width, 64 / art.height); paintStockBox(ic, art.ref); images.set(id, image);
+    }
     world.map.tiles.forEach((id,i) => { if(id) c.drawImage(images.get(id)!,i%world.map.columns*32,Math.floor(i/world.map.columns)*32,32,32); });
     return canvas;
   }

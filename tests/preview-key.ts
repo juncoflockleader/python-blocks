@@ -4,12 +4,19 @@ import { readFileSync, readdirSync } from 'node:fs';
 /** Recipe previews and gallery thumbnails are rendered by the browser suite and
  * cached by a hash of everything that affects them. Change the renderer version
  * to re-render every preview. */
-export const PREVIEW_RENDERER = 4; // 2: WebM plus MP4 (H.264) and a PNG still of the last frame. 3: rendered on a 2× screen and saved at 480 × 320. 4: the redrawn built-ins and library art.
+export const PREVIEW_RENDERER = 5; // 2: WebM plus MP4 (H.264) and a PNG still of the last frame. 3: rendered on a 2× screen and saved at 480 × 320. 4: the redrawn built-ins and library art. 5: the score, messages and a sound badge recorded too; the poster is the moment of most change.
 /** The files one recipe preview consists of, from its `preview` name (`chase.webm`). */
 export const previewOutputs = (preview: string) => { const stem = preview.replace(/\.webm$/, ''); return { webm: `public/recipes/${stem}.webm`, mp4: `public/recipes/${stem}.mp4`, poster: `public/recipes/${stem}.png` }; };
-export interface RecipeFile { id: string; title: string; blocks?: unknown[]; variables?: string[]; needs?: { sprites?: number; worlds?: number }; demo?: unknown[]; preview?: string }
+export interface RecipeFile { id: string; title: string; blocks?: unknown[]; variables?: string[]; needs?: { sprites?: number; worlds?: number }; demo?: unknown[]; preview?: string; previewScene?: string }
 export const recipeFiles = (): RecipeFile[] => readdirSync('content/recipes').filter(f => f.endsWith('.json')).sort().map(f => JSON.parse(readFileSync(`content/recipes/${f}`, 'utf8')));
-export const recipeFixture = (recipe: RecipeFile) => recipe.needs?.worlds ? 'tests/fixtures/recipes/worlds.json' : 'tests/fixtures/recipes/stage.json';
+/** The project a recipe is shown in: its previewScene, a world, the stage with the hero walking
+ * into the star when the recipe reacts to touching, or else the stage. */
+export function recipeFixture(recipe: RecipeFile) {
+  if (recipe.previewScene === 'music') return 'src/scene/sound-example.json';
+  if (recipe.previewScene) return `tests/fixtures/recipes/${recipe.previewScene}.json`;
+  if (recipe.needs?.worlds) return 'tests/fixtures/recipes/worlds.json';
+  return (recipe.blocks as { handler?: { kind: string } }[] | undefined)?.some(b => b.handler?.kind === 'overlap') ? 'tests/fixtures/recipes/touch.json' : 'tests/fixtures/recipes/stage.json';
+}
 const sha = (text: string) => createHash('sha256').update(text).digest('hex').slice(0, 16);
 export const recipeKey = (recipe: RecipeFile) => sha(JSON.stringify({ renderer: PREVIEW_RENDERER, blocks: recipe.blocks, variables: recipe.variables, needs: recipe.needs, demo: recipe.demo, fixture: readFileSync(recipeFixture(recipe), 'utf8') }));
 export const galleryKey = (project: string) => sha(JSON.stringify({ renderer: PREVIEW_RENDERER, project: readFileSync(project, 'utf8') }));

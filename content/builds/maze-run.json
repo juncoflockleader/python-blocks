@@ -3,7 +3,7 @@
  "title": "Maze run",
  "level": "pro",
  "minutes": 20,
- "order": 4,
+ "order": 9,
  "summary": "Explore a tile world with walls, a following camera and a door to a second world.",
  "ideas": [
   "world template",
@@ -14,7 +14,7 @@
  "starter": {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 19,
+  "languageVersion": 21,
   "workspace": {
    "blocks": {
     "languageVersion": 0,
@@ -23,7 +23,64 @@
    "pythonScene": {
     "version": 1,
     "background": "#fdfdf9",
-    "assets": [],
+    "assets": [
+     {
+      "id": "stock-explorer-sam-idle-1",
+      "name": "Sam idle 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-idle-1@1"
+     },
+     {
+      "id": "stock-explorer-sam-idle-2",
+      "name": "Sam idle 2",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-idle-2@1"
+     },
+     {
+      "id": "stock-explorer-sam-walk-1",
+      "name": "Sam walk 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-walk-1@1"
+     },
+     {
+      "id": "stock-explorer-sam-walk-2",
+      "name": "Sam walk 2",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-walk-2@1"
+     },
+     {
+      "id": "stock-explorer-sam-walk-3",
+      "name": "Sam walk 3",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-walk-3@1"
+     },
+     {
+      "id": "stock-explorer-sam-walk-4",
+      "name": "Sam walk 4",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-walk-4@1"
+     },
+     {
+      "id": "stock-explorer-sam-jump",
+      "name": "Sam jump",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-jump@1"
+     },
+     {
+      "id": "stock-explorer-sam-happy",
+      "name": "Sam happy",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-happy@1"
+     }
+    ],
     "sprites": [
      {
       "id": "explorer",
@@ -31,10 +88,18 @@
       "x": 0,
       "y": 0,
       "direction": 0,
-      "size": 60,
+      "size": 45,
       "layer": 0,
       "visible": true,
-      "costume": "bird"
+      "costume": "stock-explorer-sam-idle-1",
+      "costumes": [
+       "stock-explorer-sam-walk-1",
+       "stock-explorer-sam-walk-2",
+       "stock-explorer-sam-walk-3",
+       "stock-explorer-sam-walk-4"
+      ],
+      "rotationStyle": "left-right",
+      "frameSeconds": 0.12
      }
     ]
    }
@@ -42,7 +107,7 @@
  },
  "steps": [
   {
-   "text": "Open Worlds & tilemaps in the Sprite tab and add a world from the World library.",
+   "text": "Open [[Worlds & tilemaps]] in the [[Sprite tab]] and add a world from the [[World library]].",
    "check": {
     "worlds": 1
    },
@@ -78,7 +143,7 @@
    }
   },
   {
-   "text": "Open Worlds & tilemaps, choose the Wall tool and paint solid tiles to make your maze.",
+   "text": "Open [[Worlds & tilemaps]], tick [[Solid]] and paint tiles to make your maze.",
    "check": {
     "walls": 1
    },

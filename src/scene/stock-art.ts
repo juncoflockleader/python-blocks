@@ -1,6 +1,6 @@
 import { paintBuiltinBackdrop, paintBuiltinCostume, type AssetKind } from './assets';
 import { builtins, builtinBackdrops, isStock, STOCK_LIMITS, type Costume, type SceneState } from './model';
-import { LIBRARY, STOCK_ENTRIES, stockAsset, stockEntry } from '../art/catalog';
+import { LIBRARY, STOCK_ENTRIES, stockAsset, stockAssetById, stockEntry } from '../art/catalog';
 import { paintStockBox } from '../art/raster';
 
 /** The library as the stock dialog and the Paint editor see it: the built-in
@@ -44,5 +44,14 @@ export function includeStockSet(scene: SceneState, kind: AssetKind, id: string, 
   for (const a of fresh) list.push({ id: a.id, name: a.name, width: a.width, height: a.height, stock: a.ref } satisfies Costume);
   return { costume: stockAsset(entry.costume)!.id, ...(entry.frames && !only ? { frames: entry.frames.map(ref => stockAsset(ref)!.id) } : {}) };
 }
-/** Add just one picture (a world template's tiles and backdrop); returns its id. */
+/** Add just one picture of an entry (a world template's backdrop); returns its id. */
 export async function includeStock(scene: SceneState, kind: AssetKind, id: string) { return includeStockSet(scene, kind, id, 'first').costume; }
+/** Add one library picture by its project id (`stock-grass-top`, a tile a template places). */
+export function includeStockAsset(scene: SceneState, id: string) {
+  const art = stockAssetById(id); if (!art) throw new Error('Choose available library artwork.');
+  const list = art.kind === 'costume' ? scene.assets : (scene.backdrops ??= []);
+  if (list.some(a => a.id === id)) return id;
+  const limit = art.kind === 'costume' ? STOCK_LIMITS.costumes : STOCK_LIMITS.backdrops;
+  if (list.filter(a => isStock(a)).length >= limit) throw new Error(`A project can use ${limit} library ${art.kind === 'costume' ? 'costumes' : 'backdrops'}. Remove some sprites or backdrops it no longer uses.`);
+  list.push({ id, name: art.name, width: art.width, height: art.height, stock: art.ref } satisfies Costume); return id;
+}

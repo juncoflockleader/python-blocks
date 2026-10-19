@@ -17,6 +17,9 @@ const harnessFiles: Record<string, string> = {
   'watch-model': stripTypeScriptTypes(readFileSync('src/scene/watch-model.ts', 'utf8')),
   questions: stripTypeScriptTypes(readFileSync('src/scene/questions.ts', 'utf8')),
   sound: stripTypeScriptTypes(readFileSync('src/scene/sound.ts', 'utf8')),
+  // ...and library sound references against the effects that make them.
+  'sound-library': stripTypeScriptTypes(readFileSync('src/scene/sound-library.ts', 'utf8')),
+  'sound-edit': stripTypeScriptTypes(readFileSync('src/scene/sound-edit.ts', 'utf8')),
   game: stripTypeScriptTypes(readFileSync('src/scene/game.ts', 'utf8')),
   world: stripTypeScriptTypes(readFileSync('src/scene/world.ts', 'utf8')),
   motion: stripTypeScriptTypes(readFileSync('src/scene/motion.ts', 'utf8')),

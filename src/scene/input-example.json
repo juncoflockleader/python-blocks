@@ -1,7 +1,7 @@
 {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 17,
+  "languageVersion": 21,
   "workspace": {
     "pythonScene": {
       "version": 1,
@@ -20,6 +20,62 @@
           "width": 32,
           "height": 32,
           "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAAL0lEQVR4nO3OIQEAAAgDMJKRiqrkgRg3E/Ornr2kEhAQEBAQEBAQEBAQEBAQSAceDM8Yl1EhJckAAAAASUVORK5CYII="
+        },
+        {
+          "id": "stock-robot-idle-1",
+          "name": "Robot idle 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/robot-idle-1@1"
+        },
+        {
+          "id": "stock-robot-idle-2",
+          "name": "Robot idle 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/robot-idle-2@1"
+        },
+        {
+          "id": "stock-robot-walk-1",
+          "name": "Robot walk 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/robot-walk-1@1"
+        },
+        {
+          "id": "stock-robot-walk-2",
+          "name": "Robot walk 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/robot-walk-2@1"
+        },
+        {
+          "id": "stock-robot-walk-3",
+          "name": "Robot walk 3",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/robot-walk-3@1"
+        },
+        {
+          "id": "stock-robot-walk-4",
+          "name": "Robot walk 4",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/robot-walk-4@1"
+        },
+        {
+          "id": "stock-robot-jump",
+          "name": "Robot jump",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/robot-jump@1"
+        },
+        {
+          "id": "stock-robot-happy",
+          "name": "Robot happy",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/robot-happy@1"
         }
       ],
       "controls": {
@@ -36,14 +92,22 @@
           "size": 100,
           "layer": 0,
           "visible": true,
-          "costume": "bird",
+          "costume": "stock-robot-idle-1",
           "motion": {
             "body": "moving",
             "controller": "arrows",
             "speedX": 120,
             "speedY": 120,
             "edges": "stop"
-          }
+          },
+          "costumes": [
+            "stock-robot-walk-1",
+            "stock-robot-walk-2",
+            "stock-robot-walk-3",
+            "stock-robot-walk-4"
+          ],
+          "rotationStyle": "left-right",
+          "frameSeconds": 0.12
         },
         {
           "id": "goal",
@@ -66,6 +130,15 @@
           "layer": 0,
           "visible": true,
           "costume": "blue_square"
+        }
+      ],
+      "backdrop": "backdrop_meadow",
+      "sounds": [
+        {
+          "id": "win",
+          "name": "Win",
+          "kind": "clip",
+          "stock": "effects/win@1"
         }
       ]
     },
@@ -302,44 +375,71 @@
                   },
                   "DO0": {
                     "block": {
-                      "type": "game_finish",
-                      "fields": {
-                        "WON": "TRUE"
-                      },
+                      "type": "sound_play",
+                      "id": "input_example_3c_3",
+                      "fields": {},
                       "inputs": {
-                        "TEXT": {
+                        "SOUND": {
                           "block": {
-                            "type": "text_join",
+                            "type": "sound_asset",
+                            "id": "input_example_3c_1",
+                            "fields": {
+                              "SOUND_ID": "win"
+                            },
+                            "inputs": {}
+                          }
+                        },
+                        "OWNER": {
+                          "block": {
+                            "type": "py_none",
+                            "id": "input_example_3c_2",
                             "fields": {},
-                            "inputs": {
-                              "ADD0": {
-                                "block": {
-                                  "type": "text",
-                                  "fields": {
-                                    "TEXT": "You found red in "
+                            "inputs": {}
+                          }
+                        }
+                      },
+                      "next": {
+                        "block": {
+                          "type": "game_finish",
+                          "fields": {
+                            "WON": "TRUE"
+                          },
+                          "inputs": {
+                            "TEXT": {
+                              "block": {
+                                "type": "text_join",
+                                "fields": {},
+                                "inputs": {
+                                  "ADD0": {
+                                    "block": {
+                                      "type": "text",
+                                      "fields": {
+                                        "TEXT": "You found red in "
+                                      },
+                                      "inputs": {}
+                                    }
                                   },
-                                  "inputs": {}
-                                }
-                              },
-                              "ADD1": {
-                                "block": {
-                                  "type": "input_timer",
-                                  "fields": {},
-                                  "inputs": {}
-                                }
-                              },
-                              "ADD2": {
-                                "block": {
-                                  "type": "text",
-                                  "fields": {
-                                    "TEXT": " seconds!"
+                                  "ADD1": {
+                                    "block": {
+                                      "type": "input_timer",
+                                      "fields": {},
+                                      "inputs": {}
+                                    }
                                   },
-                                  "inputs": {}
+                                  "ADD2": {
+                                    "block": {
+                                      "type": "text",
+                                      "fields": {
+                                        "TEXT": " seconds!"
+                                      },
+                                      "inputs": {}
+                                    }
+                                  }
+                                },
+                                "extraState": {
+                                  "itemCount": 3
                                 }
                               }
-                            },
-                            "extraState": {
-                              "itemCount": 3
                             }
                           }
                         }

@@ -1,12 +1,69 @@
 {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 9,
+  "languageVersion": 21,
   "workspace": {
     "pythonScene": {
       "version": 1,
       "background": "#fdfdf9",
-      "assets": [],
+      "assets": [
+        {
+          "id": "stock-rabbit-idle-1",
+          "name": "Rabbit idle 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/rabbit-idle-1@1"
+        },
+        {
+          "id": "stock-rabbit-idle-2",
+          "name": "Rabbit idle 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/rabbit-idle-2@1"
+        },
+        {
+          "id": "stock-rabbit-walk-1",
+          "name": "Rabbit walk 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/rabbit-walk-1@1"
+        },
+        {
+          "id": "stock-rabbit-walk-2",
+          "name": "Rabbit walk 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/rabbit-walk-2@1"
+        },
+        {
+          "id": "stock-rabbit-walk-3",
+          "name": "Rabbit walk 3",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/rabbit-walk-3@1"
+        },
+        {
+          "id": "stock-rabbit-walk-4",
+          "name": "Rabbit walk 4",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/rabbit-walk-4@1"
+        },
+        {
+          "id": "stock-rabbit-jump",
+          "name": "Rabbit jump",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/rabbit-jump@1"
+        },
+        {
+          "id": "stock-rabbit-happy",
+          "name": "Rabbit happy",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/rabbit-happy@1"
+        }
+      ],
       "sprites": [
         {
           "id": "player",
@@ -17,8 +74,15 @@
           "size": 100,
           "layer": 0,
           "visible": true,
-          "costume": "bird",
-          "rotationStyle": "left-right"
+          "costume": "stock-rabbit-idle-1",
+          "rotationStyle": "left-right",
+          "costumes": [
+            "stock-rabbit-walk-1",
+            "stock-rabbit-walk-2",
+            "stock-rabbit-walk-3",
+            "stock-rabbit-walk-4"
+          ],
+          "frameSeconds": 0.12
         },
         {
           "id": "friend",
@@ -31,7 +95,17 @@
           "visible": true,
           "costume": "ball"
         }
-      ]
+      ],
+      "backdrops": [
+        {
+          "id": "stock-city",
+          "name": "City park",
+          "width": 480,
+          "height": 320,
+          "stock": "backdrops/city@1"
+        }
+      ],
+      "backdrop": "stock-city"
     },
     "blocks": {
       "languageVersion": 0,
@@ -140,6 +214,25 @@
                                             "type": "scene_pointer",
                                             "fields": {
                                               "PROPERTY": "pointer_y"
+                                            }
+                                          }
+                                        }
+                                      },
+                                      "next": {
+                                        "block": {
+                                          "type": "scene_next_costume",
+                                          "id": "motion_example_3c_2",
+                                          "fields": {},
+                                          "inputs": {
+                                            "SPRITE": {
+                                              "block": {
+                                                "type": "scene_sprite",
+                                                "id": "motion_example_3c_1",
+                                                "fields": {
+                                                  "SPRITE_ID": "player"
+                                                },
+                                                "inputs": {}
+                                              }
                                             }
                                           }
                                         }

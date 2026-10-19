@@ -1,12 +1,125 @@
 {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 8,
+  "languageVersion": 21,
   "workspace": {
     "pythonScene": {
       "version": 1,
       "background": "#fdfdf9",
-      "assets": [],
+      "assets": [
+        {
+          "id": "stock-cat-idle-1",
+          "name": "Cat idle 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/cat-idle-1@1"
+        },
+        {
+          "id": "stock-cat-idle-2",
+          "name": "Cat idle 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/cat-idle-2@1"
+        },
+        {
+          "id": "stock-cat-walk-1",
+          "name": "Cat walk 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/cat-walk-1@1"
+        },
+        {
+          "id": "stock-cat-walk-2",
+          "name": "Cat walk 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/cat-walk-2@1"
+        },
+        {
+          "id": "stock-cat-walk-3",
+          "name": "Cat walk 3",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/cat-walk-3@1"
+        },
+        {
+          "id": "stock-cat-walk-4",
+          "name": "Cat walk 4",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/cat-walk-4@1"
+        },
+        {
+          "id": "stock-cat-jump",
+          "name": "Cat jump",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/cat-jump@1"
+        },
+        {
+          "id": "stock-cat-happy",
+          "name": "Cat happy",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/cat-happy@1"
+        },
+        {
+          "id": "stock-bee-idle-1",
+          "name": "Bee idle 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-idle-1@1"
+        },
+        {
+          "id": "stock-bee-idle-2",
+          "name": "Bee idle 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-idle-2@1"
+        },
+        {
+          "id": "stock-bee-walk-1",
+          "name": "Bee walk 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-walk-1@1"
+        },
+        {
+          "id": "stock-bee-walk-2",
+          "name": "Bee walk 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-walk-2@1"
+        },
+        {
+          "id": "stock-bee-walk-3",
+          "name": "Bee walk 3",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-walk-3@1"
+        },
+        {
+          "id": "stock-bee-walk-4",
+          "name": "Bee walk 4",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-walk-4@1"
+        },
+        {
+          "id": "stock-bee-jump",
+          "name": "Bee jump",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-jump@1"
+        },
+        {
+          "id": "stock-bee-happy",
+          "name": "Bee happy",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-happy@1"
+        }
+      ],
       "sprites": [
         {
           "id": "player",
@@ -17,20 +130,37 @@
           "size": 100,
           "layer": 0,
           "visible": true,
-          "costume": "bird"
+          "costume": "stock-cat-idle-1",
+          "costumes": [
+            "stock-cat-walk-1",
+            "stock-cat-walk-2",
+            "stock-cat-walk-3",
+            "stock-cat-walk-4"
+          ],
+          "rotationStyle": "left-right",
+          "frameSeconds": 0.12
         },
         {
           "id": "friend",
           "name": "Friend",
           "x": 100,
           "y": 0,
-          "direction": 0,
+          "direction": 180,
           "size": 100,
           "layer": 0,
           "visible": true,
-          "costume": "star"
+          "costume": "stock-bee-idle-1",
+          "costumes": [
+            "stock-bee-walk-1",
+            "stock-bee-walk-2",
+            "stock-bee-walk-3",
+            "stock-bee-walk-4"
+          ],
+          "rotationStyle": "left-right",
+          "frameSeconds": 0.12
         }
-      ]
+      ],
+      "backdrop": "backdrop_meadow"
     },
     "blocks": {
       "languageVersion": 0,
@@ -232,6 +362,54 @@
                       }
                     }
                   }
+                },
+                "next": {
+                  "block": {
+                    "type": "scene_set",
+                    "id": "example_3c_2",
+                    "fields": {
+                      "PROPERTY": "direction"
+                    },
+                    "inputs": {
+                      "SPRITE": {
+                        "block": {
+                          "type": "scene_sprite",
+                          "id": "example_3c_1",
+                          "fields": {
+                            "SPRITE_ID": "player"
+                          },
+                          "inputs": {}
+                        }
+                      },
+                      "VALUE": {
+                        "shadow": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "0"
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "scene_next_costume",
+                        "id": "example_3c_4",
+                        "fields": {},
+                        "inputs": {
+                          "SPRITE": {
+                            "block": {
+                              "type": "scene_sprite",
+                              "id": "example_3c_3",
+                              "fields": {
+                                "SPRITE_ID": "player"
+                              },
+                              "inputs": {}
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -306,6 +484,54 @@
                             "type": "py_number",
                             "fields": {
                               "VALUE": "-20"
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "scene_set",
+                    "id": "example_3c_6",
+                    "fields": {
+                      "PROPERTY": "direction"
+                    },
+                    "inputs": {
+                      "SPRITE": {
+                        "block": {
+                          "type": "scene_sprite",
+                          "id": "example_3c_5",
+                          "fields": {
+                            "SPRITE_ID": "player"
+                          },
+                          "inputs": {}
+                        }
+                      },
+                      "VALUE": {
+                        "shadow": {
+                          "type": "py_number",
+                          "fields": {
+                            "VALUE": "180"
+                          }
+                        }
+                      }
+                    },
+                    "next": {
+                      "block": {
+                        "type": "scene_next_costume",
+                        "id": "example_3c_8",
+                        "fields": {},
+                        "inputs": {
+                          "SPRITE": {
+                            "block": {
+                              "type": "scene_sprite",
+                              "id": "example_3c_7",
+                              "fields": {
+                                "SPRITE_ID": "player"
+                              },
+                              "inputs": {}
                             }
                           }
                         }
@@ -392,6 +618,25 @@
                       }
                     }
                   }
+                },
+                "next": {
+                  "block": {
+                    "type": "scene_next_costume",
+                    "id": "example_3c_10",
+                    "fields": {},
+                    "inputs": {
+                      "SPRITE": {
+                        "block": {
+                          "type": "scene_sprite",
+                          "id": "example_3c_9",
+                          "fields": {
+                            "SPRITE_ID": "player"
+                          },
+                          "inputs": {}
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
@@ -468,6 +713,25 @@
                               "VALUE": "-20"
                             }
                           }
+                        }
+                      }
+                    }
+                  }
+                },
+                "next": {
+                  "block": {
+                    "type": "scene_next_costume",
+                    "id": "example_3c_12",
+                    "fields": {},
+                    "inputs": {
+                      "SPRITE": {
+                        "block": {
+                          "type": "scene_sprite",
+                          "id": "example_3c_11",
+                          "fields": {
+                            "SPRITE_ID": "player"
+                          },
+                          "inputs": {}
                         }
                       }
                     }

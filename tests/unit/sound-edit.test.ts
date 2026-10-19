@@ -1,5 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import { SOUND_RATE, synthesizeTone } from '../../src/scene/sound';
+import { SOUND_LIBRARY, librarySound, soundSamples } from '../../src/scene/sound-library';
+import { validateScene } from '../../src/scene/model';
 import { EFFECTS, MAX_SAMPLES, STEP_SEMITONES, defaultEffect, makeEffect, peaks, pitchShift, resample, trimSilence, tune } from '../../src/scene/sound-edit';
 
 const sine = (hz: number, seconds: number, level = 0.5) => Float32Array.from({ length: Math.round(seconds * SOUND_RATE) }, (_, i) => Math.sin(2 * Math.PI * hz * i / SOUND_RATE) * level);
@@ -103,5 +105,22 @@ describe('sound effects', () => {
     expect(frequency(makeEffect({ ...jump, pitch: 75, length: 100 }))).toBeGreaterThan(frequency(makeEffect({ ...jump, length: 100 })) * 1.8);
     expect(makeEffect({ ...jump, slide: 100 })).not.toEqual(makeEffect(jump));
     expect(synthesizeTone(60, 0.1, 'sine').length).toBeGreaterThan(0);
+  });
+});
+
+describe('Library sounds', () => {
+  const scene = (sounds: unknown[]) => ({ version: 1, background: '#ffffff', sprites: [], assets: [], sounds });
+  it('are references to the effects as designed, made the same every time', () => {
+    expect(SOUND_LIBRARY.map(s => s.effect)).toEqual(EFFECTS.map(e => e.id));
+    const coin = librarySound('coin');
+    expect(coin).toEqual({ id: 'coin', name: 'Coin', kind: 'clip', stock: 'effects/coin@1' });
+    expect(Array.from(soundSamples(coin))).toEqual(Array.from(makeEffect(defaultEffect('coin'))));
+    expect(() => validateScene(scene([coin, librarySound('win', 'cheer')]))).not.toThrow();
+  });
+  it('are rejected when unknown, or when they also carry recorded data', () => {
+    expect(() => validateScene(scene([{ id: 'x', name: 'X', kind: 'clip', stock: 'effects/kazoo@1' }]))).toThrow(/newer version/);
+    expect(() => validateScene(scene([{ id: 'x', name: 'X', kind: 'clip', stock: 'effects/coin@1', data: 'data:audio/wav;base64,AAAA' }]))).toThrow(/known reference/);
+    expect(() => validateScene(scene([{ id: 'x', name: 'X', kind: 'clip', stock: '../coin' }]))).toThrow(/known reference/);
+    expect(() => soundSamples({ id: 'x', name: 'X', kind: 'clip', stock: 'effects/kazoo@1' })).toThrow(/not available/);
   });
 });

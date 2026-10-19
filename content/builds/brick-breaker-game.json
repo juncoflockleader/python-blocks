@@ -1,7 +1,7 @@
 {
  "format": "python-blocks",
  "formatVersion": 1,
- "languageVersion": 19,
+ "languageVersion": 21,
  "workspace": {
   "blocks": {
    "languageVersion": 0,
@@ -386,16 +386,43 @@
         },
         "next": {
          "block": {
-          "type": "game_finish",
-          "fields": {
-           "WON": "TRUE"
-          },
+          "type": "sound_play",
+          "id": "brick_breaker_game_3c_12",
+          "fields": {},
           "inputs": {
-           "TEXT": {
-            "shadow": {
-             "type": "text",
+           "SOUND": {
+            "block": {
+             "type": "sound_asset",
+             "id": "brick_breaker_game_3c_10",
              "fields": {
-              "TEXT": "You cleared the wall!"
+              "SOUND_ID": "win"
+             },
+             "inputs": {}
+            }
+           },
+           "OWNER": {
+            "block": {
+             "type": "py_none",
+             "id": "brick_breaker_game_3c_11",
+             "fields": {},
+             "inputs": {}
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "game_finish",
+            "fields": {
+             "WON": "TRUE"
+            },
+            "inputs": {
+             "TEXT": {
+              "shadow": {
+               "type": "text",
+               "fields": {
+                "TEXT": "You cleared the wall!"
+               }
+              }
              }
             }
            }
@@ -462,6 +489,33 @@
               }
              }
             }
+           },
+           "next": {
+            "block": {
+             "type": "sound_play",
+             "id": "brick_breaker_game_3c_3",
+             "fields": {},
+             "inputs": {
+              "SOUND": {
+               "block": {
+                "type": "sound_asset",
+                "id": "brick_breaker_game_3c_1",
+                "fields": {
+                 "SOUND_ID": "blip"
+                },
+                "inputs": {}
+               }
+              },
+              "OWNER": {
+               "block": {
+                "type": "py_none",
+                "id": "brick_breaker_game_3c_2",
+                "fields": {},
+                "inputs": {}
+               }
+              }
+             }
+            }
            }
           }
          }
@@ -505,51 +559,78 @@
          },
          "DO0": {
           "block": {
-           "type": "game_change",
-           "fields": {
-            "FIELD": "score"
-           },
+           "type": "sound_play",
+           "id": "brick_breaker_game_3c_6",
+           "fields": {},
            "inputs": {
-            "VALUE": {
-             "shadow": {
-              "type": "py_number",
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "brick_breaker_game_3c_4",
               "fields": {
-               "VALUE": "1"
-              }
+               "SOUND_ID": "pop"
+              },
+              "inputs": {}
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "brick_breaker_game_3c_5",
+              "fields": {},
+              "inputs": {}
              }
             }
            },
            "next": {
             "block": {
-             "type": "scene_motion_set",
+             "type": "game_change",
              "fields": {
-              "PROPERTY": "vy"
+              "FIELD": "score"
              },
              "inputs": {
-              "SPRITE": {
-               "block": {
-                "type": "scene_sprite",
-                "fields": {
-                 "SPRITE_ID": "ball"
-                }
-               }
-              },
               "VALUE": {
                "shadow": {
                 "type": "py_number",
                 "fields": {
-                 "VALUE": "-220"
+                 "VALUE": "1"
                 }
                }
               }
              },
              "next": {
               "block": {
-               "type": "scene_destroy",
+               "type": "scene_motion_set",
+               "fields": {
+                "PROPERTY": "vy"
+               },
                "inputs": {
                 "SPRITE": {
                  "block": {
-                  "type": "scene_self"
+                  "type": "scene_sprite",
+                  "fields": {
+                   "SPRITE_ID": "ball"
+                  }
+                 }
+                },
+                "VALUE": {
+                 "shadow": {
+                  "type": "py_number",
+                  "fields": {
+                   "VALUE": "-220"
+                  }
+                 }
+                }
+               },
+               "next": {
+                "block": {
+                 "type": "scene_destroy",
+                 "inputs": {
+                  "SPRITE": {
+                   "block": {
+                    "type": "scene_self"
+                   }
+                  }
                  }
                 }
                }
@@ -612,63 +693,90 @@
          },
          "DO0": {
           "block": {
-           "type": "game_change",
-           "fields": {
-            "FIELD": "lives"
-           },
+           "type": "sound_play",
+           "id": "brick_breaker_game_3c_9",
+           "fields": {},
            "inputs": {
-            "VALUE": {
-             "shadow": {
-              "type": "py_number",
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "brick_breaker_game_3c_7",
               "fields": {
-               "VALUE": "-1"
-              }
+               "SOUND_ID": "hit"
+              },
+              "inputs": {}
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "brick_breaker_game_3c_8",
+              "fields": {},
+              "inputs": {}
              }
             }
            },
            "next": {
             "block": {
-             "type": "scene_go",
+             "type": "game_change",
+             "fields": {
+              "FIELD": "lives"
+             },
              "inputs": {
-              "SPRITE": {
-               "block": {
-                "type": "scene_self"
-               }
-              },
-              "X": {
+              "VALUE": {
                "shadow": {
                 "type": "py_number",
                 "fields": {
-                 "VALUE": "0"
-                }
-               }
-              },
-              "Y": {
-               "shadow": {
-                "type": "py_number",
-                "fields": {
-                 "VALUE": "-60"
+                 "VALUE": "-1"
                 }
                }
               }
              },
              "next": {
               "block": {
-               "type": "scene_motion_set",
-               "fields": {
-                "PROPERTY": "vy"
-               },
+               "type": "scene_go",
                "inputs": {
                 "SPRITE": {
                  "block": {
                   "type": "scene_self"
                  }
                 },
-                "VALUE": {
+                "X": {
                  "shadow": {
                   "type": "py_number",
                   "fields": {
-                   "VALUE": "220"
+                   "VALUE": "0"
+                  }
+                 }
+                },
+                "Y": {
+                 "shadow": {
+                  "type": "py_number",
+                  "fields": {
+                   "VALUE": "-60"
+                  }
+                 }
+                }
+               },
+               "next": {
+                "block": {
+                 "type": "scene_motion_set",
+                 "fields": {
+                  "PROPERTY": "vy"
+                 },
+                 "inputs": {
+                  "SPRITE": {
+                   "block": {
+                    "type": "scene_self"
+                   }
+                  },
+                  "VALUE": {
+                   "shadow": {
+                    "type": "py_number",
+                    "fields": {
+                     "VALUE": "220"
+                    }
+                   }
                   }
                  }
                 }
@@ -748,6 +856,32 @@
      "visible": false,
      "costume": "brick_art",
      "rotationStyle": "none"
+    }
+   ],
+   "sounds": [
+    {
+     "id": "blip",
+     "name": "Blip",
+     "kind": "clip",
+     "stock": "effects/blip@1"
+    },
+    {
+     "id": "pop",
+     "name": "Pop",
+     "kind": "clip",
+     "stock": "effects/pop@1"
+    },
+    {
+     "id": "hit",
+     "name": "Hit",
+     "kind": "clip",
+     "stock": "effects/hit@1"
+    },
+    {
+     "id": "win",
+     "name": "Win",
+     "kind": "clip",
+     "stock": "effects/win@1"
     }
    ]
   },

@@ -101,5 +101,44 @@
   "tryNext": [
     "countdown",
     "next-level"
+  ],
+  "previewScene": "clicker",
+  "demo": [
+    {
+      "wait": 300
+    },
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 150
+    },
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 150
+    },
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 150
+    },
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 150
+    },
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 150
+    },
+    {
+      "wait": 500
+    }
   ]
 }

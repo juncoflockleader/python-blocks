@@ -1,7 +1,7 @@
 {
  "format": "python-blocks",
  "formatVersion": 1,
- "languageVersion": 20,
+ "languageVersion": 21,
  "workspace": {
   "blocks": {
    "languageVersion": 0,
@@ -177,6 +177,33 @@
            "type": "py_number",
            "fields": {
             "VALUE": "520"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "sound_play",
+          "id": "super_hopper_game_3c_3",
+          "fields": {},
+          "inputs": {
+           "SOUND": {
+            "block": {
+             "type": "sound_asset",
+             "id": "super_hopper_game_3c_1",
+             "fields": {
+              "SOUND_ID": "jump"
+             },
+             "inputs": {}
+            }
+           },
+           "OWNER": {
+            "block": {
+             "type": "py_none",
+             "id": "super_hopper_game_3c_2",
+             "fields": {},
+             "inputs": {}
+            }
            }
           }
          }
@@ -540,27 +567,54 @@
          },
          "DO0": {
           "block": {
-           "type": "game_change",
-           "fields": {
-            "FIELD": "score"
-           },
+           "type": "sound_play",
+           "id": "super_hopper_game_3c_6",
+           "fields": {},
            "inputs": {
-            "VALUE": {
-             "shadow": {
-              "type": "py_number",
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "super_hopper_game_3c_4",
               "fields": {
-               "VALUE": "1"
-              }
+               "SOUND_ID": "coin"
+              },
+              "inputs": {}
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "super_hopper_game_3c_5",
+              "fields": {},
+              "inputs": {}
              }
             }
            },
            "next": {
             "block": {
-             "type": "scene_destroy",
+             "type": "game_change",
+             "fields": {
+              "FIELD": "score"
+             },
              "inputs": {
-              "SPRITE": {
-               "block": {
-                "type": "scene_self"
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "1"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_destroy",
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_self"
+                 }
+                }
                }
               }
              }
@@ -650,45 +704,72 @@
          },
          "DO0": {
           "block": {
-           "type": "game_change",
-           "fields": {
-            "FIELD": "lives"
-           },
+           "type": "sound_play",
+           "id": "super_hopper_game_3c_9",
+           "fields": {},
            "inputs": {
-            "VALUE": {
-             "shadow": {
-              "type": "py_number",
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "super_hopper_game_3c_7",
               "fields": {
-               "VALUE": "-1"
-              }
+               "SOUND_ID": "hit"
+              },
+              "inputs": {}
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "super_hopper_game_3c_8",
+              "fields": {},
+              "inputs": {}
              }
             }
            },
            "next": {
             "block": {
-             "type": "scene_go",
+             "type": "game_change",
+             "fields": {
+              "FIELD": "lives"
+             },
              "inputs": {
-              "SPRITE": {
-               "block": {
-                "type": "scene_sprite",
-                "fields": {
-                 "SPRITE_ID": "hero"
-                }
-               }
-              },
-              "X": {
+              "VALUE": {
                "shadow": {
                 "type": "py_number",
                 "fields": {
-                 "VALUE": "-128"
+                 "VALUE": "-1"
                 }
                }
-              },
-              "Y": {
-               "shadow": {
-                "type": "py_number",
-                "fields": {
-                 "VALUE": "40"
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_go",
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_sprite",
+                  "fields": {
+                   "SPRITE_ID": "hero"
+                  }
+                 }
+                },
+                "X": {
+                 "shadow": {
+                  "type": "py_number",
+                  "fields": {
+                   "VALUE": "-128"
+                  }
+                 }
+                },
+                "Y": {
+                 "shadow": {
+                  "type": "py_number",
+                  "fields": {
+                   "VALUE": "40"
+                  }
+                 }
                 }
                }
               }
@@ -897,27 +978,54 @@
               },
               "next": {
                "block": {
-                "type": "game_change",
-                "fields": {
-                 "FIELD": "score"
-                },
+                "type": "sound_play",
+                "id": "super_hopper_game_3c_12",
+                "fields": {},
                 "inputs": {
-                 "VALUE": {
-                  "shadow": {
-                   "type": "py_number",
+                 "SOUND": {
+                  "block": {
+                   "type": "sound_asset",
+                   "id": "super_hopper_game_3c_10",
                    "fields": {
-                    "VALUE": "5"
-                   }
+                    "SOUND_ID": "pop"
+                   },
+                   "inputs": {}
+                  }
+                 },
+                 "OWNER": {
+                  "block": {
+                   "type": "py_none",
+                   "id": "super_hopper_game_3c_11",
+                   "fields": {},
+                   "inputs": {}
                   }
                  }
                 },
                 "next": {
                  "block": {
-                  "type": "scene_destroy",
+                  "type": "game_change",
+                  "fields": {
+                   "FIELD": "score"
+                  },
                   "inputs": {
-                   "SPRITE": {
-                    "block": {
-                     "type": "scene_self"
+                   "VALUE": {
+                    "shadow": {
+                     "type": "py_number",
+                     "fields": {
+                      "VALUE": "5"
+                     }
+                    }
+                   }
+                  },
+                  "next": {
+                   "block": {
+                    "type": "scene_destroy",
+                    "inputs": {
+                     "SPRITE": {
+                      "block": {
+                       "type": "scene_self"
+                      }
+                     }
                     }
                    }
                   }
@@ -929,45 +1037,72 @@
             },
             "ELSE": {
              "block": {
-              "type": "game_change",
-              "fields": {
-               "FIELD": "lives"
-              },
+              "type": "sound_play",
+              "id": "super_hopper_game_3c_15",
+              "fields": {},
               "inputs": {
-               "VALUE": {
-                "shadow": {
-                 "type": "py_number",
+               "SOUND": {
+                "block": {
+                 "type": "sound_asset",
+                 "id": "super_hopper_game_3c_13",
                  "fields": {
-                  "VALUE": "-1"
-                 }
+                  "SOUND_ID": "hit"
+                 },
+                 "inputs": {}
+                }
+               },
+               "OWNER": {
+                "block": {
+                 "type": "py_none",
+                 "id": "super_hopper_game_3c_14",
+                 "fields": {},
+                 "inputs": {}
                 }
                }
               },
               "next": {
                "block": {
-                "type": "scene_go",
+                "type": "game_change",
+                "fields": {
+                 "FIELD": "lives"
+                },
                 "inputs": {
-                 "SPRITE": {
-                  "block": {
-                   "type": "scene_sprite",
-                   "fields": {
-                    "SPRITE_ID": "hero"
-                   }
-                  }
-                 },
-                 "X": {
+                 "VALUE": {
                   "shadow": {
                    "type": "py_number",
                    "fields": {
-                    "VALUE": "-128"
+                    "VALUE": "-1"
                    }
                   }
-                 },
-                 "Y": {
-                  "shadow": {
-                   "type": "py_number",
-                   "fields": {
-                    "VALUE": "40"
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "scene_go",
+                  "inputs": {
+                   "SPRITE": {
+                    "block": {
+                     "type": "scene_sprite",
+                     "fields": {
+                      "SPRITE_ID": "hero"
+                     }
+                    }
+                   },
+                   "X": {
+                    "shadow": {
+                     "type": "py_number",
+                     "fields": {
+                      "VALUE": "-128"
+                     }
+                    }
+                   },
+                   "Y": {
+                    "shadow": {
+                     "type": "py_number",
+                     "fields": {
+                      "VALUE": "40"
+                     }
+                    }
                    }
                   }
                  }
@@ -1019,16 +1154,43 @@
          },
          "DO0": {
           "block": {
-           "type": "game_finish",
-           "fields": {
-            "WON": "TRUE"
-           },
+           "type": "sound_play",
+           "id": "super_hopper_game_3c_18",
+           "fields": {},
            "inputs": {
-            "TEXT": {
-             "shadow": {
-              "type": "text",
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "super_hopper_game_3c_16",
               "fields": {
-               "TEXT": "You reached the flag!"
+               "SOUND_ID": "win"
+              },
+              "inputs": {}
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "super_hopper_game_3c_17",
+              "fields": {},
+              "inputs": {}
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "game_finish",
+             "fields": {
+              "WON": "TRUE"
+             },
+             "inputs": {
+              "TEXT": {
+               "shadow": {
+                "type": "text",
+                "fields": {
+                 "TEXT": "You reached the flag!"
+                }
+               }
               }
              }
             }
@@ -2694,6 +2856,38 @@
      "visible": true,
      "costume": "flag_art",
      "rotationStyle": "none"
+    }
+   ],
+   "sounds": [
+    {
+     "id": "jump",
+     "name": "Jump",
+     "kind": "clip",
+     "stock": "effects/jump@1"
+    },
+    {
+     "id": "coin",
+     "name": "Coin",
+     "kind": "clip",
+     "stock": "effects/coin@1"
+    },
+    {
+     "id": "pop",
+     "name": "Pop",
+     "kind": "clip",
+     "stock": "effects/pop@1"
+    },
+    {
+     "id": "hit",
+     "name": "Hit",
+     "kind": "clip",
+     "stock": "effects/hit@1"
+    },
+    {
+     "id": "win",
+     "name": "Win",
+     "kind": "clip",
+     "stock": "effects/win@1"
     }
    ]
   },
