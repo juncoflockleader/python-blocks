@@ -114,7 +114,7 @@ export function fixFor(workspace: Blockly.Workspace, block: Blockly.Block, diagn
     }
     case 'missing-costume': {
       const first = costumes(scene)[0];
-      return flow('This costume is gone', 'The block points at a costume that was deleted. Pick one that exists, or paint a new one in Artwork & frames.', [{ text: 'Pick a costume from this block’s menu.', action: setField(block, 'COSTUME_ID', first.id, `Use ${first.name} here`) }]);
+      return flow('This costume is gone', 'The block points at a costume that was deleted. Pick one that exists, or paint a new one with Paint, under the stage.', [{ text: 'Pick a costume from this block’s menu.', action: setField(block, 'COSTUME_ID', first.id, `Use ${first.name} here`) }]);
     }
     case 'missing-backdrop': {
       const first = backdrops(scene)[0];

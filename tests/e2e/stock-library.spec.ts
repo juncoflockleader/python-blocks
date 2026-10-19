@@ -40,8 +40,10 @@ test('stock sprites have real previews, searchable categories and atomic reusabl
   await page.locator('#language-undo').click(); await expect.poll(() => saved(page)).toEqual(before);
   await page.locator('#language-redo').click(); await expect.poll(() => saved(page)).toEqual(first);
   await page.reload(); expect(await saved(page)).toEqual(first);
-  await (await reveal(page, '#scene-selection')).selectOption(cat.id); await (await reveal(page, '#scene-art')).click(); await expect(page.locator('#art-name')).toHaveValue('Cat'); await expect(page.locator('#art-save')).toBeEnabled();
-  await page.locator('#art-close').click(); await page.setViewportSize({ width: 744, height: 1000 }); await page.locator('#scene-stock').click();
+  // The library cat opens in the Paint editor at 2×: a 128-pixel picture for a 64-unit costume.
+  await (await reveal(page, '#scene-selection')).selectOption(cat.id); await (await reveal(page, '#scene-edit-costume')).click(); await expect(page.locator('#paint-loading')).toBeHidden();
+  await expect(page.locator('#paint-name')).toHaveValue('Cat'); expect(await page.locator('#paint-doc-slot canvas').evaluate(c => (c as HTMLCanvasElement).width)).toBe(128);
+  await page.locator('#paint-done').click(); await page.setViewportSize({ width: 744, height: 1000 }); await page.locator('#scene-stock').click();
   await page.locator('#stock-search').fill('robot'); await expect(page.locator('[data-stock-id="robot"] canvas')).toBeVisible();
   expect(await page.locator('#stock-dialog').evaluate(e => e.scrollWidth <= e.clientWidth)).toBe(true);
   await page.locator('#stock-dialog').screenshot({path:info.outputPath('stock-sprites-mobile.png')});

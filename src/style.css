@@ -68,39 +68,6 @@ canvas { width: 100%; height: auto; display: block; border: 1px solid #e4e7db; b
 .scene-editor :focus-visible { outline: 2px solid #dd9250; outline-offset: 2px; }
 @media (max-width: 420px) { .scene-properties-grid { grid-template-columns: 1fr; } }
 
-
-#art-dialog { max-height: 90vh; overflow: auto; width: min(1050px, calc(100vw - 32px)); max-width: calc(100vw - 32px); padding: 24px; box-sizing: border-box; }
-.art-heading { display: flex; align-items: start; justify-content: space-between; gap: 16px; }
-.art-heading h2 { margin-top: 0; }
-.art-layout { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 20px; }
-#art-dialog label { display: flex; align-items: center; gap: 8px; font-size: 12px; margin: 6px 0; }
-#art-dialog input, #art-dialog select { min-width: 0; max-width: 100%; padding: 6px; font: inherit; color: #26382f; border: 1px solid #cbd4b4; border-radius: 5px; background: #fff; }
-#art-dialog input[type=number] { width: 65px; }
-#art-dialog input[type=color] { width: 40px; padding: 2px; }
-#art-dialog p { font-size: 12px; line-height: 1.5; }
-.art-library label { flex-direction: column; align-items: stretch !important; }
-#art-assets { width: 100%; min-height: 150px; }
-.art-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-block: 8px; align-items: center; }
-.art-actions .button { padding: 7px 9px; }
-.art-canvas-wrap { display: flex; align-items: center; justify-content: center; min-height: 270px; max-height: 550px; overflow: auto; padding: 12px; border: 1px solid #d8decb; border-radius: 8px; background: #eef0e7; }
-#art-canvas, #art-preview { background-color: #fff; background-image: repeating-conic-gradient(#e2e5df 0% 25%, transparent 0% 50%); background-size: 16px 16px; image-rendering: pixelated; }
-#art-canvas { display: block; max-width: 100%; height: auto; flex: 0 0 auto; touch-action: none; outline: 1px solid #9fad92; }
-#art-canvas:focus-visible { outline: 3px solid #dd9250; }
-#art-error { color: #9b452c; }
-#art-state { color: #50785f; }
-#art-animation { margin-top: 20px; border: 1px solid #d8decb; border-radius: 8px; }
-.art-animation-grid { display: grid; grid-template-columns: minmax(0, 1fr) minmax(180px, 1fr); gap: 20px; }
-#art-frames { min-width: 150px; flex: 1; }
-#art-dialog button:disabled { opacity: .45; }
-@media (max-width: 700px) {
-  #art-dialog { padding: 14px; }
-  .art-layout, .art-animation-grid { grid-template-columns: minmax(0, 1fr); }
-  .art-heading { flex-wrap: wrap; }
-  .art-canvas-wrap { min-height: 200px; }
-}
-#art-dialog .art-heading h2 { font-size: 22px; }
-#art-preview { display: block; width: 160px; height: 120px; max-width: 100%; border: 1px solid #d8decb; }
-
 #world-dialog { width: min(760px, calc(100vw - 24px)); max-width: calc(100vw - 24px); max-height: 88vh; overflow: auto; padding: 20px; box-sizing: border-box; }
 #world-dialog h2 { font-size: 22px; }
 #world-dialog p { font-size: 13px; line-height: 1.5; }

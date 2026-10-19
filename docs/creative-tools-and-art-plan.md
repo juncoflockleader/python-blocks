@@ -1,6 +1,6 @@
 # Creative tools and art: inventory and plan
 
-Status: approved 2026-10-18 with every recommendation in section 4 accepted. Phase 3a (sharp stage) is done; see [its record](#phase-3a-record). Next: Phase 1 mocks. The owner asked for three things:
+Status: approved 2026-10-18 with every recommendation in section 4 accepted. Phase 3a (sharp stage) is done ([record](#phase-3a-record)), and so is Phase 1, the Paint editor ([record](#phase-1-record)). Next: Phase 2, the Sound editor. The owner asked for three things:
 
 1. Redo the **draw window** (Artwork & frames): it is hard to use, tools are hard to find, and some taps do nothing.
 2. A **sound editor** that records the learner's voice and lets them tune the waveform.
@@ -118,6 +118,24 @@ Each phase starts with UX mocks on the design canvas (as for Stage view and the 
 
 **Acceptance:** each tool works with touch input and with a mouse; swatch, size and fill changes take effect on the next stroke; a learner can paint a two-frame animation and preview it without scrolling at 1024 × 700; Done is one project Undo step; projects saved before the change open unchanged.
 
+#### Phase 1 record
+
+Built 2026-10-18 from boards P0–P7. The owner's open questions were settled with the recommendations: a Text tool is included; "A picture or a photo" uses the device's picker, which offers the camera on tablets; the Smooth / Pixel switch shows at every level.
+
+| Part | What shipped | Where |
+| --- | --- | --- |
+| Editor | A full-screen dialog: top bar (sprite, costume name, Undo, Redo, Show the frame before, Smooth / Pixel, Done), tool rail, colour and size panel, canvas, costume strip with + New, options and a playing preview. Replaces Artwork & frames (42 controls in a scrolling dialog) entirely. | [paint-editor.ts](../src/scene/paint-editor.ts), [paint.css](../src/scene/paint.css) |
+| Painting | Pictures are canvases at 2×. Smooth tools use antialiased canvas drawing; Pixel mode paints whole 2 × 2 blocks; fills match within a tolerance and slip under soft edges; Down and Glow fills; Text; Select lifts a floating layer with Flip, Turn, Copy, Delete and Place. Pinch, two-finger pan, Ctrl/⌘ + scroll, Fit; crisp squares when zoomed in. | [paint-editor.ts](../src/scene/paint-editor.ts), [paint-pixels.ts](../src/scene/paint-pixels.ts) |
+| Saving | Nothing is saved until Done (or Escape), which writes every changed picture, the frame order, the current costume and the speed as one project Undo step. A picture whose 2 × 2 blocks are all uniform is stored at 1×; others at 2× (`resolution: 2`), falling back to 1× if too detailed. Changing a built-in makes a new asset. Undo inside the editor covers strokes and frame changes across costumes. No action is refused for unsaved work. | [paint-editor.ts](../src/scene/paint-editor.ts) |
+| Frames | Tap to switch, drag to reorder, long-press / right-click / options for Duplicate, Move earlier, Move later, Download and Delete; + New paints (32/64/128), takes from the library, imports a picture, or copies; preview speed 1–12 frames a second, saved as the sprite's frame duration. | [paint-editor.ts](../src/scene/paint-editor.ts), [stock-library.ts](../src/scene/stock-library.ts) |
+| Entry points | Tray **Paint** (the selected sprite, or a new sprite if none), Sprite tab **Edit costume**, **Paint a backdrop** in Stage & assets, **Paint tile** in Worlds & tilemaps. | [editor.ts](../src/scene/editor.ts), [world-editor.ts](../src/scene/world-editor.ts) |
+
+Fixed on the way: the built-in shapes were painted with a transform left on the picture's canvas, so later strokes landed in the wrong place; strokes now also work when the browser reports no coalesced pointer events.
+
+Verification: [pixel tests](../tests/unit/paint-pixels.test.ts) and [Paint editor browser tests](../tests/e2e/paint.spec.ts) (13 tests, listed in the [artwork guide](artwork-and-backdrops.md#implementation-and-evidence)), plus the editor-workflow and stock-library specs that open it.
+
+Differs from the mocks: the rotation centre is shown but cannot be dragged (that needs a costume format change), and **Centre the drawing** in More moves the picture to it instead; the 3 × 3 tile repeat preview, "wrap at the edges" for tiles and "Show sprites" behind a backdrop are not built; a backdrop cannot be deleted from the editor. Drafts are not kept if the page reloads mid-edit.
+
 ### Phase 2: Sound editor
 
 **Finding it:** a **Sounds** button in the sprite tray next to Paint, a **Sounds** section in the Sprite tab listing the sounds the selected sprite's scripts play, and an "Edit sounds…" button at the top of the palette's Sounds category.
@@ -157,7 +175,7 @@ Done 2026-10-18.
 | Effects, minimap | Graphic effects on the built-in shapes are computed at 2×; backdrop effects at up to 2×. The Stage view minimap draws at the screen's pixel density. | [stage.ts](../src/stage.ts), [stage-view.ts](../src/scene/stage-view.ts) |
 | Previews | Recipe and gallery previews are rendered on a 2× screen and saved at 480 × 320 (renderer version 3). | [previews.spec.ts](../tests/e2e/previews.spec.ts) |
 
-Until Phase 1, **Artwork & frames** still paints at stage size, so saving an edited library costume stores it at 1×. Browser tests read stage pixels through a helper that maps 480 × 320 coordinates onto whatever the canvas resolution is ([stage-pixels.ts](../tests/e2e/stage-pixels.ts)); [sharp-stage.spec.ts](../tests/e2e/sharp-stage.spec.ts) checks the scale in each view on a 2× screen, the 2× library costume, its stage-size drawing and hit testing, and pen marks in Large stage; [scene.test.ts](../tests/unit/scene.test.ts) checks the 2× validation rule.
+Until Phase 1 shipped, the old Artwork & frames window painted at stage size, so an edited library costume was stored at 1×. Browser tests read stage pixels through a helper that maps 480 × 320 coordinates onto whatever the canvas resolution is ([stage-pixels.ts](../tests/e2e/stage-pixels.ts)); [sharp-stage.spec.ts](../tests/e2e/sharp-stage.spec.ts) checks the scale in each view on a 2× screen, the 2× library costume, its stage-size drawing and hit testing, and pen marks in Large stage; [scene.test.ts](../tests/unit/scene.test.ts) checks the 2× validation rule.
 
 Phase 3b, art pass:
 

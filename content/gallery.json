@@ -292,7 +292,7 @@
     "tryChanging": [
       "Make the ball faster: change its vx and vy.",
       "Add a fourth row of bricks, and change the winning score to match.",
-      "Make the paddle wider in Artwork & frames."
+      "Make the paddle wider: select it, press Paint, then More, Canvas size."
     ],
     "build": "brick-breaker"
   }

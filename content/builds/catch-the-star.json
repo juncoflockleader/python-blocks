@@ -122,7 +122,7 @@
   "remix": [
    "Make the star glide away from the bird when it gets close.",
    "Add a 20 second countdown so you must hurry.",
-   "Paint your own bird in Artwork & frames."
+   "Paint your own bird: select it and press Paint under the stage."
   ]
  },
  "next": "dodge-the-balls"

@@ -6,22 +6,22 @@ import './icons.css';
 // without changing accessible names, focus order, or click handlers.
 const actions: Record<string, IconName> = {};
 const actionGroups: Partial<Record<IconName, string>> = {
-  save: 'save art-save art-speed-save',
+  save: 'save',
   search: 'block-search-toggle', minus: 'zoom-out stage-zoom-out world-wide-less world-tall-less', more: 'menu-button', book: 'examples-open menu-examples',
-  sliders: 'sprite-more', brush: 'tray-paint', alert: 'stage-badge', learn: 'lessons-open menu-lessons', notes: 'menu-pilot',
+  sliders: 'sprite-more', brush: 'tray-paint world-paint-tile', alert: 'stage-badge', learn: 'lessons-open menu-lessons', notes: 'menu-pilot',
   folder: 'open python-recover',
-  download: 'export export-playable recover python-download python-recovery-download module-export module-save-copy art-export pilot-download pilot-download-backup pilot-recovery',
-  upload: 'module-import scene-import art-import sound-import',
-  play: 'debug-resume run play-run sound-preview art-play pilot-start phone-play',
+  download: 'export export-playable recover python-download python-recovery-download module-export module-save-copy pilot-download pilot-download-backup pilot-recovery',
+  upload: 'module-import scene-import sound-import',
+  play: 'debug-resume run play-run sound-preview pilot-start phone-play',
   stop: 'debug-stop stop play-stop sound-preview-stop sound-record-stop',
   restart: 'example scene-reset game-restart',
-  undo: 'language-undo world-undo art-undo art-project-undo sound-undo art-revert python-discard pilot-return',
-  redo: 'language-redo world-redo art-redo art-project-redo',
+  undo: 'language-undo world-undo sound-undo python-discard pilot-return',
+  redo: 'language-redo world-redo',
   pause: 'debug-pause',
-  close: 'debug-close block-search-clear export-cancel examples-close name-sheet-cancel level-keep migration-cancel language-close lambda-close events-close modules-close module-inspector-close python-cancel question-cancel art-close world-close stock-close sound-close assist-cancel',
-  plus: 'zoom-in stage-zoom-in world-wide-more world-tall-more stage-add-right stage-add-down name-sheet-confirm parameter-add lambda-parameter-add scene-add art-new art-frame-add world-new sound-new song-new watch-add',
-  trash: 'function-delete handler-delete module-remove python-recovery-remove scene-delete data-remove art-delete art-frame-remove world-delete sound-delete song-clear pilot-clear',
-  copy: 'function-copy handler-copy scene-copy art-duplicate art-save-copy art-frame-copy world-copy sound-copy',
+  close: 'debug-close block-search-clear export-cancel examples-close name-sheet-cancel level-keep migration-cancel language-close lambda-close events-close modules-close module-inspector-close python-cancel question-cancel world-close stock-close sound-close assist-cancel',
+  plus: 'zoom-in stage-zoom-in world-wide-more world-tall-more stage-add-right stage-add-down name-sheet-confirm parameter-add lambda-parameter-add scene-add world-new sound-new song-new watch-add',
+  trash: 'function-delete handler-delete module-remove python-recovery-remove scene-delete data-remove world-delete sound-delete song-clear pilot-clear',
+  copy: 'function-copy handler-copy scene-copy world-copy sound-copy',
   check: 'sprite-settings-done level-switch migration-apply function-apply variable-apply handler-apply lambda-apply python-apply motion-use-preset sound-apply pilot-finish',
   edit: 'module-rename python-edit',
   target: 'zoom-reset function-find handler-find lambda-find scene-locate scene-script-find',
@@ -38,7 +38,7 @@ const actionGroups: Partial<Record<IconName, string>> = {
   sprite: 'scene-example pilot-sprites',
   world: 'scene-worlds scene-world-example stage-map-show',
   image: 'scene-stock-backdrop',
-  palette: 'scene-art scene-edit-costume',
+  palette: 'scene-paint-backdrop scene-edit-costume',
   keyboard: 'scene-input-example',
   game: 'scene-game-example scene-star-game touch-toggle',
   pen: 'scene-drawing-example',
@@ -46,11 +46,10 @@ const actionGroups: Partial<Record<IconName, string>> = {
   message: 'scene-story-example assist-send',
   physics: 'scene-behavior-example data-behavior',
   library: 'world-stock', spriteAdd: 'scene-stock',
-  eraser: 'appearance-clear art-clear',
-  selection: 'art-deselect sound-select-all',
-  flipX: 'art-flip-x', flipY: 'art-flip-y', rotate: 'art-rotate',
-  resize: 'art-resize art-scale play-expand',
-  up: 'debug-out art-frame-up', down: 'art-frame-down',
+  eraser: 'appearance-clear',
+  selection: 'sound-select-all',
+  resize: 'play-expand',
+  up: 'debug-out',
   left: 'song-prev play-close', right: 'debug-into debug-over song-next',
   clock: 'pilot-timer', assist: 'assist-enable menu-assist', lock: 'assist-disable',
 };
@@ -113,7 +112,7 @@ function menuIcon(label: string): IconName | undefined {
   return rules.find(([pattern]) => pattern.test(label))?.[1];
 }
 
-const targets = 'button, summary, .design-link, .player footer a, .blocklyToolboxCategory, .blocklyFlyoutButton, .blocklyContextMenu .blocklyMenuItem, #art-tool, #world-tool';
+const targets = 'button, summary, .design-link, .player footer a, .blocklyToolboxCategory, .blocklyFlyoutButton, .blocklyContextMenu .blocklyMenuItem, #world-tool';
 
 /** Decorate newly rendered controls, including dialogs and Blockly flyouts.
  * The observer only visits changed controls/subtrees, never the whole document
@@ -164,7 +163,6 @@ export function installIcons(root: HTMLElement = document.body) {
       : element.textContent?.trim() ?? '';
     let name: IconName | undefined = actions[element.id] ?? labels[label] ?? arrows[label];
     if (element.id === 'audio-mute') name = label === 'Unmute' ? 'volume' : 'mute';
-    if (element.id === 'art-play') name = label === 'Stop preview' ? 'stop' : 'play';
     if (element.id === 'pilot-timer') name = label.startsWith('Pause') ? 'pause' : 'clock';
     if (element.matches('.python-error-link, #diagnostics button')) name = 'alert';
     if (element.matches('.blocklyContextMenu .blocklyMenuItem')) name = menuIcon(label);
@@ -189,7 +187,7 @@ export function installIcons(root: HTMLElement = document.body) {
   });
   observer.observe(root, { subtree: true, childList: true, characterData: true });
   const change = (event: Event) => {
-    if (event.target instanceof Element && event.target.matches('#art-tool, #world-tool')) apply(event.target);
+    if (event.target instanceof Element && event.target.matches('#world-tool')) apply(event.target);
   };
   root.addEventListener('change', change);
   return () => { observer.disconnect(); root.removeEventListener('change', change); };
