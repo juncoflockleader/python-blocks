@@ -1,6 +1,6 @@
 import { GameEffects } from './scene/game';
 import { cameraPosition, defaultCamera, type Tilemap } from './scene/world';
-import { paintBuiltinCostume, paintBuiltinBackdrop } from './scene/assets';
+import { assetData, paintBuiltinCostume, paintBuiltinBackdrop } from './scene/assets';
 import type { DrawCommand } from './runtime/protocol';
 import { bounds, builtins, emptyScene, resolutionOf, type SceneState, type SceneCommand, type SpriteState, type Bubble, type InkCommand } from './scene/model';
 import { effectNames, effectPixels, type Effects } from './scene/effects';
@@ -9,7 +9,7 @@ import { PixelSensing, type PixelImage } from './scene/sensing';
 export async function validateSceneImages(scene: SceneState) {
   await Promise.all([...scene.assets, ...(scene.backdrops ?? [])].map(a => new Promise<void>((resolve, reject) => {
     const image = new Image(), k = resolutionOf(a); image.onload = () => image.naturalWidth === a.width * k && image.naturalHeight === a.height * k ? resolve() : reject(new Error('Costume dimensions do not match the image.'));
-    image.onerror = () => reject(new Error(`Costume “${a.name}” is not a readable PNG image.`)); image.src = a.data;
+    image.onerror = () => reject(new Error(`Costume “${a.name}” is not a readable PNG image.`)); image.src = assetData(a)!;
   })));
 }
 
@@ -83,7 +83,7 @@ export class Stage {
     this.commands = []; this.scene = structuredClone(scene); this.sprites = new Map(scene.sprites.filter(s => !s.world || s.world === scene.world).map(s => [s.id, { ...s }]));
     this.loadWorld(scene.world ?? null);
     this.images.clear(); this.bubbles.clear(); this.filtered.clear(); this.pixelImages.clear(); this.sensing.reset(); this.clearInk(); this.inkCount = 0;
-    for (const asset of [...scene.assets, ...(scene.backdrops ?? [])]) { const image = new Image(); image.onload = () => this.paint(); image.src = asset.data; this.images.set(asset.id, image); }
+    for (const asset of [...scene.assets, ...(scene.backdrops ?? [])]) { const image = new Image(); image.onload = () => this.paint(); image.src = assetData(asset)!; this.images.set(asset.id, image); }
     this.paint();
   }
 

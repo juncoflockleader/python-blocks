@@ -9,7 +9,7 @@ import type { ExecutionMode } from '../runtime/protocol';
 import { canonical, moduleKey, moduleState, reachableModules, resolveModuleCall, validateModuleState, type ModuleCallBlock, type ModuleDefinition, type ModulePin, type ModuleState } from './modules';
 import { installPythonVariables } from './variables';
 
-export const LANGUAGE_VERSION = 20;
+export const LANGUAGE_VERSION = 21;
 const inputBlocks = new Set(['input_timer', 'input_timer_reset', 'input_ask', 'input_ask_value', 'input_answer', 'input_cancel_questions']);
 const soundBlocks = new Set(['sound_asset', 'sound_play', 'sound_wait', 'sound_stop', 'sound_stop_all', 'sound_set', 'sound_change', 'sound_get', 'sound_clear', 'sound_tempo', 'sound_tempo_get', 'sound_note', 'sound_rest']);
 const gameBlocks = new Set(['game_set', 'game_change', 'game_get', 'game_show', 'game_message', 'game_lives_rule', 'game_countdown', 'game_countdown_stop', 'game_finish', 'game_effect', 'game_effect_clear']);

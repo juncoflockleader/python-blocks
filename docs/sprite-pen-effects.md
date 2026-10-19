@@ -62,7 +62,7 @@ The original `overlaps()` and `touching_point()` queries use enclosing geometry.
 
 ## Persistence, rendering and limits
 
-Language version **11** introduced these operations and optional starting pen/effect metadata. Current project exports use version 20 (modules 19); earlier projects through version 19 and pinned modules from versions 5–19 remain readable. Missing pen metadata means up, teal, width 3, opacity 100; missing effects means zero effects. The scene schema remains version 1 with optional fields. Imported metadata is validated before replacing current work.
+Language version **11** introduced these operations and optional starting pen/effect metadata. Current project exports use version 21 (modules 19); earlier projects through version 20 and pinned modules from versions 5–19 remain readable. Missing pen metadata means up, teal, width 3, opacity 100; missing effects means zero effects. The scene schema remains version 1 with optional fields. Imported metadata is validated before replacing current work.
 
 Project save/autosave records the starting settings and blocks. It does not save the run's drawn pixels or mutated Python state. The generated source recreates the picture; its source ZIP captures `scene.json` with initial settings and artwork. **Export playable** includes the playground library, runtime and browser host; see [portable playback](portable-playback.md).
 

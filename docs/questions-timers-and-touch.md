@@ -56,7 +56,7 @@ A worker-owned raster mirror processes scene and pen commands before Python can 
 
 ## Persistence and verification
 
-Language version 17 introduced the sensing/input blocks and optional scene control mappings. Current project exports use version 20 (modules 19); earlier projects through version 19 and pinned modules from versions 5–19 remain readable. Missing mappings use Space/X. Timer state, typed answers, pending questions and pressed buttons are transient and are not saved. Source exports capture the original scene, artwork and button mappings; [Export playable](portable-playback.md) includes the host and runtime.
+Language version 17 introduced the sensing/input blocks and optional scene control mappings. Current project exports use version 21 (modules 19); earlier projects through version 20 and pinned modules from versions 5–19 remain readable. Missing mappings use Space/X. Timer state, typed answers, pending questions and pressed buttons are transient and are not saved. Source exports capture the original scene, artwork and button mappings; [Export playable](portable-playback.md) includes the host and runtime.
 
 - [Input model/compiler tests](../tests/unit/input-tools.test.ts) cover aggregate input, protocol limits, migration, control-only scenes, captured export, example/source mapping, await contexts and input helpers through reusable modules. [Runner tests](../tests/unit/runner.test.ts) verify replacement/error cleanup and reject stale answers.
 - [Native Python tests](../tests/python/test_input_tools.py) cover independent answers, cancellation/ownership, validation and queue budgets, monotonic timing and color-query validation.

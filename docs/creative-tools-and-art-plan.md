@@ -1,6 +1,6 @@
 # Creative tools and art: inventory and plan
 
-Status: approved 2026-10-18 with every recommendation in section 4 accepted. Phase 3a (sharp stage) is done ([record](#phase-3a-record)), and so is Phase 1, the Paint editor ([record](#phase-1-record)). Phase 2, the Sound editor, is built ([record](#phase-2-record)). The owner asked for three things:
+Status: approved 2026-10-18 with every recommendation in section 4 accepted. Phase 3a (sharp stage) is done ([record](#phase-3a-record)), and so is Phase 1, the Paint editor ([record](#phase-1-record)). Phase 2, the Sound editor, is built ([record](#phase-2-record)), and Phase 3b, the art pass, is wired in ([record](#phase-3b-record)); next is Phase 3c, the examples. The owner asked for three things:
 
 1. Redo the **draw window** (Artwork & frames): it is hard to use, tools are hard to find, and some taps do nothing.
 2. A **sound editor** that records the learner's voice and lets them tune the waveform.
@@ -204,6 +204,21 @@ Phase 3b, art pass:
 - **Backdrops**: richer Meadow and Night, plus Cave, Snow, Castle and Desert.
 - Draw the cast as code (as today) or SVG sources in `assets/src/`, exported at 1× and 2× by a build script with a manifest that carries license fields. All original, so there is no attribution surface.
 - **Referenced stock assets** (Track D §5.4): costumes from the library are stored as `stock:<id>@<version>` references that the editor and the player resolve, so an animated cast does not use up the 24 embedded costumes or the 12 MB scene budget; Export playable copies the files in. This needs a language version bump and a migration.
+
+#### Phase 3b record
+
+Drawn and reviewed on 2026-10-19 (design canvas boards G0–G6); the owner accepted the recommendations: this look, the built-ins redrawn in place, the explorers named Sam and Ruby, and the new cast replacing the old library characters under the same names.
+
+| Part | What shipped | Where |
+| --- | --- | --- |
+| Art | Drawn by code in one style (soft ink outline, big heads, pastel fills with a light-to-base shade). A pose rig draws nine characters (Fox, Cat, Rabbit, Robot, Turtle, Bee, Fish, Sam, Ruby) in eight poses each: idle 1–2, walk 1–4, jump, happy; Bee flaps and Fish swims. Props: Coin and Gem with six-frame spins, Heart, Key, Door, Spikes, Platform, Crate, Tree, Flower, Rocket. Tiles: Grass, Snow, Cave, Castle, Sand and Metal, each with eight pieces that join without seams. Backdrops: Meadow and Night redrawn, Cave, Snow, Castle and Desert new; Forest, Coral reef, City park and Space kept. | [src/art](../src/art/catalog.ts) |
+| Built-ins | Bird, Star, Ball, Box, Meadow and Night are drawn by the same code. Ids, sizes, silhouettes and main colours are unchanged (the Bird's body and beak, the Star's gold, and so on), so scripts that sense touch or colour behave as before; a test that reads the Bird's beak colour passes unchanged. | [builtins.ts](../src/art/builtins.ts), [assets.ts](../src/scene/assets.ts) |
+| Library references | A costume or backdrop may carry `stock: "cast/fox-walk-1@1"` instead of picture data. The catalogue gives every piece of art a reference, an id, a name, a size and an original-art licence field. The app draws references wherever a picture is needed: the stage and thumbnails from a PNG rendered once at 4× (costumes up to 128 units) or 2× (backdrops), pixel and colour sensing in the worker at the stage size, the Paint editor at 2×, and the exported player, which bundles the same code. References do not count toward the 24 costumes and 12 backdrops (up to 200 and 24 of their own). Changing library art in Paint makes the project's own copy; renaming it renames the reference. Language version 21; versions 1–20 still open; modules stay at 19. | [catalog.ts](../src/art/catalog.ts), [raster.ts](../src/art/raster.ts), [model.ts](../src/scene/model.ts), [sensing.ts](../src/runtime/sensing.ts), [stage.ts](../src/stage.ts) |
+| Library dialog | 30 sprites (the 4 built-ins, the cast, the props, six tile sets) and 10 backdrops. A character brings all eight poses, starts in idle 1 with the walk cycle as its frames, left-right rotation and 0.12 s frames; a coin or gem brings its spin. A tile set brings its eight pieces for the world editor. World templates take just the pictures they place. | [stock-art.ts](../src/scene/stock-art.ts), [editor.ts](../src/scene/editor.ts) |
+
+Not done in this phase: named animation sets and blocks (`play the walk animation`) from Track D; asset files and a build script (the art is code, so it needs neither); per-pose sizes (every pose is 64 × 64).
+
+Verification: [catalogue and reference tests](../tests/unit/stock-art.test.ts) (unique references and ids, licences, the cast's poses, single adds and sets, the limits, unknown or resized references rejected) and the browser specs for the library, sharp stage, rotation styles and the event runtime; all gallery and recipe previews were rendered again (renderer version 4).
 
 Phase 3c, examples:
 

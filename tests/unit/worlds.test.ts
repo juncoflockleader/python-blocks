@@ -51,7 +51,7 @@ describe('tile worlds, camera and persistence', () => {
     expect(w.getBlockById(blockForLine(result, 'program.py', sourceLine)!)!.type).toBe('scene_world_set');
     const bundle = unzipSync(pythonExport(result).content as Uint8Array); const saved = JSON.parse(strFromU8(bundle['scene.json'])); expect(saved.worlds).toHaveLength(2); expect(saved.sprites[1].world).toBe('meadow'); expect(saved.assets[0].data).toMatch(/^data:image/);
     const restored = ws(); restore(restored, snapshot(w)); expect(compile(restored).source).toEqual(result.source);
-    const legacy = prepareProject(JSON.stringify({ ...example(), languageVersion: 13 })); expect(legacy.project.languageVersion).toBe(20);
+    const legacy = prepareProject(JSON.stringify({ ...example(), languageVersion: 13 })); expect(legacy.project.languageVersion).toBe(21);
   });
   it('keeps world references through rename, deletion diagnostics and Undo; deletes referenced art atomically', async () => {
     const w = ws(); restore(w, prepareProject(JSON.stringify(example())).project); const original = sceneState(w);

@@ -1,4 +1,4 @@
-import { stockArtwork, stockCanvas } from './stock-art';
+import { findStock, stockArtwork, stockCanvas } from './stock-art';
 import { templateLayout, worldTemplates } from './world-templates';
 
 export type StockKind = 'costume' | 'backdrop' | 'world';
@@ -12,12 +12,12 @@ export function installStockLibrary(add: (kind: StockKind, id: string, signal: A
   const dialog = el<HTMLDialogElement>('stock-dialog'), kind = el<HTMLSelectElement>('stock-kind'), search = el<HTMLInputElement>('stock-search'), category = el<HTMLSelectElement>('stock-category');
   let generation = 0, operation: AbortController | undefined, override: typeof add | undefined;
   async function preview(type: StockKind, id: string) {
-    if (type !== 'world') return stockCanvas(stockArtwork.find(a => a.kind === type && a.id === id)!, 2);
+    if (type !== 'world') return stockCanvas(findStock(type, id)!, 2);
     const template = worldTemplates.find(t => t.id === id)!, world = templateLayout(template);
     const canvas = document.createElement('canvas'); canvas.width = world.map.columns * 32; canvas.height = 320;
-    const c = canvas.getContext('2d')!; c.drawImage(await stockCanvas(stockArtwork.find(a => a.kind === 'backdrop' && a.id === template.backdrop)!),0,0,canvas.width,canvas.height);
+    const c = canvas.getContext('2d')!; c.drawImage(await stockCanvas(findStock('backdrop', template.backdrop)!),0,0,canvas.width,canvas.height);
     const images = new Map<string,HTMLCanvasElement>();
-    for(const id of new Set(world.map.tiles.filter((id): id is string => id !== null))) images.set(id,await stockCanvas(stockArtwork.find(a => a.kind === 'costume' && a.id === id)!));
+    for(const id of new Set(world.map.tiles.filter((id): id is string => id !== null))) images.set(id,await stockCanvas(findStock('costume', id)!, 2));
     world.map.tiles.forEach((id,i) => { if(id) c.drawImage(images.get(id)!,i%world.map.columns*32,Math.floor(i/world.map.columns)*32,32,32); });
     return canvas;
   }
@@ -25,7 +25,7 @@ export function installStockLibrary(add: (kind: StockKind, id: string, signal: A
     const version = ++generation, type = kind.value as StockKind, query = search.value.trim().toLowerCase();
     el('stock-category-label').hidden = type !== 'costume';
     el('stock-help').textContent = type === 'world' ? 'Add a new editable tilemap and its artwork. Orange tile outlines in the world editor mark solid walls. Add your own characters and code.' : type === 'backdrop' ? 'Choose the backdrop for the current world or base stage.' : 'Choose a sprite to add at the center of the current view. Press Paint under the stage to change it.';
-    const entries = type === 'world' ? worldTemplates.map(t => ({...t,category:'Worlds'})) : stockArtwork.filter(a => a.kind === type).map(a => ({...a,description:a.category}));
+    const entries = type === 'world' ? worldTemplates.map(t => ({...t,category:'Worlds'})) : stockArtwork.filter(a => a.kind === type).map(a => ({...a,description:a.detail}));
     const shown = entries.filter(a => `${a.name} ${a.description}`.toLowerCase().includes(query) && (type !== 'costume' || !category.value || category.value === a.category));
     const noun = type === 'world' ? 'world' : type === 'backdrop' ? 'backdrop' : 'sprite';
     el('stock-count').textContent = `${shown.length} ${noun}${shown.length === 1 ? '' : 's'}${shown.length ? ' · choose one to add' : ' · try another search'}`;

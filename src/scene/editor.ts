@@ -2,7 +2,7 @@ import { defaultControls } from './touch';
 import { PlayInput } from './play-input';
 import { installSceneNavigation } from './navigation';
 import { installWatchers } from './watchers';
-import { includeStock, stockArtwork } from './stock-art';
+import { findStock, includeStockSet } from './stock-art';
 import { includeWorldTemplate } from './world-templates';
 import { installStockLibrary } from './stock-library';
 import { keys } from './model';
@@ -91,11 +91,12 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     const before = sceneState(workspace), next = structuredClone(before); let added = '';
     if (kind === 'world') await includeWorldTemplate(next,id);
     else {
-      const asset = await includeStock(next,kind,id);
+      const { costume: asset, frames } = includeStockSet(next,kind,id), art = findStock(kind,id)!;
       if (kind === 'backdrop') (next.worlds?.find(w => w.id === next.world) ?? next).backdrop = asset;
       else {
         added = crypto.randomUUID();
-        next.sprites.push({ id: added, name: uniqueName(stockArtwork.find(a => a.kind === kind && a.id === id)!.name), x: Number(canvas.dataset.cameraX ?? 0), y: Number(canvas.dataset.cameraY ?? 0), ...(next.world ? { world: next.world } : {}), direction: 0, size: 100, layer: 0, visible: true, costume: asset });
+        // A library character brings every pose; its frames are the walk cycle, and it turns to face left or right.
+        next.sprites.push({ id: added, name: uniqueName(art.name), x: Number(canvas.dataset.cameraX ?? 0), y: Number(canvas.dataset.cameraY ?? 0), ...(next.world ? { world: next.world } : {}), direction: 0, size: 100, layer: 0, visible: true, costume: asset, ...(frames ? { costumes: frames } : {}), ...(art.category === 'Characters' && !art.builtin ? { rotationStyle: 'left-right' as const, frameSeconds: 0.12 } : {}) });
       }
     }
     signal.throwIfAborted();

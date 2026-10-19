@@ -65,15 +65,29 @@ The payload is `{"id": id_or_none, "name": displayed_name}`. The global change e
 
 Reusable modules can use built-in backdrop IDs. Pass project-owned backdrop IDs as parameters, as with custom costume IDs and sprites. Direct project-owned references in a module export are rejected.
 
+## The library
+
+**Sprites**, **Backdrop library** and **World library** open the same library. It holds the built-in Bird, Star, Ball and Box, and original art drawn by code in [src/art](../src/art/catalog.ts) in one style (a soft ink outline, pastel fills, big heads):
+
+| Category | Contents |
+| --- | --- |
+| Characters | Fox, Cat, Rabbit, Robot, Turtle, Bee, Fish and the explorers Sam and Ruby, each with eight poses: idle 1–2, walk 1–4, jump and happy, facing right. Adding one adds every pose; its frames are the walk cycle, and it starts in idle 1 with left-right rotation and 0.12 s frames, so **next costume** walks and a direction of 180 faces left. |
+| Objects | Coin and Gem with a six-frame spin, Heart, Key, Door, Spikes, Platform, Crate, Tree, Flower and Rocket (two flame frames). |
+| Tiles | Grass, Snow, Cave, Castle, Sand and Metal sets, each with top-left, top, top-right, left, middle, right, platform and block pieces of 32 units, drawn so neighbours join without seams. Adding a set puts all eight in the project for the world editor. |
+| Backdrops | Meadow and Night (built in), Cave, Snow, Castle, Desert, Forest, Coral reef, City park and Space. |
+
+Library art goes into a project as a reference such as `cast/fox-walk-1@1` rather than a picture. The app draws it from the same code wherever a picture is needed (the stage at 4× for costumes and 2× for backdrops, pixel and colour sensing at the stage size, thumbnails, the Paint editor, the exported player), so a whole cast costs a project a few hundred bytes and does not use its 24 costumes. Every entry carries an original-art licence field in the catalogue. Bird, Star, Ball, Box, Meadow and Night are drawn by the same code; their ids, sizes, shapes and main colours are those of the earlier shapes, so scripts that sense touching or colours behave as before.
+
 ## Storage and bounds
 
-Backdrops and frame operations were introduced in language version **10**; current project exports use version **20**, also preserving pen/effects, instance behavior/sensing, game motion, worlds/cameras, game presentation, sound/music, touch controls, watchers and 2× artwork. Projects from versions 1–19 and pinned modules from versions 5–19 remain readable. Existing scenes without frame metadata use their current costume as a one-frame sequence with a 0.1-second duration; missing backdrop metadata means plain color.
+Backdrops and frame operations were introduced in language version **10**; current project exports use version **21**, also preserving pen/effects, instance behavior/sensing, game motion, worlds/cameras, game presentation, sound/music, touch controls, watchers, 2× artwork and library art references. Projects from versions 1–20 and pinned modules from versions 5–19 remain readable. Existing scenes without frame metadata use their current costume as a one-frame sequence with a 0.1-second duration; missing backdrop metadata means plain color.
 
 - Up to 24 custom costumes, each at most 256 × 256 stage units and 350,000 PNG data-URL characters.
 - Up to 12 custom backdrops, each at most 480 × 320 stage units and 900,000 PNG data-URL characters.
+- Library art is stored as a reference (`stock`, since language version 21) instead of a picture; see [the library](#the-library). Up to 200 library costumes and 24 library backdrops, which do not count toward the limits below.
 - Artwork may be stored at 2× (`resolution: 2`, since language version 20): its PNG is then twice its stage size each way and may use four times the characters. Sizes, positions, collisions and colour sensing always use the stage size. The Paint editor keeps 2× art at 2× and stores blocky pixel art at 1×.
 - Up to 64 saved frames per sprite, including repeats; 0.02–10 seconds per frame. The runtime `animate` API separately accepts up to 100 frames.
-- **Import costume** in the Sprite tab accepts PNG/JPEG/WebP files up to 2 MB; a picture added in the Paint editor may be up to 10 MB and is shrunk to fit 256 × 256 (a backdrop is cropped to fill the stage). Saved artwork is embedded PNG.
+- **Import costume** in the Sprite tab accepts PNG/JPEG/WebP files up to 2 MB; a picture added in the Paint editor may be up to 10 MB and is shrunk to fit 256 × 256 (a backdrop is cropped to fill the stage). Painted and imported artwork is embedded PNG; changing library art in the Paint editor makes the project its own copy.
 - All scene data must fit within 12 MB UTF-8 and the entire project within 16 MB. Saving beyond these bounds fails without replacing the saved scene.
 
 Project save/autosave includes saved pixels, frame order/duration, stable IDs and starting backdrop. Python source archives include the captured `scene.json` and its embedded assets. **Export playable** bundles the runtime and browser host with a local launcher; see [portable playback](portable-playback.md). Runtime changes never replace the saved starting scene.

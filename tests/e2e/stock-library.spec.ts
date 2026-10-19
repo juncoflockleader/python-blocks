@@ -27,11 +27,11 @@ test('stock sprites have real previews, searchable categories and atomic reusabl
   await page.locator('#project-file').setInputFiles({name:'existing-art.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(project))});
   await expect.poll(() => saved(page)).toEqual(project.workspace.pythonScene);
   const before = await saved(page);
-  await page.locator('#scene-stock').click(); await expect(page.locator('.stock-card')).toHaveCount(20); await expect(page.locator('.stock-thumbnail canvas')).toHaveCount(20);
+  await page.locator('#scene-stock').click(); await expect(page.locator('.stock-card')).toHaveCount(30); await expect(page.locator('.stock-thumbnail canvas')).toHaveCount(30);
   const coverage = await page.locator('.stock-thumbnail canvas').evaluateAll(canvases => canvases.map(canvas => { const c=canvas as HTMLCanvasElement; return Array.from(c.getContext('2d')!.getImageData(0,0,c.width,c.height).data).filter((v,i) => i%4===3 && v>0).length; }));
   expect(coverage.every(n => n>200)).toBe(true);
   await page.locator('#stock-dialog').screenshot({path:info.outputPath('stock-sprites-desktop.png')});
-  await page.locator('#stock-category').selectOption('Characters'); await expect(page.locator('.stock-card')).toHaveCount(9);
+  await page.locator('#stock-category').selectOption('Characters'); await expect(page.locator('.stock-card')).toHaveCount(10);
   await page.locator('#stock-search').fill('cat'); await expect(page.locator('.stock-card')).toHaveCount(1); await add(page,'cat');
   const first = await saved(page), cat = first.sprites.at(-1); expect(cat.name).toBe('Cat 1'); expect(cat.costume).not.toBe('cat'); expect(first.assets[0]).toEqual(before.assets[0]);
   await page.locator('#scene-stock').click(); await add(page,'cat'); const second = await saved(page);
@@ -40,9 +40,9 @@ test('stock sprites have real previews, searchable categories and atomic reusabl
   await page.locator('#language-undo').click(); await expect.poll(() => saved(page)).toEqual(before);
   await page.locator('#language-redo').click(); await expect.poll(() => saved(page)).toEqual(first);
   await page.reload(); expect(await saved(page)).toEqual(first);
-  // The library cat opens in the Paint editor at 2×: a 128-pixel picture for a 64-unit costume.
+  // Its frames are the walk cycle; the Paint editor opens them at 2×: a 128-pixel picture for a 64-unit costume.
   await (await reveal(page, '#scene-selection')).selectOption(cat.id); await (await reveal(page, '#scene-edit-costume')).click(); await expect(page.locator('#paint-loading')).toBeHidden();
-  await expect(page.locator('#paint-name')).toHaveValue('Cat'); expect(await page.locator('#paint-doc-slot canvas').evaluate(c => (c as HTMLCanvasElement).width)).toBe(128);
+  await expect(page.locator('#paint-name')).toHaveValue('Cat walk 1'); expect(await page.locator('#paint-doc-slot canvas').evaluate(c => (c as HTMLCanvasElement).width)).toBe(128);
   await page.locator('#paint-done').click(); await page.setViewportSize({ width: 744, height: 1000 }); await page.locator('#scene-stock').click();
   await page.locator('#stock-search').fill('robot'); await expect(page.locator('[data-stock-id="robot"] canvas')).toBeVisible();
   expect(await page.locator('#stock-dialog').evaluate(e => e.scrollWidth <= e.clientWidth)).toBe(true);
@@ -80,7 +80,7 @@ test('world templates preserve previous work, embed reusable artwork, undo toget
 });
 
 test('all stock backdrops and worlds add through the normal save format and respect the world limit', async ({page},info) => {
-  await open(page); await (await reveal(page, '#scene-stock-backdrop')).click(); await expect(page.locator('.stock-card')).toHaveCount(6); await expect(page.locator('.stock-thumbnail canvas')).toHaveCount(6);
+  await open(page); await (await reveal(page, '#scene-stock-backdrop')).click(); await expect(page.locator('.stock-card')).toHaveCount(10); await expect(page.locator('.stock-thumbnail canvas')).toHaveCount(10);
   await page.locator('#stock-dialog').screenshot({path:info.outputPath('stock-backdrops.png')}); await add(page,'reef');
   const backdrop=await saved(page); expect(backdrop.backdrops[0].name).toBe('Coral reef'); expect(backdrop.backdrop).toBe(backdrop.backdrops[0].id);
   await (await reveal(page, '#scene-worlds')).click();

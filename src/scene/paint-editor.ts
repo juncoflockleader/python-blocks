@@ -1,10 +1,10 @@
 import type * as Blockly from 'blockly/core';
 import './paint.css';
-import { paintBuiltinBackdrop, paintBuiltinCostume } from './assets';
-import { builtinBackdrops, builtins, resolutionOf, spriteFrames, type Costume, type SceneState } from './model';
+import { assetData, paintBuiltinBackdrop, paintBuiltinCostume } from './assets';
+import { builtinBackdrops, builtins, isStock, resolutionOf, spriteFrames, type Costume, type SceneState } from './model';
 import { changeScene, sceneState } from './state';
 import { blocky, contentBox, downsample, fillMask, floodMask, hex, lineCells, rgba, shapeCells, type Box, type FillStyle } from './paint-pixels';
-import { stockArtwork, stockCanvas } from './stock-art';
+import { findStock, stockCanvas } from './stock-art';
 
 /** The Paint editor: a full-screen editor for a sprite's costumes, the stage's
  * backdrops or a world's tiles. Pictures are painted at 2× (two pixels per stage
@@ -16,7 +16,8 @@ const LIMITS = { costume: 256, tile: 64 };
 type Kind = 'costume' | 'backdrop' | 'tile';
 export type PaintTarget = { kind: 'costume'; sprite?: string } | { kind: 'backdrop' } | { kind: 'tile'; id: string };
 type Tool = 'brush' | 'eraser' | 'fill' | 'line' | 'rect' | 'ellipse' | 'text' | 'select' | 'pick';
-interface Doc { key: string; assetId: string | null; origin: string | null; name: string; width: number; height: number; canvas: HTMLCanvasElement; changed: boolean; renamed: boolean }
+/** `assetId` is the project picture this doc rewrites; built-ins and library art have none, so a change makes a new picture. */
+interface Doc { key: string; assetId: string | null; origin: string | null; name: string; width: number; height: number; canvas: HTMLCanvasElement; changed: boolean; renamed: boolean; stock?: boolean }
 type Step = { kind: 'pixels'; doc: Doc; image: ImageData; width: number; height: number } | { kind: 'frames'; frames: Doc[]; current: number };
 export interface PaintHost {
   canEdit(): boolean;
@@ -139,13 +140,13 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
     const list: (Costume | { id: string; name: string; width: number; height: number })[] = assetKind === 'costume' ? [...builtins, ...scene.assets] : [...builtinBackdrops, ...(scene.backdrops ?? [])];
     const asset = list.find(a => a.id === id) ?? list[0];
     const canvas = newCanvas(asset.width, asset.height), ctx = canvas.getContext('2d', { willReadFrequently: true })!;
-    const data = (asset as Partial<Costume>).data;
+    const data = assetData(asset), stock = isStock(asset);
     if (data) {
       const image = new Image(); image.src = data; await image.decode();
       // 1× art is enlarged without blurring, so pixel art stays pixel art.
-      ctx.imageSmoothingEnabled = resolutionOf(asset) === RES; ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+      ctx.imageSmoothingEnabled = resolutionOf(asset) >= RES; ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
     } else { ctx.save(); ctx.scale(RES, RES); if (assetKind === 'costume') { ctx.translate(asset.width / 2, asset.height / 2); paintBuiltinCostume(ctx, asset.id); } else paintBuiltinBackdrop(ctx, asset.id); ctx.restore(); }
-    return { key: nextKey(), assetId: data ? asset.id : null, origin: asset.id, name: asset.name, width: asset.width, height: asset.height, canvas, changed: false, renamed: false };
+    return { key: nextKey(), assetId: data && !stock ? asset.id : null, origin: asset.id, name: asset.name, width: asset.width, height: asset.height, canvas, changed: false, renamed: false, stock };
   }
   function blank(width: number, height: number, name: string): Doc { return { key: nextKey(), assetId: null, origin: null, name, width, height, canvas: newCanvas(width, height), changed: true, renamed: false }; }
 
@@ -558,7 +559,8 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
   function room(count: number) {
     // Art that will be new after Done: painted, copied or imported here, or a built-in shape that was changed.
     const scene = sceneState(workspace), fresh = unique().filter(d => !d.assetId && (d.changed || !d.origin)).length;
-    const [used, limit] = kind === 'backdrop' ? [(scene.backdrops ?? []).length + fresh, 12] : [scene.assets.length + fresh, 24];
+    // Library art does not use the project's own slots.
+    const [used, limit] = kind === 'backdrop' ? [(scene.backdrops ?? []).filter(a => !isStock(a)).length + fresh, 12] : [scene.assets.filter(a => !isStock(a)).length + fresh, 24];
     if (used + count <= limit) return true;
     toast(`This project can hold ${limit} ${label(kind)}s of your own. Delete or reuse one first.`, el('paint-new')); return false;
   }
@@ -592,7 +594,7 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
     if (source === 'library') {
       if (!room(1)) return; closeMenus();
       host.library(kind === 'backdrop' ? 'backdrop' : 'costume', async id => {
-        const art = stockArtwork.find(a => a.id === id && a.kind === (kind === 'backdrop' ? 'backdrop' : 'costume')); if (!art) throw new Error(`Choose available ${noun} artwork.`);
+        const art = findStock(kind === 'backdrop' ? 'backdrop' : 'costume', id); if (!art) throw new Error(`Choose available ${noun} artwork.`);
         const canvas = art.builtin ? null : await stockCanvas(art, RES);
         const fresh = blank(art.width, art.height, art.name);
         if (canvas) ctxOf(fresh).drawImage(canvas, 0, 0);
@@ -656,7 +658,8 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
       const scene = sceneState(workspace), next = structuredClone(scene), ids = new Map<Doc, string>();
       const list = kind === 'backdrop' ? (next.backdrops ??= []) : next.assets;
       for (const d of unique()) {
-        if (!d.changed && !(d.renamed && !d.assetId) && d.origin) {
+        // Unchanged pictures keep their id; library art can be renamed in place, built-ins cannot.
+        if (!d.changed && !(d.renamed && !d.assetId && !d.stock) && d.origin) {
           const id = d.assetId ?? d.origin; ids.set(d, id);
           const asset = list.find(a => a.id === id); if (asset && d.renamed) asset.name = d.name.trim() || asset.name;
           continue;

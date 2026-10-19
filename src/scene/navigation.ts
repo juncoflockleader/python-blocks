@@ -1,7 +1,7 @@
 import * as Blockly from 'blockly/core';
 import type { SceneState } from './model';
 import { builtins } from './model';
-import { paintBuiltinCostume } from './assets';
+import { assetData, paintBuiltinCostume } from './assets';
 import { handlerSignatures, type FunctionBlock } from '../language/functions';
 
 export function installSceneNavigation(workspace: Blockly.WorkspaceSvg, select: (id: string) => void, world: (id: string) => void, locate: () => void, art: () => void) {
@@ -23,7 +23,7 @@ export function installSceneNavigation(workspace: Blockly.WorkspaceSvg, select: 
         const worldName = scene.worlds?.find(w => w.id === s.world)?.name ?? 'Global'; card.dataset.search = `${s.name} ${s.kind ?? ''} ${worldName}`.toLocaleLowerCase();
         const canvas = document.createElement('canvas'); canvas.width = canvas.height = 80; canvas.setAttribute('aria-hidden','true');
         const ctx = canvas.getContext('2d')!, asset = [...builtins,...scene.assets].find(a => a.id === s.costume);
-        if (asset) { const scale = Math.min(68/asset.width,68/asset.height); ctx.translate(40,40); ctx.scale(scale,scale); if ('data' in asset) { const img = new Image(); img.onload = () => { if (card.isConnected) ctx.drawImage(img,-asset.width/2,-asset.height/2,asset.width,asset.height); }; img.src = asset.data; } else paintBuiltinCostume(ctx,asset.id); }
+        if (asset) { const scale = Math.min(68/asset.width,68/asset.height); ctx.translate(40,40); ctx.scale(scale,scale); const data = assetData(asset); if (data) { const img = new Image(); img.onload = () => { if (card.isConnected) ctx.drawImage(img,-asset.width/2,-asset.height/2,asset.width,asset.height); }; img.src = data; } else paintBuiltinCostume(ctx,asset.id); }
         const name = document.createElement('strong'), scope = document.createElement('small'); name.textContent = s.name; scope.textContent = worldName;
         card.append(canvas,name,scope); card.addEventListener('click', () => select(s.id)); el('scene-cards').append(card);
       }

@@ -21,7 +21,7 @@ test('saved event projects run async helpers, receive test input, and export the
   await expect(page.locator('#output')).toHaveText("first\nsecond\n42\n{'value': 7}\n1\n");
   await send(page, 'message', '{invalid'); await expect(page.locator('#event-input-status')).not.toHaveText('');
   await expect(page.locator('#status')).toHaveText('Event session running');
-  const project = await saved(page); expect(project.languageVersion).toBe(20);
+  const project = await saved(page); expect(project.languageVersion).toBe(21);
   expect(project.workspace.procedures.find((f: { id: string }) => f.id === 'helper').async).toBe(true);
   await page.screenshot({ path: testInfo.outputPath('event-project.png'), fullPage: true });
   const downloading = page.waitForEvent('download'); await (await reveal(page, page.getByRole('button', { name: 'Export Python' }))).click();
