@@ -76,14 +76,15 @@ test('Examples holds finished projects to play and change, with thumbnails and t
   await page.locator('#play-close').click();
 });
 
-test('Lessons lists the lesson first, then the guided builds, each to start or play', async ({ page }) => {
+test('Lessons lists the lessons first, then the guided builds, each to start or play', async ({ page }) => {
   await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
   await page.locator('#lessons-open').click();
   const cards = page.locator('#lessons-dialog .lesson-card');
-  await expect(cards).toHaveCount(7);
+  await expect(cards).toHaveCount(9);
   await expect(cards.first()).toHaveAttribute('data-lesson', 'brick-breaker');
-  await expect(cards.first().locator('.lesson-kind')).toHaveText('Lesson');
-  await expect(cards.nth(1).locator('.lesson-kind')).toHaveText('Guided build');
+  await expect(cards.nth(1)).toHaveAttribute('data-lesson', 'flappy-flight'); await expect(cards.nth(2)).toHaveAttribute('data-lesson', 'super-hopper');
+  await expect(cards.nth(2).locator('.lesson-kind')).toHaveText('Lesson');
+  await expect(cards.nth(3).locator('.lesson-kind')).toHaveText('Guided build');
   await expect(cards.first().locator('img')).toHaveJSProperty('complete', true);
   // Play the finished game first…
   await page.locator('#lessons-play-pen-patterns').click();
@@ -294,7 +295,7 @@ test('Jump quest: gravity, walking, firing and reaching the goal', async ({ page
   await page.locator('#scene-x').fill('-190'); await page.locator('#scene-x').press('Enter');
   await page.locator('#scene-y').fill('-120'); await page.locator('#scene-y').press('Enter');
   await runUntil(page, /You win!/); await nextStep(page);
-  await expect(page.locator('#guide-next-build')).toHaveText('Next build: Maze run');
+  await expect(page.locator('#guide-next-build')).toHaveText('Next lesson: Super Hopper');
 });
 
 test('Talking story: a conversation, a scene change, a new costume and a backdrop event', async ({ page }) => {

@@ -295,5 +295,43 @@
       "Make the paddle wider: select it, press Paint, then More, Canvas size."
     ],
     "build": "brick-breaker"
+  },
+  {
+    "id": "flappy-flight-game",
+    "title": "Flappy Flight",
+    "description": "Tap space to flap through the gaps. Ten pipes win; one bump ends the flight.",
+    "kind": "game",
+    "project": "content/builds/flappy-flight-game.json",
+    "level": "builder",
+    "tags": [
+      "motion",
+      "collision",
+      "game"
+    ],
+    "tryChanging": [
+      "Make the gaps easier: change the random heights or the wait between pipes.",
+      "Make gravity stronger or the flap weaker, then try to win again.",
+      "Change the winning score from 10 to 20."
+    ],
+    "build": "flappy-flight"
+  },
+  {
+    "id": "super-hopper-game",
+    "title": "Super Hopper",
+    "description": "Run and jump through a five-screen level: coins, pits, beetles and a flag at the end.",
+    "kind": "game",
+    "project": "content/builds/super-hopper-game.json",
+    "level": "builder",
+    "tags": [
+      "motion",
+      "world",
+      "condition"
+    ],
+    "tryChanging": [
+      "Jump higher: change the 520 in the jump block.",
+      "Make the beetles faster: change their vx from −60 to −120.",
+      "Make the level longer: in Stage view, press Add screen and paint more ground."
+    ],
+    "build": "super-hopper"
   }
 ]

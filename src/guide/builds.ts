@@ -102,7 +102,7 @@ export function installGuide(host: GuideHost) {
     <ul id="guide-list" class="guide-list"></ul></section>`;
   activeSlot.insertAdjacentHTML('beforeend', `<div id="guide-active" class="guide-active" hidden><div class="guide-head"><h3 id="guide-build-title"></h3><span id="guide-progress"></span></div><div id="guide-meter" class="guide-meter" aria-hidden="true"><span></span></div><div id="guide-chapters" class="guide-chapters" aria-hidden="true" hidden></div>
       <div id="guide-card" class="guide-card-body"><p id="guide-step" class="guide-step"></p><p id="guide-why" class="guide-why" hidden></p>
-        <p id="guide-planted" class="guide-planted" hidden>The lesson wrote this script for you. One thing is missing: that is this step’s puzzle.</p>
+        <p id="guide-planted" class="guide-planted" hidden></p>
         <div id="guide-predict" class="guide-predict" hidden><div id="guide-choices" class="guide-choices" role="group" aria-label="Your prediction"></div><p id="guide-predict-result" class="guide-predict-result" role="status"></p></div>
         <div id="guide-goal" class="guide-goal" role="status" hidden><p><span id="guide-goal-count"></span> <span id="guide-goal-label"></span></p><div id="guide-goal-pips" class="guide-goal-pips" aria-hidden="true"></div></div>
         <ul id="guide-checklist" class="guide-checklist" hidden></ul></div>
@@ -253,6 +253,7 @@ export function installGuide(host: GuideHost) {
     host.prefer(step.other);
     if (step.plant && !planted[index]) { planted[index] = host.insert(step.plant, `${active.title}: step ${index + 1}`, step.select, step.other); save(); }
     el('guide-planted').hidden = !step.plant;
+    el('guide-planted').textContent = step.kind === 'fix' ? 'The lesson wrote this script for you. One thing is missing: that is this step’s puzzle.' : 'The lesson wrote this script for you. Read it before you run it.';
     renderPredict(); renderHints(); renderChecklist();
     highlight(step); evaluate();
     // A new step starts at the top of its card, wherever the last one was scrolled to.

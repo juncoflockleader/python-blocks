@@ -54,6 +54,23 @@ def swept(x, y, dx, dy, left, right, bottom, top):
     return max(0, min(1, entry)), nx, ny
 
 
+def seams(hits):
+    """Simultaneous hits, without internal seams. Walking along a row of floor
+    tiles meets the next tile's corner at the same moment as the floor below;
+    that corner is part of the floor, not a wall, so it keeps only the axis of
+    the flat surface met with it (and is dropped when both axes are met)."""
+    flat_x = {hit[1] for hit in hits if hit[1] and not hit[2]}
+    flat_y = {hit[2] for hit in hits if hit[2] and not hit[1]}
+    kept = []
+    for hit in hits:
+        time, nx, ny, *rest = hit
+        if nx and ny and (nx in flat_x or ny in flat_y):
+            if nx in flat_x and ny in flat_y: continue
+            hit = (time, 0, ny, *rest) if ny in flat_y else (time, nx, 0, *rest)
+        kept.append(hit)
+    return kept
+
+
 class Physics:
     def __init__(self, scene, inputs):
         self.scene, self.inputs = scene, inputs
@@ -137,7 +154,7 @@ class Physics:
             if not hits: self.position(sprite, sprite.x + dx, sprite.y + dy); break
             time = min(hit[0] for hit in hits)
             self.position(sprite, sprite.x + dx * time, sprite.y + dy * time)
-            for _, nx, ny, other, edge, mode in (hit for hit in hits if abs(hit[0] - time) <= EPSILON):
+            for _, nx, ny, other, edge, mode in seams([hit for hit in hits if abs(hit[0] - time) <= EPSILON]):
                 self.contact(sprite, other, nx, ny, edge, seen); self.respond(sprite, nx, ny, 'slide' if edge and mode == 'stop' else mode)
                 if not sprite._alive: return
             remaining *= 1 - time

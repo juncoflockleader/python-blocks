@@ -55,6 +55,16 @@ class WorldTests(unittest.IsolatedAsyncioTestCase):
         p.go_to(248, 17.1); p.set_motion('vx', 0); p.set_motion('ay', -600); self.step(); self.assertTrue(p.motion_value('grounded')); self.assertTrue(p.jump(200))
         self.scene.tile_wall(30, 9, False); p.go_to(190, 8); p.set_motion('ay', 0); p.set_motion('vy', 0); p.set_motion('vx', 2000); self.step(); self.assertGreater(p.x, 300)
 
+    def test_walking_with_gravity_crosses_the_seams_between_floor_tiles(self):
+        # The walker's right edge lands exactly on a seam: the next tile's corner is part of the floor.
+        for column in range(64): self.scene.tile_set(column, 12, None, True)
+        p = self.player; p.costume('box'); p.set('size', 50); p.go_to(-62, -21)
+        p.set_motion('ay', -1200); p.control('arrows', 180, 0); self.scene_module.inputs._keys.add('ArrowRight')
+        self.step(120)
+        self.assertAlmostEqual(p.x, 118); self.assertEqual(p.motion_value('vx'), 180); self.assertAlmostEqual(p.y, -21); self.assertTrue(p.motion_value('grounded'))
+        # A real wall still stops it.
+        self.scene.tile_set(30, 11, None, True); self.step(120); self.assertAlmostEqual(p.x, 240 - 11); self.assertEqual(p.motion_value('vx'), 0)
+
     def test_camera_clamp_follow_pointer_coordinates_and_visible_edge_rules(self):
         self.scene.camera_go(900, -200); self.assertEqual((self.scene.camera_x, self.scene.camera_y), (544, 0))
         self.scene.camera_clamp(False); self.scene.camera_go(300, -200); self.assertEqual((self.scene.camera_x, self.scene.camera_y), (300, -200))

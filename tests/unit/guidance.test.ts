@@ -24,9 +24,9 @@ const dynamic = (check: Check): boolean => 'ran' in check || 'finished' in check
 const finished = { ran: true, finished: 'won' as const };
 
 describe('guided builds', () => {
-  it('are the six planned games and the first lesson, each with a minute budget and a next step', () => {
+  it('are the six planned games and three lessons, each with a minute budget and a next step', () => {
     // Lessons are listed first.
-    expect(builds.map(b => b.title)).toEqual(['Brick Breaker', 'Catch the star', 'Dodge the balls', 'Pen patterns', 'Maze run', 'Jump quest', 'Talking story']);
+    expect(builds.map(b => b.title)).toEqual(['Brick Breaker', 'Flappy Flight', 'Super Hopper', 'Catch the star', 'Dodge the balls', 'Pen patterns', 'Maze run', 'Jump quest', 'Talking story']);
     for (const build of builds) {
       expect(build.minutes, build.id).toBeGreaterThan(0);
       expect(build.finish.remix, build.id).toHaveLength(3);
@@ -68,7 +68,7 @@ describe('guided builds', () => {
 
   it('lessons have chapters, live checklists, hints, sound predictions and repairable plants', () => {
     const lessons = builds.filter(b => b.kind === 'lesson');
-    expect(lessons.map(b => b.id)).toEqual(['brick-breaker']);
+    expect(lessons.map(b => b.id)).toEqual(['brick-breaker', 'flappy-flight', 'super-hopper']);
     for (const lesson of lessons) {
       expect(lesson.chapters!.reduce((sum, c) => sum + c.steps, 0), lesson.id).toBe(lesson.steps.length);
       expect(lesson.learn!.length, lesson.id).toBeGreaterThanOrEqual(3);
@@ -96,16 +96,16 @@ describe('guided builds', () => {
   });
 
   it('plant a puzzle that compiles but does not pass, and add solutions that resolve every placeholder', () => {
-    const lesson = buildById('brick-breaker')!;
-    for (const [index, step] of lesson.steps.entries()) {
+    for (const lesson of builds.filter(b => b.kind === 'lesson')) for (const [index, step] of lesson.steps.entries()) {
       for (const parts of [step.plant, step.solution?.parts]) {
         if (!parts) continue;
         const w = loaded(lesson.starter);
         const recipe = { id: 'lesson', title: 'Lesson', group: 'game', phrases: [], level: 'pro', concepts: ['event'], steps: [], blocks: parts } as Recipe;
         appendRecipe(w, recipe, placement(w, recipe, step.select ?? '', step.other));
-        expect(compile(w).diagnostics.filter(d => d.severity === 'error'), `step ${index + 1}`).toEqual([]);
-        expect(JSON.stringify(Blockly.serialization.workspaces.save(w)), `step ${index + 1}`).not.toMatch(/"\$(sprite|other)"/);
-        if (parts === step.plant) expect(passes(step.check, w, finished), `step ${index + 1} plant already passes`).toBe(false);
+        const where = `${lesson.id} step ${index + 1}`;
+        expect(compile(w).diagnostics.filter(d => d.severity === 'error'), where).toEqual([]);
+        expect(JSON.stringify(Blockly.serialization.workspaces.save(w)), where).not.toMatch(/"\$(sprite|other)"/);
+        if (parts === step.plant) expect(passes(step.check, w, finished), `${where} plant already passes`).toBe(false);
       }
     }
   });
@@ -138,9 +138,9 @@ describe('guided builds', () => {
 });
 
 describe('gallery', () => {
-  it('keeps the ten examples and adds the seven guided-build games, with three things to try', () => {
-    expect(entries).toHaveLength(17);
-    expect(new Set(entries.map(e => e.id)).size).toBe(17);
+  it('keeps the ten examples and adds the nine guided-build and lesson games, with three things to try', () => {
+    expect(entries).toHaveLength(19);
+    expect(new Set(entries.map(e => e.id)).size).toBe(19);
     for (const id of ['scene-example', 'scene-motion-example', 'scene-story-example', 'scene-drawing-example', 'scene-behavior-example', 'scene-game-example', 'scene-world-example', 'scene-star-game', 'sound-example', 'scene-input-example']) expect(entries.some(e => e.id === id), id).toBe(true);
     for (const entry of entries) {
       expect(entry.tryChanging, entry.id).toHaveLength(3);
