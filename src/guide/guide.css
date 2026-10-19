@@ -175,3 +175,7 @@
 .lesson-dialog .lesson-chapter-steps { margin-left: 8px; }
 .lesson-preview.lesson-preview-missing { visibility: hidden; }
 .lesson-finish .lesson-actions .lesson-note { flex-basis: 100%; margin: 0; }
+
+/* The Lessons catalogue: like Examples, with a kind badge and the lesson first. */
+.lesson-kind { margin: 4px 0 0; font: 700 11px 'DM Sans', system-ui, sans-serif; letter-spacing: .6px; text-transform: uppercase; color: #2b5a4b; }
+.example-card.lesson-card-main { border: 2px solid #267c70; background: #f4faf6; }

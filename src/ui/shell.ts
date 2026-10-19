@@ -1,5 +1,14 @@
 import { LEVELS, atLeast, levelNames, storeLevel, storedLevel, type Level, type LevelNeed } from './levels';
+import { iconSvg, type IconName } from './icon-art';
 import './shell.css';
+
+/** Each level's symbol and what it adds, shown in the level menu. */
+const levelIcons: Record<Level, IconName> = { starter: 'sprout', builder: 'bricks', pro: 'rocket' };
+const levelDescriptions: Record<Level, string> = {
+  starter: '8 block groups for first games',
+  builder: 'Adds logic, numbers, text, sensing and physics',
+  pro: 'Every block group, worlds and modules',
+};
 
 export const TABS = ['sprite', 'python', 'output', 'help'] as const;
 export type Tab = typeof TABS[number];
@@ -7,7 +16,7 @@ const tabLabels: Record<Tab, string> = { sprite: 'Sprite', python: 'Python', out
 /** The Help tab is split so ideas, guided builds and the rest never scroll past each other. */
 export const HELP_SECTIONS = ['ideas', 'builds', 'more'] as const;
 export type HelpSection = typeof HELP_SECTIONS[number];
-const helpLabels: Record<HelpSection, string> = { ideas: 'Ideas', builds: 'Builds', more: 'More' };
+const helpLabels: Record<HelpSection, string> = { ideas: 'Ideas', builds: 'Lessons', more: 'More' };
 
 /** The one-screen shell: a top bar, the blocks panel and a right column with the
  * stage, sprite tray and four tabs. Feature modules mount into the named slots. */
@@ -20,11 +29,15 @@ export const shellMarkup = `
       <span class="top-spacer"></span>
       <button id="run" class="button primary run-button">Run code</button><button id="stop" class="button secondary" disabled>Stop</button>
       <span class="top-divider" aria-hidden="true"></span>
-      <label class="level-control">Level <select id="level-select">${LEVELS.map(level => `<option value="${level}">${levelNames[level]}</option>`).join('')}</select></label>
-      <button id="examples-open" class="button secondary">Examples</button>
+      <div class="level-control" id="level-control">
+        <button id="level-button" class="level-button" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="level-list" title="Level: how many blocks and tools the palette shows"><span class="level-icon" aria-hidden="true"></span><span id="level-name" class="level-name"></span></button>
+        <select id="level-select" class="level-native" aria-hidden="true" tabindex="-1">${LEVELS.map(level => `<option value="${level}">${levelNames[level]}</option>`).join('')}</select>
+        <ul id="level-list" class="level-list" role="listbox" aria-label="Level" tabindex="-1" hidden>${LEVELS.map(level => `<li id="level-option-${level}" role="option" data-level="${level}" aria-selected="false"><span class="level-icon" aria-hidden="true"></span><span class="level-text"><strong>${levelNames[level]}</strong><small>${levelDescriptions[level]}</small></span></li>`).join('')}</ul>
+      </div>
+      <button id="examples-open" class="button secondary">Examples</button><button id="lessons-open" class="button secondary">Lessons</button>
       <div class="menu-wrap"><button id="menu-button" class="button secondary ui-icon-only" aria-haspopup="true" aria-expanded="false" aria-controls="app-menu" title="More actions">More actions</button>
         <div id="app-menu" class="app-menu" hidden>
-          <div class="menu-group" role="group" aria-label="Project file"><button id="save" class="button secondary">Save project</button><button id="open" class="button secondary">Open project</button><input id="project-file" type="file" accept=".json,application/json" hidden><button id="export" class="button secondary">Export Python</button><button id="export-playable" class="button secondary level-builder">Export playable</button><button id="example" class="button secondary">Reset example</button><button id="menu-examples" class="button secondary">Examples…</button></div>
+          <div class="menu-group" role="group" aria-label="Project file"><button id="save" class="button secondary">Save project</button><button id="open" class="button secondary">Open project</button><input id="project-file" type="file" accept=".json,application/json" hidden><button id="export" class="button secondary">Export Python</button><button id="export-playable" class="button secondary level-builder">Export playable</button><button id="example" class="button secondary">Reset example</button><button id="menu-examples" class="button secondary">Examples…</button><button id="menu-lessons" class="button secondary">Lessons…</button></div>
           <div class="menu-group level-builder" id="menu-tools" role="group" aria-label="Tools"></div>
           <div class="menu-group level-builder" role="group" aria-label="Learning"><button id="menu-pilot" class="button secondary">Learner pilot</button><button id="menu-assist" class="button secondary">AI assist</button></div>
           <a class="design-link" href="https://github.com/juncoflockleader/python-blocks/tree/main/docs" target="_blank" rel="noreferrer">Project notes</a>
@@ -121,13 +134,28 @@ export function installPaletteHint(getToolbox: () => HTMLElement | null) {
   hint.type = 'button'; hint.id = 'palette-more'; hint.className = 'palette-more'; hint.hidden = true;
   hint.textContent = 'More'; hint.title = 'More categories'; hint.setAttribute('aria-label', 'Scroll the palette to more categories');
   document.querySelector('.blocks-panel')!.append(hint);
-  let toolbox: HTMLElement | null = null;
+  const panel = document.querySelector<HTMLElement>('.blocks-panel')!;
+  const STRIP = 44; // the cue's strip height, as in shell.css
+  let toolbox: HTMLElement | null = null, atEnd = false;
+  // While the categories overflow, the palette ends above a strip holding the cue
+  // (CSS: .palette-overflow), so the cue never covers a category. At the end of
+  // the list the cue scrolls back to the top instead of disappearing.
   const refresh = () => {
-    if (!toolbox) { hint.hidden = true; return; }
-    hint.hidden = toolbox.scrollHeight - toolbox.clientHeight - toolbox.scrollTop <= 4;
-    hint.style.left = `${toolbox.offsetLeft + toolbox.offsetWidth / 2}px`;
+    // Measure against the palette's full height: the strip itself must not keep the strip.
+    const full = toolbox ? toolbox.clientHeight + (panel.classList.contains('palette-overflow') ? STRIP : 0) : 0;
+    const overflowing = !!toolbox && toolbox.scrollHeight - full > 4;
+    panel.classList.toggle('palette-overflow', overflowing);
+    hint.hidden = !overflowing;
+    if (!toolbox || !overflowing) return;
+    atEnd = toolbox.scrollHeight - toolbox.clientHeight - toolbox.scrollTop <= 4;
+    hint.textContent = atEnd ? 'Top' : 'More'; hint.classList.toggle('palette-more-up', atEnd);
+    hint.title = atEnd ? 'Back to the first categories' : 'More categories';
+    hint.setAttribute('aria-label', atEnd ? 'Scroll the palette back to the top' : 'Scroll the palette to more categories');
+    hint.style.left = `${toolbox.offsetLeft}px`; hint.style.width = `${toolbox.offsetWidth}px`;
   };
   const observer = new ResizeObserver(refresh);
+  // The palette is sized by Blockly at 100% of the panel; watch the panel and the window as well.
+  observer.observe(panel); window.addEventListener('resize', refresh);
   const attach = () => {
     const next = getToolbox();
     if (next !== toolbox) {
@@ -137,9 +165,9 @@ export function installPaletteHint(getToolbox: () => HTMLElement | null) {
     }
     refresh();
   };
-  hint.addEventListener('click', () => toolbox?.scrollBy({ top: toolbox.clientHeight * 0.8, behavior: 'smooth' }));
+  hint.addEventListener('click', () => { if (atEnd) toolbox?.scrollTo({ top: 0, behavior: 'smooth' }); else toolbox?.scrollBy({ top: toolbox.clientHeight * 0.8, behavior: 'smooth' }); });
   attach();
-  return { refresh: attach, dispose: () => { observer.disconnect(); hint.remove(); } };
+  return { refresh: attach, dispose: () => { observer.disconnect(); window.removeEventListener('resize', refresh); hint.remove(); } };
 }
 
 /** A disclosure menu: Escape or an outside tap closes it; choosing an item closes it too. */
@@ -183,13 +211,48 @@ export function installPythonPlacement(resize: () => void) {
 export function installLevelControl(apply: (level: Level) => void) {
   document.body.insertAdjacentHTML('beforeend', `<dialog id="level-dialog" aria-labelledby="level-title"><h2 id="level-title">Show more tools?</h2><p id="level-reason"></p><p>Your blocks stay on the workspace either way. You can change the level any time from the top bar.</p><div class="dialog-actions"><button id="level-switch" class="button primary"></button><button id="level-keep" class="button secondary"></button></div></dialog>`);
   const select = document.getElementById('level-select') as HTMLSelectElement, dialog = document.getElementById('level-dialog') as HTMLDialogElement;
-  let level = storedLevel(), offered: Level | null = null;
+  const button = document.getElementById('level-button') as HTMLButtonElement, list = document.getElementById('level-list')!, control = document.getElementById('level-control')!;
+  const options = [...list.querySelectorAll<HTMLElement>('[role=option]')];
+  for (const node of [button.querySelector<HTMLElement>('.level-icon')!, ...options.map(option => option.querySelector<HTMLElement>('.level-icon')!)]) node.dataset.uiIcon = '';
+  const paint = (node: HTMLElement, value: Level) => node.style.setProperty('--ui-icon', `url("data:image/svg+xml,${encodeURIComponent(iconSvg(levelIcons[value]))}")`);
+  options.forEach(option => paint(option.querySelector<HTMLElement>('.level-icon')!, option.dataset.level as Level));
+  let level = storedLevel(), offered: Level | null = null, active = 0;
   const set = (next: Level, persist = true) => {
     level = next; select.value = next; document.documentElement.dataset.level = next;
+    control.dataset.level = next; paint(button.querySelector<HTMLElement>('.level-icon')!, next);
+    document.getElementById('level-name')!.textContent = levelNames[next];
+    button.setAttribute('aria-label', `Level: ${levelNames[next]}`);
+    for (const option of options) option.setAttribute('aria-selected', String(option.dataset.level === next));
     if (persist) storeLevel(next);
     apply(next);
   };
   select.addEventListener('change', () => set(select.value as Level));
+  // The level menu: a button and a listbox of the three levels, each with its symbol and what it adds.
+  const highlight = (index: number) => {
+    active = (index + options.length) % options.length;
+    options.forEach((option, i) => option.classList.toggle('level-active', i === active));
+    list.setAttribute('aria-activedescendant', options[active].id);
+  };
+  const open = (show: boolean, restore = false) => {
+    list.hidden = !show; button.setAttribute('aria-expanded', String(show));
+    if (show) { highlight(LEVELS.indexOf(level)); list.focus(); } else if (restore) button.focus();
+  };
+  const choose = (index: number) => { const next = options[index].dataset.level as Level; open(false, true); if (next !== level) set(next); };
+  button.addEventListener('click', () => open(!!list.hidden));
+  button.addEventListener('keydown', event => { if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); open(true); } });
+  options.forEach((option, index) => {
+    option.addEventListener('click', () => choose(index));
+    option.addEventListener('pointermove', () => highlight(index));
+  });
+  list.addEventListener('keydown', event => {
+    if (event.key === 'ArrowDown') { event.preventDefault(); highlight(active + 1); }
+    else if (event.key === 'ArrowUp') { event.preventDefault(); highlight(active - 1); }
+    else if (event.key === 'Home' || event.key === 'End') { event.preventDefault(); highlight(event.key === 'Home' ? 0 : options.length - 1); }
+    else if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); choose(active); }
+    else if (event.key === 'Escape' || event.key === 'Tab') { if (event.key === 'Escape') event.preventDefault(); open(false, event.key === 'Escape'); }
+  });
+  const outside = (event: PointerEvent) => { if (!list.hidden && !control.contains(event.target as Node)) open(false); };
+  document.addEventListener('pointerdown', outside);
   document.getElementById('level-switch')!.addEventListener('click', () => { if (offered) set(offered); dialog.close(); });
   document.getElementById('level-keep')!.addEventListener('click', () => { storeLevel(level); dialog.close(); });
   set(level, false);
@@ -208,7 +271,7 @@ export function installLevelControl(apply: (level: Level) => void) {
       if (!dialog.open) dialog.showModal();
       return true;
     },
-    dispose() { dialog.remove(); },
+    dispose() { dialog.remove(); document.removeEventListener('pointerdown', outside); },
   };
 }
 

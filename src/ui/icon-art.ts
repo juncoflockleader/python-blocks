@@ -90,6 +90,10 @@ export const iconArt = {
   touch: '<circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/>',
   hourglass: '<path d="M6 3h12M6 21h12M8 3c0 5 8 6 8 9s-8 4-8 9M16 3c0 5-8 6-8 9s8 4 8 9"/>',
   decide: '<path d="m12 2 10 10-10 10L2 12Z"/><path d="M9.8 9.6a2.3 2.3 0 1 1 3.3 2.1c-.7.4-1.1.8-1.1 1.6M12 16.2h.1"/>',
+  // Levels: a sprout (Starter), stacked bricks (Builder) and a rocket (Pro).
+  sprout: '<path d="M12 21V11M8 21h8M12 13C12 8 9 5 4 5c0 5 3 8 8 8Zm0-2c0-4 3-7 8-7 0 4-3 7-8 7Z"/>',
+  bricks: '<rect x="3" y="13" width="8" height="7" rx="1"/><rect x="13" y="13" width="8" height="7" rx="1"/><rect x="8" y="4" width="8" height="7" rx="1"/>',
+  rocket: '<path d="M12 2c3.5 2.5 5 6.5 5 10.5L15 16H9l-2-3.5C7 8.5 8.5 4.5 12 2Z"/><circle cx="12" cy="9" r="1.8"/><path d="m9 16-3 3 1-4.5M15 16l3 3-1-4.5M10.5 19l1.5 3 1.5-3"/>',
 } as const;
 export type IconName = keyof typeof iconArt;
 /** Moves that centre each drawing's bounds on the 24px grid, measured with
@@ -99,7 +103,7 @@ export const iconOffsets: Partial<Record<IconName, [number, number]>> = {
   folder: [-0.5, 0], upload: [0, -0.5], play: [-1, 0], restart: [0, -0.25], check: [-0.5, 0.5], search: [-0.5, -0.5], function: [-0.5, 0],
   volume: [-0.5, 0], mute: [-0.5, 0], music: [0, 0.75], sprite: [0, -0.5], keyboard: [0, -0.5], game: [0, -1], pen: [-0.5, 0.5], brush: [0, 0.25],
   eraser: [-0.5, 0], fill: [-0.5, 0.5], rotate: [0.25, 0.25], book: [0, -0.25], clock: [0, 0.5], learn: [0, 0.5], assist: [-0.5, 0.5], logic: [0, 1],
-  library: [-0.5, 0], unlock: [0, 0.25], spriteAdd: [-0.25, 0.5],
+  library: [-0.5, 0], unlock: [0, 0.25], spriteAdd: [-0.25, 0.5], sprout: [0, -0.5],
 };
 /** An icon's drawing, moved so it sits in the middle of its grid. */
 export function iconMarkup(name: IconName) {

@@ -96,7 +96,7 @@ export function installGuide(host: GuideHost) {
   // The list and its confirmation live in the Builds section; the active step is
   // mounted above the Help sections so it stays visible while ideas are shown.
   const activeSlot = document.getElementById('guide-active-slot') ?? slot;
-  slot.innerHTML = `<section id="guide" class="guide" aria-labelledby="guide-title"><h2 id="guide-title">Guided builds</h2><p class="tab-note">Make a small game one checked step at a time.</p>
+  slot.innerHTML = `<section id="guide" class="guide" aria-labelledby="guide-title"><h2 id="guide-title">Lessons</h2><p class="tab-note">Build a game one checked step at a time. Lessons teach more; guided builds are quick.</p>
     <div id="guide-kept" class="guide-kept" hidden><p>Your project from before the lesson is kept.</p><button id="guide-kept-return" class="button secondary">Return to my project</button></div>
     <div id="guide-confirm" class="guide-confirm" hidden><p id="guide-confirm-text"></p><div class="guide-actions"><button id="guide-confirm-start" class="button primary">Replace and start</button><button id="guide-confirm-cancel" class="button secondary">Keep my project</button></div></div>
     <ul id="guide-list" class="guide-list"></ul></section>`;
@@ -135,7 +135,7 @@ export function installGuide(host: GuideHost) {
     title.textContent = build.title;
     meta.textContent = build.kind === 'lesson'
       ? `Lesson · ${build.minutes} min · ${levelNames[build.level]} · ${build.chapters?.length ?? 0} chapters`
-      : `${build.minutes} min · ${levelNames[build.level]} · ${build.ideas.join(', ')}`;
+      : `Guided build · ${build.minutes} min · ${levelNames[build.level]} · ${build.ideas.join(', ')}`;
     summary.textContent = build.summary;
     start.append(title, meta, summary); start.addEventListener('click', () => begin(build)); entry.append(start); el('guide-list').append(entry);
   }

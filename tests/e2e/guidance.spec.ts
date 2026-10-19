@@ -59,20 +59,43 @@ test('the wish box resolves child language locally and its chips need no typing'
   await expect(page.locator('#assist-question')).toHaveValue('photosynthesis in plants');
 });
 
-test('the gallery opens examples with thumbnails, Play and three things to try', async ({ page }) => {
+test('Examples holds finished projects to play and change, with thumbnails and three things to try', async ({ page }) => {
   await page.goto('/'); await page.locator('#examples-open').click();
-  const card = page.locator('#examples-dialog [data-example="catch-the-star-game"]');
+  const card = page.locator('#examples-dialog [data-example="scene-star-game"]');
   await expect(card.locator('img')).toHaveJSProperty('complete', true);
   expect(await card.locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(240);
-  await expect(page.locator('#examples-dialog .example-card')).toHaveCount(17);
-  await page.locator('#catch-the-star-game').click();
-  await expect(page.locator('#project-title')).toHaveText('Catch the star');
-  await openTab(page, 'help'); await expect(page.locator('[data-nudge="try"]')).toContainText('Win at 10 stars instead of 5.');
-  await page.locator('#examples-open').click(); await page.locator('#pen-patterns-game-play').click();
+  // The games that lessons build are under Lessons, not here.
+  await expect(page.locator('#examples-dialog .example-card')).toHaveCount(10);
+  await expect(page.locator('#examples-dialog [data-example="catch-the-star-game"]')).toHaveCount(0);
+  await expect(page.locator('#examples-dialog [data-filter="build"]')).toHaveCount(0);
+  await page.locator('#scene-story-example').click();
+  await expect(page.locator('#project-title')).toHaveText('Story');
+  await openTab(page, 'help'); await expect(page.locator('[data-nudge="try"]')).toBeVisible();
+  await page.locator('#examples-open').click(); await page.locator('#scene-drawing-example-play').click();
   await expect(page.locator('#play-dialog')).toBeVisible(); await expect(page.locator('#play-status')).toHaveText(/Event session running|Finished/, { timeout: 60_000 });
   await page.locator('#play-close').click();
 });
 
+test('Lessons lists the lesson first, then the guided builds, each to start or play', async ({ page }) => {
+  await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
+  await page.locator('#lessons-open').click();
+  const cards = page.locator('#lessons-dialog .lesson-card');
+  await expect(cards).toHaveCount(7);
+  await expect(cards.first()).toHaveAttribute('data-lesson', 'brick-breaker');
+  await expect(cards.first().locator('.lesson-kind')).toHaveText('Lesson');
+  await expect(cards.nth(1).locator('.lesson-kind')).toHaveText('Guided build');
+  await expect(cards.first().locator('img')).toHaveJSProperty('complete', true);
+  // Play the finished game first…
+  await page.locator('#lessons-play-pen-patterns').click();
+  await expect(page.locator('#play-dialog')).toBeVisible(); await expect(page.locator('#play-status')).toHaveText(/Event session running|Finished/, { timeout: 60_000 });
+  await page.locator('#play-close').click();
+  // …or start it: a lesson opens its start sheet.
+  await page.locator('#lessons-open').click(); await page.locator('#lessons-start-brick-breaker').click();
+  await expect(page.locator('#lessons-dialog')).toBeHidden(); await expect(page.locator('#lesson-start')).toBeVisible();
+  await page.locator('#lesson-start-cancel').click();
+  // Help names the same section Lessons.
+  await openTab(page, 'help'); await expect(page.locator('#help-nav-builds')).toHaveText('Lessons');
+});
 test('Catch the star can be built step by step, with checks, highlights and a finish', async ({ page }) => {
   test.setTimeout(150_000);
   await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();

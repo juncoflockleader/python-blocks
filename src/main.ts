@@ -35,6 +35,7 @@ import { installGuide } from './guide/builds';
 import { installNudges, type FixKind } from './guide/nudges';
 import { installFixes, type RuntimeFault } from './guide/fixes';
 import { installGallery } from './guide/gallery';
+import { installLessons } from './guide/lessons';
 import { atLeast, installLevels, levelNames, requiredLevel, storedLevel, toolboxFor, LEVEL_KEY, type Level } from './ui/levels';
 import { installHelpSections, installInputHints, installLevelControl, installMenu, installPaletteHint, installPythonPlacement, installTabs, shellMarkup, trackKeyboard } from './ui/shell';
 
@@ -215,8 +216,9 @@ const gallery = installGallery({
     return true;
   },
   play() { element('#play-expand').click(); element('#play-run').click(); },
-  startBuild: id => guide.begin(id),
 });
+// Lessons and guided builds have their own catalogue, apart from Examples.
+const lessons = installLessons({ start: id => guide.begin(id), play: id => gallery.play(id) });
 const ideas = installIdeas({
   ...cards, show: recipe => ideas.show(recipe), reveal: () => showHelp('ideas'),
   askAi: wish => { if (level === 'starter') return null; showHelp('more'); assist?.prepare(wish); element<HTMLDetailsElement>('#assist-panel').scrollIntoView({ block: 'start' }); return 'Your wish is in AI assist (Help → More). Review what will be shared, then Send.'; },
@@ -556,4 +558,4 @@ element<HTMLInputElement>('#project-file').addEventListener('change', async even
     else if (installProject(prepared.project)) { setTitle(file.name.replace(/\.python-blocks\.json$|\.json$/i, '') || 'My project'); offerLevel(); }
   } catch (error) { notice.textContent = `Could not open project: ${error instanceof Error ? error.message : error}. Your current work is unchanged.`; }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); blockSearch.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); blockSearch.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
