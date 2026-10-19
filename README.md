@@ -75,7 +75,7 @@ The development and build commands copy the pinned Pyodide distribution and Bloc
 - Square, keyboard-controlled sprites, pointer-following/bouncing and animated-story examples, with Python source and scene-asset export.
 - Portable playable ZIPs with a local launcher, browser host, Python runtime, captured assets, source and editable blocks; see [portable playback](docs/portable-playback.md).
 
-Use **Sounds & music** in the Sprite tab to import or record audio, edit waveforms, or compose a song. The **Music** example (Examples) plays a melody with drums; Space adds a chime. See the [sound/music guide](docs/sound-and-music.md) for playback, microphone handling and limits.
+Press **Sounds** in the sprite tray (or **Edit sounds** in the Sprite tab or the palette's Sounds blocks) to record your voice with a 3-2-1 countdown, tune it with Higher, Lower, Robot, Echo and more, make sound effects, or write a song on a grid. The **Music** example (Examples) plays a melody with drums; Space adds a chime. See the [sound/music guide](docs/sound-and-music.md) for playback, microphone handling and limits.
 
 Choose the **Input & color** example to answer a question and use arrows or **Touch controls** to find the red square. The **Sensing & input** palette includes timers, questions and color contact. See the [input guide](docs/questions-timers-and-touch.md) for cancellation, button mapping, camera-space color sampling and limits.
 

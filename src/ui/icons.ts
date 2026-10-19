@@ -11,18 +11,18 @@ const actionGroups: Partial<Record<IconName, string>> = {
   sliders: 'sprite-more', brush: 'tray-paint world-paint-tile', alert: 'stage-badge', learn: 'lessons-open menu-lessons', notes: 'menu-pilot',
   folder: 'open python-recover',
   download: 'export export-playable recover python-download python-recovery-download module-export module-save-copy pilot-download pilot-download-backup pilot-recovery',
-  upload: 'module-import scene-import sound-import',
-  play: 'debug-resume run play-run sound-preview pilot-start phone-play',
-  stop: 'debug-stop stop play-stop sound-preview-stop sound-record-stop',
+  upload: 'module-import scene-import',
+  play: 'debug-resume run play-run pilot-start phone-play',
+  stop: 'debug-stop stop play-stop',
   restart: 'example scene-reset game-restart',
-  undo: 'language-undo world-undo sound-undo python-discard pilot-return',
+  undo: 'language-undo world-undo python-discard pilot-return',
   redo: 'language-redo world-redo',
   pause: 'debug-pause',
-  close: 'debug-close block-search-clear export-cancel examples-close name-sheet-cancel level-keep migration-cancel language-close lambda-close events-close modules-close module-inspector-close python-cancel question-cancel world-close stock-close sound-close assist-cancel',
-  plus: 'zoom-in stage-zoom-in world-wide-more world-tall-more stage-add-right stage-add-down name-sheet-confirm parameter-add lambda-parameter-add scene-add world-new sound-new song-new watch-add',
-  trash: 'function-delete handler-delete module-remove python-recovery-remove scene-delete data-remove world-delete sound-delete song-clear pilot-clear',
-  copy: 'function-copy handler-copy scene-copy world-copy sound-copy',
-  check: 'sprite-settings-done level-switch migration-apply function-apply variable-apply handler-apply lambda-apply python-apply motion-use-preset sound-apply pilot-finish',
+  close: 'debug-close block-search-clear export-cancel examples-close name-sheet-cancel level-keep migration-cancel language-close lambda-close events-close modules-close module-inspector-close python-cancel question-cancel world-close stock-close assist-cancel',
+  plus: 'zoom-in stage-zoom-in world-wide-more world-tall-more stage-add-right stage-add-down name-sheet-confirm parameter-add lambda-parameter-add scene-add world-new watch-add',
+  trash: 'function-delete handler-delete module-remove python-recovery-remove scene-delete data-remove world-delete pilot-clear',
+  copy: 'function-copy handler-copy scene-copy world-copy',
+  check: 'sprite-settings-done level-switch migration-apply function-apply variable-apply handler-apply lambda-apply python-apply motion-use-preset pilot-finish',
   edit: 'module-rename python-edit',
   target: 'zoom-reset function-find handler-find lambda-find scene-locate scene-script-find',
   eye: 'debug-start module-inspect python-inspect assist-review',
@@ -33,8 +33,7 @@ const actionGroups: Partial<Record<IconName, string>> = {
   event: 'events-manage scene-events event-send',
   volume: 'audio-enable',
   mute: 'audio-mute',
-  music: 'sound-open sound-example',
-  microphone: 'sound-record',
+  music: 'sound-open sound-example tray-sounds',
   sprite: 'scene-example pilot-sprites',
   world: 'scene-worlds scene-world-example stage-map-show',
   image: 'scene-stock-backdrop',
@@ -47,10 +46,9 @@ const actionGroups: Partial<Record<IconName, string>> = {
   physics: 'scene-behavior-example data-behavior',
   library: 'world-stock', spriteAdd: 'scene-stock',
   eraser: 'appearance-clear',
-  selection: 'sound-select-all',
   resize: 'play-expand',
   up: 'debug-out',
-  left: 'song-prev play-close', right: 'debug-into debug-over song-next',
+  left: 'play-close', right: 'debug-into debug-over',
   clock: 'pilot-timer', assist: 'assist-enable menu-assist', lock: 'assist-disable',
 };
 for (const [icon, ids] of Object.entries(actionGroups)) {
@@ -156,8 +154,8 @@ export function installIcons(root: HTMLElement = document.body) {
       }
       decorate(caption, name); return;
     }
-    // Thumbnails, note/hold marks and controller A/B already are visual icons.
-    if (element.matches('.stock-card, #scene-cards button, #song-grid button, [data-control="a"], [data-control="b"]')) return;
+    // Thumbnails, controller A/B and the Sound editor's own icons already are visual icons.
+    if (element.matches('.stock-card, #scene-cards button, #sound-dialog button, .sprite-sound-play, [data-control="a"], [data-control="b"]')) return;
     const label = element.tagName === 'SUMMARY'
       ? [...element.childNodes].filter(node => node.nodeType === Node.TEXT_NODE).map(node => node.textContent).join('').trim()
       : element.textContent?.trim() ?? '';

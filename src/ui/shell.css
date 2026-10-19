@@ -304,7 +304,7 @@ mark.python-active { background: #e3eacf; color: inherit; box-shadow: -4px 0 0 #
 :root:not([data-keyboard]) #play-dialog .stage-wrap { max-width: min(100%, 1000px, calc((100dvh - 270px) * 1.5)); }
 
 /* Every editor dialog fits the viewport and scrolls inside itself. */
-:is(#world-dialog, #stock-dialog, .sound-editor, #play-dialog, #language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector, #migration-dialog) { max-height: calc(100dvh - 24px); overflow: auto; }
+:is(#world-dialog, #stock-dialog, #play-dialog, #language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector, #migration-dialog) { max-height: calc(100dvh - 24px); overflow: auto; }
 
 /* Dialogs added by the shell */
 .examples-dialog { width: min(1040px, calc(100vw - 24px)); max-width: calc(100vw - 24px); max-height: calc(100dvh - 24px); padding: 18px; background: #fafbf6; }

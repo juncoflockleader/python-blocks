@@ -4,7 +4,11 @@ import { sceneState } from '../scene/state';
 import { effectOptions } from '../scene/effects';
 import { motionNumbers } from '../scene/motion';
 
+/** The last choice in a sound block's menu: make a new sound, which the block then picks. */
+export const NEW_SOUND = '__new_sound__';
 export class SceneReferenceField extends Blockly.FieldDropdown {
+  /** Opens the Sound editor for "New sound…"; set by the editor. */
+  static newSound: ((field: SceneReferenceField) => void) | null = null;
   private candidate?: string;
   private cached?: { id: string; name: string };
   constructor(readonly kind: 'sprite' | 'costume' | 'backdrop' | 'world' | 'sound') {
@@ -15,10 +19,14 @@ export class SceneReferenceField extends Blockly.FieldDropdown {
       const current = field.candidate ?? field.getValue();
       const options: [string, string][] = values.map(v => [v.name, v.id]);
       if (current && !values.some(v => v.id === current)) options.push([`${field.cached?.name ?? kind} (unavailable)`, current]);
-      return [[kind === 'world' ? 'base stage' : kind === 'backdrop' ? 'plain color' : `choose ${kind}`, ''], ...options];
+      const make: [string, string][] = kind === 'sound' && SceneReferenceField.newSound ? [['New sound…', NEW_SOUND]] : [];
+      return [[kind === 'world' ? 'base stage' : kind === 'backdrop' ? 'plain color' : `choose ${kind}`, ''], ...options, ...make];
     });
   }
-  protected override doClassValidation_(value: string) { this.candidate = value; this.getOptions(false); return value; }
+  protected override doClassValidation_(value: string) {
+    if (value === NEW_SOUND) { const make = SceneReferenceField.newSound; if (make) setTimeout(() => make(this)); return null; }
+    this.candidate = value; this.getOptions(false); return value;
+  }
   override saveState(full = false) {
     const state = this.getSourceBlock() && sceneState(this.getSourceBlock()!.workspace), id = this.getValue();
     const found = state && (this.kind === 'sound' ? state.sounds ?? [] : this.kind === 'world' ? state.worlds ?? [] : this.kind === 'sprite' ? state.sprites : this.kind === 'backdrop' ? backdrops(state) : costumes(state)).find(v => v.id === id);

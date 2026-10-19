@@ -47,62 +47,138 @@ async function install(page: Page, handlers?: [string, any][]) {
 }
 async function run(page: Page) { await page.locator('#run').click(); await expect(page.locator('#status')).toHaveText('Event session running',{timeout:60_000}); }
 async function key(page: Page, key: string) { await page.locator('#stage').focus(); await page.keyboard.press(key); }
-test('authors and edits a waveform with atomic persistence, stable identity and local undo', async ({page},info) => {
-  await setup(page); await (await reveal(page, '#sound-open')).click(); await page.locator('#sound-new').click();
-  await page.locator('#sound-name').fill('My chime'); await page.locator('#sound-name').press('Tab');
-  await page.locator('#sound-from').fill('.1'); await page.locator('#sound-to').fill('.3');
-  await page.getByRole('button',{name:'Trim to selection',exact:true}).click(); await expect(page.locator('#sound-duration')).toContainText('0.20 seconds');
-  await page.getByRole('button',{name:'Reverse',exact:true}).click(); await page.getByRole('button',{name:'Fade out',exact:true}).click();
-  await page.locator('#sound-apply').click(); await expect.poll(async () => (await saved(page)).workspace.pythonScene?.sounds?.length).toBe(1); const original = (await saved(page)).workspace.pythonScene.sounds[0];
-  await page.getByRole('button',{name:'Normalize',exact:true}).click(); await page.locator('#sound-undo').click(); await page.locator('#sound-apply').click();
-  await expect.poll(async () => (await saved(page)).workspace.pythonScene.sounds[0]).toEqual(original);
-  await page.locator('#sound-preview').click(); await expect.poll(() => rms(page)).toBeGreaterThan(.001);
-  await expect(page.locator('#sound-preview-stop')).toHaveAttribute('data-voices','0');
-  await page.screenshot({path:info.outputPath('sound-waveform.png')});
-  await page.locator('#sound-name').fill('Renamed chime'); await page.locator('#sound-apply').click();
-  await page.locator('#sound-close').click(); await page.reload(); await (await reveal(page, '#sound-open')).click(); await page.locator('#sound-list').selectOption(original.id);
-  await expect(page.locator('#sound-name')).toHaveValue('Renamed chime'); expect((await saved(page)).workspace.pythonScene.sounds[0].data).toBe(original.data);
+const mode = (page: Page) => page.locator('#sound-dialog').getAttribute('data-mode');
+const sounds = async (page: Page) => (await saved(page)).workspace.pythonScene?.sounds ?? [];
+const micEnded = (page: Page) => page.evaluate(() => (window as any).micTracks.every((t: MediaStreamTrack) => t.readyState === 'ended'));
+async function openSounds(page: Page) { await page.locator('#tray-sounds').click(); await expect(page.locator('#sound-dialog')).toBeVisible(); }
+async function newSound(page: Page, kind: 'record' | 'effect' | 'song' | 'import') {
+  if (await page.locator('#sound-empty').isVisible()) await page.locator(`#sound-empty [data-new="${kind}"]`).click();
+  else { await page.locator('#sound-new').click(); await page.locator(`#sound-sheet [data-new="${kind}"]`).click(); }
+}
+async function record(page: Page, ms = 700) {
+  await page.locator('#sound-record-button').click();
+  await expect(page.locator('#sound-record-title')).toHaveText('Recording… tap to stop', { timeout: 8000 });
+  await page.waitForTimeout(ms);
+}
+async function selectPart(page: Page, from: number, to: number) {
+  const box = (await page.locator('#sound-wave').boundingBox())!;
+  await page.mouse.move(box.x + box.width * from, box.y + box.height / 2); await page.mouse.down();
+  await page.mouse.move(box.x + box.width * to, box.y + box.height / 2, { steps: 6 }); await page.mouse.up();
+}
+const seconds = async (page: Page) => Number((await page.locator('#sound-length').textContent())!.match(/[\d.]+/)![0]);
+
+test('records with a countdown, tunes the selected part, and Done saves every change as one Undo step', async ({ page }, info) => {
+  await setup(page); await openSounds(page); expect(await mode(page)).toBe('empty');
+  await newSound(page, 'record'); await expect(page.locator('#sound-record-note')).toContainText('nothing is sent anywhere');
+  await page.locator('#sound-record-button').click(); await expect(page.locator('.sound-count')).toHaveText('3');
+  await expect(page.locator('#sound-record-title')).toHaveText('Recording… tap to stop', { timeout: 8000 }); await page.waitForTimeout(800);
+  await page.screenshot({ path: info.outputPath('recording.png') });
+  await page.locator('#sound-record-button').click();
+  await expect.poll(() => mode(page)).toBe('clip'); await expect(page.locator('#sound-name')).toHaveValue('Recording 1');
+  await expect(page.locator('#sound-toast-text')).toContainText('Got it'); expect(await micEnded(page)).toBe(true);
+  const recorded = await seconds(page); expect(recorded).toBeGreaterThan(.4);
+  // Tune works on the selected part, plays it straight away, and each tap is one Undo.
+  await selectPart(page, .25, .75); await expect(page.locator('#sound-selected')).toBeVisible();
+  await expect(page.locator('#sound-tune-scope')).toHaveText('on the selected part');
+  await page.locator('[data-tune="faster"]').click(); await expect.poll(() => rms(page)).toBeGreaterThan(.001);
+  expect(await seconds(page)).toBeLessThan(recorded);
+  await page.locator('[data-tune="higher"]').click(); await page.locator('[data-tune="echo"]').click();
+  await page.locator('#sound-undo').click(); await page.locator('#sound-undo').click(); await page.locator('#sound-undo').click();
+  expect(await seconds(page)).toBe(recorded); await page.locator('#sound-redo').click(); expect(await seconds(page)).toBeLessThan(recorded);
+  await page.locator('#sound-name').fill('Hello'); await page.locator('#sound-name').press('Tab');
+  await page.screenshot({ path: info.outputPath('tuned.png') });
+  // Done: one project edit, and its Undo removes it again.
+  await page.locator('#sound-done').click(); await expect(page.locator('#sound-dialog')).toBeHidden();
+  await expect.poll(async () => (await sounds(page)).map((s: any) => [s.name, s.kind])).toEqual([['Hello', 'clip']]);
+  await expect(page.locator('#sound-saved')).toBeVisible(); await page.locator('#sound-saved button').click();
+  await expect.poll(async () => (await sounds(page)).length).toBe(0);
 });
-test('authors layered melody and rhythm with keyboard grid controls, preview and narrow layout', async ({page},info) => {
-  await setup(page); await (await reveal(page, '#sound-open')).click(); await page.locator('#song-new').click();
-  await page.locator('#sound-name').fill('First melody'); await page.locator('#sound-name').press('Tab');
-  await page.locator('#song-instrument').selectOption('triangle');
-  await page.getByRole('gridcell',{name:'C4, beat 1, triangle',exact:true}).click(); await page.keyboard.press('ArrowRight'); await page.keyboard.press('ArrowUp'); await page.keyboard.press('Space');
-  await page.getByRole('gridcell',{name:'E4, beat 2, triangle',exact:true}).click();
-  await page.locator('#song-instrument').selectOption('kick'); await page.getByRole('gridcell',{name:'C4, beat 1, kick',exact:true}).click();
-  await page.locator('#song-instrument').selectOption('snare'); await page.getByRole('gridcell',{name:'C4, beat 3, snare',exact:true}).click();
-  await expect(page.locator('#song-summary')).toContainText('5 notes across 3 instruments');
-  await page.locator('#song-tempo').fill('90'); await page.locator('#song-tempo').press('Tab'); await page.locator('#sound-apply').click();
-  await page.locator('#sound-preview').click(); await expect.poll(() => rms(page)).toBeGreaterThan(.001);
-  await page.locator('#sound-preview-stop').click(); await expect.poll(() => rms(page)).toBeLessThan(.0001);
-  await page.setViewportSize({ width: 744, height: 1000 }); await page.locator('#song-section').scrollIntoViewIfNeeded();
-  expect(await page.locator('.sound-editor').evaluate(e => e.scrollWidth <= e.clientWidth + 1)).toBe(true);
-  await page.screenshot({path:info.outputPath('song-mobile.png')});
-  await page.locator('#sound-close').click(); await page.reload(); const asset = (await saved(page)).workspace.pythonScene.sounds[0]; expect(asset.notes).toHaveLength(5); expect(asset.tempo).toBe(90);
+
+test('makes effects and songs, deletes without asking, and Undo brings a deleted sound back', async ({ page }, info) => {
+  page.on('dialog', dialog => { throw new Error(`Unexpected browser dialog: ${dialog.message()}`); });
+  await setup(page); await openSounds(page);
+  await newSound(page, 'effect'); expect(await mode(page)).toBe('effect');
+  await page.locator('.sound-kind[data-kind="laser"]').click(); await expect.poll(() => rms(page)).toBeGreaterThan(.001);
+  await page.locator('#sound-effect-another').click(); await page.locator('#sound-effect-add').click();
+  await expect.poll(() => mode(page)).toBe('clip'); await expect(page.locator('#sound-name')).toHaveValue('Laser 1');
+  await newSound(page, 'song'); expect(await mode(page)).toBe('song');
+  for (const name of ['C4, beat 1', 'E4, beat 2', 'Kick, beat 1']) await page.getByRole('gridcell', { name, exact: true }).click();
+  await page.locator('[data-instrument="square"]').click(); await page.getByRole('gridcell', { name: 'G4, beat 3', exact: true }).click();
+  await expect(page.getByRole('gridcell', { name: 'G4, beat 3, Game', exact: true })).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('#song-speed').evaluate((input: HTMLInputElement) => { input.value = '90'; input.dispatchEvent(new Event('change')); });
+  await page.locator('#song-longer').click(); await expect(page.locator('#song-length')).toHaveText('20 beats');
+  await page.locator('#song-play').click(); await expect.poll(() => rms(page)).toBeGreaterThan(.001); await page.locator('#song-play').click();
+  await page.screenshot({ path: info.outputPath('song.png') });
+  // Delete takes effect at once and offers Undo.
+  await page.locator('.sound-card[data-sound]').first().locator('.sound-card-more').click();
+  await page.locator('#sound-card-menu [data-sound-card="delete"]').click();
+  await expect(page.locator('.sound-card')).toHaveCount(1); await expect(page.locator('#sound-toast-text')).toHaveText('“Laser 1” deleted');
+  await page.locator('#sound-toast-undo').click(); await expect(page.locator('.sound-card')).toHaveCount(2);
+  expect(await page.locator('#sound-dialog').evaluate(d => d.scrollWidth <= d.clientWidth + 1 && d.scrollHeight <= d.clientHeight + 1)).toBe(true);
+  await page.locator('#sound-done').click();
+  await expect.poll(async () => (await sounds(page)).length).toBe(2);
+  const [laser, song] = await sounds(page);
+  expect(laser).toMatchObject({ name: 'Laser 1', kind: 'clip' }); expect(song).toMatchObject({ name: 'Song 1', kind: 'song', tempo: 90, beats: 20 }); expect(song.notes).toHaveLength(4);
 });
-test('imports audio and records a real browser stream, releasing microphone on finish and close', async ({page}) => {
-  await setup(page); await (await reveal(page, '#sound-open')).click();
+
+test('opens from the tray, the Sprite tab, the palette and a sound block, whose New sound… picks the new sound', async ({ page }) => {
+  await setup(page); await install(page);
+  // The Sprite tab lists every sound: play one, or open it.
+  await reveal(page, '#sound-open'); await page.getByRole('button', { name: 'Play Little steps', exact: true }).click();
+  await expect.poll(() => rms(page)).toBeGreaterThan(.001); await page.getByRole('button', { name: 'Stop Little steps', exact: true }).click();
+  await page.getByRole('button', { name: 'Edit Little steps', exact: true }).click();
+  expect(await mode(page)).toBe('song'); await expect(page.locator('#sound-name')).toHaveValue('Little steps'); await page.locator('#sound-done').click();
+  // Edit sounds at the top of the palette's Sounds blocks.
+  await page.getByRole('treeitem', { name: 'Sounds', exact: true }).click();
+  await page.locator('.blocklyFlyoutButton', { hasText: 'Edit sounds' }).click(); await expect(page.locator('#sound-dialog')).toBeVisible();
+  await page.locator('#sound-done').click();
+  // A sound block's menu ends with New sound…; after Done the block uses it, and one Undo takes both back.
+  const field = page.locator('.blocklyWorkspace > .blocklyBlockCanvas .blocklyEditableField', { hasText: 'Little steps' }).first();
+  await field.click(); await page.locator('.blocklyDropDownDiv .blocklyMenuItem', { hasText: 'New sound…' }).click();
+  await expect(page.locator('#sound-sheet')).toBeVisible(); await page.locator('#sound-sheet [data-new="effect"]').click();
+  await page.locator('.sound-kind[data-kind="coin"]').click(); await page.locator('#sound-effect-add').click(); await page.locator('#sound-done').click();
+  await expect.poll(async () => (await sounds(page)).map((s: any) => s.name)).toEqual(['Little steps', 'Coin 1']);
+  const coin = (await sounds(page))[1].id;
+  await expect(page.locator('#python')).toContainText(`"${coin}"`);
+  await page.locator('#language-undo').click();
+  await expect.poll(async () => (await sounds(page)).length).toBe(1); await expect(page.locator('#python')).toContainText('"first_song"');
+});
+
+test('microphone problems explain what to do, and Done keeps a recording in progress', async ({ page }) => {
+  await setup(page); await openSounds(page);
+  await page.evaluate(() => { (window as any).originalGetUserMedia = navigator.mediaDevices.getUserMedia; navigator.mediaDevices.getUserMedia = async () => { throw new DOMException('Permission denied', 'NotAllowedError'); }; });
+  await newSound(page, 'record'); await page.locator('#sound-record-button').click();
+  await expect(page.locator('#sound-problem-title')).toHaveText('The microphone is blocked'); await expect(page.locator('#sound-problem-steps')).toBeVisible();
+  await page.evaluate(() => { navigator.mediaDevices.getUserMedia = async () => { throw new DOMException('None', 'NotFoundError'); }; });
+  await page.locator('#sound-mic-retry').click(); await expect(page.locator('#sound-problem-title')).toHaveText('No microphone found');
+  await page.locator('#sound-mic-effect').click(); expect(await mode(page)).toBe('effect');
+  // A permission that arrives after leaving is released at once.
+  await page.evaluate(() => { navigator.mediaDevices.getUserMedia = async options => { const stream = await (window as any).originalGetUserMedia(options); await new Promise(r => setTimeout(r, 300)); return stream; }; });
+  await newSound(page, 'record'); await page.locator('#sound-record-button').click(); await page.locator('#sound-done').click();
+  await expect.poll(() => page.evaluate(() => (window as any).micTracks.length)).toBeGreaterThan(0); await expect.poll(() => micEnded(page)).toBe(true);
+  expect(await sounds(page)).toHaveLength(0);
+  // Done while recording stops and keeps the recording.
+  await page.evaluate(() => { navigator.mediaDevices.getUserMedia = (window as any).originalGetUserMedia; });
+  await openSounds(page); await newSound(page, 'record'); await record(page);
+  await page.locator('#sound-done').click(); await expect(page.locator('#sound-dialog')).toBeHidden();
+  await expect.poll(async () => (await sounds(page)).map((s: any) => s.name)).toEqual(['Recording 1']); await expect.poll(() => micEnded(page)).toBe(true);
+});
+
+test('imports a sound file, and the 24-sound limit is explained', async ({ page }) => {
+  await setup(page); await openSounds(page);
   const data = encodeWave(synthesizeTone(60, .5, 'sine'));
-  await page.locator('#sound-file').setInputFiles({name:'imported.wav',mimeType:'audio/wav',buffer:Buffer.from(data.split(',')[1],'base64')});
-  await expect(page.locator('#sound-duration')).toContainText('0.50 seconds'); await page.locator('#sound-apply').click();
-  await page.locator('#sound-record').click(); await expect(page.locator('#sound-notice')).toContainText('Recording…'); await page.waitForTimeout(700); await page.locator('#sound-record-stop').click();
-  await expect(page.locator('#sound-name')).toHaveValue('My recording'); await expect(page.locator('#sound-apply')).toBeEnabled();
-  expect(await page.evaluate(() => (window as any).micTracks.every((t: MediaStreamTrack) => t.readyState === 'ended'))).toBe(true);
-  await page.locator('#sound-apply').click(); await expect.poll(async () => (await saved(page)).workspace.pythonScene.sounds.length).toBe(2);
-  await page.locator('#sound-record').click(); await expect(page.locator('#sound-notice')).toContainText('Recording…'); await page.locator('#sound-close').click();
-  await expect.poll(() => page.evaluate(() => (window as any).micTracks.every((t: MediaStreamTrack) => t.readyState === 'ended'))).toBe(true);
-  expect((await saved(page)).workspace.pythonScene.sounds).toHaveLength(2);
+  await page.locator('#sound-file').setInputFiles({ name: 'imported.wav', mimeType: 'audio/wav', buffer: Buffer.from(data.split(',')[1], 'base64') });
+  await expect(page.locator('#sound-name')).toHaveValue('imported'); expect(await seconds(page)).toBe(.5);
+  await page.locator('#sound-done').click(); await expect.poll(async () => (await sounds(page)).length).toBe(1);
+  const current = await saved(page), clip = current.workspace.pythonScene.sounds[0];
+  current.workspace.pythonScene.sounds = Array.from({ length: 24 }, (_, i) => ({ ...clip, id: `s${i}`, name: `Sound ${i + 1}` }));
+  await page.locator('#project-file').setInputFiles({ name: 'full.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(current)) });
+  await expect.poll(async () => (await sounds(page)).length).toBe(24);
+  await openSounds(page); await expect(page.locator('#sound-new')).toBeDisabled(); await expect(page.locator('#sound-limit')).toBeVisible();
+  await page.locator('.sound-card').first().locator('.sound-card-more').click(); await page.locator('#sound-card-menu [data-sound-card="delete"]').click();
+  await expect(page.locator('#sound-new')).toBeEnabled();
 });
-test('denied and late microphone requests recover without modifying the project or leaving tracks live', async ({page}) => {
-  await setup(page); await (await reveal(page, '#sound-open')).click();
-  await page.evaluate(() => { (window as any).originalGetUserMedia = navigator.mediaDevices.getUserMedia; navigator.mediaDevices.getUserMedia = async () => { throw new DOMException('Permission denied','NotAllowedError'); }; });
-  await page.locator('#sound-record').click(); await expect(page.locator('#sound-notice')).toContainText('Microphone unavailable'); await expect(page.locator('#song-new')).toBeEnabled();
-  await page.evaluate(() => { navigator.mediaDevices.getUserMedia = async options => { const stream = await (window as any).originalGetUserMedia(options); await new Promise(r => setTimeout(r,300)); return stream; }; });
-  await page.locator('#sound-record').click(); await page.locator('#sound-close').click();
-  await expect.poll(() => page.evaluate(() => (window as any).micTracks.length)).toBeGreaterThan(0);
-  await expect.poll(() => page.evaluate(() => (window as any).micTracks.every((t: MediaStreamTrack) => t.readyState === 'ended'))).toBe(true);
-  await (await reveal(page, '#sound-open')).click(); await page.locator('#song-new').click(); await expect(page.locator('#song-section')).toBeVisible();
-});
+
 test('plays the editable music example with real output, overlap, mute, Stop and restart', async ({page},info) => {
   await setup(page); await (await reveal(page, '#sound-example')).click(); await run(page);
   await expect(page.locator('#audio-status')).toHaveAttribute('data-voices','1'); await expect.poll(() => rms(page)).toBeGreaterThan(.001);
@@ -131,10 +207,11 @@ test('game finish cancels playback and invalid notes give a block-linked error',
 });
 
 test('sound references survive rename, delete and project Undo; malformed audio preserves saved work', async ({page}) => {
-  await setup(page); await install(page); await (await reveal(page, '#sound-open')).click(); await page.locator('#sound-list').selectOption('first_song');
-  await page.locator('#sound-name').fill('Renamed song'); await page.locator('#sound-apply').click(); await page.locator('#sound-close').click();
+  await setup(page); await install(page); await reveal(page, '#sound-open'); await page.getByRole('button', { name: 'Edit Little steps', exact: true }).click();
+  await page.locator('#sound-name').fill('Renamed song'); await page.locator('#sound-name').press('Tab'); await page.locator('#sound-done').click();
   await expect(page.locator('#python')).toContainText('"first_song"'); await expect(page.locator('#run')).toBeEnabled();
-  await (await reveal(page, '#sound-open')).click(); await page.locator('#sound-list').selectOption('first_song'); page.once('dialog', d => d.accept()); await page.locator('#sound-delete').click(); await page.locator('#sound-close').click();
+  await reveal(page, '#sound-open'); await page.getByRole('button', { name: 'Edit Renamed song', exact: true }).click();
+  await page.locator('.sound-card-more').first().click(); await page.locator('#sound-card-menu [data-sound-card="delete"]').click(); await page.locator('#sound-done').click();
   await expect(page.locator('#diagnostics')).toContainText('Choose an available sound'); await expect(page.locator('#run')).toBeDisabled();
   await page.locator('#language-undo').click(); await expect(page.locator('#run')).toBeEnabled();
   await expect.poll(async () => (await saved(page)).workspace.pythonScene.sounds[0].name).toBe('Renamed song');

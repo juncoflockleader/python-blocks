@@ -5,7 +5,7 @@ import { installBlockSearch } from './ui/block-search';
 import { installDebugger, debugOptions } from './ui/debugger';
 import { installPlayView } from './scene/play-view';
 import { Questions } from './scene/questions';
-import { SoundEditor } from './scene/sound-editor';
+import { installSoundEditor, installSoundList } from './scene/sound-editor';
 import { SoundPlayer } from './runtime/audio';
 import { GameView } from './scene/game';
 import { Blockly, squareProject } from './blocks';
@@ -178,11 +178,12 @@ const paletteHint = installPaletteHint(() => element('#blockly').querySelector<H
 element('#zoom-in').addEventListener('click', () => workspace.zoomCenter(1));
 element('#zoom-out').addEventListener('click', () => workspace.zoomCenter(-1));
 element('#zoom-reset').addEventListener('click', () => { workspace.setScale(startScale); workspace.scrollCenter(); });
-const soundEditor = new SoundEditor(workspace);
+const soundEditor = installSoundEditor(workspace, { canEdit: () => sceneEditor?.canEdit() ?? true });
 const disposeLanguageEditor = installLanguageEditor(workspace);
 sceneEditor = installSceneEditor(workspace, stage, value => runner.input(value), { spriteAdded: name => nudges.spriteAdded(name) });
-element('#stage-assets').insertAdjacentHTML('beforeend', '<button id="sound-open" class="button secondary">Sounds & music</button>');
-element('#sound-open').addEventListener('click', () => soundEditor.open());
+// Sounds: the tray button, and a list in the Sprite tab under the sprite's buttons.
+const soundList = installSoundList(workspace, element('#scene-edit-costume').closest<HTMLElement>('.scene-toolbar')!, sound => soundEditor.open({ sound }));
+element('#tray-sounds').addEventListener('click', () => soundEditor.open());
 installLevels(workspace, () => sceneEditor?.selected() ?? '');
 // Every command and event block carries its family's symbol; installed before any project loads.
 installBlockIcons(workspace);
@@ -293,7 +294,7 @@ let exportController: AbortController | null = null;
 pythonEditor = installPythonEditor(workspace, {
   compilation: () => compilation ?? compile(workspace),
   changed: () => updateCode(),
-  applied: () => { runner.stop(); idle(); sceneEditor?.restore(); paint(); status.textContent = 'Python applied'; updateCode(); },
+  applied: () => { runner.stop(); idle(); sceneEditor?.restore(); soundList.refresh(); paint(); status.textContent = 'Python applied'; updateCode(); },
   download: (name, source) => download(name, source, 'text/x-python'),
 });
 
@@ -377,7 +378,7 @@ function installProject(project: ReturnType<typeof snapshot>) {
   soundEditor.close();
   pythonEditor?.reset();
   restore(workspace, project);
-  runner.stop(); idle(); sceneEditor?.restore(true); paint();
+  runner.stop(); idle(); sceneEditor?.restore(true); soundList.refresh(); paint();
   autosaveEnabled = true; recoveryText = null; element('#recover').hidden = true;
   output.textContent = ''; outputPanel.hidden = true; element('#error-details').hidden = true; badge.hidden = true; tabs.mark('output', false);
   status.textContent = 'Ready'; updateCode();
@@ -431,7 +432,7 @@ try {
   notice.textContent = `Saved work could not be restored: ${error instanceof Error ? error.message : error} Download it for recovery, or open another project. Autosave is paused.`;
   element('#recover').hidden = !recoveryText;
 }
-sceneEditor.restore();
+sceneEditor.restore(); soundList.refresh();
 updateCode(autosaveEnabled);
 // A browser that has never chosen a level gets a one-time offer for its saved project.
 try { if (localStorage.getItem(LEVEL_KEY) === null && !element<HTMLDialogElement>('#migration-dialog').open) offerLevel(); } catch { /* storage unavailable */ }
@@ -576,4 +577,4 @@ element<HTMLInputElement>('#project-file').addEventListener('change', async even
     else if (installProject(prepared.project)) { setTitle(file.name.replace(/\.python-blocks\.json$|\.json$/i, '') || 'My project'); offerLevel(); }
   } catch (error) { notice.textContent = `Could not open project: ${error instanceof Error ? error.message : error}. Your current work is unchanged.`; }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); blockSearch.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); blockSearch.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });

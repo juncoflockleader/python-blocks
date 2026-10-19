@@ -1,6 +1,6 @@
 # Creative tools and art: inventory and plan
 
-Status: approved 2026-10-18 with every recommendation in section 4 accepted. Phase 3a (sharp stage) is done ([record](#phase-3a-record)), and so is Phase 1, the Paint editor ([record](#phase-1-record)). Next: Phase 2, the Sound editor. The owner asked for three things:
+Status: approved 2026-10-18 with every recommendation in section 4 accepted. Phase 3a (sharp stage) is done ([record](#phase-3a-record)), and so is Phase 1, the Paint editor ([record](#phase-1-record)). Phase 2, the Sound editor, is built ([record](#phase-2-record)). The owner asked for three things:
 
 1. Redo the **draw window** (Artwork & frames): it is hard to use, tools are hard to find, and some taps do nothing.
 2. A **sound editor** that records the learner's voice and lets them tune the waveform.
@@ -152,6 +152,26 @@ Differs from the mocks: the rotation centre is shown but cannot be dragged (that
 **Format:** unchanged (22,050 Hz mono WAV and the song score); effects run in an `OfflineAudioContext` and write the result back as samples.
 
 **Acceptance:** with a fake microphone in the browser tests, record → countdown → meter moves → stop → clip trimmed → Higher and Echo change the samples → Done → a block plays it; every control works by touch at 1024 × 700 without scrolling.
+
+#### Phase 2 record
+
+Built 2026-10-19 from boards S0–S6. The open questions were settled with the proposals: effects are baked into the sound, and the editor and the Sprite tab list every sound in the project. Recording is available at every level, as it was before.
+
+| Part | What shipped | Where |
+| --- | --- | --- |
+| Editor | A full-screen dialog in Paint's shell: top bar (Sounds, the sound's name, Undo, Redo, Done), the project's sounds as cards with a mini waveform or song, + New (Record your voice, Make an effect, Write a song, Import a sound file), the sound in the middle and its tools on the right. Replaces Sounds & music. | [sound-editor.ts](../src/scene/sound-editor.ts), [sound.css](../src/scene/sound.css) |
+| Record | One big button: microphone request, 3-2-1, then a ring over 60 seconds, a timer, a level meter and live bars; tap to stop; quiet ends trimmed; Record again. Blocked, missing and failed microphones each explain what to do, with Make an effect instead. | [sound-editor.ts](../src/scene/sound-editor.ts) |
+| Waveform and Tune | Overview strip, waveform with drag-to-select, 44 px handles, tap to play from a point, playhead, zoom (buttons, pinch, Ctrl/⌘ + scroll). Tune: Higher, Lower (two semitones, timing kept), Faster, Slower, Robot, Echo, Louder, Softer, Fade in, Fade out, Reverse, Keep this, Cut it, each on the selection or the whole sound, played at once, one Undo each. | [sound-edit.ts](../src/scene/sound-edit.ts) |
+| Effects | Ten kinds worked out in the browser (Jump, Coin, Hit, Laser, Power-up, Pop, Whoosh, Win, Lose, Blip) with Pitch, Length and Slide, Make another, and Add to my sounds. | [sound-edit.ts](../src/scene/sound-edit.ts) |
+| Songs | White-key melody rows with octave arrows and an optional ♯ row set, Kick/Snare/Hat lanes, instruments in colour, note lengths, Speed, Length ± four beats, a whole-song strip that follows the playhead, notes heard as they are placed. Same song format as before. | [sound-editor.ts](../src/scene/sound-editor.ts) |
+| Saving | Nothing is saved until Done (or Escape), which writes every change as one project Undo step, followed by a "Sounds updated · Undo" note. Delete and everything else can be undone inside the editor; no browser dialogs. Done while recording keeps the recording. | [sound-editor.ts](../src/scene/sound-editor.ts) |
+| Entry points | Tray **Sounds**; a **Sounds** list in the Sprite tab with play buttons and **Edit sounds**; **Edit sounds** at the top of the palette's Sounds blocks; **New sound…** at the end of a sound block's menu, which the block then uses (one Undo step with the new sound). | [editor.ts](../src/scene/editor.ts), [scene.ts](../src/blocks/scene.ts), [sounds.ts](../src/blocks/sounds.ts), [main.ts](../src/main.ts) |
+
+Fixed on the way: the old dialog's buttons were decorated with icons by id and label, which now double up inside the new editor, so the editor's own icons are left alone; the "missing sound" fix flow and runtime messages no longer name Sounds & music.
+
+Verification: [sound editing tests](../tests/unit/sound-edit.test.ts) (10) and the [sound browser tests](../tests/e2e/sounds.spec.ts) (6 editor tests and 5 playback tests), listed in the [sound guide](sound-and-music.md#verification).
+
+Differs from the mocks: the plan's semitone step for Higher and Lower became two semitones, so one tap is easy to hear; the Sprite tab lists every sound rather than the sprite's; the cards have no play button (the Sprite tab list has them); the effect preview shows loudness bars without the dashed pitch path; the Length control for songs sits in the right-hand panel. Not measured: a physical microphone and the operating system's permission dialogs (the tests use a generated stream).
 
 ### Phase 3: Sharp stage and art polish
 

@@ -23,7 +23,7 @@ Blockly.common.defineBlocksWithJsonArray([
 ]);
 const owner = { shadow: { type: 'py_none' } };
 export const soundsToolbox: Blockly.utils.toolbox.FlyoutItemInfo[] = [
-  { kind: 'label', text: 'Create assets with Sounds & music' },
+  { kind: 'button', text: 'Edit sounds', callbackkey: 'PB_EDIT_SOUNDS' },
   { kind: 'block', type: 'sound_asset' },
   ...['sound_play', 'sound_wait'].map(type => ({ kind: 'block', type, inputs: { SOUND: { block: { type: 'sound_asset' } }, OWNER: owner } })),
   { kind: 'block', type: 'sound_stop', inputs: { OWNER: owner } }, { kind: 'block', type: 'sound_stop_all' },

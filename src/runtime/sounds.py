@@ -52,7 +52,7 @@ class Sounds:
         return identity
 
     def play(self, sound, owner=None):
-        if not isinstance(sound, str) or sound not in self.assets: raise ValueError('This sound is unavailable. Choose a sound from Sounds & music.')
+        if not isinstance(sound, str) or sound not in self.assets: raise ValueError('This sound is unavailable. Choose another sound in the block’s menu.')
         return self._start({'type': 'play', 'sound': sound}, owner)
 
     async def play_wait(self, sound, owner=None):

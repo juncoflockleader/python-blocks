@@ -60,7 +60,7 @@ export class SoundPlayer implements AudioHost {
         let samples: Float32Array;
         if (command.type === 'tone') samples = synthesizeTone(command.pitch, command.seconds, command.instrument);
         else {
-          const sound = this.sounds.get(command.sound); if (!sound) throw new Error('This sound is unavailable. Choose a sound from Sounds & music.');
+          const sound = this.sounds.get(command.sound); if (!sound) throw new Error('This sound is unavailable. Choose another sound in the block’s menu.');
           samples = sound.kind === 'clip' ? decodeWave(sound.data) : synthesize(sound);
         }
         buffer = this.context.createBuffer(1, samples.length, SOUND_RATE); buffer.copyToChannel(new Float32Array(samples), 0);

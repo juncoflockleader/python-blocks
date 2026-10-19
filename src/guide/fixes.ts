@@ -124,7 +124,7 @@ export function fixFor(workspace: Blockly.Workspace, block: Blockly.Block, diagn
       const first = scene.sounds?.[0];
       return flow('This sound is gone', 'The block points at a sound that was deleted.', first
         ? [{ text: 'Pick a sound from this block’s menu.', action: setField(block, 'SOUND_ID', first.id, `Use ${first.name} here`) }]
-        : [{ text: 'Add a sound first (New tone, Import or Record), then pick it in this block’s menu.', highlight: { element: '#sound-open' }, action: { label: 'Open Sounds & music', run: tools.openSounds } }]);
+        : [{ text: 'Add a sound first: record your voice, make an effect or write a song in Sounds. Or choose New sound… at the end of this block’s menu.', highlight: { element: '#sound-open' }, action: { label: 'Open Sounds', run: tools.openSounds } }]);
     }
     case 'missing-world': {
       const first = scene.worlds?.[0];

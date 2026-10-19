@@ -82,29 +82,7 @@ canvas { width: 100%; height: auto; display: block; border: 1px solid #e4e7db; b
 #world-error { color: #a03027; }
 
 /* Game state stays anchored to the visible stage as the world camera moves. */
-.sound-editor { width: min(920px, calc(100vw - 24px)); max-width: calc(100vw - 24px); max-height: calc(100dvh - 32px); overflow: auto; border: 1px solid #cfc4d6; border-radius: 18px; padding: 24px; color: #35483b; background: #fdfdf9; }
-.sound-editor::backdrop { background: #24362c80; }
-.sound-editor header, .sound-toolbar { display: flex; align-items: center; flex-wrap: wrap; gap: 10px; }
-.sound-editor header { justify-content: space-between; }
-.sound-editor h2 { margin: 0; font-size: 20px; }
-.sound-editor p { font-size: .85rem; line-height: 1.55; }
-.sound-toolbar { margin: 12px 0; }
-.sound-toolbar label { display: flex; flex-direction: column; gap: 5px; font-size: .78rem; max-width: 100%; }
-.sound-toolbar input, .sound-toolbar select { font: inherit; padding: 8px; border: 1px solid #cfc4d6; border-radius: 6px; max-width: 100%; }
-.sound-toolbar input[type=number] { width: 115px; }
-#sound-list { max-width: 260px; }
-#sound-wave { width: 100%; height: 160px; border: 1px solid #cfc4d6; border-radius: 8px; touch-action: none; }
-#song-grid-wrap { overflow: auto; padding: 4px; border: 1px solid #cfc4d6; border-radius: 8px; }
-#song-grid { min-width: 620px; }
-#song-grid [role=row] { display: grid; grid-template-columns: 44px repeat(16, 1fr); gap: 2px; margin: 2px 0; }
-#song-grid [role=rowheader] { font-size: .75rem; align-self: center; }
-#song-grid button { height: 27px; padding: 0; border: 1px solid #e4ddeb; background: #f3eff7; color: #775486; border-radius: 3px; cursor: pointer; }
-#song-grid button.beat-start { border-left: 2px solid #9470a8; }
-#song-grid button[aria-selected=true] { background: #9470a8; color: white; }
-#song-grid button:focus-visible { outline: 2px solid #267c70; outline-offset: 1px; }
-@media (max-width: 600px) { .sound-editor { padding: 14px; } .sound-toolbar { gap: 8px; } }
 
-#song-grid [role=columnheader] { font-size: .66rem; text-align: center; color: #775486; padding: 5px 0; }
 .scene-input-settings { margin: 12px 0; font-size: .8rem; }
 .scene-input-settings label { display: inline-flex; align-items: center; gap: 8px; margin: 8px 12px 8px 0; }
 .scene-input-settings select { padding: 6px; }

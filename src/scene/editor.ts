@@ -48,7 +48,7 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
       <div class="scene-toolbar"><label>Backdrop <select id="scene-backdrop"></select></label><label>Background <input id="scene-background" type="color" value="#fdfdf9"></label></div>
       <div class="scene-toolbar" id="stage-assets"><button id="scene-stock-backdrop" class="button secondary">Backdrop library</button><button id="scene-paint-backdrop" class="button secondary">Paint a backdrop</button><button id="scene-import" class="button secondary">Import costume</button><input id="scene-image" type="file" accept="image/png,image/jpeg,image/webp" hidden></div>
     </section>`;
-  document.getElementById('sprite-tray')!.innerHTML = '<div id="scene-cards" class="tray-cards" role="group" aria-label="Choose a sprite"></div><button id="scene-stock" class="button secondary tray-button tray-sprites" title="Add sprites from the library" aria-label="Add sprites">Sprites</button><button id="tray-paint" class="button secondary tray-button" title="Paint this sprite\'s costumes, or a new sprite">Paint</button>';
+  document.getElementById('sprite-tray')!.innerHTML = '<div id="scene-cards" class="tray-cards" role="group" aria-label="Choose a sprite"></div><button id="scene-stock" class="button secondary tray-button tray-sprites" title="Add sprites from the library" aria-label="Add sprites">Sprites</button><button id="tray-paint" class="button secondary tray-button" title="Paint this sprite\'s costumes, or a new sprite">Paint</button><button id="tray-sounds" class="button secondary tray-button" title="Record your voice, make an effect or write a song">Sounds</button>';
   // A non-modal sheet over the tabs: the stage and sprite tray stay visible, so choosing another sprite updates it.
   document.querySelector('.right-column')!.insertAdjacentHTML('beforeend', `<dialog id="sprite-settings" class="sheet" aria-labelledby="sprite-settings-title"><header><h2 id="sprite-settings-title">More settings <span id="sprite-settings-name"></span></h2><button id="sprite-settings-done" class="button primary">Done</button></header>
     <div class="sheet-body scene-editor" id="sprite-settings-body"><form id="scene-more" aria-label="Where the sprite lives"><fieldset id="scene-more-fields"><legend>Where it lives</legend><div class="scene-properties-grid">
@@ -174,7 +174,7 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     loadProperties();
   }
   function controls() {
-    for (const id of ['scene-add', 'scene-stock', 'tray-paint', 'scene-stock-backdrop', 'scene-import', 'scene-background', 'scene-backdrop', 'scene-paint-backdrop', 'scene-worlds']) (el(id) as HTMLButtonElement).disabled = !editing;
+    for (const id of ['scene-add', 'scene-stock', 'tray-paint', 'tray-sounds', 'scene-stock-backdrop', 'scene-import', 'scene-background', 'scene-backdrop', 'scene-paint-backdrop', 'scene-worlds']) (el(id) as HTMLButtonElement).disabled = !editing;
     steppers();
     el<HTMLButtonElement>('scene-reset').disabled = running;
     el('scene-mode').textContent = editing ? 'Drag sprites on the stage to place them before running. Drag empty space to look around.' : running ? 'Running. Runtime movement does not change your saved layout.' : 'Run result. Reset stage to edit the saved starting layout.';
@@ -267,6 +267,8 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
   render(true); controls();
   return {
     live, watch: watchers.accept, releaseInput: clearKeys, selected: () => selected,
+    /** False while a program runs: the editors wait until it stops. */
+    canEdit: () => editing,
     /** Select a sprite as the tray does (palette defaults, inspector and stage). */
     select(id: string) { if (sceneState(workspace).sprites.some(s => s.id === id)) choose(id); },
     /** Open the stock library on a kind, as the tray and settings buttons do. */

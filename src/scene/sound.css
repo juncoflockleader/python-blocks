@@ -1,0 +1,150 @@
+/* The Sound editor shares the Paint editor's shell (paint.css): top bar, menus,
+   sheets and buttons. Body: sounds | the sound | Tune. Every target is at least
+   44 px; nothing scrolls at 1024 × 700. */
+#sound-dialog { position: fixed; inset: 0; width: 100vw; height: 100dvh; max-width: none; max-height: none; margin: 0; padding: 0; border: 0; background: #f4f4ee; color: #26382f; font-family: 'DM Sans', system-ui, sans-serif; overflow: hidden; }
+#sound-dialog[open] { display: flex; flex-direction: column; }
+#sound-dialog::backdrop { background: #26382f66; }
+#sound-dialog button { font-family: inherit; cursor: pointer; }
+#sound-dialog button:disabled { opacity: .45; cursor: default; }
+#sound-dialog button:focus-visible, #sound-dialog input:focus-visible, #sound-dialog canvas:focus-visible { outline: 3px solid #dd9250; outline-offset: 2px; }
+#sound-dialog [hidden] { display: none !important; }
+.sound-chip-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: #8c67a2; color: #fff; }
+
+.sound-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 232px minmax(0, 1fr) 248px; }
+#sound-dialog[data-mode=empty] .sound-body, #sound-dialog[data-mode=record] .sound-body { grid-template-columns: 232px minmax(0, 1fr); }
+#sound-dialog[data-mode=song] .sound-body { grid-template-columns: 232px minmax(0, 1fr) 200px; }
+
+/* Sounds in the project */
+.sound-list-panel { display: flex; flex-direction: column; gap: 8px; padding: 10px; background: #fafbf6; border-right: 1px solid #dce1d2; min-height: 0; }
+.sound-cards { display: flex; flex-direction: column; gap: 6px; overflow-y: auto; min-height: 0; flex: 0 1 auto; padding: 3px; margin: -3px; }
+.sound-card { position: relative; display: flex; align-items: stretch; flex: none; }
+.sound-card-choose { flex: 1; min-width: 0; display: flex; align-items: center; gap: 8px; min-height: 56px; padding: 6px 48px 6px 6px; border: 1px solid #e1d6ea; border-radius: 12px; background: #fff; color: #26382f; text-align: left; }
+.sound-card-choose[aria-selected=true] { border: 2px solid #267c70; background: #f1eaf6; padding: 5px 47px 5px 5px; }
+.sound-card-choose canvas { width: 44px; height: 28px; flex: none; border-radius: 6px; background: #faf8fc; box-shadow: 0 0 0 1px #ebe3f2; }
+.sound-card-text { display: flex; flex-direction: column; min-width: 0; }
+.sound-card-text strong { font-size: 13px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.sound-card-text span { font-size: 11px; color: #4e5f49; white-space: nowrap; }
+.sound-card-more { position: absolute; right: 2px; top: 50%; transform: translateY(-50%); width: 44px; height: 44px; display: flex; align-items: center; justify-content: center; border: 0; border-radius: 10px; background: transparent; color: #4e5f49; }
+.sound-card-more:hover { background: #eef1e6; }
+.sound-note { margin: 0; padding: 8px 10px; border-radius: 8px; background: #fff1e3; color: #7a3a1e; font-size: 12px; line-height: 1.4; }
+
+/* The sound */
+.sound-main { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: #f6f3fa; }
+.sound-panel { flex: 1; min-height: 0; display: flex; flex-direction: column; gap: 10px; padding: 14px; }
+.sound-empty { justify-content: center; max-width: 620px; width: 100%; margin: 0 auto; box-sizing: border-box; }
+.sound-empty h3 { margin: 0; font: 700 22px 'Space Grotesk', system-ui, sans-serif; }
+.sound-option { min-height: 104px; }
+.sound-overview { width: 100%; height: 36px; flex: none; border-radius: 8px; background: #fff; box-shadow: 0 0 0 1px #e1d6ea; touch-action: none; cursor: pointer; }
+.sound-wave-box { position: relative; flex: 1; min-height: 140px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px #e1d6ea; overflow: hidden; }
+.sound-wave { position: absolute; inset: 0; width: 100%; height: 100%; touch-action: none; cursor: crosshair; }
+.sound-handle { position: absolute; top: 0; bottom: 0; width: 44px; margin-left: -22px; padding: 0; border: 0; background: transparent; touch-action: none; cursor: ew-resize; }
+.sound-handle::before { content: ''; position: absolute; left: 20px; top: 0; bottom: 0; width: 4px; background: #5d3f73; }
+.sound-handle::after { content: ''; position: absolute; left: 12px; top: 50%; width: 20px; height: 32px; margin-top: -16px; border-radius: 8px; background: #5d3f73; box-shadow: 0 0 0 2px #fff; }
+.sound-transport { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; flex: none; }
+.sound-play { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; min-width: 96px; padding: 0 16px; border: 1px solid #b5ce74; border-radius: 10px; background: #c7df8c; color: #2b4123; font-size: 14px; font-weight: 700; }
+.sound-chip-text { display: inline-flex; align-items: center; min-height: 32px; padding: 0 10px; border-radius: 16px; background: #fff; box-shadow: 0 0 0 1px #e1d6ea; font-size: 12px; font-weight: 600; color: #4e5f49; font-variant-numeric: tabular-nums; }
+.sound-chip-text.selected { background: #efe7f5; color: #5d3f73; }
+.paint-zoom.sound-zoom { position: static; align-items: center; }
+.sound-zoom .paint-zoom-level { display: inline-flex; align-items: center; justify-content: center; }
+.sound-help { flex: none; }
+
+/* Record */
+.sound-record { align-items: center; justify-content: center; text-align: center; }
+.sound-record-ready { display: flex; flex-direction: column; align-items: center; gap: 10px; width: min(560px, 100%); }
+.sound-record-button { position: relative; width: 132px; height: 132px; border: 0; border-radius: 50%; background: #fff; box-shadow: 0 6px 18px #5d3f7326; padding: 0; color: #fff; }
+.sound-ring { position: absolute; inset: 0; width: 100%; height: 100%; transform: rotate(-90deg); }
+.sound-ring-track { fill: none; stroke: #ebe3f2; stroke-width: 8; }
+.sound-ring-fill { fill: none; stroke: #d0663a; stroke-width: 8; stroke-linecap: round; stroke-dasharray: 339.29; stroke-dashoffset: 339.29; }
+.sound-record-face { position: absolute; inset: 14px; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: #d0663a; }
+.sound-record-button.live .sound-record-face { background: #a13824; }
+.sound-count { font: 700 48px 'Space Grotesk', system-ui, sans-serif; }
+.sound-record-title { font: 700 18px 'Space Grotesk', system-ui, sans-serif; }
+.sound-record-time { font-size: 13px; font-weight: 600; color: #4e5f49; font-variant-numeric: tabular-nums; }
+.sound-level { width: 220px; height: 10px; border-radius: 5px; background: #ebe3f2; overflow: hidden; }
+.sound-level span { display: block; height: 100%; width: 0; background: linear-gradient(90deg, #83aa70, #e8b94f 70%, #d0663a); }
+.sound-live { width: 100%; height: 96px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px #e1d6ea; }
+.sound-record-note { max-width: 420px; }
+.sound-problem { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; width: min(440px, 100%); padding: 18px; border: 1px solid #f0c9a0; border-radius: 14px; background: #fff; text-align: left; }
+.sound-problem strong { font: 700 18px 'Space Grotesk', system-ui, sans-serif; }
+.sound-problem p, .sound-problem ol { margin: 0; font-size: 13px; line-height: 1.5; color: #3c5034; }
+.sound-problem-actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
+
+/* Effects */
+.sound-kinds { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; flex: none; }
+.sound-kind { display: flex; flex-direction: column; align-items: center; gap: 4px; min-height: 76px; padding: 8px 4px; border: 1px solid #e1d6ea; border-radius: 12px; background: #fff; color: #26382f; font-size: 13px; font-weight: 700; }
+.sound-kind canvas { width: 72px; height: 30px; }
+.sound-kind[aria-pressed=true] { border: 2px solid #267c70; background: #e5f2e8; padding: 7px 3px; }
+.sound-effect-wave { flex: 1; min-height: 100px; width: 100%; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px #e1d6ea; }
+
+/* Song */
+.sound-slider { display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; }
+.sound-slider input { width: 120px; height: 44px; accent-color: #5d3f73; }
+.sound-slider span { min-width: 120px; font-variant-numeric: tabular-nums; }
+.sound-label { font-size: 13px; font-weight: 600; }
+#song-length { text-align: center; font: 700 14px 'Space Grotesk', system-ui, sans-serif; }
+.song-overview { display: flex; gap: 3px; flex: none; padding: 4px; border-radius: 10px; background: #fff; box-shadow: 0 0 0 1px #e1d6ea; }
+.song-page { flex: 1; min-width: 0; height: 30px; padding: 0; border: 0; border-radius: 6px; background: #f1ecf6; }
+.song-page.has-notes { background: #d9c8e6; }
+.song-page[aria-pressed=true] { box-shadow: inset 0 0 0 2px #5d3f73; }
+.song-page.now { background: #f3c3a8; }
+.song-grid { display: grid; grid-template-columns: 44px repeat(16, minmax(0, 1fr)); gap: 2px; padding: 6px; border-radius: 12px; background: #fff; box-shadow: 0 0 0 1px #e1d6ea; }
+.song-melody { flex: 1; min-height: 0; grid-template-rows: repeat(var(--rows), minmax(0, 1fr)); }
+.song-drums { flex: none; grid-auto-rows: 32px; }
+.song-row-head { display: flex; align-items: center; justify-content: flex-end; padding-right: 6px; border-radius: 4px; font-size: 11px; font-weight: 700; color: #3c5034; }
+.song-row-head.c { background: #efe7f5; }
+.song-row-head.sharp { color: #8a9585; }
+.song-cell { min-height: 0; padding: 0; border: 0; border-radius: 4px; background: #faf8fc; }
+.song-cell.beat { box-shadow: inset 2px 0 0 #e1d6ea; }
+.song-cell:hover:not(:disabled) { background: #ece4f3; }
+.song-cell.now { background: #fbe1d3; }
+.song-cell.start { background: var(--note); }
+.song-cell.held { background: color-mix(in srgb, var(--note) 62%, white); }
+.song-cell.hit { background: #faf8fc radial-gradient(circle, #26382f 0 6px, transparent 6.5px); }
+.song-cell.hit.now { background: #fbe1d3 radial-gradient(circle, #26382f 0 6px, transparent 6.5px); }
+.song-cell:disabled { background: #eceae6; cursor: default; }
+
+/* Tune and the other side panels */
+.sound-side { display: flex; flex-direction: column; gap: 10px; padding: 12px; background: #fafbf6; border-left: 1px solid #dce1d2; min-height: 0; overflow-y: auto; }
+.sound-tune, .sound-effect-controls, .song-tools { display: flex; flex-direction: column; gap: 8px; }
+.sound-side-head { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; }
+.sound-side-head strong { font: 700 15px 'Space Grotesk', system-ui, sans-serif; }
+.sound-tune-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 6px; }
+.sound-tune-button { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 10px; border: 1px solid #d8decb; border-radius: 10px; background: #fff; color: #26382f; font-size: 13px; font-weight: 600; text-align: left; }
+.sound-tune-button:hover { border-color: #8c67a2; background: #faf6fd; }
+.sound-tune-button svg { flex: none; color: #5d3f73; }
+.sound-effect-slider { display: flex; flex-direction: column; gap: 2px; }
+.sound-effect-slider input { width: 100%; height: 44px; accent-color: #5d3f73; }
+.sound-slider-ends { display: flex; justify-content: space-between; font-size: 11px; color: #4e5f49; }
+.song-instruments { display: flex; flex-direction: column; gap: 4px; }
+.song-instruments button { display: flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 10px; border: 1px solid #e1d6ea; border-radius: 10px; background: #fff; color: #26382f; font-size: 13px; font-weight: 600; }
+.song-instruments button span { width: 16px; height: 16px; border-radius: 4px; background: var(--note); }
+.song-instruments button[aria-pressed=true] { border: 2px solid #267c70; background: #e5f2e8; padding: 0 9px; }
+.song-octave { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+.song-octave output { font-size: 13px; font-weight: 700; }
+
+/* Messages */
+.sound-toast { display: flex; align-items: center; gap: 10px; }
+.sound-toast button { min-height: 36px; padding: 0 12px; border: 1px solid #f0c9a0; border-radius: 8px; background: #fff; color: #7a3a1e; font-size: 12px; font-weight: 700; }
+.sound-saved { position: fixed; left: 50%; bottom: 20px; z-index: 50; transform: translateX(-50%); display: flex; align-items: center; gap: 12px; padding: 8px 8px 8px 14px; border-radius: 12px; background: #26382f; color: #fff; font-size: 14px; box-shadow: 0 10px 26px #26382f40; }
+.sound-saved[hidden] { display: none; }
+.sound-saved button { min-height: 40px; padding: 0 14px; border: 1px solid #6f8f7e; border-radius: 8px; background: transparent; color: #fff; font: 600 13px inherit; cursor: pointer; }
+
+/* The Sprite tab's list */
+.sprite-sounds { margin: 12px 0; }
+.sprite-sounds-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.sprite-sounds-head h3 { margin: 0; font-size: .95rem; }
+.sprite-sound-list { display: flex; flex-direction: column; gap: 4px; margin: 8px 0 0; padding: 0; list-style: none; }
+.sprite-sound-list li { display: flex; align-items: center; gap: 6px; }
+.sprite-sound-play { width: 44px; min-width: 44px; height: 44px; padding: 0; display: inline-flex; align-items: center; justify-content: center; }
+.sprite-sound-name { flex: 1; min-width: 0; min-height: 44px; display: flex; flex-direction: column; align-items: flex-start; justify-content: center; padding: 2px 10px; border: 1px solid #e1d6ea; border-radius: 10px; background: #fff; color: #26382f; text-align: left; cursor: pointer; font: inherit; }
+.sprite-sound-name strong { font-size: .85rem; }
+.sprite-sound-name span { font-size: .72rem; color: #4e5f49; }
+#sprite-sound-empty { margin: 6px 0 0; }
+
+/* Tablets in portrait and narrow windows: slimmer side columns. */
+@media (max-width: 960px) {
+  .sound-body { grid-template-columns: 196px minmax(0, 1fr) 210px; }
+  #sound-dialog[data-mode=song] .sound-body { grid-template-columns: 196px minmax(0, 1fr) 176px; }
+  .sound-kinds { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .sound-slider span { min-width: 0; }
+}
