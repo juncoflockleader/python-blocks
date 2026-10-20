@@ -116,5 +116,10 @@
   "tryNext": [
     "bounce-edges",
     "wrap-around"
+  ],
+  "demo": [
+    {
+      "wait": 4900
+    }
   ]
 }

@@ -116,5 +116,10 @@
   "preview": "wrap-around.webm",
   "tryNext": [
     "bounce-edges"
+  ],
+  "demo": [
+    {
+      "wait": 4900
+    }
   ]
 }

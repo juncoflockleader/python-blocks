@@ -1,7 +1,7 @@
 {
  "arrow-keys": "fee897db942f0f38",
  "backdrop-event": "1ba439d7de3d9cd5",
- "best-score": "c480b2dbcc5db624",
+ "best-score": "9a0998c365805e87",
  "bounce-edges": "5a1b09589a6571b4",
  "camera-follow": "3a73846c3e29caca",
  "chase": "c32de41b26437f3b",
@@ -42,11 +42,11 @@
  "survive-timer": "af76c842ae2f3162",
  "switch-backdrop": "ddcad1b7f173db16",
  "touch-color": "84dabee544bc30da",
- "touch-edge": "be61591b8fa21e33",
+ "touch-edge": "1c815b785eef2b48",
  "touch-enemy": "66caeea15707ac27",
  "walk-animation": "5023937f6bca01fb",
  "win-screen": "a3cb20bffdc09270",
- "wrap-around": "056c56e4cdeccee3",
+ "wrap-around": "2fc2b79f9907fc5e",
  "conversation": "b3f4798e48842d6d",
  "scene-change-later": "77a75902c6e08505"
 }

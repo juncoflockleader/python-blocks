@@ -7,25 +7,28 @@ export const FRAMES = ['idle-1', 'idle-2', 'walk-1', 'walk-2', 'walk-3', 'walk-4
 export type Frame = typeof FRAMES[number];
 export const ANIMATIONS: Record<string, Frame[]> = { idle: ['idle-1', 'idle-2'], walk: ['walk-1', 'walk-2', 'walk-3', 'walk-4'], jump: ['jump'], happy: ['happy'] };
 /** Angles are radians from straight down, forward positive. `arms` are the explorers' and the robot's;
- * `paws` are the animals' short arms, [back, front]: at the front of the tummy, swinging when they walk,
- * reaching up in a jump, out in a cheer. */
-export interface Pose { bob: number; legs: [number, number]; arms: [number, number]; paws: [number, number]; squash: number; eyes: Eyes; mouth: Mouth; swing: number; flap: number }
-const base: Pose = { bob: 0, legs: [0, 0], arms: [0.3, -0.2], paws: [0.3, 0.5], squash: 0, eyes: 'open', mouth: 'smile', swing: 0, flap: 0 };
+ * `bot` is the robot's, [far, near]; `paws` are the animals', [far, near]: hanging down the side of the body, swinging when they walk,
+ * swept back in a jump, together at the chest in a cheer. Arms hang from shoulders tucked under the
+ * head and legs come out of the body's lower edge, so no limb starts in the middle of the body. */
+export interface Pose { bob: number; legs: [number, number]; arms: [number, number]; paws: [number, number]; bot: [number, number]; squash: number; eyes: Eyes; mouth: Mouth; swing: number; flap: number }
+const base: Pose = { bob: 0, legs: [0, 0], arms: [0.3, -0.2], paws: [0.15, 0.3], bot: [0.15, -0.1], squash: 0, eyes: 'open', mouth: 'smile', swing: 0, flap: 0 };
 export const POSES: Record<Frame, Pose> = {
   'idle-1': base,
-  'idle-2': { ...base, bob: 0.8, squash: 0.05, arms: [0.36, -0.12], paws: [0.4, 0.62], swing: 0.08, flap: 1 },
-  'walk-1': { ...base, bob: -1.4, legs: [0.55, -0.5], arms: [-0.55, 0.6], paws: [-0.3, 1.1], swing: 0.18, flap: 0 },
-  'walk-2': { ...base, bob: 0.8, legs: [0.1, -0.05], arms: [0.05, 0.1], paws: [0.35, 0.55], swing: 0.06, flap: 1 },
-  'walk-3': { ...base, bob: -1.4, legs: [-0.5, 0.55], arms: [0.6, -0.55], paws: [0.9, -0.15], swing: -0.18, flap: 2 },
-  'walk-4': { ...base, bob: 0.8, legs: [-0.05, 0.1], arms: [0.1, 0.05], paws: [0.4, 0.45], swing: -0.06, flap: 3 },
-  jump: { ...base, bob: -4, legs: [0.8, 1.15], arms: [-2.3, -1.65], paws: [2.5, 2.2], mouth: 'open', swing: 0.35, flap: 0 },
-  happy: { ...base, bob: -2.5, legs: [0.18, -0.18], arms: [2.15, 1.85], paws: [1.9, 1.65], eyes: 'happy', mouth: 'open', swing: 0.25, flap: 2 },
+  'idle-2': { ...base, bob: 0.8, squash: 0.05, arms: [0.36, -0.12], paws: [0.2, 0.38], bot: [0.22, -0.04], swing: 0.08, flap: 1 },
+  'walk-1': { ...base, bob: -1.4, legs: [0.55, -0.5], arms: [-0.55, 0.6], paws: [-0.5, 0.75], bot: [-0.45, 0.5], swing: 0.18, flap: 0 },
+  'walk-2': { ...base, bob: 0.8, legs: [0.1, -0.05], arms: [0.05, 0.1], paws: [0.15, 0.3], bot: [0.05, 0.05], swing: 0.06, flap: 1 },
+  'walk-3': { ...base, bob: -1.4, legs: [-0.5, 0.55], arms: [0.6, -0.55], paws: [0.75, -0.5], bot: [0.6, -0.5], swing: -0.18, flap: 2 },
+  'walk-4': { ...base, bob: 0.8, legs: [-0.05, 0.1], arms: [0.1, 0.05], paws: [0.3, 0.15], bot: [0.1, 0.02], swing: -0.06, flap: 3 },
+  jump: { ...base, bob: -4, legs: [0.8, 1.15], arms: [-2.3, -1.65], paws: [-1.9, -1.4], bot: [2.1, -2.2], mouth: 'open', swing: 0.35, flap: 0 },
+  happy: { ...base, bob: -2.5, legs: [0.18, -0.18], arms: [1.35, 1.55], paws: [1.1, 1.25], bot: [2.0, -2.0], eyes: 'happy', mouth: 'open', swing: 0.25, flap: 2 },
 };
 
+/** Where an animal's arms hang from: a shoulder toward the back, tucked under the head. */
+const SHOULDER_X = -3;
 interface Animal { fur: string; light: string; dark: string; belly: string; ears: 'pointed' | 'long' | 'round'; earInner: string; tail: 'bushy' | 'thin' | 'puff'; tailTip?: string; muzzle?: string; nose: string; stripes?: string; socks?: string }
 /** A four-legged friend standing up, cartoon style: big head, round body, short legs. */
 function animal(c: Ctx, a: Animal, p: Pose) {
-  const y = p.bob, hipY = 15 + y, headX = 3, headY = -7 + y + p.squash * 6, legLength = 9;
+  const y = p.bob, headX = 3, headY = -7 + y + p.squash * 6;
   // tail, behind everything
   c.save(); c.translate(-10, 12 + y); c.rotate(-0.35 + p.swing);
   if (a.tail === 'bushy') {
@@ -39,14 +42,16 @@ function animal(c: Ctx, a: Animal, p: Pose) {
   c.restore();
   // back leg and arm
   const foot = { rx: 3.4, ry: 2.4, fill: a.socks ?? a.dark, dx: 1 };
-  limb(c, -4, hipY, p.legs[0], legLength, 5, a.dark, foot);
-  limb(c, -2, 7.5 + y, p.paws[0], 4.5, 3.6, a.dark, { rx: 2.3, ry: 2.3, fill: a.socks ?? a.dark });
+  // Both legs and the far arm sit behind the body, so the legs come out of its lower edge.
+  limb(c, -4.5, 14 + y, p.legs[0], 10, 5, a.dark, foot);
+  limb(c, 3.5, 14 + y, p.legs[1], 10, 5, a.fur, { ...foot, fill: a.socks ?? a.fur });
+  limb(c, SHOULDER_X - 2, 5.5 + y, p.paws[0], 7.5, 3.6, a.dark, { rx: 2.3, ry: 2.3, fill: a.socks ?? a.dark });
   // body
   ellipse(c, 0, 10 + y + p.squash * 3, 11 - p.squash * 2, 10 + p.squash * 3, shade(c, 0, 20 + y, a.light, a.fur));
   ellipse(c, 2, 12 + y + p.squash * 3, 6, 6.5, a.belly, null);
   if (a.stripes) for (const dx of [-6, -2]) curve(c, [dx, 2 + y], [dx - 2, 6 + y], [dx, 10 + y], a.stripes, 1.6);
-  // front leg
-  limb(c, 4, hipY, p.legs[1], legLength, 5, a.fur, { ...foot, fill: a.socks ?? a.fur });
+  // near arm: from the shoulder, tucked under the head, down the side of the body
+  limb(c, SHOULDER_X, 5.5 + y, p.paws[1], 7.5, 3.8, a.fur, { rx: 2.4, ry: 2.4, fill: a.socks ?? a.fur });
   // Ears sit on the head's outline, both behind it, so the head hides their bases.
   const headRy = 13.5 - p.squash * 2;
   const ear = (near: boolean) => {
@@ -65,8 +70,6 @@ function animal(c: Ctx, a: Animal, p: Pose) {
   ellipse(c, headX + 6, headY + 2.6, 2, 1.5, a.nose, null);
   mouth(c, headX + 6, headY + 6, p.mouth, 0.9);
   ellipse(c, headX - 4.5, headY + 4, 2.3, 1.4, BLUSH, null);
-  // front arm: a short arm from the shoulder under the chin
-  limb(c, 6, 7.5 + y, p.paws[1], 4.5, 3.6, a.fur, { rx: 2.4, ry: 2.4, fill: a.socks ?? a.fur });
 }
 
 interface Kid { skin: string; hair: string; top: string; topLight: string; trousers: string; shoes: string; style: 'hood' | 'ponytail' }
@@ -75,10 +78,13 @@ function kid(c: Ctx, k: Kid, p: Pose) {
   const y = p.bob, hipY = 15 + y, headX = 2, headY = -10 + y + p.squash * 5;
   if (k.style === 'ponytail') { c.save(); c.translate(headX - 12, headY - 4); c.rotate(-0.2 + p.swing * 1.5); ellipse(c, -4, 4, 5, 8, k.hair); c.restore(); }
   box(c, -14, 0 + y, 8, 13, 3, '#e8913f');
+  // Both legs behind the top, so they come out of its lower edge; the far arm behind it too.
   limb(c, -3, hipY, p.legs[0], 9, 5, k.trousers, { rx: 4, ry: 2.6, fill: k.shoes, dx: 1.5 });
+  limb(c, 3, hipY, p.legs[1], 9, 5, k.trousers, { rx: 4, ry: 2.6, fill: k.shoes, dx: 1.5 });
   limb(c, -4, 4 + y, p.arms[0], 8, 4.2, k.top, { rx: 2.3, ry: 2.3, fill: k.skin });
   box(c, -9, -1 + y + p.squash * 3, 18, 18 - p.squash * 3, 7, shade(c, y, 17 + y, k.topLight, k.top));
-  limb(c, 3, hipY, p.legs[1], 9, 5, k.trousers, { rx: 4, ry: 2.6, fill: k.shoes, dx: 1.5 });
+  // The near arm hangs from a shoulder tucked under the head, down the side of the top.
+  limb(c, -1, 3 + y, p.arms[1], 9, 4.2, k.topLight, { rx: 2.4, ry: 2.4, fill: k.skin });
   ellipse(c, headX, headY, 12.5, 12 - p.squash * 2, k.skin);
   if (k.style === 'hood') {
     c.beginPath(); c.arc(headX, headY, 12.5, Math.PI * 0.92, Math.PI * 2.06); c.strokeStyle = k.top; c.lineWidth = 4.2; c.stroke();
@@ -91,18 +97,22 @@ function kid(c: Ctx, k: Kid, p: Pose) {
   eyes(c, headX + 3, headY + 1, p.eyes, 0.95, 6.5);
   ellipse(c, headX + 1.5, headY + 6, 2, 1.3, BLUSH, null); ellipse(c, headX + 10.5, headY + 6, 1.4, 1.1, BLUSH, null);
   mouth(c, headX + 6.5, headY + 6.5, p.mouth, 0.85);
-  limb(c, 3, 4 + y, p.arms[1], 8, 4.2, k.topLight, { rx: 2.4, ry: 2.4, fill: k.skin });
 }
 
 /** A friendly robot: a screen for a face, an antenna that sways. */
 function robot(c: Ctx, p: Pose) {
-  const y = p.bob, metal = '#8ec5c8', light = '#c3e3e2', dark = '#4f8f9b';
+  const y = p.bob, metal = '#8ec5c8', light = '#c3e3e2', dark = '#4f8f9b', hand = '#e8b94f';
   const foot = { rx: 4, ry: 2.5, fill: '#335561', dx: 1 };
-  limb(c, -4, 16 + y, p.legs[0], 8, 5, dark, foot);
-  limb(c, -7, 6 + y, p.arms[0], 8, 4, dark, { rx: 2.6, ry: 2.6, fill: '#e8b94f' });
+  // Legs and the far arm behind the body: the legs come out of its lower edge, and the far
+  // arm's hand shows past its front when it swings forward.
+  limb(c, -4, 13 + y, p.legs[0], 11, 5, dark, foot);
+  limb(c, 3, 13 + y, p.legs[1], 11, 5, metal, foot);
+  limb(c, 5, 3 + y, p.bot[0], 8, 4, dark, { rx: 2.6, ry: 2.6, fill: hand });
   box(c, -9, -1 + y + p.squash * 3, 18, 18 - p.squash * 3, 5, shade(c, y, 17 + y, light, metal));
-  box(c, -4, 4 + y, 8, 6, 2, '#335561'); ellipse(c, 0, 7 + y, 1.6, 1.6, p.flap % 2 ? '#e0846a' : '#f2d974', null);
-  limb(c, 3, 16 + y, p.legs[1], 8, 5, metal, foot);
+  // The chest light faces forward, clear of the near arm.
+  box(c, 0, 4 + y, 7, 6, 2, '#335561'); ellipse(c, 3.5, 7 + y, 1.6, 1.6, p.flap % 2 ? '#e0846a' : '#f2d974', null);
+  // The near arm hangs from a shoulder at the back, tucked under the head.
+  limb(c, -5.5, 3 + y, p.bot[1], 8, 4, metal, { rx: 2.7, ry: 2.7, fill: hand });
   const top = -23 + y + p.squash * 4;
   line(c, [[1, top], [1 + p.swing * 6, top - 6]], INK, 1.6); ellipse(c, 1 + p.swing * 6, top - 7, 2.4, 2.4, '#e0846a');
   box(c, -11, top, 24, 21, 7, shade(c, top, top + 21, light, metal));
@@ -112,7 +122,6 @@ function robot(c: Ctx, p: Pose) {
   else for (const ex of [-1, 6]) box(c, ex - 1.4, top + 7, 2.8, p.eyes === 'blink' ? 1 : 4, 1.2, glow, null);
   if (p.mouth === 'open') box(c, 0.5, top + 12.5, 5, 2, 1, '#e0846a', null); else line(c, [[0.8, top + 13.5], [5, top + 13.5]], glow, 1.2);
   ellipse(c, -11, top + 11, 2, 3.5, dark);
-  limb(c, 5, 6 + y, p.arms[1], 8, 4, metal, { rx: 2.7, ry: 2.7, fill: '#e8b94f' });
 }
 /** A turtle walking on four short legs, seen from the side. */
 function turtle(c: Ctx, p: Pose) {

@@ -31,6 +31,31 @@ const types = (state: Blockly.serialization.blocks.State, into = new Set<string>
 };
 
 describe('recipes', () => {
+  it('set every variable they read, at the start or earlier in the same script', () => {
+    // A variable read before anything sets it stops the program with a NameError (Remember the best score once did).
+    type Node = { type?: string; fields?: Record<string, string>; inputs?: Record<string, { block?: Node; shadow?: Node }>; next?: { block?: Node } };
+    for (const recipe of recipes) {
+      const startSets = new Set<string>();
+      const walk = (node: Node | undefined, visit: (n: Node) => void) => { if (!node) return; visit(node); for (const input of Object.values(node.inputs ?? {})) walk(input.block ?? input.shadow, visit); walk(node.next?.block, visit); };
+      for (const part of recipe.blocks ?? []) if (part.handler.kind === 'start') for (const top of part.stack as Node[]) walk(top, n => { if (n.type === 'py_set') startSets.add(n.fields!.SYMBOL); });
+      for (const part of recipe.blocks ?? []) {
+        const set = new Set(startSets);
+        // Statements run in order; a value is read before the set it feeds, so visit inputs before the set itself.
+        const run = (node: Node | undefined) => {
+          for (let n = node; n; n = n.next?.block) {
+            for (const [name, input] of Object.entries(n.inputs ?? {})) if (!/^(DO\d*|ELSE|STACK)$/.test(name)) walk(input.block ?? input.shadow, m => {
+              if (m.type === 'py_get' && m.fields!.SYMBOL.startsWith('$var:')) expect(set.has(m.fields!.SYMBOL), `${recipe.id} reads ${m.fields!.SYMBOL} before setting it`).toBe(true);
+            });
+            // A set, or a for-each loop's own variable, makes the name readable from here on.
+            if (n.type === 'py_set' || n.type === 'py_for_each') set.add(n.fields!.SYMBOL);
+            for (const [name, input] of Object.entries(n.inputs ?? {})) if (/^(DO\d*|ELSE|STACK)$/.test(name)) run(input.block);
+          }
+        };
+        for (const top of part.stack as Node[]) run(top);
+      }
+    }
+  });
+
   it('cover every group with valid, reviewed content', () => {
     expect(recipes.length).toBeGreaterThanOrEqual(40);
     expect(recipes.flatMap(recipe => recipeProblems(recipe))).toEqual([]);
