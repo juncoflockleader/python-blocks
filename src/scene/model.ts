@@ -1,16 +1,35 @@
 import type { Controls } from './touch';
+import { stockAsset, stockScale } from '../art/catalog';
 import { validWatches, type Watch } from './watch-model';
 import { validateSounds, type Sound } from './sound';
+import { isStockSound, knownSound } from './sound-library';
 import { validGame, validGameEffect, type GameState, type GameEffect } from './game';
 import { validMap, validCamera, type World, type Camera } from './world';
 import { validMotion, validKind, type Motion } from './motion';
 import { validEffects, type Effects } from './effects';
-export interface Costume { id: string; name: string; width: number; height: number; data: string }
+/** Artwork. `width` and `height` are its size on the stage; a `resolution` of 2
+ * means the PNG holds twice as many pixels each way, so it stays sharp on high-density screens. */
+export interface Costume { id: string; name: string; width: number; height: number; data?: string; resolution?: 2; stock?: string }
+/** Library art a project refers to instead of embedding (src/art/catalog.ts); it does not count toward the embedded limits. */
+export const isStock = (asset: object): asset is Costume & { stock: string } => typeof (asset as Costume).stock === 'string';
+export const STOCK_LIMITS = { costumes: 200, backdrops: 24 };
+/** Pixels per stage unit in an artwork's PNG (1 unless it is stored at 2×). */
+export const resolutionOf = (asset: object) => isStock(asset) ? stockResolution(asset) : (asset as { resolution?: number }).resolution === 2 ? 2 : 1;
+function stockResolution(asset: Costume & { stock: string }) { const art = stockAsset(asset.stock); return art ? stockScale(art.width, art.height, art.kind) : 1; }
 export interface SpritePen { down: boolean; color: string; width: number; opacity: number }
 export const defaultPen = (): SpritePen => ({ down: false, color: '#267c70', width: 3, opacity: 100 });
 export type RotationStyle = 'all' | 'left-right' | 'none';
 export const rotationStyles = [['all around', 'all'], ['left/right only', 'left-right'], ['do not rotate', 'none']];
-export interface SpriteState { id: string; name: string; x: number; y: number; direction: number; size: number; layer: number; visible: boolean; costume: string; rotationStyle?: RotationStyle; costumes?: string[]; frameSeconds?: number; pen?: SpritePen; effects?: Effects; data?: Record<string, unknown>; motion?: Partial<Motion>; kind?: string; world?: string }
+/** A named list of a sprite's costumes, played by name ("walk"); `seconds` per costume, else the sprite's frameSeconds. */
+export interface SpriteAnimation { name: string; frames: string[]; seconds?: number }
+/** Animate while moving: which animation plays while the sprite moves, is in the air, or is still ('' for none),
+ * and whether a left-right sprite turns to face the way it moves. */
+export interface AutoAnimate { moving: string; air: string; still: string; turn: boolean }
+/** The frames list (`costumes`) is the animation named "frames"; named animations sit beside it. */
+export const FRAMES_ANIMATION = 'frames';
+export const ANIMATION_LIMITS = { animations: 8, frames: 64 } as const;
+export const validAnimationName = (n: unknown): n is string => typeof n === 'string' && /^[A-Za-z][A-Za-z0-9 _-]{0,23}$/.test(n) && n === n.trim();
+export interface SpriteState { id: string; name: string; x: number; y: number; direction: number; size: number; layer: number; visible: boolean; costume: string; rotationStyle?: RotationStyle; costumes?: string[]; frameSeconds?: number; animations?: SpriteAnimation[]; autoAnimate?: AutoAnimate; pen?: SpritePen; effects?: Effects; data?: Record<string, unknown>; motion?: Partial<Motion>; kind?: string; world?: string }
 export interface Bubble { text: string; style: 'say' | 'think' }
 export interface SceneState { watchers?: Watch[]; controls?: Controls; sounds?: Sound[]; version: 1; background: string; sprites: SpriteState[]; assets: Costume[]; backdrops?: Costume[]; backdrop?: string | null; effects?: Effects; worlds?: World[]; world?: string | null; camera?: Camera }
 export const builtins = [
@@ -48,6 +67,20 @@ export function validData(value: unknown): value is Record<string, unknown> {
 }
 const id = (v: unknown): v is string => typeof v === 'string' && /^[A-Za-z0-9_-]{1,48}$/.test(v);
 const name = (v: unknown): v is string => typeof v === 'string' && v.trim() === v && v.length > 0 && v.length <= 48 && !/[\x00-\x1f]/.test(v);
+function validAnimations(list: unknown, assetIds?: Set<string>): list is SpriteAnimation[] {
+  if (!Array.isArray(list) || list.length > ANIMATION_LIMITS.animations) return false;
+  const names = new Set<string>();
+  for (const a of list as SpriteAnimation[]) {
+    if (!a || !validAnimationName(a.name) || a.name === FRAMES_ANIMATION || names.has(a.name) || !Array.isArray(a.frames) || !a.frames.length || a.frames.length > ANIMATION_LIMITS.frames) return false;
+    if (!a.frames.every(f => id(f) && (!assetIds || assetIds.has(f))) || a.seconds !== undefined && !finite(a.seconds, 0.02, 10)) return false;
+    names.add(a.name);
+  }
+  return true;
+}
+function validAutoAnimate(auto: unknown, animations: SpriteAnimation[] = []): auto is AutoAnimate {
+  const a = auto as AutoAnimate, known = (n: unknown) => n === '' || n === FRAMES_ANIMATION || animations.some(x => x.name === n);
+  return !!a && typeof a === 'object' && known(a.moving) && known(a.air) && known(a.still) && typeof a.turn === 'boolean';
+}
 export function validSprite(value: unknown, assetIds?: Set<string>): value is SpriteState {
   if (!value || typeof value !== 'object') return false;
   const s = value as SpriteState;
@@ -55,26 +88,35 @@ export function validSprite(value: unknown, assetIds?: Set<string>): value is Sp
   if (s.motion !== undefined && !validMotion(s.motion) || s.kind !== undefined && !validKind(s.kind)) return false;
   if (s.data !== undefined && !validData(s.data)) return false;
   if ((s.pen !== undefined && !validPen(s.pen)) || (s.effects !== undefined && !validEffects(s.effects))) return false;
+  if (s.animations !== undefined && !validAnimations(s.animations, assetIds) || s.autoAnimate !== undefined && !validAutoAnimate(s.autoAnimate, s.animations)) return false;
   return id(s.id) && name(s.name) && finite(s.x, -1e6, 1e6) && finite(s.y, -1e6, 1e6) && finite(s.direction, 0, 360) && finite(s.size, 5, 400) && finite(s.layer, -1000, 1000) && typeof s.visible === 'boolean' && id(s.costume) && (!assetIds || assetIds.has(s.costume)) && (s.rotationStyle === undefined || rotationStyles.some(([, style]) => style === s.rotationStyle)) && (s.costumes === undefined || (Array.isArray(s.costumes) && s.costumes.length > 0 && s.costumes.length <= 64 && s.costumes.every(c => id(c) && (!assetIds || assetIds.has(c))))) && (s.frameSeconds === undefined || finite(s.frameSeconds, 0.02, 10));
 }
 export function validateScene(value: unknown): asserts value is SceneState {
   const s = value as SceneState;
   if (s?.effects !== undefined && !validEffects(s.effects)) throw new Error('Stage effects need valid names and bounded numbers.');
-  if (!s || s.version !== 1 || !isColor(s.background) || !Array.isArray(s.sprites) || s.sprites.length > 64 || !Array.isArray(s.assets) || s.assets.length > 24) throw new Error('A scene needs a supported format, background color, up to 64 sprites, and up to 24 imported costumes.');
+  if (!s || s.version !== 1 || !isColor(s.background) || !Array.isArray(s.sprites) || s.sprites.length > 64 || !Array.isArray(s.assets) || s.assets.filter(a => !isStock(a)).length > 24 || s.assets.filter(a => isStock(a)).length > STOCK_LIMITS.costumes) throw new Error(`A scene needs a supported format, background color, up to 64 sprites, up to 24 imported costumes and up to ${STOCK_LIMITS.costumes} from the library.`);
   if (s.controls !== undefined && (!s.controls || !validKey(s.controls.a) || !validKey(s.controls.b))) throw new Error('Touch actions need valid keys.');
   if (s.watchers !== undefined && !validWatches(s.watchers)) throw new Error('Use up to 12 valid sprite/property watchers with unique identities.');
-  if (s.sounds !== undefined) validateSounds(s.sounds);
+  if (s.sounds !== undefined) { validateSounds(s.sounds); if (s.sounds.some(x => isStockSound(x) && !knownSound(x.stock))) throw new Error('This project uses a library sound from a newer version of Python Blocks.'); }
   const assetIds = new Set<string>(builtins.map(a => a.id));
   const backdropIds = new Set<string>(builtinBackdrops.map(a => a.id));
   const allIds = new Set([...assetIds, ...backdropIds]);
-  if (s.backdrops !== undefined && (!Array.isArray(s.backdrops) || s.backdrops.length > 12)) throw new Error('Use at most 12 painted or imported backdrops.');
+  if (s.backdrops !== undefined && (!Array.isArray(s.backdrops) || s.backdrops.filter(a => !isStock(a)).length > 12 || s.backdrops.filter(a => isStock(a)).length > STOCK_LIMITS.backdrops)) throw new Error(`Use at most 12 painted or imported backdrops and ${STOCK_LIMITS.backdrops} from the library.`);
   for (const [assets, ids, maxWidth, maxHeight, limit] of [[s.assets, assetIds, 256, 256, 350_000], [s.backdrops ?? [], backdropIds, 480, 320, 900_000]] as const) for (const asset of assets) {
     if (asset?.id === 'change' && ids === backdropIds) throw new Error('The backdrop ID change is reserved for the change event.');
-    if (!asset || !id(asset.id) || allIds.has(asset.id) || !name(asset.name) || !Number.isInteger(asset.width) || !Number.isInteger(asset.height) || !finite(asset.width, 1, maxWidth) || !finite(asset.height, 1, maxHeight) || typeof asset.data !== 'string' || asset.data.length > limit || !/^data:image\/png;base64,[A-Za-z0-9+/]+={0,2}$/.test(asset.data)) throw new Error(`Artwork needs distinct IDs and a PNG image of at most ${maxWidth} × ${maxHeight} pixels.`);
-    const bytes = Uint8Array.from(atob(asset.data.slice(22)), c => c.charCodeAt(0));
+    if (asset && isStock(asset)) {
+      // Library art: a known reference, drawn by the app at its catalogue size.
+      const art = stockAsset(asset.stock);
+      if (!id(asset.id) || allIds.has(asset.id) || !name(asset.name) || !art || art.kind !== (ids === assetIds ? 'costume' : 'backdrop') || asset.width !== art.width || asset.height !== art.height || asset.data !== undefined || asset.resolution !== undefined) throw new Error('Library artwork needs a distinct ID and a reference this version of Python Blocks knows.');
+      allIds.add(asset.id); ids.add(asset.id); continue;
+    }
+    // A 2× artwork may hold four times the pixels of its stage size, so its data may be four times larger.
+    const scale = asset?.resolution === 2 ? 2 : 1;
+    if (!asset || !id(asset.id) || allIds.has(asset.id) || !name(asset.name) || !Number.isInteger(asset.width) || !Number.isInteger(asset.height) || !finite(asset.width, 1, maxWidth) || !finite(asset.height, 1, maxHeight) || (asset.resolution !== undefined && asset.resolution !== 2) || typeof asset.data !== 'string' || asset.data.length > limit * scale * scale || !/^data:image\/png;base64,[A-Za-z0-9+/]+={0,2}$/.test(asset.data)) throw new Error(`Artwork needs distinct IDs and a PNG image of at most ${maxWidth} × ${maxHeight} pixels.`);
+    const bytes = Uint8Array.from(atob(asset.data!.slice(22)), c => c.charCodeAt(0));
     if (bytes.length < 24 || [137,80,78,71,13,10,26,10].some((b,i) => bytes[i] !== b)) throw new Error('Invalid PNG artwork.');
     const view = new DataView(bytes.buffer);
-    if (view.getUint32(16) !== asset.width || view.getUint32(20) !== asset.height) throw new Error('Artwork dimensions do not match its PNG.');
+    if (view.getUint32(16) !== asset.width * scale || view.getUint32(20) !== asset.height * scale) throw new Error('Artwork dimensions do not match its PNG.');
     allIds.add(asset.id); ids.add(asset.id);
   }
   if (s.backdrop !== undefined && s.backdrop !== null && !backdropIds.has(s.backdrop)) throw new Error('Choose an available starting backdrop.');
@@ -103,7 +145,7 @@ export function isSceneCommand(value: unknown): value is SceneCommand {
   if (v.type === 'game_effect_clear') return true;
   if (v.type === 'world') return v.id === null || id(v.id);
   if (v.type === 'camera') return finite(v.x, -1e6, 1e6) && finite(v.y, -1e6, 1e6);
-  if (v.type === 'tile') return Number.isInteger(v.column) && finite(v.column, 0, 63) && Number.isInteger(v.row) && finite(v.row, 0, 63) && (v.costume === null || id(v.costume)) && typeof v.solid === 'boolean';
+  if (v.type === 'tile') return Number.isInteger(v.column) && finite(v.column, 0, 255) && Number.isInteger(v.row) && finite(v.row, 0, 255) && (v.costume === null || id(v.costume)) && typeof v.solid === 'boolean';
   if (v.type === 'pen_clear') return true;
   if (v.type === 'effects') return validEffects(v.effects);
   if (v.type === 'stamp') return validSprite(v.sprite);

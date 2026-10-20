@@ -1,7 +1,7 @@
 {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 15,
+  "languageVersion": 22,
   "workspace": {
     "pythonScene": {
       "version": 1,
@@ -16,8 +16,8 @@
           "size": 70,
           "layer": 2,
           "visible": true,
-          "costume": "bird",
-          "rotationStyle": "none",
+          "costume": "stock-fox-idle-1",
+          "rotationStyle": "left-right",
           "kind": "player",
           "motion": {
             "body": "moving",
@@ -26,6 +26,50 @@
             "speedY": 240,
             "response": "slide",
             "edges": "none"
+          },
+          "costumes": [
+            "stock-fox-walk-1",
+            "stock-fox-walk-2",
+            "stock-fox-walk-3",
+            "stock-fox-walk-4"
+          ],
+          "frameSeconds": 0.12,
+          "animations": [
+            {
+              "name": "idle",
+              "frames": [
+                "stock-fox-idle-1",
+                "stock-fox-idle-2"
+              ],
+              "seconds": 0.4
+            },
+            {
+              "name": "walk",
+              "frames": [
+                "stock-fox-walk-1",
+                "stock-fox-walk-2",
+                "stock-fox-walk-3",
+                "stock-fox-walk-4"
+              ]
+            },
+            {
+              "name": "jump",
+              "frames": [
+                "stock-fox-jump"
+              ]
+            },
+            {
+              "name": "happy",
+              "frames": [
+                "stock-fox-happy"
+              ]
+            }
+          ],
+          "autoAnimate": {
+            "moving": "walk",
+            "air": "jump",
+            "still": "idle",
+            "turn": true
           }
         },
         {
@@ -46,13 +90,58 @@
           "name": "Hazard 2",
           "x": 150,
           "y": 0,
-          "direction": 0,
+          "direction": 180,
           "size": 70,
           "layer": 1,
           "visible": true,
-          "costume": "ball",
+          "costume": "stock-bee-idle-1",
           "kind": "hazard",
-          "world": "garden"
+          "world": "garden",
+          "costumes": [
+            "stock-bee-walk-1",
+            "stock-bee-walk-2",
+            "stock-bee-walk-3",
+            "stock-bee-walk-4"
+          ],
+          "rotationStyle": "left-right",
+          "frameSeconds": 0.12,
+          "animations": [
+            {
+              "name": "idle",
+              "frames": [
+                "stock-bee-idle-1",
+                "stock-bee-idle-2"
+              ],
+              "seconds": 0.4
+            },
+            {
+              "name": "walk",
+              "frames": [
+                "stock-bee-walk-1",
+                "stock-bee-walk-2",
+                "stock-bee-walk-3",
+                "stock-bee-walk-4"
+              ]
+            },
+            {
+              "name": "jump",
+              "frames": [
+                "stock-bee-jump"
+              ]
+            },
+            {
+              "name": "happy",
+              "frames": [
+                "stock-bee-happy"
+              ]
+            }
+          ],
+          "autoAnimate": {
+            "moving": "walk",
+            "air": "jump",
+            "still": "idle",
+            "turn": true
+          }
         },
         {
           "id": "item_2",
@@ -72,13 +161,58 @@
           "name": "Hazard 4",
           "x": 550,
           "y": 0,
-          "direction": 0,
+          "direction": 180,
           "size": 70,
           "layer": 1,
           "visible": true,
-          "costume": "ball",
+          "costume": "stock-bee-idle-1",
           "kind": "hazard",
-          "world": "garden"
+          "world": "garden",
+          "costumes": [
+            "stock-bee-walk-1",
+            "stock-bee-walk-2",
+            "stock-bee-walk-3",
+            "stock-bee-walk-4"
+          ],
+          "rotationStyle": "left-right",
+          "frameSeconds": 0.12,
+          "animations": [
+            {
+              "name": "idle",
+              "frames": [
+                "stock-bee-idle-1",
+                "stock-bee-idle-2"
+              ],
+              "seconds": 0.4
+            },
+            {
+              "name": "walk",
+              "frames": [
+                "stock-bee-walk-1",
+                "stock-bee-walk-2",
+                "stock-bee-walk-3",
+                "stock-bee-walk-4"
+              ]
+            },
+            {
+              "name": "jump",
+              "frames": [
+                "stock-bee-jump"
+              ]
+            },
+            {
+              "name": "happy",
+              "frames": [
+                "stock-bee-happy"
+              ]
+            }
+          ],
+          "autoAnimate": {
+            "moving": "walk",
+            "air": "jump",
+            "still": "idle",
+            "turn": true
+          }
         },
         {
           "id": "item_4",
@@ -96,11 +230,151 @@
       ],
       "assets": [
         {
-          "id": "grass",
-          "name": "Grass tile",
-          "width": 8,
-          "height": 8,
-          "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAG0lEQVR4nGMIaIn4H9MT8R8XzYBPEkQzDAsTAKDgjUEoLXHBAAAAAElFTkSuQmCC"
+          "id": "stock-grass-top",
+          "name": "Grass top",
+          "width": 32,
+          "height": 32,
+          "stock": "tiles/grass-top@1"
+        },
+        {
+          "id": "stock-grass-platform",
+          "name": "Grass platform",
+          "width": 32,
+          "height": 32,
+          "stock": "tiles/grass-platform@1"
+        },
+        {
+          "id": "stock-grass-right",
+          "name": "Grass right",
+          "width": 32,
+          "height": 32,
+          "stock": "tiles/grass-right@1"
+        },
+        {
+          "id": "stock-grass-left",
+          "name": "Grass left",
+          "width": 32,
+          "height": 32,
+          "stock": "tiles/grass-left@1"
+        },
+        {
+          "id": "stock-grass-middle",
+          "name": "Grass middle",
+          "width": 32,
+          "height": 32,
+          "stock": "tiles/grass-middle@1"
+        },
+        {
+          "id": "stock-fox-idle-1",
+          "name": "Fox idle 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/fox-idle-1@1"
+        },
+        {
+          "id": "stock-fox-idle-2",
+          "name": "Fox idle 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/fox-idle-2@1"
+        },
+        {
+          "id": "stock-fox-walk-1",
+          "name": "Fox walk 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/fox-walk-1@1"
+        },
+        {
+          "id": "stock-fox-walk-2",
+          "name": "Fox walk 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/fox-walk-2@1"
+        },
+        {
+          "id": "stock-fox-walk-3",
+          "name": "Fox walk 3",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/fox-walk-3@1"
+        },
+        {
+          "id": "stock-fox-walk-4",
+          "name": "Fox walk 4",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/fox-walk-4@1"
+        },
+        {
+          "id": "stock-fox-jump",
+          "name": "Fox jump",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/fox-jump@1"
+        },
+        {
+          "id": "stock-fox-happy",
+          "name": "Fox happy",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/fox-happy@1"
+        },
+        {
+          "id": "stock-bee-idle-1",
+          "name": "Bee idle 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-idle-1@1"
+        },
+        {
+          "id": "stock-bee-idle-2",
+          "name": "Bee idle 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-idle-2@1"
+        },
+        {
+          "id": "stock-bee-walk-1",
+          "name": "Bee walk 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-walk-1@1"
+        },
+        {
+          "id": "stock-bee-walk-2",
+          "name": "Bee walk 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-walk-2@1"
+        },
+        {
+          "id": "stock-bee-walk-3",
+          "name": "Bee walk 3",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-walk-3@1"
+        },
+        {
+          "id": "stock-bee-walk-4",
+          "name": "Bee walk 4",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-walk-4@1"
+        },
+        {
+          "id": "stock-bee-jump",
+          "name": "Bee jump",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-jump@1"
+        },
+        {
+          "id": "stock-bee-happy",
+          "name": "Bee happy",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/bee-happy@1"
         }
       ],
       "worlds": [
@@ -113,47 +387,47 @@
             "rows": 10,
             "tileSize": 32,
             "tiles": [
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
+              "stock-grass-top",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-platform",
+              "stock-grass-top",
+              "stock-grass-right",
               null,
               null,
               null,
@@ -192,8 +466,8 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
+              "stock-grass-left",
+              "stock-grass-right",
               null,
               null,
               null,
@@ -232,8 +506,8 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
+              "stock-grass-left",
+              "stock-grass-right",
               null,
               null,
               null,
@@ -272,8 +546,8 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
+              "stock-grass-left",
+              "stock-grass-right",
               null,
               null,
               null,
@@ -312,8 +586,8 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
+              "stock-grass-left",
+              "stock-grass-right",
               null,
               null,
               null,
@@ -352,8 +626,8 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
+              "stock-grass-left",
+              "stock-grass-right",
               null,
               null,
               null,
@@ -392,8 +666,8 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
+              "stock-grass-left",
+              "stock-grass-right",
               null,
               null,
               null,
@@ -432,8 +706,8 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
+              "stock-grass-left",
+              "stock-grass-right",
               null,
               null,
               null,
@@ -472,47 +746,47 @@
               null,
               null,
               null,
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass",
-              "grass"
+              "stock-grass-left",
+              "stock-grass-middle",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-top",
+              "stock-grass-middle"
             ],
             "walls": [
               true,
@@ -926,7 +1200,169 @@
           "backdrop": "backdrop_meadow"
         }
       ],
-      "world": "garden"
+      "world": "garden",
+      "sounds": [
+        {
+          "id": "coin",
+          "name": "Coin",
+          "kind": "clip",
+          "stock": "effects/coin@1"
+        },
+        {
+          "id": "hit",
+          "name": "Hit",
+          "kind": "clip",
+          "stock": "effects/hit@1"
+        },
+        {
+          "id": "win",
+          "name": "Win",
+          "kind": "clip",
+          "stock": "effects/win@1"
+        },
+        {
+          "id": "music",
+          "name": "Calm meadow",
+          "kind": "song",
+          "tempo": 90,
+          "beats": 16,
+          "notes": [
+            {
+              "at": 0.0,
+              "beats": 4,
+              "pitch": 53,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 0.0,
+              "beats": 4,
+              "pitch": 57,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 0.0,
+              "beats": 4,
+              "pitch": 60,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 0.0,
+              "beats": 2,
+              "pitch": 69,
+              "instrument": "sine",
+              "volume": 39
+            },
+            {
+              "at": 2.0,
+              "beats": 2,
+              "pitch": 72,
+              "instrument": "sine",
+              "volume": 39
+            },
+            {
+              "at": 4.0,
+              "beats": 4,
+              "pitch": 46,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 4.0,
+              "beats": 4,
+              "pitch": 50,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 4.0,
+              "beats": 4,
+              "pitch": 53,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 4.0,
+              "beats": 2,
+              "pitch": 70,
+              "instrument": "sine",
+              "volume": 39
+            },
+            {
+              "at": 6.0,
+              "beats": 2,
+              "pitch": 69,
+              "instrument": "sine",
+              "volume": 39
+            },
+            {
+              "at": 8.0,
+              "beats": 4,
+              "pitch": 48,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 8.0,
+              "beats": 4,
+              "pitch": 52,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 8.0,
+              "beats": 4,
+              "pitch": 55,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 8.0,
+              "beats": 2,
+              "pitch": 67,
+              "instrument": "sine",
+              "volume": 39
+            },
+            {
+              "at": 10.0,
+              "beats": 2,
+              "pitch": 69,
+              "instrument": "sine",
+              "volume": 39
+            },
+            {
+              "at": 12.0,
+              "beats": 4,
+              "pitch": 53,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 12.0,
+              "beats": 4,
+              "pitch": 57,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 12.0,
+              "beats": 4,
+              "pitch": 60,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 12.0,
+              "beats": 4,
+              "pitch": 65,
+              "instrument": "sine",
+              "volume": 39
+            }
+          ]
+        }
+      ]
     },
     "procedures": [
       {
@@ -943,6 +1379,22 @@
           "order": 0,
           "kind": "player"
         },
+        "async": true
+      },
+      {
+        "id": "play_music_handler",
+        "name": "play_music",
+        "parameters": [
+          {
+            "id": "play_music_handler_payload",
+            "name": "payload"
+          }
+        ],
+        "handler": {
+          "event": "start",
+          "order": 1
+        },
+        "returnTypes": null,
         "async": true
       }
     ],
@@ -1017,7 +1469,7 @@
                                   "type": "text",
                                   "id": "star_game_7",
                                   "fields": {
-                                    "TEXT": "Arrows: collect 3 stars! Purple balls cost a life. Beat the clock."
+                                    "TEXT": "Arrows: collect 3 stars! Bees cost a life. Beat the clock."
                                   }
                                 }
                               }
@@ -1183,94 +1635,148 @@
                           },
                           "next": {
                             "block": {
-                              "type": "game_change",
-                              "id": "star_game_26",
-                              "fields": {
-                                "FIELD": "score"
-                              },
+                              "type": "sound_play",
+                              "id": "star_game_example_3c_3",
+                              "fields": {},
                               "inputs": {
-                                "VALUE": {
+                                "SOUND": {
                                   "block": {
-                                    "type": "py_number",
-                                    "id": "star_game_25",
+                                    "type": "sound_asset",
+                                    "id": "star_game_example_3c_1",
                                     "fields": {
-                                      "VALUE": "1"
-                                    }
+                                      "SOUND_ID": "coin"
+                                    },
+                                    "inputs": {}
+                                  }
+                                },
+                                "OWNER": {
+                                  "block": {
+                                    "type": "py_none",
+                                    "id": "star_game_example_3c_2",
+                                    "fields": {},
+                                    "inputs": {}
                                   }
                                 }
                               },
                               "next": {
                                 "block": {
-                                  "type": "controls_if",
-                                  "id": "star_game_30",
+                                  "type": "game_change",
+                                  "id": "star_game_26",
+                                  "fields": {
+                                    "FIELD": "score"
+                                  },
                                   "inputs": {
-                                    "IF0": {
+                                    "VALUE": {
                                       "block": {
-                                        "type": "logic_compare",
-                                        "id": "star_game_29",
+                                        "type": "py_number",
+                                        "id": "star_game_25",
                                         "fields": {
-                                          "OP": "EQ"
-                                        },
-                                        "inputs": {
-                                          "A": {
-                                            "block": {
-                                              "type": "game_get",
-                                              "id": "star_game_27",
-                                              "fields": {
-                                                "FIELD": "score"
-                                              }
-                                            }
-                                          },
-                                          "B": {
-                                            "block": {
-                                              "type": "py_number",
-                                              "id": "star_game_28",
-                                              "fields": {
-                                                "VALUE": "3"
-                                              }
-                                            }
-                                          }
+                                          "VALUE": "1"
                                         }
                                       }
-                                    },
-                                    "DO0": {
-                                      "block": {
-                                        "type": "game_effect",
-                                        "id": "star_game_11",
-                                        "fields": {
-                                          "KIND": "confetti"
-                                        },
-                                        "inputs": {
-                                          "SPRITE": {
-                                            "block": {
-                                              "type": "py_none",
-                                              "id": "star_game_9"
-                                            }
-                                          },
-                                          "SECONDS": {
-                                            "block": {
-                                              "type": "py_number",
-                                              "id": "star_game_10",
-                                              "fields": {
-                                                "VALUE": "1.2"
+                                    }
+                                  },
+                                  "next": {
+                                    "block": {
+                                      "type": "controls_if",
+                                      "id": "star_game_30",
+                                      "inputs": {
+                                        "IF0": {
+                                          "block": {
+                                            "type": "logic_compare",
+                                            "id": "star_game_29",
+                                            "fields": {
+                                              "OP": "EQ"
+                                            },
+                                            "inputs": {
+                                              "A": {
+                                                "block": {
+                                                  "type": "game_get",
+                                                  "id": "star_game_27",
+                                                  "fields": {
+                                                    "FIELD": "score"
+                                                  }
+                                                }
+                                              },
+                                              "B": {
+                                                "block": {
+                                                  "type": "py_number",
+                                                  "id": "star_game_28",
+                                                  "fields": {
+                                                    "VALUE": "3"
+                                                  }
+                                                }
                                               }
                                             }
                                           }
                                         },
-                                        "next": {
+                                        "DO0": {
                                           "block": {
-                                            "type": "game_finish",
-                                            "id": "star_game_13",
-                                            "fields": {
-                                              "WON": "TRUE"
-                                            },
+                                            "type": "sound_play",
+                                            "id": "star_game_example_3c_6",
+                                            "fields": {},
                                             "inputs": {
-                                              "TEXT": {
+                                              "SOUND": {
                                                 "block": {
-                                                  "type": "text",
-                                                  "id": "star_game_12",
+                                                  "type": "sound_asset",
+                                                  "id": "star_game_example_3c_4",
                                                   "fields": {
-                                                    "TEXT": "All three stars found. Great exploring!"
+                                                    "SOUND_ID": "win"
+                                                  },
+                                                  "inputs": {}
+                                                }
+                                              },
+                                              "OWNER": {
+                                                "block": {
+                                                  "type": "py_none",
+                                                  "id": "star_game_example_3c_5",
+                                                  "fields": {},
+                                                  "inputs": {}
+                                                }
+                                              }
+                                            },
+                                            "next": {
+                                              "block": {
+                                                "type": "game_effect",
+                                                "id": "star_game_11",
+                                                "fields": {
+                                                  "KIND": "confetti"
+                                                },
+                                                "inputs": {
+                                                  "SPRITE": {
+                                                    "block": {
+                                                      "type": "py_none",
+                                                      "id": "star_game_9"
+                                                    }
+                                                  },
+                                                  "SECONDS": {
+                                                    "block": {
+                                                      "type": "py_number",
+                                                      "id": "star_game_10",
+                                                      "fields": {
+                                                        "VALUE": "1.2"
+                                                      }
+                                                    }
+                                                  }
+                                                },
+                                                "next": {
+                                                  "block": {
+                                                    "type": "game_finish",
+                                                    "id": "star_game_13",
+                                                    "fields": {
+                                                      "WON": "TRUE"
+                                                    },
+                                                    "inputs": {
+                                                      "TEXT": {
+                                                        "block": {
+                                                          "type": "text",
+                                                          "id": "star_game_12",
+                                                          "fields": {
+                                                            "TEXT": "All three stars found. Great exploring!"
+                                                          }
+                                                        }
+                                                      }
+                                                    }
                                                   }
                                                 }
                                               }
@@ -1406,18 +1912,45 @@
                               },
                               "next": {
                                 "block": {
-                                  "type": "game_change",
-                                  "id": "star_game_40",
-                                  "fields": {
-                                    "FIELD": "lives"
-                                  },
+                                  "type": "sound_play",
+                                  "id": "star_game_example_3c_9",
+                                  "fields": {},
                                   "inputs": {
-                                    "VALUE": {
+                                    "SOUND": {
                                       "block": {
-                                        "type": "py_number",
-                                        "id": "star_game_39",
+                                        "type": "sound_asset",
+                                        "id": "star_game_example_3c_7",
                                         "fields": {
-                                          "VALUE": "-1"
+                                          "SOUND_ID": "hit"
+                                        },
+                                        "inputs": {}
+                                      }
+                                    },
+                                    "OWNER": {
+                                      "block": {
+                                        "type": "py_none",
+                                        "id": "star_game_example_3c_8",
+                                        "fields": {},
+                                        "inputs": {}
+                                      }
+                                    }
+                                  },
+                                  "next": {
+                                    "block": {
+                                      "type": "game_change",
+                                      "id": "star_game_40",
+                                      "fields": {
+                                        "FIELD": "lives"
+                                      },
+                                      "inputs": {
+                                        "VALUE": {
+                                          "block": {
+                                            "type": "py_number",
+                                            "id": "star_game_39",
+                                            "fields": {
+                                              "VALUE": "-1"
+                                            }
+                                          }
                                         }
                                       }
                                     }
@@ -1438,6 +1971,44 @@
           "y": 40,
           "extraState": {
             "functionId": "contact"
+          }
+        },
+        {
+          "type": "py_handler",
+          "id": "play_music_handler_block",
+          "x": 1290,
+          "y": 40,
+          "extraState": {
+            "functionId": "play_music_handler"
+          },
+          "inputs": {
+            "BODY": {
+              "block": {
+                "type": "sound_loop",
+                "id": "star_game_example_3c_12",
+                "fields": {},
+                "inputs": {
+                  "SOUND": {
+                    "block": {
+                      "type": "sound_asset",
+                      "id": "star_game_example_3c_10",
+                      "fields": {
+                        "SOUND_ID": "music"
+                      },
+                      "inputs": {}
+                    }
+                  },
+                  "OWNER": {
+                    "block": {
+                      "type": "py_none",
+                      "id": "star_game_example_3c_11",
+                      "fields": {},
+                      "inputs": {}
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       ]

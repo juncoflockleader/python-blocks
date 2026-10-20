@@ -1,6 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import { reveal } from './shell';
+import { stagePixels } from './stage-pixels';
 const fixture = JSON.parse(readFileSync('src/scene/world-example.json', 'utf8'));
 const b = (type: string, fields: Record<string, unknown> = {}, inputs: Record<string, any> = {}): any => ({ type, fields, inputs: Object.fromEntries(Object.entries(inputs).map(([k, v]) => [k, { block: v }])) });
 const n = (v: number) => b('py_number', { VALUE: String(v) });
@@ -81,7 +82,7 @@ test('world coordinates reach pointer and pixel-click handlers and runtime tile 
   await run(page); await expect(page.locator('#stage')).toHaveAttribute('data-camera-x', '600');
   await page.locator('#stage').scrollIntoViewIfNeeded(); const stage = (await page.locator('#stage').boundingBox())!; await page.mouse.click(stage.x + stage.width / 2, stage.y + stage.height / 2);
   await expect(page.locator('#output')).toContainText('world sprite clicked'); await expect(page.locator('#output')).toContainText('600\n0');
-  const pixel = () => page.locator('#stage').evaluate(c => Array.from((c as HTMLCanvasElement).getContext('2d')!.getImageData(56, 176, 1, 1).data));
+  const pixel = () => page.locator('#stage').evaluate(stagePixels, [56, 176, 1, 1]);
   const before = await pixel(); await key(page, 't'); await expect.poll(pixel).not.toEqual(before); expect((await saved(page)).workspace.pythonScene.worlds[0].map.tiles[220]).toBeNull();
   await page.locator('#stop').click(); await run(page); await expect.poll(pixel).toEqual(before);
 });
@@ -110,7 +111,7 @@ test('world pen marks remain anchored while panning and clear when the world res
     ['key:c', null, b('scene_camera_go', {}, { X: n(500), Y: n(0) })], ['key:b', null, b('scene_camera_go', {}, { X: n(0), Y: n(0) })], ['key:r', null, b('scene_world_restart')],
   ]);
   await run(page); await expect(page.locator('#output')).toContainText('ink ready');
-  const pixel = () => page.locator('#stage').evaluate(c => Array.from((c as HTMLCanvasElement).getContext('2d')!.getImageData(280, 160, 1, 1).data));
+  const pixel = () => page.locator('#stage').evaluate(stagePixels, [280, 160, 1, 1]);
   const original = await pixel(); await key(page, 'c'); await expect.poll(pixel).toEqual([255, 0, 0, 255]);
   await key(page, 'b'); await expect.poll(pixel).toEqual(original); await key(page, 'c'); await expect.poll(pixel).toEqual([255, 0, 0, 255]);
   await key(page, 'r'); await key(page, 'c'); await expect.poll(pixel).not.toEqual([255, 0, 0, 255]);

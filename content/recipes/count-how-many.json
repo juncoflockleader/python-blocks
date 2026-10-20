@@ -22,7 +22,7 @@
       "say": "Make a variable called count. Start it at 0."
     },
     {
-      "say": "Each click, set count to count + 1 and say it."
+      "say": "Each click, set count to count + 1 and say it. “join” turns the number into text a sprite can say."
     }
   ],
   "variables": [
@@ -104,9 +104,27 @@
             },
             "TEXT": {
               "block": {
-                "type": "py_get",
-                "fields": {
-                  "SYMBOL": "$var:count"
+                "type": "text_join",
+                "extraState": {
+                  "itemCount": 2
+                },
+                "inputs": {
+                  "ADD0": {
+                    "shadow": {
+                      "type": "text",
+                      "fields": {
+                        "TEXT": "Clicks: "
+                      }
+                    }
+                  },
+                  "ADD1": {
+                    "block": {
+                      "type": "py_get",
+                      "fields": {
+                        "SYMBOL": "$var:count"
+                      }
+                    }
+                  }
                 }
               }
             },

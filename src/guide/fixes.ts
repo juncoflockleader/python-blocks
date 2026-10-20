@@ -114,7 +114,7 @@ export function fixFor(workspace: Blockly.Workspace, block: Blockly.Block, diagn
     }
     case 'missing-costume': {
       const first = costumes(scene)[0];
-      return flow('This costume is gone', 'The block points at a costume that was deleted. Pick one that exists, or paint a new one in Artwork & frames.', [{ text: 'Pick a costume from this block’s menu.', action: setField(block, 'COSTUME_ID', first.id, `Use ${first.name} here`) }]);
+      return flow('This costume is gone', 'The block points at a costume that was deleted. Pick one that exists, or paint a new one with Paint, under the stage.', [{ text: 'Pick a costume from this block’s menu.', action: setField(block, 'COSTUME_ID', first.id, `Use ${first.name} here`) }]);
     }
     case 'missing-backdrop': {
       const first = backdrops(scene)[0];
@@ -124,7 +124,7 @@ export function fixFor(workspace: Blockly.Workspace, block: Blockly.Block, diagn
       const first = scene.sounds?.[0];
       return flow('This sound is gone', 'The block points at a sound that was deleted.', first
         ? [{ text: 'Pick a sound from this block’s menu.', action: setField(block, 'SOUND_ID', first.id, `Use ${first.name} here`) }]
-        : [{ text: 'Add a sound first (New tone, Import or Record), then pick it in this block’s menu.', highlight: { element: '#sound-open' }, action: { label: 'Open Sounds & music', run: tools.openSounds } }]);
+        : [{ text: 'Add a sound first: record your voice, make an effect or write a song in Sounds. Or choose New sound… at the end of this block’s menu.', highlight: { element: '#sound-open' }, action: { label: 'Open Sounds', run: tools.openSounds } }]);
     }
     case 'missing-world': {
       const first = scene.worlds?.[0];

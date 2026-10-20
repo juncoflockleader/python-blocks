@@ -1,5 +1,6 @@
 import { defaultCamera, newMap, type World } from './world';
-import { includeStock } from './stock-art';
+import { includeStock, includeStockAsset } from './stock-art';
+import type { Piece, Theme } from '../art/tiles';
 import type { SceneState } from './model';
 
 export const worldTemplates = [
@@ -10,27 +11,43 @@ export const worldTemplates = [
 ] as const;
 export type WorldTemplate = typeof worldTemplates[number];
 
-/** Pure layout: stock IDs are resolved to project asset IDs before saving. */
+/** Pick each ground tile's piece from its neighbours, so a run of tiles reads as
+ * one shape: a one-row ledge is a platform, a ground mass gets a grassy (or
+ * snowy, or stone) top and edges only where it is open. The world's border
+ * counts as ground below and to the sides, so floors run cleanly off the map. */
+export function groundPieces(columns: number, rows: number, themes: (Theme | null)[]) {
+  const solid = (c: number, r: number) => c < 0 || c >= columns || r >= rows || (r >= 0 && themes[r * columns + c] !== null);
+  return themes.map((theme, i) => {
+    if (!theme) return null;
+    const c = i % columns, r = Math.floor(i / columns), up = solid(c, r - 1), down = solid(c, r + 1), left = solid(c - 1, r), right = solid(c + 1, r);
+    const piece: Piece = !up && !down ? 'platform' : up ? (left && right ? 'middle' : left ? 'right' : right ? 'left' : 'middle')
+      : left && right ? 'top' : left ? 'top-right' : right ? 'top-left' : 'block';
+    return `stock-${theme}-${piece}`;
+  });
+}
+
+/** Pure layout, in library picture ids (`stock-grass-top`); the backdrop is a library entry id. */
 export function templateLayout(template: WorldTemplate): World {
-  const map = newMap(template.id === 'reef' ? 15 : 24, 10, 32);
-  const cell = (c: number, r: number, art: string, solid = false) => { map.tiles[r * map.columns + c] = art; map.walls[r * map.columns + c] = solid; };
-  const ledge = (start: number, end: number, row: number, art: string) => { for (let c = start; c <= end; c++) cell(c,row,art,true); };
-  const floor = template.id === 'forest' ? 'grass' : template.id === 'reef' ? 'sand' : template.id === 'city' ? 'stone' : 'metal';
-  ledge(0,map.columns-1,9,floor);
+  const map = newMap(template.id === 'reef' ? 15 : 24, 10, 32), ground: (Theme | null)[] = Array(map.columns * map.rows).fill(null);
+  const ledge = (start: number, end: number, row: number, theme: Theme) => { for (let c = start; c <= end; c++) ground[row * map.columns + c] = theme; };
+  const thing = (c: number, r: number, art: string) => { map.tiles[r * map.columns + c] = art; };
+  const floor: Theme = template.id === 'forest' ? 'grass' : template.id === 'reef' ? 'sand' : template.id === 'city' ? 'castle' : 'metal';
+  ledge(0, map.columns - 1, 9, floor);
   if (template.id === 'forest') {
-    ledge(5,8,7,'grass'); ledge(12,15,5,'grass'); ledge(19,22,7,'grass');
-    for(const [c,r] of [[6,6],[13,4],[20,6]]) cell(c,r,'coin');
-    for(const c of [2,10,17]) cell(c,8,'flower');
+    ledge(5, 8, 7, 'grass'); ledge(12, 15, 5, 'grass'); ledge(19, 22, 7, 'grass');
+    for (const [c, r] of [[6, 6], [13, 4], [20, 6]]) thing(c, r, 'stock-coin-1');
+    for (const c of [2, 10, 17]) thing(c, 8, 'stock-flower');
   } else if (template.id === 'reef') {
-    for(const [c,r] of [[3,6],[7,4],[11,6]]) cell(c,r,'gem');
-    ledge(0,1,8,'sand'); ledge(13,14,8,'sand');
+    for (const [c, r] of [[3, 6], [7, 4], [11, 6]]) thing(c, r, 'stock-gem-1');
+    ledge(0, 1, 8, 'sand'); ledge(13, 14, 8, 'sand');
   } else if (template.id === 'city') {
-    ledge(7,9,8,'stone'); ledge(8,9,7,'stone'); ledge(9,9,6,'stone'); ledge(15,18,7,'grass');
-    for(const c of [2,3,12,20,21]) cell(c,8,'flower'); cell(17,6,'tree');
+    ledge(7, 10, 8, 'castle'); ledge(8, 10, 7, 'castle'); ledge(9, 10, 6, 'castle'); ledge(15, 18, 7, 'grass');
+    for (const c of [2, 3, 13, 20, 21]) thing(c, 8, 'stock-flower'); thing(17, 6, 'stock-tree');
   } else {
-    ledge(4,7,7,'metal'); ledge(10,13,5,'metal'); ledge(17,21,7,'metal');
-    for(const [c,r] of [[5,6],[11,4],[19,6]]) cell(c,r,'gem');
+    ledge(4, 7, 7, 'metal'); ledge(10, 13, 5, 'metal'); ledge(17, 21, 7, 'metal');
+    for (const [c, r] of [[5, 6], [11, 4], [19, 6]]) thing(c, r, 'stock-gem-1');
   }
+  groundPieces(map.columns, map.rows, ground).forEach((art, i) => { if (art) { map.tiles[i] = art; map.walls[i] = true; } });
   return { id: template.id, name: template.name, background: template.background, backdrop: template.backdrop, map, camera: defaultCamera() };
 }
 
@@ -42,9 +59,7 @@ export async function includeWorldTemplate(scene: SceneState, id: string) {
   const names = new Set(scene.worlds?.map(w => w.name)); let n = 2;
   while (names.has(world.name)) world.name = `${template.name} ${n++}`;
   world.backdrop = await includeStock(scene,'backdrop',template.backdrop);
-  const ids = new Map<string,string>();
-  for (const stock of new Set(world.map.tiles.filter((s): s is string => s !== null))) ids.set(stock, await includeStock(scene,'costume',stock));
-  world.map.tiles = world.map.tiles.map(id => id === null ? null : ids.get(id)!);
+  for (const id of new Set(world.map.tiles.filter((s): s is string => s !== null))) includeStockAsset(scene, id);
   (scene.worlds ??= []).push(world); scene.world = world.id;
   return world;
 }

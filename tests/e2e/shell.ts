@@ -1,4 +1,5 @@
 import { expect, type Locator, type Page } from '@playwright/test';
+import { iconArt, type IconName } from '../../src/ui/icon-art';
 
 /** Helpers for the one-screen shell: the ⋯ menu, the right-column tabs, the
  * Examples dialog, the sprite More settings sheet and the corner block search. */
@@ -77,4 +78,13 @@ export async function reveal(page: Page, target: string | Locator): Promise<Loca
   if (where.startsWith('help:')) { await closeSpriteSettings(page); await openHelp(page, where.slice(5) as HelpSection); }
   if (where.startsWith('tab:')) { await closeSpriteSettings(page); await openTab(page, where.slice(4) as Tab); }
   return locator;
+}
+
+/** Workspace blocks showing this symbol (block-icons.ts), top to bottom. Each
+ * symbol starts its block's first row, so it marks where the block begins. */
+export async function blockIcons(page: Page, name: IconName) {
+  return page.locator('#blockly image').evaluateAll((images, art) => images
+    .filter(image => !image.closest('.blocklyFlyout') && decodeURIComponent(image.getAttribute('href') ?? image.getAttribute('xlink:href') ?? '').includes(art))
+    .map(image => { const r = image.getBoundingClientRect(); return { x: r.x, y: r.y, width: r.width, height: r.height }; })
+    .sort((a, b) => a.y - b.y || a.x - b.x), iconArt[name]);
 }

@@ -1,0 +1,3493 @@
+{
+ "id": "super-hopper",
+ "title": "Super Hopper",
+ "kind": "lesson",
+ "level": "builder",
+ "minutes": 35,
+ "order": 8,
+ "summary": "Run, jump and stomp across a scrolling level five screens wide. Collect coins, mind the pits and reach the flag.",
+ "ideas": [
+  "gravity",
+  "jumping",
+  "scrolling world",
+  "clones",
+  "if and else",
+  "lives"
+ ],
+ "learn": [
+  "make a hero fall, run and jump only from the ground",
+  "explore a world five screens wide while the camera follows",
+  "collect coins with one script that every clone runs",
+  "choose between a stomp and an ouch with if and else"
+ ],
+ "chapters": [
+  {
+   "title": "Run",
+   "idea": "Gravity pulls; solid tiles hold you up.",
+   "steps": 3
+  },
+  {
+   "title": "Jump",
+   "idea": "Jump only when standing on something.",
+   "steps": 1
+  },
+  {
+   "title": "Coins",
+   "idea": "One script serves every clone.",
+   "steps": 2
+  },
+  {
+   "title": "Pits",
+   "idea": "Check a position every update.",
+   "steps": 1
+  },
+  {
+   "title": "Beetles",
+   "idea": "If and else choose between two outcomes.",
+   "steps": 2
+  },
+  {
+   "title": "The flag",
+   "idea": "Reach the goal to win.",
+   "steps": 2
+  }
+ ],
+ "starter": {
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 22,
+  "workspace": {
+   "blocks": {
+    "languageVersion": 0,
+    "blocks": []
+   },
+   "pythonScene": {
+    "version": 1,
+    "background": "#80cdef",
+    "assets": [
+     {
+      "id": "stock-explorer-sam-idle-1",
+      "name": "Sam idle 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-idle-1@1"
+     },
+     {
+      "id": "stock-explorer-sam-idle-2",
+      "name": "Sam idle 2",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-idle-2@1"
+     },
+     {
+      "id": "stock-explorer-sam-walk-1",
+      "name": "Sam walk 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-walk-1@1"
+     },
+     {
+      "id": "stock-explorer-sam-walk-2",
+      "name": "Sam walk 2",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-walk-2@1"
+     },
+     {
+      "id": "stock-explorer-sam-walk-3",
+      "name": "Sam walk 3",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-walk-3@1"
+     },
+     {
+      "id": "stock-explorer-sam-walk-4",
+      "name": "Sam walk 4",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-walk-4@1"
+     },
+     {
+      "id": "stock-explorer-sam-jump",
+      "name": "Sam jump",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-jump@1"
+     },
+     {
+      "id": "stock-explorer-sam-happy",
+      "name": "Sam happy",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-sam-happy@1"
+     },
+     {
+      "id": "stock-coin-1",
+      "name": "Coin 1",
+      "width": 32,
+      "height": 32,
+      "stock": "props/coin-1@1"
+     },
+     {
+      "id": "stock-coin-2",
+      "name": "Coin 2",
+      "width": 32,
+      "height": 32,
+      "stock": "props/coin-2@1"
+     },
+     {
+      "id": "stock-coin-3",
+      "name": "Coin 3",
+      "width": 32,
+      "height": 32,
+      "stock": "props/coin-3@1"
+     },
+     {
+      "id": "stock-coin-4",
+      "name": "Coin 4",
+      "width": 32,
+      "height": 32,
+      "stock": "props/coin-4@1"
+     },
+     {
+      "id": "stock-coin-5",
+      "name": "Coin 5",
+      "width": 32,
+      "height": 32,
+      "stock": "props/coin-5@1"
+     },
+     {
+      "id": "stock-coin-6",
+      "name": "Coin 6",
+      "width": 32,
+      "height": 32,
+      "stock": "props/coin-6@1"
+     },
+     {
+      "id": "stock-beetle-walk-1",
+      "name": "Beetle walk 1",
+      "width": 36,
+      "height": 30,
+      "stock": "cast/beetle-walk-1@1"
+     },
+     {
+      "id": "stock-beetle-walk-2",
+      "name": "Beetle walk 2",
+      "width": 36,
+      "height": 30,
+      "stock": "cast/beetle-walk-2@1"
+     },
+     {
+      "id": "stock-flag",
+      "name": "Flag",
+      "width": 40,
+      "height": 256,
+      "stock": "props/flag@1"
+     },
+     {
+      "id": "stock-brick-block",
+      "name": "Brick block",
+      "width": 32,
+      "height": 32,
+      "stock": "tiles/brick-block@1"
+     },
+     {
+      "id": "stock-grass-left",
+      "name": "Grass left",
+      "width": 32,
+      "height": 32,
+      "stock": "tiles/grass-left@1"
+     },
+     {
+      "id": "stock-grass-middle",
+      "name": "Grass middle",
+      "width": 32,
+      "height": 32,
+      "stock": "tiles/grass-middle@1"
+     },
+     {
+      "id": "stock-grass-right",
+      "name": "Grass right",
+      "width": 32,
+      "height": 32,
+      "stock": "tiles/grass-right@1"
+     },
+     {
+      "id": "stock-grass-top",
+      "name": "Grass top",
+      "width": 32,
+      "height": 32,
+      "stock": "tiles/grass-top@1"
+     },
+     {
+      "id": "stock-grass-top-left",
+      "name": "Grass top left",
+      "width": 32,
+      "height": 32,
+      "stock": "tiles/grass-top-left@1"
+     },
+     {
+      "id": "stock-grass-top-right",
+      "name": "Grass top right",
+      "width": 32,
+      "height": 32,
+      "stock": "tiles/grass-top-right@1"
+     },
+     {
+      "id": "stock-metal-block",
+      "name": "Metal block",
+      "width": 32,
+      "height": 32,
+      "stock": "tiles/metal-block@1"
+     }
+    ],
+    "backdrops": [
+     {
+      "id": "stock-hills",
+      "name": "Hills",
+      "width": 480,
+      "height": 320,
+      "stock": "backdrops/hills@1"
+     }
+    ],
+    "backdrop": null,
+    "worlds": [
+     {
+      "id": "main",
+      "name": "Main world",
+      "background": "#80cdef",
+      "backdrop": "stock-hills",
+      "map": {
+       "columns": 75,
+       "rows": 10,
+       "tileSize": 32,
+       "tiles": [
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "stock-metal-block",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "stock-brick-block",
+        "stock-brick-block",
+        "stock-brick-block",
+        "stock-brick-block",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "stock-metal-block",
+        "stock-metal-block",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "stock-metal-block",
+        "stock-metal-block",
+        "stock-metal-block",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "stock-metal-block",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "stock-metal-block",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "stock-metal-block",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "stock-metal-block",
+        null,
+        null,
+        null,
+        "stock-metal-block",
+        "stock-metal-block",
+        "stock-metal-block",
+        "stock-metal-block",
+        null,
+        null,
+        null,
+        null,
+        null,
+        null,
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top-right",
+        null,
+        null,
+        null,
+        "stock-grass-top-left",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top-right",
+        null,
+        null,
+        null,
+        "stock-grass-top-left",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-top",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-right",
+        null,
+        null,
+        null,
+        "stock-grass-left",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-right",
+        null,
+        null,
+        null,
+        "stock-grass-left",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle",
+        "stock-grass-middle"
+       ],
+       "walls": [
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        false,
+        false,
+        false,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+       ]
+      },
+      "camera": {
+       "x": 0,
+       "y": 0,
+       "follow": "hero",
+       "clamp": true
+      }
+     }
+    ],
+    "world": "main",
+    "sprites": [
+     {
+      "id": "hero",
+      "name": "Hero",
+      "x": -128,
+      "y": 40,
+      "direction": 0,
+      "size": 72,
+      "layer": 4,
+      "visible": true,
+      "costume": "stock-explorer-sam-idle-1",
+      "rotationStyle": "left-right",
+      "costumes": [
+       "stock-explorer-sam-walk-1",
+       "stock-explorer-sam-walk-2",
+       "stock-explorer-sam-walk-3",
+       "stock-explorer-sam-walk-4"
+      ],
+      "frameSeconds": 0.12,
+      "animations": [
+       {
+        "name": "idle",
+        "frames": [
+         "stock-explorer-sam-idle-1",
+         "stock-explorer-sam-idle-2"
+        ],
+        "seconds": 0.4
+       },
+       {
+        "name": "walk",
+        "frames": [
+         "stock-explorer-sam-walk-1",
+         "stock-explorer-sam-walk-2",
+         "stock-explorer-sam-walk-3",
+         "stock-explorer-sam-walk-4"
+        ]
+       },
+       {
+        "name": "jump",
+        "frames": [
+         "stock-explorer-sam-jump"
+        ]
+       },
+       {
+        "name": "happy",
+        "frames": [
+         "stock-explorer-sam-happy"
+        ]
+       }
+      ],
+      "autoAnimate": {
+       "moving": "walk",
+       "air": "jump",
+       "still": "idle",
+       "turn": false
+      }
+     },
+     {
+      "id": "coin",
+      "name": "Coin",
+      "x": -32,
+      "y": -73,
+      "direction": 0,
+      "size": 85,
+      "layer": 2,
+      "visible": false,
+      "costume": "stock-coin-1",
+      "rotationStyle": "all",
+      "costumes": [
+       "stock-coin-1",
+       "stock-coin-2",
+       "stock-coin-3",
+       "stock-coin-4",
+       "stock-coin-5",
+       "stock-coin-6"
+      ],
+      "frameSeconds": 0.1,
+      "animations": [
+       {
+        "name": "spin",
+        "frames": [
+         "stock-coin-1",
+         "stock-coin-2",
+         "stock-coin-3",
+         "stock-coin-4",
+         "stock-coin-5",
+         "stock-coin-6"
+        ]
+       }
+      ],
+      "autoAnimate": {
+       "moving": "",
+       "air": "",
+       "still": "spin",
+       "turn": false
+      }
+     },
+     {
+      "id": "beetle",
+      "name": "Beetle",
+      "x": 800,
+      "y": -80,
+      "direction": 0,
+      "size": 100,
+      "layer": 3,
+      "visible": true,
+      "costume": "stock-beetle-walk-1",
+      "rotationStyle": "left-right",
+      "costumes": [
+       "stock-beetle-walk-1",
+       "stock-beetle-walk-2"
+      ],
+      "frameSeconds": 0.15,
+      "animations": [
+       {
+        "name": "walk",
+        "frames": [
+         "stock-beetle-walk-1",
+         "stock-beetle-walk-2"
+        ]
+       }
+      ],
+      "autoAnimate": {
+       "moving": "walk",
+       "air": "",
+       "still": "",
+       "turn": true
+      }
+     },
+     {
+      "id": "flag",
+      "name": "Flag",
+      "x": 2048,
+      "y": 32,
+      "direction": 0,
+      "size": 100,
+      "layer": 1,
+      "visible": true,
+      "costume": "stock-flag",
+      "rotationStyle": "none"
+     }
+    ]
+   }
+  }
+ },
+ "steps": [
+  {
+   "text": "This level is five screens wide. When the game starts, set the Hero’s ay to −1200. Before you run it: what will the Hero do?",
+   "check": {
+    "all": [
+     {
+      "all": [
+       {
+        "field": [
+         "scene_motion_set",
+         "PROPERTY",
+         "ay"
+        ]
+       },
+       {
+        "number": [
+         "scene_motion_set",
+         "VALUE",
+         -1200
+        ]
+       }
+      ]
+     },
+     {
+      "predicted": true
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "kind": "predict",
+   "why": "Gravity is an acceleration that pulls down. The grass tiles in this world are solid, like floors.",
+   "checklist": [
+    {
+     "text": "The Hero gets gravity: ay −1200",
+     "check": {
+      "all": [
+       {
+        "field": [
+         "scene_motion_set",
+         "PROPERTY",
+         "ay"
+        ]
+       },
+       {
+        "number": [
+         "scene_motion_set",
+         "VALUE",
+         -1200
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "text": "You chose what will happen",
+     "check": {
+      "predicted": true
+     }
+    },
+    {
+     "text": "You ran it after choosing",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "hints": [
+    "In {{Physics}}, use “set sprite … vx to …” and choose ay in its menu. Put it under “when game starts”.",
+    "Choose Hero in the sprite menu and type −1200."
+   ],
+   "select": "hero",
+   "highlight": {
+    "category": "physics"
+   },
+   "predict": {
+    "question": "What will the Hero do?",
+    "choices": [
+     "Fall and land on the grass",
+     "Fall through the grass and off the screen",
+     "Stay in the air",
+     "Fly up"
+    ],
+    "answer": 0,
+    "explain": "Gravity pulls the Hero down faster and faster. The grass is solid, so the Hero lands on it and stops."
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "start"
+      },
+      "stack": [
+       {
+        "type": "scene_motion_set",
+        "fields": {
+         "PROPERTY": "ay"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "hero"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "-1200"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "Run: control the Hero with the arrow keys, horizontal speed 180 and vertical speed 0. Run it and walk right: the camera follows.",
+   "check": {
+    "all": [
+     {
+      "handler": "start",
+      "contains": [
+       "scene_control"
+      ]
+     },
+     {
+      "number": [
+       "scene_control",
+       "VY",
+       0
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "why": "Vertical speed 0 leaves up and down to gravity. The world’s camera is set to follow the Hero, so the level scrolls as you walk.",
+   "checklist": [
+    {
+     "text": "The Hero is controlled with the arrow keys",
+     "check": {
+      "handler": "start",
+      "contains": [
+       "scene_control"
+      ]
+     }
+    },
+    {
+     "text": "Vertical speed is 0",
+     "check": {
+      "number": [
+       "scene_control",
+       "VY",
+       0
+      ]
+     }
+    },
+    {
+     "text": "You ran it",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "hints": [
+    "In {{Motion}}, find “control sprite … with arrow keys …” and add it under “when game starts”.",
+    "Choose Hero, set the horizontal speed to 180 and the vertical speed to 0. Click the stage before you press the keys."
+   ],
+   "select": "hero",
+   "highlight": {
+    "category": "motion"
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "start"
+      },
+      "stack": [
+       {
+        "type": "scene_control",
+        "fields": {
+         "SCHEME": "arrows"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "hero"
+           }
+          }
+         },
+         "VX": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "180"
+           }
+          }
+         },
+         "VY": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "Face the way you walk: when the left arrow is pressed, set the Hero’s direction to 180. When the right arrow is pressed, set it to 0.",
+   "check": {
+    "all": [
+     {
+      "number": [
+       "scene_set",
+       "VALUE",
+       180
+      ]
+     },
+     {
+      "all": [
+       {
+        "handler": "key",
+        "contains": [
+         "scene_set"
+        ]
+       },
+       {
+        "number": [
+         "scene_set",
+         "VALUE",
+         0
+        ]
+       },
+       {
+        "field": [
+         "scene_set",
+         "PROPERTY",
+         "direction"
+        ]
+       }
+      ]
+     }
+    ]
+   },
+   "why": "The Hero’s rotation style is left-right: a direction of 180 flips the picture to face left instead of turning it upside down.",
+   "checklist": [
+    {
+     "text": "When ← is pressed, the Hero turns to 180",
+     "check": {
+      "number": [
+       "scene_set",
+       "VALUE",
+       180
+      ]
+     }
+    },
+    {
+     "text": "When → is pressed, it turns back to 0",
+     "check": {
+      "all": [
+       {
+        "handler": "key",
+        "contains": [
+         "scene_set"
+        ]
+       },
+       {
+        "number": [
+         "scene_set",
+         "VALUE",
+         0
+        ]
+       },
+       {
+        "field": [
+         "scene_set",
+         "PROPERTY",
+         "direction"
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "hints": [
+    "From {{Events}}, drag “when space key pressed” and change the key to the left arrow. In {{Motion}}, “set sprite … x to …” has a menu: choose direction.",
+    "Make two scripts: left arrow sets the Hero’s direction to 180, right arrow sets it to 0."
+   ],
+   "select": "hero",
+   "highlight": {
+    "category": "events"
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "ArrowLeft"
+      },
+      "stack": [
+       {
+        "type": "scene_set",
+        "fields": {
+         "PROPERTY": "direction"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "hero"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "180"
+           }
+          }
+         }
+        }
+       }
+      ]
+     },
+     {
+      "handler": {
+       "kind": "key",
+       "key": "ArrowRight"
+      },
+      "stack": [
+       {
+        "type": "scene_set",
+        "fields": {
+         "PROPERTY": "direction"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "hero"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "Jump: when space is pressed, the Hero jumps if grounded at speed 520. Before you run it: what happens if you press space again while the Hero is in the air?",
+   "check": {
+    "all": [
+     {
+      "handler": "key",
+      "contains": [
+       "scene_jump"
+      ]
+     },
+     {
+      "predicted": true
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "kind": "predict",
+   "why": "A jump sets an upward speed and gravity brings the Hero back. “If grounded” checks that the Hero is standing on something first.",
+   "checklist": [
+    {
+     "text": "When space is pressed, the Hero jumps",
+     "check": {
+      "handler": "key",
+      "contains": [
+       "scene_jump"
+      ]
+     }
+    },
+    {
+     "text": "You chose what will happen",
+     "check": {
+      "predicted": true
+     }
+    },
+    {
+     "text": "You ran it after choosing",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "hints": [
+    "In {{Physics}}, find “sprite … jump if grounded at speed …”.",
+    "Put it under “when space key pressed”, choose Hero and type 520."
+   ],
+   "select": "hero",
+   "highlight": {
+    "category": "physics"
+   },
+   "predict": {
+    "question": "What happens if you press space in the air?",
+    "choices": [
+     "Nothing: it jumps only from the ground",
+     "It jumps again, higher and higher",
+     "It falls straight down",
+     "It stops in the air"
+    ],
+    "answer": 0,
+    "explain": "“Jump if grounded” only works while the Hero stands on something, so nobody can fly to the flag."
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "Space"
+      },
+      "stack": [
+       {
+        "type": "scene_jump",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "hero"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "520"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "The lesson wrote a script that puts 12 coins in the level, but the Hero walks right through them. Make each coin add 1 to the score and disappear when the Hero touches it.",
+   "check": {
+    "all": [
+     {
+      "handler": "overlap",
+      "sprite": "coin"
+     },
+     {
+      "handler": "overlap",
+      "sprite": "coin",
+      "contains": [
+       "game_change"
+      ]
+     },
+     {
+      "handler": "overlap",
+      "sprite": "coin",
+      "last": "scene_destroy"
+     }
+    ]
+   },
+   "kind": "fix",
+   "why": "The coins are clones of one hidden Coin. A script on Coin runs for every clone, and “this sprite” is the coin that was touched.",
+   "checklist": [
+    {
+     "text": "A script runs when a Coin touches the Hero",
+     "check": {
+      "handler": "overlap",
+      "sprite": "coin"
+     }
+    },
+    {
+     "text": "It adds 1 to the score",
+     "check": {
+      "handler": "overlap",
+      "sprite": "coin",
+      "contains": [
+       "game_change"
+      ]
+     }
+    },
+    {
+     "text": "Destroy this sprite comes last",
+     "check": {
+      "handler": "overlap",
+      "sprite": "coin",
+      "last": "scene_destroy"
+     }
+    }
+   ],
+   "hints": [
+    "Select Coin, then from {{Events}} drag “when Coin overlaps …” and choose Hero.",
+    "Inside: change score by 1 (Game), then destroy sprite “this sprite” (Game). Destroy goes last."
+   ],
+   "select": "coin",
+   "other": "hero",
+   "highlight": {
+    "category": "game"
+   },
+   "plant": [
+    {
+     "handler": {
+      "kind": "start"
+     },
+     "stack": [
+      {
+       "type": "game_set",
+       "fields": {
+        "FIELD": "score"
+       },
+       "inputs": {
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "0"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_go",
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "coin"
+          }
+         }
+        },
+        "X": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "-32"
+          }
+         }
+        },
+        "Y": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "-73"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "controls_repeat_ext",
+       "inputs": {
+        "TIMES": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "5"
+          }
+         }
+        },
+        "DO": {
+         "block": {
+          "type": "scene_visibility",
+          "fields": {
+           "ACTION": "show"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_clone",
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "fields": {
+                 "SPRITE_ID": "coin"
+                }
+               }
+              }
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "scene_change",
+            "fields": {
+             "PROPERTY": "x"
+            },
+            "inputs": {
+             "SPRITE": {
+              "block": {
+               "type": "scene_sprite",
+               "fields": {
+                "SPRITE_ID": "coin"
+               }
+              }
+             },
+             "VALUE": {
+              "shadow": {
+               "type": "py_number",
+               "fields": {
+                "VALUE": "32"
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_go",
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "coin"
+          }
+         }
+        },
+        "X": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "416"
+          }
+         }
+        },
+        "Y": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "16"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "controls_repeat_ext",
+       "inputs": {
+        "TIMES": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "4"
+          }
+         }
+        },
+        "DO": {
+         "block": {
+          "type": "scene_visibility",
+          "fields": {
+           "ACTION": "show"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_clone",
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "fields": {
+                 "SPRITE_ID": "coin"
+                }
+               }
+              }
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "scene_change",
+            "fields": {
+             "PROPERTY": "x"
+            },
+            "inputs": {
+             "SPRITE": {
+              "block": {
+               "type": "scene_sprite",
+               "fields": {
+                "SPRITE_ID": "coin"
+               }
+              }
+             },
+             "VALUE": {
+              "shadow": {
+               "type": "py_number",
+               "fields": {
+                "VALUE": "32"
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_go",
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "coin"
+          }
+         }
+        },
+        "X": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "1184"
+          }
+         }
+        },
+        "Y": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "-48"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "controls_repeat_ext",
+       "inputs": {
+        "TIMES": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "3"
+          }
+         }
+        },
+        "DO": {
+         "block": {
+          "type": "scene_visibility",
+          "fields": {
+           "ACTION": "show"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_clone",
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "fields": {
+                 "SPRITE_ID": "coin"
+                }
+               }
+              }
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "scene_change",
+            "fields": {
+             "PROPERTY": "x"
+            },
+            "inputs": {
+             "SPRITE": {
+              "block": {
+               "type": "scene_sprite",
+               "fields": {
+                "SPRITE_ID": "coin"
+               }
+              }
+             },
+             "VALUE": {
+              "shadow": {
+               "type": "py_number",
+               "fields": {
+                "VALUE": "32"
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "overlap",
+       "sprite": "$sprite",
+       "other": "$other"
+      },
+      "stack": [
+       {
+        "type": "game_change",
+        "fields": {
+         "FIELD": "score"
+        },
+        "inputs": {
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "1"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "scene_destroy",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_self"
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "Play-test: collect five coins.",
+   "check": {
+    "score": 5
+   },
+   "kind": "play",
+   "why": "The first coins are on the grass right in front of you. Click the stage, then hold the right arrow.",
+   "goal": {
+    "score": 5,
+    "label": "coins collected"
+   }
+  },
+  {
+   "text": "Mind the gap: start with 3 lives. When the Hero falls below the world (y under −200), lose a life and move it back to the start: x −128, y 40.",
+   "check": {
+    "all": [
+     {
+      "field": [
+       "game_set",
+       "FIELD",
+       "lives"
+      ]
+     },
+     {
+      "handler": "update",
+      "sprite": "hero",
+      "contains": [
+       "controls_if",
+       "scene_get"
+      ]
+     },
+     {
+      "handler": "update",
+      "sprite": "hero",
+      "contains": [
+       "game_change",
+       "scene_go"
+      ]
+     }
+    ]
+   },
+   "why": "The pits have no ground, so gravity keeps pulling. “When Hero updates” notices the fall at once. At 0 lives the game ends by itself.",
+   "checklist": [
+    {
+     "text": "Lives start at 3",
+     "check": {
+      "field": [
+       "game_set",
+       "FIELD",
+       "lives"
+      ]
+     }
+    },
+    {
+     "text": "Each update, the Hero checks how low it is",
+     "check": {
+      "handler": "update",
+      "sprite": "hero",
+      "contains": [
+       "controls_if",
+       "scene_get"
+      ]
+     }
+    },
+    {
+     "text": "A fall loses a life and starts again",
+     "check": {
+      "handler": "update",
+      "sprite": "hero",
+      "contains": [
+       "game_change",
+       "scene_go"
+      ]
+     }
+    }
+   ],
+   "hints": [
+    "From Game, set lives to 3 when the game starts. Then select Hero and drag “when Hero updates” from Events.",
+    "Inside: if Hero’s y < −200, change lives by −1 and move the Hero to x −128 y 40."
+   ],
+   "select": "hero",
+   "highlight": {
+    "category": "events"
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "start"
+      },
+      "stack": [
+       {
+        "type": "game_set",
+        "fields": {
+         "FIELD": "lives"
+        },
+        "inputs": {
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "3"
+           }
+          }
+         }
+        }
+       }
+      ]
+     },
+     {
+      "handler": {
+       "kind": "update",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "controls_if",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "logic_compare",
+           "fields": {
+            "OP": "LT"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "scene_get",
+              "fields": {
+               "PROPERTY": "y"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_self"
+                }
+               }
+              }
+             }
+            },
+            "B": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "-200"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "game_change",
+           "fields": {
+            "FIELD": "lives"
+           },
+           "inputs": {
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "-1"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "scene_go",
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "fields": {
+                 "SPRITE_ID": "hero"
+                }
+               }
+              },
+              "X": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "-128"
+                }
+               }
+              },
+              "Y": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "40"
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "Beetles: set the Beetle’s vx to −60 and make it bounce on wall collision. Then move a clone of Beetle to x 1600, y −80. Before you run it: what will a beetle do at a stone block?",
+   "check": {
+    "all": [
+     {
+      "field": [
+       "scene_motion_response",
+       "MODE",
+       "bounce"
+      ]
+     },
+     {
+      "nested": [
+       "scene_go",
+       "scene_clone"
+      ]
+     },
+     {
+      "predicted": true
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "kind": "predict",
+   "why": "Stone blocks are solid tiles. A clone copies its sprite’s motion when it is made, so the second beetle walks too.",
+   "checklist": [
+    {
+     "text": "The Beetle bounces off walls",
+     "check": {
+      "field": [
+       "scene_motion_response",
+       "MODE",
+       "bounce"
+      ]
+     }
+    },
+    {
+     "text": "A clone of Beetle goes further on",
+     "check": {
+      "nested": [
+       "scene_go",
+       "scene_clone"
+      ]
+     }
+    },
+    {
+     "text": "You chose what will happen",
+     "check": {
+      "predicted": true
+     }
+    },
+    {
+     "text": "You ran it after choosing",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "hints": [
+    "In Physics: “set sprite Beetle vx to −60” and “sprite Beetle on wall collision bounce”, under “when game starts”.",
+    "Then add “move sprite … to x … y …” from Motion and put “clone sprite Beetle” (Game) in its sprite slot. Use x 1600, y −80."
+   ],
+   "select": "beetle",
+   "highlight": {
+    "category": "physics"
+   },
+   "predict": {
+    "question": "What will a beetle do at a stone block?",
+    "choices": [
+     "Turn around and walk back",
+     "Stop there",
+     "Walk through it",
+     "Jump over it"
+    ],
+    "answer": 0,
+    "explain": "Bounce flips the speed that hit the wall: vx −60 becomes 60, so the beetle walks back and forth between two blocks."
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "start"
+      },
+      "stack": [
+       {
+        "type": "scene_motion_set",
+        "fields": {
+         "PROPERTY": "vx"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "beetle"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "-60"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "scene_motion_response",
+        "fields": {
+         "MODE": "bounce"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "beetle"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "scene_go",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_clone",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_sprite",
+              "fields": {
+               "SPRITE_ID": "beetle"
+              }
+             }
+            }
+           }
+          }
+         },
+         "X": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "1600"
+           }
+          }
+         },
+         "Y": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "-80"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "Stomp or ouch: when a Beetle touches the Hero, if the Hero’s vy is below 0, set the Hero’s vy to 380, add 5 to the score and destroy this sprite. Else, lose a life and move the Hero back to the start.",
+   "check": {
+    "all": [
+     {
+      "handler": "overlap",
+      "sprite": "beetle"
+     },
+     {
+      "handler": "overlap",
+      "sprite": "beetle",
+      "contains": [
+       "scene_motion_get"
+      ]
+     },
+     {
+      "handler": "overlap",
+      "sprite": "beetle",
+      "contains": [
+       "scene_motion_set"
+      ],
+      "last": "scene_destroy"
+     },
+     {
+      "handler": "overlap",
+      "sprite": "beetle",
+      "contains": [
+       "game_change",
+       "scene_go"
+      ]
+     }
+    ]
+   },
+   "why": "vy below 0 means moving down: the Hero is landing on top. Walking into a beetle has vy 0, so that is an ouch.",
+   "checklist": [
+    {
+     "text": "A script runs when a Beetle touches the Hero",
+     "check": {
+      "handler": "overlap",
+      "sprite": "beetle"
+     }
+    },
+    {
+     "text": "It checks the Hero’s vy",
+     "check": {
+      "handler": "overlap",
+      "sprite": "beetle",
+      "contains": [
+       "scene_motion_get"
+      ]
+     }
+    },
+    {
+     "text": "Falling: the Hero bounces up and the Beetle is destroyed",
+     "check": {
+      "handler": "overlap",
+      "sprite": "beetle",
+      "contains": [
+       "scene_motion_set"
+      ],
+      "last": "scene_destroy"
+     }
+    },
+    {
+     "text": "Otherwise: lose a life and start again",
+     "check": {
+      "handler": "overlap",
+      "sprite": "beetle",
+      "contains": [
+       "game_change",
+       "scene_go"
+      ]
+     }
+    }
+   ],
+   "hints": [
+    "Select Beetle and drag “when Beetle overlaps …”, choosing Hero. Inside it, use “if … else” from Control.",
+    "Test: “sprite Hero motion vy” (Physics) < 0. If: set Hero vy to 380, change score by 5, destroy this sprite. Else: change lives by −1 and move Hero to x −128 y 40."
+   ],
+   "select": "beetle",
+   "other": "hero",
+   "highlight": {
+    "category": "control"
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "overlap",
+       "sprite": "$sprite",
+       "other": "$other"
+      },
+      "stack": [
+       {
+        "type": "controls_if",
+        "extraState": {
+         "hasElse": true
+        },
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "logic_compare",
+           "fields": {
+            "OP": "LT"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "scene_motion_get",
+              "fields": {
+               "PROPERTY": "vy"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "fields": {
+                  "SPRITE_ID": "hero"
+                 }
+                }
+               }
+              }
+             }
+            },
+            "B": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "0"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "scene_motion_set",
+           "fields": {
+            "PROPERTY": "vy"
+           },
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_sprite",
+              "fields": {
+               "SPRITE_ID": "hero"
+              }
+             }
+            },
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "380"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "game_change",
+             "fields": {
+              "FIELD": "score"
+             },
+             "inputs": {
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "5"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_destroy",
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_self"
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         },
+         "ELSE": {
+          "block": {
+           "type": "game_change",
+           "fields": {
+            "FIELD": "lives"
+           },
+           "inputs": {
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "-1"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "scene_go",
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "fields": {
+                 "SPRITE_ID": "hero"
+                }
+               }
+              },
+              "X": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "-128"
+                }
+               }
+              },
+              "Y": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "40"
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "The flag: when the Hero touches the Flag, finish the game as a win.",
+   "check": {
+    "all": [
+     {
+      "handler": "overlap",
+      "contains": [
+       "game_finish"
+      ]
+     },
+     {
+      "field": [
+       "game_finish",
+       "WON",
+       "TRUE"
+      ]
+     }
+    ]
+   },
+   "why": "The flag is at the end of the fifth screen, up the stone stairs. Reaching it is the goal of the whole level.",
+   "checklist": [
+    {
+     "text": "A script runs when the Hero touches the Flag",
+     "check": {
+      "handler": "overlap",
+      "contains": [
+       "game_finish"
+      ]
+     }
+    },
+    {
+     "text": "It finishes the game as a win",
+     "check": {
+      "field": [
+       "game_finish",
+       "WON",
+       "TRUE"
+      ]
+     }
+    }
+   ],
+   "hints": [
+    "Select Hero, then from {{Events}} drag “when Hero overlaps …” and choose Flag.",
+    "Inside, put “finish game win” from Game, with your own message."
+   ],
+   "recipe": "reach-goal",
+   "select": "hero",
+   "other": "flag",
+   "highlight": {
+    "category": "game"
+   }
+  },
+  {
+   "text": "Play until the game ends: reach the flag, or lose all three lives.",
+   "check": {
+    "finished": "any"
+   },
+   "kind": "play",
+   "why": "Click the stage. Arrow keys walk, space jumps. Land on beetles from above."
+  }
+ ],
+ "finish": {
+  "text": "A hero who runs, jumps and stomps through a five-screen level, with coins, pits, beetles and a flag.",
+  "remix": [
+   "Checkpoint: after the first beetle, make the Hero start again from there instead.",
+   "Bigger level: in [[Stage view]], press [[Add screen]] and paint more ledges, pits and blocks.",
+   "Bounce pad: paint a new tile and make the Hero jump extra high when it lands on it."
+  ]
+ },
+ "next": "maze-run"
+}

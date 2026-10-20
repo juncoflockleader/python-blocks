@@ -1,6 +1,6 @@
 import { test, expect, type Locator, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-import { menu, openExample, openSearch, openSpriteSettings, openTab, setSpriteField } from './shell';
+import { blockIcons, menu, openExample, openSearch, openSpriteSettings, openTab, setSpriteField } from './shell';
 
 // These tests start like a new browser: no stored level, so the Starter palette.
 test.use({ storageState: { cookies: [], origins: [] } });
@@ -41,10 +41,10 @@ test.describe('iPad landscape', () => {
     for (const selector of ['#run', '#stop', '#stage', '#tab-output', '#blockly']) await inView(page, page.locator(selector));
     await load(page, project([{ ...b('py_program'), x: 420, y: 40 }]), 'start.json');
     await expect.poll(async () => (await saved(page)).workspace.blocks.blocks.length).toBe(1);
-    const label = (await page.locator('#blockly text.blocklyText', { hasText: /^Program$/ }).boundingBox())!;
+    const [label] = await blockIcons(page, 'play'); // the Program block's symbol starts its first row
     await dragFromPalette(page, 'Control', flyoutBlock(page, /^repeat$/), { x: label.x + 10, y: label.y + label.height + 8 });
     await expect.poll(async () => (await saved(page)).workspace.blocks.blocks[0].inputs?.BODY?.block?.type).toBe('controls_repeat_ext');
-    const repeat = (await page.locator('#blockly .blocklyDraggable:not(.blocklyFlyout *) text.blocklyText', { hasText: /^repeat$/ }).first().boundingBox())!;
+    const [repeat] = await blockIcons(page, 'loop');
     await dragFromPalette(page, 'Draw', flyoutBlock(page, /^move$/), { x: repeat.x + 14, y: repeat.y + repeat.height + 10 });
     await expect.poll(async () => (await saved(page)).workspace.blocks.blocks[0].inputs.BODY.block.inputs?.DO?.block?.type).toBe('pen_move');
     await openTab(page, 'python'); await expect(page.locator('#python')).toContainText(/for _\w* in range\(10\):\n\s+pen\.move\(100\)/);
@@ -232,4 +232,51 @@ test('the menu and examples dialog are keyboard friendly and every shell control
   expect(small).toEqual([]);
   await openExample(page, 'scene-star-game'); await expect(page.locator('#project-title')).toHaveText('Star game');
   await expect(page.locator('#scene-cards button')).not.toHaveCount(0);
+});
+
+test('the level menu shows each level with its symbol and what it adds, by mouse or keyboard', async ({ page }) => {
+  await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
+  // A new browser starts at Starter.
+  const button = page.locator('#level-button');
+  await expect(button).toHaveAccessibleName('Level: Starter'); await expect(button).toHaveText('Starter');
+  await button.click();
+  const options = page.locator('#level-list').getByRole('option');
+  await expect(options).toHaveCount(3);
+  await expect(options.nth(0)).toContainText('8 block groups for first games');
+  await expect(page.locator('#level-list').getByRole('option', { name: /Starter/ })).toHaveAttribute('aria-selected', 'true');
+  for (const option of await options.all()) await expect(option.locator('.level-icon')).toHaveCSS('display', 'flex');
+  await page.locator('#level-list').getByRole('option', { name: /Builder/ }).click();
+  await expect(page.locator('#level-list')).toBeHidden();
+  await expect(page.locator('#level-select')).toHaveValue('builder'); await expect(button).toHaveText('Builder');
+  expect(await categories(page)).toHaveLength(14);
+  // Keyboard: arrows move, Enter chooses, Escape closes and returns focus.
+  await button.focus(); await page.keyboard.press('ArrowDown');
+  await expect(page.locator('#level-list')).toBeVisible();
+  await page.keyboard.press('ArrowUp'); await page.keyboard.press('Enter');
+  await expect(page.locator('#level-select')).toHaveValue('starter'); await expect(button).toBeFocused();
+  await page.keyboard.press('ArrowDown'); await page.keyboard.press('Escape');
+  await expect(page.locator('#level-list')).toBeHidden(); await expect(page.locator('#level-select')).toHaveValue('starter');
+  // In tablet portrait the button keeps its symbol and name.
+  await page.setViewportSize({ width: 744, height: 1000 });
+  await expect(button).toBeVisible(); await expect(button).toHaveText('Starter');
+  const box = (await button.boundingBox())!; expect(box.width).toBeGreaterThan(90);
+});
+
+test('palette rows never overlap, and the More cue sits below the categories', async ({ page }) => {
+  await page.goto('/'); await expect(page.locator('#run')).toBeEnabled(); await page.locator('#level-select').selectOption('pro');
+  for (const size of [{ width: 1024, height: 700 }, { width: 1366, height: 1024 }, { width: 744, height: 1000 }, { width: 1024, height: 600 }]) {
+    await page.setViewportSize(size);
+    await expect.poll(() => page.locator('.blocklyToolboxCategory').count()).toBe(21);
+    const overlaps = await page.locator('.blocklyToolboxCategory').evaluateAll(rows => {
+      const boxes = rows.map(row => ({ name: row.textContent, label: row.querySelector('.blocklyToolboxCategoryLabel')!.getBoundingClientRect(), icon: row.querySelector('.blocklyToolboxCategoryIcon')!.getBoundingClientRect() }));
+      const hit = (a: DOMRect, b: DOMRect) => a.left < b.right - 1 && b.left < a.right - 1 && a.top < b.bottom - 1 && b.top < a.bottom - 1;
+      return boxes.flatMap(a => boxes.filter(b => b !== a && (hit(a.label, b.icon) || hit(a.label, b.label))).map(b => `${a.name} × ${b.name}`));
+    });
+    expect(overlaps, `${size.width}x${size.height}`).toEqual([]);
+    const more = page.locator('#palette-more');
+    if (await more.isVisible()) {
+      const cue = (await more.boundingBox())!, palette = (await page.locator('.blocklyToolbox').boundingBox())!;
+      expect(cue.y, `${size.width}x${size.height}`).toBeGreaterThanOrEqual(palette.y + palette.height - 1);
+    }
+  }
 });

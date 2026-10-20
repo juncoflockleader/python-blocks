@@ -1,7 +1,7 @@
 {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 12,
+  "languageVersion": 22,
   "workspace": {
     "pythonScene": {
       "version": 1,
@@ -23,7 +23,8 @@
             "ticks": 0
           }
         }
-      ]
+      ],
+      "backdrop": "backdrop_meadow"
     },
     "blocks": {
       "languageVersion": 0,

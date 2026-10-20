@@ -120,5 +120,10 @@
   "tryNext": [
     "backdrop-event",
     "switch-backdrop"
+  ],
+  "demo": [
+    {
+      "wait": 4800
+    }
   ]
 }

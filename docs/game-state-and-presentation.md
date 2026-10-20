@@ -4,7 +4,7 @@ The **Game** palette adds score, lives, a countdown, fixed screen text, win/loss
 
 ## Try a complete game
 
-Choose **Examples → Star game**, Run, and focus the stage. Arrow keys move the explorer through a scrolling garden. Collect three stars before the 20-second countdown expires; purple balls each cost one life. The balls disappear on contact, so a straight path is playable, while steering around them preserves lives. A fixed HUD shows the score, lives, time and instructions. Collecting the final star wins; reaching zero lives or running out of time loses. **Play again** works by mouse, touch or keyboard and rebuilds the entire run.
+Choose **Examples → Star game**, Run, and focus the stage. Arrow keys move the fox through a scrolling garden. Collect three stars before the 20-second countdown expires; bees each cost one life. The bees disappear on contact, so a straight path is playable, while steering around them preserves lives. Each star, sting and the win plays a library sound. A fixed HUD shows the score, lives, time and instructions. Collecting the final star wins; reaching zero lives or running out of time loses. **Play again** works by mouse, touch or keyboard and rebuilds the entire run.
 
 All art, sprites, tile walls, motion settings and rules in [the example](../src/scene/star-game-example.json) are editable. No assets are downloaded during play. The game demonstrates finite bursts at collected objects and a screen-centered celebration.
 
@@ -68,7 +68,7 @@ The renderer retains at most 16 active bursts, dropping the oldest when a new bu
 
 ## Compilation, persistence and evidence
 
-Language version **15** introduced Game blocks. Current exports use version 19; earlier projects through version 18 and pinned modules from versions 5–18 remain readable. Any active Game operation, including one in an imported helper, enables the event session before caller input blocks are validated. Generated Python imports `playground.game`; the compiler captures the starting scene and maps game statements to blocks. Game values are runtime state: project files save the blocks that initialize them, not a mid-game heap. Source exports preserve the generated calls and captured scene; **Export playable** includes the browser host and runtime; see [portable playback](portable-playback.md).
+Language version **15** introduced Game blocks. Current project exports use version 22 (modules 19); earlier projects through version 21 and pinned modules from versions 5–19 remain readable. Any active Game operation, including one in an imported helper, enables the event session before caller input blocks are validated. Generated Python imports `playground.game`; the compiler captures the starting scene and maps game statements to blocks. Game values are runtime state: project files save the blocks that initialize them, not a mid-game heap. Source exports preserve the generated calls and captured scene; **Export playable** includes the browser host and runtime; see [portable playback](portable-playback.md).
 
 - [Native tests](../tests/python/test_game.py) cover bounded/atomic values, Unicode limits, explicit visibility, timer startup/replacement/stop, once-only expiry, zero-life transitions, terminal cancellation, startup finish, captured effect positions and reset.
 - [Model/compiler tests](../tests/unit/game.test.ts) cover worker command validation, bounded effects and camera coordinates, example compilation/source mapping/export/roundtrip, version migration and automatic event execution through reusable modules.

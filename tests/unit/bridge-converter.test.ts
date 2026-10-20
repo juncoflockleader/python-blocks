@@ -203,10 +203,10 @@ describe('isolated conversion and semantic acceptance', () => {
     expect(restored.getBlockById(disabledId)?.getParent()).toBeNull();
     expect(snapshot(w)).toEqual(base);
   });
-  it('loads language-18 projects and saves the unary block at language 19', async () => {
+  it('loads language-18 projects and saves the unary block at the current language version', async () => {
     const base = empty(); base.languageVersion = 18;
-    expect(prepareProject(JSON.stringify(base)).project.languageVersion).toBe(19);
+    expect(prepareProject(JSON.stringify(base)).project.languageVersion).toBe(22);
     const result = await converted('x = 2\nprint(-x)', base);
-    expect(result.project.languageVersion).toBe(19);
+    expect(result.project.languageVersion).toBe(22);
   });
 });

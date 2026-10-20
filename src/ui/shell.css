@@ -28,11 +28,46 @@ input[type=checkbox], input[type=radio] { width: 20px; height: 20px; }
 .project-title strong { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .project-notice { font-size: 11px; color: #5d6b52; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .top-history { display: flex; gap: 4px; }
+/* Blocks | Stage: a segmented switch; Stage view needs a window at least 900 px wide. */
+.view-switch { flex: none; display: inline-flex; overflow: hidden; border: 1px solid #d8decb; border-radius: 12px; background: #eef1e6; }
+.view-option { display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 44px; min-width: 44px; padding: 0 12px; border: 0; background: transparent; color: #3c5034; font: 600 13px inherit; white-space: nowrap; cursor: pointer; }
+.view-option + .view-option { border-left: 1px solid #d8decb; }
+.view-option:hover { background: #e3e9d6; }
+.view-option[aria-pressed=true] { background: #fff; color: #1d2e26; box-shadow: inset 0 -3px 0 #267c70; }
+.view-option:focus-visible { outline: 3px solid #dd9250; outline-offset: -3px; }
+@media (max-width: 899px) { .view-switch { display: none; } }
+/* The bar's controls keep their size; only the project title gives way. Tablets
+   show symbols for the view switch, Examples and Lessons so everything stays on one line. */
+.top-bar > :not(.project-title, .top-spacer) { flex-shrink: 0; }
+.top-bar .run-button { white-space: nowrap; }
+.project-title { min-width: 48px; }
+@media (max-width: 1099px) { .view-option, #examples-open, #lessons-open { font-size: 0; gap: 0; width: 44px; padding: 0; } }
 .top-spacer { flex: 1; }
 .run-button { padding-inline: 22px; font-size: 15px; }
 .top-divider { width: 1px; height: 28px; background: #dce1d2; }
-.level-control { display: flex; align-items: center; gap: 6px; font-size: 12px; color: #4e5f49; }
-.level-control select { min-height: 44px; padding: 0 8px; border: 1px solid #cbd4b4; border-radius: 10px; font: 600 14px inherit; color: #26382f; background: #fff; }
+/* Level: a tinted button with the level's symbol, and a menu that explains each level. */
+.level-control { position: relative; display: flex; align-items: center; --level-ink: #5b8a32; --level-tint: #edf3e2; --level-line: #c3d6a8; }
+.level-control[data-level=builder], .level-list [data-level=builder] { --level-ink: #b0682c; --level-tint: #f8ecdd; --level-line: #e6c7a2; }
+.level-control[data-level=pro], .level-list [data-level=pro] { --level-ink: #2f6d8f; --level-tint: #e2edf3; --level-line: #b3cddc; }
+.level-list [data-level=starter] { --level-ink: #5b8a32; --level-tint: #edf3e2; }
+.level-button { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; padding: 0 30px 0 6px; position: relative; border: 1px solid var(--level-line); border-radius: 12px; background: var(--level-tint); color: #26382f; font: 700 14px 'DM Sans', system-ui, sans-serif; white-space: nowrap; cursor: pointer; }
+.level-button:hover { filter: brightness(.97); }
+.level-button::after { content: ''; position: absolute; right: 12px; top: 50%; width: 7px; height: 7px; border: solid #3c5034; border-width: 0 2px 2px 0; transform: translateY(-70%) rotate(45deg); }
+.level-button[aria-expanded=true]::after { transform: translateY(-20%) rotate(-135deg); }
+.level-icon { display: inline-flex !important; align-items: center; justify-content: center; flex: 0 0 30px; width: 30px; height: 30px; border-radius: 9px; background: var(--level-ink); color: #fff; }
+.level-icon::before { width: 18px !important; height: 18px !important; flex-basis: 18px !important; vertical-align: 0 !important; }
+/* The native select keeps the value (and the tests' selectOption) but is neither seen nor focused. */
+.level-native { position: absolute; inset: 0; width: 100%; height: 100%; opacity: 0; pointer-events: none; }
+.level-list { position: absolute; top: calc(100% + 6px); right: 0; z-index: 150; width: 290px; margin: 0; padding: 6px; list-style: none; border: 1px solid #cbd4b4; border-radius: 14px; background: #fafbf6; box-shadow: 0 12px 32px #26382f33; outline: none; }
+.level-list[hidden] { display: none; }
+.level-list li { display: grid; grid-template-columns: 30px minmax(0, 1fr) 16px; gap: 10px; align-items: center; min-height: 52px; padding: 6px 8px; border-radius: 10px; cursor: pointer; }
+.level-list li.level-active { background: #edf1e5; }
+.level-list li[aria-selected=true] { background: var(--level-tint); }
+.level-list li[aria-selected=true]::after { content: ''; width: 6px; height: 11px; border: solid #26382f; border-width: 0 2px 2px 0; transform: rotate(45deg) translate(-2px, -2px); }
+.level-list:focus-visible li.level-active { outline: 2px solid #267c70; outline-offset: -2px; }
+.level-text { display: grid; gap: 1px; }
+.level-text strong { font: 700 14px 'DM Sans', system-ui, sans-serif; color: #26382f; }
+.level-text small { font-size: 12px; line-height: 1.3; color: #4e5f49; }
 .menu-wrap { position: relative; }
 .app-menu { position: absolute; right: 0; top: calc(100% + 6px); z-index: 60; width: 260px; max-height: calc(100dvh - 70px); overflow: auto; padding: 8px; display: flex; flex-direction: column; gap: 6px; background: #fafbf6; border: 1px solid #cbd4b4; border-radius: 14px; box-shadow: 0 14px 34px #26382f33; }
 .app-menu[hidden] { display: none; }
@@ -60,15 +95,39 @@ input[type=checkbox], input[type=radio] { width: 20px; height: 20px; }
 .block-search[hidden] { display: none; }
 .python-side { min-width: 0; min-height: 0; overflow: auto; border-left: 1px solid #dce1d2; background: #fafbf6; }
 .python-side[hidden] { display: none; }
+.stage-rail, .stage-main { display: none; }
+
+/* Stage view: tools rail | a large 3 : 2 stage | the sprite column. The stage
+   panel itself moves into .stage-main (installViewSwitch); the workspace hides. */
+:root[data-view=stage] .shell-body { --side: clamp(320px, 28vw, 400px); grid-template-columns: 60px minmax(0, 1fr) var(--side); grid-template-areas: 'rail main side'; }
+/* The workspace stays laid out at its usual size, only invisible (and inert, set by
+   installViewSwitch): Blockly measures text as it renders, and a workspace with no
+   size would shift blocks. Opacity, not visibility, because palette icons set visibility. */
+:root[data-view=stage] .shell-body { position: relative; }
+:root[data-view=stage] .blocks-panel { position: absolute; top: 0; left: 0; width: calc(100% - var(--right)); height: 100%; opacity: 0; pointer-events: none; }
+:root[data-view=stage] .python-side { display: none; }
+:root[data-view=stage] .stage-rail { grid-area: rail; display: flex; flex-direction: column; align-items: center; gap: 4px; padding: 8px 0; background: #f3f5ed; border-right: 1px solid #dce1d2; }
+:root[data-view=stage] .stage-main { grid-area: main; display: flex; min-width: 0; min-height: 0; padding: 8px 8px 0; background: #eef0e7; }
+:root[data-view=stage] .right-column { grid-area: side; }
+.stage-main .stage-panel { flex: 1; min-width: 0; min-height: 0; display: grid; grid-template-rows: minmax(0, 1fr) auto; container-type: size; }
+.stage-main .stage-wrap { align-self: center; justify-self: center; width: min(100cqw, calc((100cqh - 56px) * 1.5)); border-radius: 10px; overflow: hidden; box-shadow: 0 1px 4px #26382f26; }
+.stage-main .stage-toolbar { border-bottom: 0; padding: 4px 0; }
+.rail-button { width: 44px; border-color: transparent; background: transparent; color: #35483b; }
+.rail-button:hover:not(:disabled) { background: #e9eedf; }
+.rail-button[aria-pressed=true] { border-color: #267c70; background: #e5f2e8; color: #1d5f56; }
+.rail-button[data-ui-icon]::before { width: 20px; height: 20px; flex-basis: 20px; }
+.rail-divider { width: 28px; height: 1px; margin: 4px 0; background: #dce1d2; }
 
 /* Blockly palette: icon over label, touch-sized rows. */
 .blocklyToolbox { padding: 6px 4px; background: #f3f5ed; border-right: 1px solid #dce1d2; }
 .blocklyToolboxCategoryGroup { display: flex; flex-direction: column; gap: 2px; }
-.blocklyToolboxCategory { width: 80px; min-height: 52px; padding: 4px 2px !important; border-radius: 10px; border-left-width: 0 !important; }
+/* Blockly fixes each row's height; rows grow instead, so a two-line label never runs into the row below. */
+.blocklyToolboxCategory { width: 80px; min-height: 50px; height: auto !important; padding: 3px 2px !important; border-radius: 10px; border-left-width: 0 !important; box-sizing: border-box; }
 .blocklyToolboxCategory .blocklyTreeRowContentContainer { flex-direction: column; justify-content: center; gap: 3px; min-height: 44px; }
-.blocklyToolboxCategoryIcon[data-ui-icon] { width: 26px; height: 26px; flex-basis: 26px; border-radius: 50%; display: inline-flex; align-items: center; justify-content: center; color: #fff; background: var(--category-colour, #6c7c64); }
-.blocklyToolboxCategoryIcon[data-ui-icon]::before { width: 16px; height: 16px; }
-.blocklyToolboxCategoryLabel { font: 600 11px 'DM Sans', system-ui, sans-serif; color: #26382f; text-align: center; white-space: normal; line-height: 1.15; }
+/* Blockly writes display: inline-block on the icon span; the disc must stay a flex box to centre its symbol. */
+.blocklyToolboxCategoryIcon[data-ui-icon] { width: 26px; height: 26px; flex-basis: 26px; border-radius: 50%; display: inline-flex !important; align-items: center; justify-content: center; color: #fff; background: var(--category-colour, #6c7c64); }
+.blocklyToolboxCategoryIcon[data-ui-icon]::before { width: 16px; height: 16px; vertical-align: 0; }
+.blocklyToolboxCategoryLabel { font: 600 11px 'DM Sans', system-ui, sans-serif; color: #26382f; text-align: center; white-space: normal; line-height: 1.1; }
 .blocklyToolboxSelected { background: #e3eacf !important; }
 .blocklyToolboxSelected .blocklyToolboxCategoryLabel { color: #26382f; }
 .blocklyToolboxCategory:hover { background: #e9eedf; }
@@ -76,8 +135,12 @@ input[type=checkbox], input[type=radio] { width: 20px; height: 20px; }
 @media (min-width: 900px) and (max-height: 1160px) { :root[data-level=pro] .blocklyToolboxCategoryGroup { display: grid; grid-template-columns: repeat(2, 80px); gap: 2px; } }
 @media (min-width: 900px) and (max-height: 840px) { :root[data-level=builder] .blocklyToolboxCategoryGroup { display: grid; grid-template-columns: repeat(2, 80px); gap: 2px; } }
 /* Whatever still overflows gets a cue at the foot of the palette. */
-.palette-more { position: absolute; bottom: 8px; left: 44px; z-index: 80; transform: translateX(-50%); /* above Blockly's toolbox (z-index 70) */ min-height: 32px; padding: 0 12px 0 10px; border: 1px solid #cbd4b4; border-radius: 999px; background: #fafbf6f2; color: #3c5034; font: 600 12px inherit; cursor: pointer; box-shadow: 0 2px 8px #26382f29; display: inline-flex; align-items: center; gap: 4px; }
+/* When the categories overflow, the palette ends above a strip that holds the cue, so the cue never covers a category. */
+.blocks-panel.palette-overflow .blocklyToolbox { max-height: calc(100% - 44px); }
+.palette-more { position: absolute; bottom: 0; left: 0; z-index: 80; /* above Blockly's toolbox (z-index 70) */ height: 44px; padding: 0 10px; border: 0; border-top: 1px solid #dce1d2; border-right: 1px solid #dce1d2; border-radius: 0; background: #f3f5ed; color: #3c5034; font: 600 12px inherit; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 6px; box-sizing: border-box; }
+.palette-more:hover { background: #e9eedf; }
 .palette-more::after { content: ''; width: 7px; height: 7px; border: solid currentColor; border-width: 0 2px 2px 0; transform: translateY(-2px) rotate(45deg); }
+.palette-more.palette-more-up::after { transform: translateY(2px) rotate(-135deg); }
 .palette-more[hidden] { display: none; }
 
 /* Right column */
@@ -86,6 +149,37 @@ input[type=checkbox], input[type=radio] { width: 20px; height: 20px; }
 .stage-wrap { position: relative; }
 .stage-wrap canvas#stage { border: 0; border-radius: 0; }
 .stage-wrap canvas#stage:focus-visible { outline-offset: -3px; }
+/* The stage handles its own touch gestures: dragging sprites, panning and pinching. */
+#stage { touch-action: none; }
+#stage.stage-pan-tool, #stage.stage-pan-ready { cursor: grab; }
+#stage.stage-panning { cursor: grabbing; }
+/* Zoom: − 100% + in Stage view; only the level (fit / 100%) in the small stage, and only for big worlds. */
+.stage-zoom { display: flex; align-items: center; gap: 4px; }
+.stage-zoom-level { min-width: 64px; padding: 0 8px; font-variant-numeric: tabular-nums; }
+:root:not([data-view=stage]) #stage-zoom-out, :root:not([data-view=stage]) #stage-zoom-in { display: none; }
+:root:not([data-view=stage]) .stage-zoom[data-plain] { display: none; }
+/* The minimap card, the map button that opens it, the off-screen chip and the add-screen buttons. */
+.stage-map { position: absolute; right: 8px; bottom: 8px; z-index: 4; max-width: calc(100% - 16px); padding: 6px 8px 7px; box-sizing: border-box; border: 1px solid #cbd4b4; border-radius: 12px; background: #fafbf6eb; box-shadow: 0 4px 14px #26382f26; }
+.stage-map[hidden], .stage-map-show[hidden], .stage-offscreen[hidden], .stage-add[hidden] { display: none; }
+.stage-map-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 4px; font-size: 12px; font-weight: 700; color: #26382f; }
+.stage-map-hide { width: 28px; height: 24px; padding: 0; border: 0; border-radius: 6px; background: transparent; color: #3c5034; font-size: 16px; line-height: 1; cursor: pointer; }
+.stage-map-hide:hover { background: #e9eedf; }
+.stage-map-body { position: relative; width: max-content; margin: 0 auto; cursor: pointer; touch-action: none; }
+.stage-map-live .stage-map-body { cursor: default; }
+.stage-wrap .stage-map-body canvas { display: block; width: auto; max-width: 100%; border: 0; border-radius: 6px; box-shadow: 0 0 0 1px #b9c4a6; }
+.stage-map-screens { position: absolute; inset: 0; display: grid; grid-template-columns: repeat(var(--wide, 1), 1fr); grid-template-rows: repeat(var(--tall, 1), 1fr); pointer-events: none; }
+.stage-map-screens button { min-width: 0; min-height: 0; padding: 0; border: 0; background: transparent; font-size: 0; opacity: 0; pointer-events: none; }
+.stage-map-screens button:focus-visible { opacity: 1; outline: 2px solid #dd9250; outline-offset: -2px; background: #dd925033; }
+.stage-map-note { margin: 4px 0 0; font-size: 11px; color: #4e5f49; }
+.stage-map-show { position: absolute; right: 8px; bottom: 8px; z-index: 4; min-height: 36px; padding: 4px 10px; border: 1px solid #cbd4b4; border-radius: 10px; background: #fafbf6eb; color: #26382f; font: 700 12px inherit; cursor: pointer; box-shadow: 0 2px 8px #26382f26; }
+.stage-offscreen { --fx: .5; --fy: .5; position: absolute; z-index: 4; left: calc(8px + var(--fx) * (100% - 16px)); top: calc(8px + var(--fy) * (100% - 16px)); transform: translate(calc(var(--fx) * -100%), calc(var(--fy) * -100%)); max-width: 45%; min-height: 32px; padding: 4px 10px; overflow: hidden; border: 1px solid #267c70; border-radius: 999px; background: #e5f2e8f2; color: #1d5f56; font: 700 12px inherit; white-space: nowrap; text-overflow: ellipsis; cursor: pointer; box-shadow: 0 2px 8px #26382f26; }
+.stage-add { position: absolute; z-index: 4; min-height: 40px; padding: 6px 12px; border: 2px dashed #267c70; border-radius: 10px; background: #fafbf6e6; color: #1d5f56; font: 700 13px inherit; white-space: nowrap; cursor: pointer; }
+.stage-add:hover { background: #e5f2e8; }
+.stage-wrap button.stage-add { white-space: nowrap; }
+#stage-add-right { transform: translate(calc(-100% - 8px), -50%); }
+#stage-add-down { transform: translate(-50%, calc(-100% - 8px)); }
+#stage-add-right[data-outside] { transform: translate(8px, -50%); }
+#stage-add-down[data-outside] { transform: translate(-50%, 8px); }
 #status { position: absolute; top: 8px; right: 8px; z-index: 4; font-size: 11px; font-weight: 600; color: #2b5a4b; background: #e6f0d6f2; padding: 4px 8px; border-radius: 6px; pointer-events: none; }
 .stage-badge { position: absolute; left: 50%; bottom: 10px; transform: translateX(-50%); z-index: 4; min-height: 36px; padding: 6px 14px; border: 1px solid #d8ac83; border-radius: 999px; background: #fff4e7; color: #7a3a1e; font: 600 13px inherit; cursor: pointer; box-shadow: 0 4px 14px #26382f33; white-space: nowrap; }
 .stage-badge[hidden] { display: none; }
@@ -119,6 +213,10 @@ input[type=checkbox], input[type=radio] { width: 20px; height: 20px; }
 #scene-cards strong { max-width: 100%; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 10px; font-weight: 600; }
 #scene-cards small { display: none; }
 .tray-button { flex: none; width: 56px; min-height: 50px; padding: 4px; flex-direction: column; font-size: 11px; border-style: dashed; white-space: normal; line-height: 1.1; }
+/* Adding sprites is the tray's main action: a filled button with a large character icon. */
+.tray-button.tray-sprites { width: 64px; gap: 3px; border: 1px solid #267c70; background: #e5f2e8; color: #1d5f56; font-size: 12px; font-weight: 700; }
+.tray-button.tray-sprites:hover { background: #d6ebdc; }
+.tray-button.tray-sprites[data-ui-icon]::before { width: 24px; height: 24px; flex-basis: 24px; }
 
 /* Tabs */
 .tab-bar { flex: none; display: flex; border-bottom: 1px solid #e4e7dd; }
@@ -152,6 +250,12 @@ input[type=checkbox], input[type=radio] { width: 20px; height: 20px; }
 .stage-settings { margin-top: 12px; padding-top: 8px; border-top: 1px solid #e4e7dd; }
 .stage-settings h3 { margin: 4px 0 8px; font-size: 13px; }
 .stage-settings > label { margin-bottom: 8px; }
+/* World size, in screens: two steppers. */
+.world-screens { display: grid; gap: 6px; margin-bottom: 10px; }
+.world-screens-title { font-weight: 600; }
+.world-screens .tab-note { margin: 0; }
+.stepper { display: grid; grid-template-columns: minmax(0, 1fr) 44px 40px 44px; align-items: center; gap: 4px; }
+.stepper output { text-align: center; font: 700 15px 'Space Grotesk', system-ui, sans-serif; font-variant-numeric: tabular-nums; }
 #scene-mode:not([data-state=editing]) { color: #7a3a1e; }
 
 /* More settings sheet */
@@ -200,7 +304,7 @@ mark.python-active { background: #e3eacf; color: inherit; box-shadow: -4px 0 0 #
 :root:not([data-keyboard]) #play-dialog .stage-wrap { max-width: min(100%, 1000px, calc((100dvh - 270px) * 1.5)); }
 
 /* Every editor dialog fits the viewport and scrolls inside itself. */
-:is(#art-dialog, #world-dialog, #stock-dialog, .sound-editor, #play-dialog, #language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector, #migration-dialog) { max-height: calc(100dvh - 24px); overflow: auto; }
+:is(#world-dialog, #stock-dialog, #play-dialog, #language-dialog, #lambda-dialog, #events-dialog, #modules-dialog, #module-inspector, #migration-dialog) { max-height: calc(100dvh - 24px); overflow: auto; }
 
 /* Dialogs added by the shell */
 .examples-dialog { width: min(1040px, calc(100vw - 24px)); max-width: calc(100vw - 24px); max-height: calc(100dvh - 24px); padding: 18px; background: #fafbf6; }
@@ -230,13 +334,12 @@ dialog .example-list li { padding: 0; }
   .stage-panel { grid-area: stage; border-right: 1px solid #dce1d2; overflow: auto; }
   .sprite-tray { grid-area: tray; } .tab-bar { grid-area: tabs; } .tab-panels { grid-area: panels; }
   .project-title { max-width: 140px; }
-  .level-control > :first-child { display: none; }
 }
-@media (max-width: 760px) and (min-width: 600px) { #examples-open { display: none; } }
-@media (min-width: 761px) { #menu-examples { display: none; } }
+@media (max-width: 760px) and (min-width: 600px) { #examples-open, #lessons-open { display: none; } }
+@media (min-width: 761px) { #menu-examples, #menu-lessons { display: none; } }
 /* Phones: play only. */
 @media (max-width: 599px) {
-  .shell-body, .shell-notices, .top-history, .level-control, #examples-open, .top-divider, #run, #stop { display: none !important; }
+  .shell-body, .shell-notices, .top-history, .level-control, #examples-open, #lessons-open, .top-divider, #run, #stop { display: none !important; }
   .phone-message { display: block; padding: 32px 20px; text-align: center; }
   .phone-message h2 { font: 700 22px 'Space Grotesk', system-ui, sans-serif; margin: 0 0 8px; }
   .phone-message p { color: #4e5f49; }

@@ -1,4 +1,5 @@
-import { decodeWave, SOUND_RATE, synthesize, synthesizeTone, validAudioCommand, type AudioCommand, type Sound, type SoundSettings } from '../scene/sound';
+import { SOUND_RATE, synthesizeTone, validAudioCommand, type AudioCommand, type Sound, type SoundSettings } from '../scene/sound';
+import { soundSamples } from '../scene/sound-library';
 
 export interface AudioHost {
   begin(sounds: Sound[], complete: (id: number, error?: string) => void): void;
@@ -60,14 +61,15 @@ export class SoundPlayer implements AudioHost {
         let samples: Float32Array;
         if (command.type === 'tone') samples = synthesizeTone(command.pitch, command.seconds, command.instrument);
         else {
-          const sound = this.sounds.get(command.sound); if (!sound) throw new Error('This sound is unavailable. Choose a sound from Sounds & music.');
-          samples = sound.kind === 'clip' ? decodeWave(sound.data) : synthesize(sound);
+          const sound = this.sounds.get(command.sound); if (!sound) throw new Error('This sound is unavailable. Choose another sound in the block’s menu.');
+          samples = soundSamples(sound);
         }
         buffer = this.context.createBuffer(1, samples.length, SOUND_RATE); buffer.copyToChannel(new Float32Array(samples), 0);
         if (command.type === 'play') { if (this.buffers.size >= 8) this.buffers.delete(this.buffers.keys().next().value!); this.buffers.set(command.sound, buffer); }
       }
       const source = this.context.createBufferSource(), gain = this.context.createGain(), pan = this.context.createStereoPanner();
-      source.buffer = buffer; source.connect(gain); gain.connect(pan); pan.connect(this.master!);
+      // A looping sound plays until it is stopped; it never ends by itself.
+      source.buffer = buffer; source.loop = command.type === 'play' && command.loop === true; source.connect(gain); gain.connect(pan); pan.connect(this.master!);
       const voice = { owner: command.owner, source, gain, pan }; this.settings(voice, command.settings);
       this.voices.set(command.id, voice); source.onended = () => this.end(command.id, false); source.start(); this.onChange();
     } catch (error) { this.end(command.id, true, false); this.complete(command.id, error instanceof Error ? error.message : String(error)); }

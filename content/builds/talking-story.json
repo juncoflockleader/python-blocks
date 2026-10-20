@@ -1,9 +1,9 @@
 {
  "id": "talking-story",
  "title": "Talking story",
- "level": "builder",
+ "level": "starter",
  "minutes": 20,
- "order": 6,
+ "order": 4,
  "summary": "Two characters talk, music plays, night falls and the bird changes costume.",
  "ideas": [
   "say and wait",
@@ -92,7 +92,7 @@
    }
   },
   {
-   "text": "Give the bird a second costume: paint one in Artwork & frames, or use Import costume in the Sprite tab.",
+   "text": "Give the bird a second costume: press [[Paint]] under the stage, then [[New]], or use [[Import costume]] in the [[Sprite tab]].",
    "check": {
     "frames": 2
    },
@@ -130,5 +130,5 @@
    "Make the stars twinkle with graphic effects."
   ]
  },
- "next": "jump-quest"
+ "next": "brick-breaker"
 }

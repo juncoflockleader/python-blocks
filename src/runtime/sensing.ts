@@ -1,16 +1,18 @@
 import { SceneColors } from './colors';
 import { paintBuiltinCostume, paintBuiltinBackdrop } from '../scene/assets';
-import { builtinBackdrops, builtins, emptyScene, isColor, validSprite, type SceneState, type SpriteState } from '../scene/model';
+import { builtinBackdrops, builtins, emptyScene, isColor, isStock, validSprite, type SceneState, type SpriteState } from '../scene/model';
+import { paintStockBox } from '../art/raster';
 import { PixelSensing, type PixelImage } from '../scene/sensing';
 
 export async function createSensing(scene?: SceneState) {
   const images = new Map<string, PixelImage>(), canvases = new Map<string, OffscreenCanvas>();
   await Promise.all([...builtins, ...builtinBackdrops, ...(scene?.assets ?? []), ...(scene?.backdrops ?? [])].map(async asset => {
     const canvas = new OffscreenCanvas(asset.width, asset.height), ctx = canvas.getContext('2d')!;
-    if ('data' in asset) {
+    if (isStock(asset)) paintStockBox(ctx, asset.stock);
+    else if ('data' in asset && asset.data) {
       const bytes = Uint8Array.from(atob(asset.data.slice(22)), c => c.charCodeAt(0));
       const image = await createImageBitmap(new Blob([bytes], { type: 'image/png' }));
-      try { ctx.drawImage(image, 0, 0); } finally { image.close(); }
+      try { ctx.drawImage(image, 0, 0, asset.width, asset.height); } finally { image.close(); }
     } else if (builtinBackdrops.some(a => a.id === asset.id)) paintBuiltinBackdrop(ctx, asset.id);
     else { ctx.translate(asset.width / 2, asset.height / 2); paintBuiltinCostume(ctx, asset.id); }
     canvases.set(asset.id, canvas);

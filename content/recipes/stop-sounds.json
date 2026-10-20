@@ -35,5 +35,18 @@
   "preview": "stop-sounds.webm",
   "tryNext": [
     "music-loop"
+  ],
+  "previewScene": "music",
+  "demo": [
+    {
+      "wait": 900
+    },
+    {
+      "key": "s",
+      "ms": 60
+    },
+    {
+      "wait": 600
+    }
   ]
 }

@@ -1,4 +1,6 @@
-import { stockArtwork, stockCanvas } from './stock-art';
+import { findStock, stockArtwork, stockCanvas } from './stock-art';
+import { stockAssetById } from '../art/catalog';
+import { paintStockBox } from '../art/raster';
 import { templateLayout, worldTemplates } from './world-templates';
 
 export type StockKind = 'costume' | 'backdrop' | 'world';
@@ -10,22 +12,25 @@ export function installStockLibrary(add: (kind: StockKind, id: string, signal: A
   </dialog>`);
   const el = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
   const dialog = el<HTMLDialogElement>('stock-dialog'), kind = el<HTMLSelectElement>('stock-kind'), search = el<HTMLInputElement>('stock-search'), category = el<HTMLSelectElement>('stock-category');
-  let generation = 0, operation: AbortController | undefined;
+  let generation = 0, operation: AbortController | undefined, override: typeof add | undefined;
   async function preview(type: StockKind, id: string) {
-    if (type !== 'world') return stockCanvas(stockArtwork.find(a => a.kind === type && a.id === id)!);
+    if (type !== 'world') return stockCanvas(findStock(type, id)!, 2);
     const template = worldTemplates.find(t => t.id === id)!, world = templateLayout(template);
     const canvas = document.createElement('canvas'); canvas.width = world.map.columns * 32; canvas.height = 320;
-    const c = canvas.getContext('2d')!; c.drawImage(await stockCanvas(stockArtwork.find(a => a.kind === 'backdrop' && a.id === template.backdrop)!),0,0,canvas.width,canvas.height);
+    const c = canvas.getContext('2d')!; c.drawImage(await stockCanvas(findStock('backdrop', template.backdrop)!),0,0,canvas.width,canvas.height);
     const images = new Map<string,HTMLCanvasElement>();
-    for(const id of new Set(world.map.tiles.filter((id): id is string => id !== null))) images.set(id,await stockCanvas(stockArtwork.find(a => a.kind === 'costume' && a.id === id)!));
+    for(const id of new Set(world.map.tiles.filter((id): id is string => id !== null))) {
+      const art = stockAssetById(id)!, image = document.createElement('canvas'); image.width = 64; image.height = 64;
+      const ic = image.getContext('2d')!; ic.scale(64 / art.width, 64 / art.height); paintStockBox(ic, art.ref); images.set(id, image);
+    }
     world.map.tiles.forEach((id,i) => { if(id) c.drawImage(images.get(id)!,i%world.map.columns*32,Math.floor(i/world.map.columns)*32,32,32); });
     return canvas;
   }
   function render() {
     const version = ++generation, type = kind.value as StockKind, query = search.value.trim().toLowerCase();
     el('stock-category-label').hidden = type !== 'costume';
-    el('stock-help').textContent = type === 'world' ? 'Add a new editable tilemap and its artwork. Orange tile outlines in the world editor mark solid walls. Add your own characters and code.' : type === 'backdrop' ? 'Choose the backdrop for the current world or base stage.' : 'Choose a sprite to add at the center of the current view. Use Artwork & frames to customize it.';
-    const entries = type === 'world' ? worldTemplates.map(t => ({...t,category:'Worlds'})) : stockArtwork.filter(a => a.kind === type).map(a => ({...a,description:a.category}));
+    el('stock-help').textContent = type === 'world' ? 'Add a new editable tilemap and its artwork. Orange tile outlines in the world editor mark solid walls. Add your own characters and code.' : type === 'backdrop' ? 'Choose the backdrop for the current world or base stage.' : 'Choose a sprite to add at the center of the current view. Press Paint under the stage to change it.';
+    const entries = type === 'world' ? worldTemplates.map(t => ({...t,category:'Worlds'})) : stockArtwork.filter(a => a.kind === type).map(a => ({...a,description:a.detail}));
     const shown = entries.filter(a => `${a.name} ${a.description}`.toLowerCase().includes(query) && (type !== 'costume' || !category.value || category.value === a.category));
     const noun = type === 'world' ? 'world' : type === 'backdrop' ? 'backdrop' : 'sprite';
     el('stock-count').textContent = `${shown.length} ${noun}${shown.length === 1 ? '' : 's'}${shown.length ? ' · choose one to add' : ' · try another search'}`;
@@ -42,14 +47,15 @@ export function installStockLibrary(add: (kind: StockKind, id: string, signal: A
         if(operation) return;
         const request = new AbortController(); operation = request; el('stock-error').textContent = '';
         grid.querySelectorAll('button').forEach(b => { b.disabled = true; });
-        try { await add(type,entry.id,request.signal); if(!request.signal.aborted) dialog.close(); }
+        try { await (override ?? add)(type,entry.id,request.signal); if(!request.signal.aborted) dialog.close(); }
         catch(error) { if(!request.signal.aborted) el('stock-error').textContent = error instanceof Error ? error.message : String(error); }
         finally { if(operation === request) { operation = undefined; if(dialog.open) render(); } }
       });
     }
   }
-  const close = () => { generation++; operation?.abort(); operation = undefined; dialog.close(); };
-  el('stock-close').addEventListener('click',close); dialog.addEventListener('cancel',close);
+  const close = () => { generation++; operation?.abort(); operation = undefined; override = undefined; dialog.close(); };
+  el('stock-close').addEventListener('click',close); dialog.addEventListener('cancel',close); dialog.addEventListener('close', () => { override = undefined; });
   kind.addEventListener('change',render); category.addEventListener('change',render); search.addEventListener('input',render);
-  return { open(type: StockKind) { kind.value=type; search.value=''; category.value=''; el('stock-error').textContent=''; dialog.showModal(); render(); search.focus(); }, close, dispose() { close(); dialog.remove(); } };
+  // `use` replaces adding to the scene for this opening (the Paint editor adds a frame instead).
+  return { open(type: StockKind, use?: typeof add) { override = use; kind.value=type; search.value=''; category.value=''; el('stock-error').textContent=''; dialog.showModal(); render(); search.focus(); }, close, dispose() { close(); dialog.remove(); } };
 }

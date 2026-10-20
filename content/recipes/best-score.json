@@ -20,7 +20,7 @@
   },
   "steps": [
     {
-      "say": "Make a variable called best."
+      "say": "Make a variable called best, and set it to 0 when the game starts."
     },
     {
       "say": "After each point, if the score is bigger than best, set best to the score and show it."
@@ -30,6 +30,29 @@
     "best"
   ],
   "blocks": [
+    {
+      "handler": {
+        "kind": "start"
+      },
+      "stack": [
+        {
+          "type": "py_set",
+          "fields": {
+            "SYMBOL": "$var:best"
+          },
+          "inputs": {
+            "VALUE": {
+              "shadow": {
+                "type": "py_number",
+                "fields": {
+                  "VALUE": "0"
+                }
+              }
+            }
+          }
+        }
+      ]
+    },
     {
       "handler": {
         "kind": "click"
@@ -137,5 +160,22 @@
   "preview": "best-score.webm",
   "tryNext": [
     "count-how-many"
+  ],
+  "demo": [
+    {
+      "wait": 300
+    },
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 300
+    },
+    {
+      "click": "$sprite"
+    },
+    {
+      "wait": 500
+    }
   ]
 }

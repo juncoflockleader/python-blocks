@@ -1,0 +1,1354 @@
+{
+ "id": "flappy-flight",
+ "title": "Flappy Flight",
+ "kind": "lesson",
+ "level": "builder",
+ "minutes": 25,
+ "order": 6,
+ "summary": "Tap to flap a bird through gaps in the pipes. Gravity pulls, you push, and every pipe you pass scores once.",
+ "ideas": [
+  "gravity",
+  "velocity",
+  "random",
+  "clones",
+  "clone data",
+  "win condition"
+ ],
+ "learn": [
+  "make gravity pull with an acceleration, and flap by setting a speed",
+  "send clones from one hidden pipe, each at a random height",
+  "predict what a script does before you run it, then fix it",
+  "give every clone its own memory with sprite data"
+ ],
+ "chapters": [
+  {
+   "title": "Fall and flap",
+   "idea": "Gravity is an acceleration; a flap sets the speed.",
+   "steps": 2
+  },
+  {
+   "title": "Pipes",
+   "idea": "A clone starts where its sprite is.",
+   "steps": 2
+  },
+  {
+   "title": "Score",
+   "idea": "Each clone keeps its own data.",
+   "steps": 3
+  },
+  {
+   "title": "Win or lose",
+   "idea": "You decide when the game ends.",
+   "steps": 2
+  }
+ ],
+ "starter": {
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 22,
+  "workspace": {
+   "blocks": {
+    "languageVersion": 0,
+    "blocks": []
+   },
+   "pythonScene": {
+    "version": 1,
+    "background": "#7ccbef",
+    "assets": [
+     {
+      "id": "stock-chick-idle-1",
+      "name": "Chick idle 1",
+      "width": 52,
+      "height": 40,
+      "stock": "cast/chick-idle-1@1"
+     },
+     {
+      "id": "stock-chick-idle-2",
+      "name": "Chick idle 2",
+      "width": 52,
+      "height": 40,
+      "stock": "cast/chick-idle-2@1"
+     },
+     {
+      "id": "stock-chick-flap-1",
+      "name": "Chick flap 1",
+      "width": 52,
+      "height": 40,
+      "stock": "cast/chick-flap-1@1"
+     },
+     {
+      "id": "stock-chick-flap-2",
+      "name": "Chick flap 2",
+      "width": 52,
+      "height": 40,
+      "stock": "cast/chick-flap-2@1"
+     },
+     {
+      "id": "stock-chick-flap-3",
+      "name": "Chick flap 3",
+      "width": 52,
+      "height": 40,
+      "stock": "cast/chick-flap-3@1"
+     },
+     {
+      "id": "stock-chick-flap-4",
+      "name": "Chick flap 4",
+      "width": 52,
+      "height": 40,
+      "stock": "cast/chick-flap-4@1"
+     },
+     {
+      "id": "stock-chick-jump",
+      "name": "Chick jump",
+      "width": 52,
+      "height": 40,
+      "stock": "cast/chick-jump@1"
+     },
+     {
+      "id": "stock-chick-happy",
+      "name": "Chick happy",
+      "width": 52,
+      "height": 40,
+      "stock": "cast/chick-happy@1"
+     },
+     {
+      "id": "stock-pipes",
+      "name": "Pipe pair",
+      "width": 26,
+      "height": 255,
+      "stock": "props/pipes@1"
+     }
+    ],
+    "backdrops": [
+     {
+      "id": "stock-city-sky",
+      "name": "City sky",
+      "width": 480,
+      "height": 320,
+      "stock": "backdrops/city-sky@1"
+     }
+    ],
+    "backdrop": "stock-city-sky",
+    "sprites": [
+     {
+      "id": "bird",
+      "name": "Bird",
+      "x": -150,
+      "y": 30,
+      "direction": 0,
+      "size": 77,
+      "layer": 3,
+      "visible": true,
+      "costume": "stock-chick-idle-1",
+      "rotationStyle": "all",
+      "costumes": [
+       "stock-chick-flap-1",
+       "stock-chick-flap-2",
+       "stock-chick-flap-3",
+       "stock-chick-flap-4"
+      ],
+      "frameSeconds": 0.06,
+      "animations": [
+       {
+        "name": "idle",
+        "frames": [
+         "stock-chick-idle-1",
+         "stock-chick-idle-2"
+        ],
+        "seconds": 0.4
+       },
+       {
+        "name": "flap",
+        "frames": [
+         "stock-chick-flap-1",
+         "stock-chick-flap-2",
+         "stock-chick-flap-3",
+         "stock-chick-flap-4"
+        ]
+       },
+       {
+        "name": "jump",
+        "frames": [
+         "stock-chick-jump"
+        ]
+       },
+       {
+        "name": "happy",
+        "frames": [
+         "stock-chick-happy"
+        ]
+       }
+      ]
+     },
+     {
+      "id": "pipe",
+      "name": "Pipe",
+      "x": 300,
+      "y": 20,
+      "direction": 0,
+      "size": 200,
+      "layer": 1,
+      "visible": true,
+      "costume": "stock-pipes",
+      "rotationStyle": "none",
+      "data": {
+       "passed": false
+      }
+     }
+    ]
+   }
+  }
+ },
+ "steps": [
+  {
+   "text": "When the game starts, set the Bird’s ay to −900 and make it stop at the stage edge. Before you run it: what will the bird do?",
+   "check": {
+    "all": [
+     {
+      "all": [
+       {
+        "field": [
+         "scene_motion_set",
+         "PROPERTY",
+         "ay"
+        ]
+       },
+       {
+        "number": [
+         "scene_motion_set",
+         "VALUE",
+         -900
+        ]
+       }
+      ]
+     },
+     {
+      "field": [
+       "scene_motion_edges",
+       "MODE",
+       "stop"
+      ]
+     },
+     {
+      "predicted": true
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "kind": "predict",
+   "why": "ay is an acceleration: gravity. It does not set a speed; it keeps adding downward speed, every moment.",
+   "checklist": [
+    {
+     "text": "The Bird gets gravity: ay −900",
+     "check": {
+      "all": [
+       {
+        "field": [
+         "scene_motion_set",
+         "PROPERTY",
+         "ay"
+        ]
+       },
+       {
+        "number": [
+         "scene_motion_set",
+         "VALUE",
+         -900
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "text": "The Bird stops at the stage edge",
+     "check": {
+      "field": [
+       "scene_motion_edges",
+       "MODE",
+       "stop"
+      ]
+     }
+    },
+    {
+     "text": "You chose what will happen",
+     "check": {
+      "predicted": true
+     }
+    },
+    {
+     "text": "You ran it after choosing",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "hints": [
+    "In {{Physics}}, “set sprite … vx to …” has a menu: choose ay. Put it under “when game starts” from {{Events}}.",
+    "Set the Bird’s ay to −900. Then add “sprite Bird at stage edge stop” from Motion."
+   ],
+   "select": "bird",
+   "highlight": {
+    "category": "physics"
+   },
+   "predict": {
+    "question": "What will the bird do?",
+    "choices": [
+     "Fall faster and faster, then stop at the bottom",
+     "Fall at one steady speed",
+     "Float where it is",
+     "Fly up and away"
+    ],
+    "answer": 0,
+    "explain": "Gravity adds a little more downward speed every moment, so the bird falls faster and faster until the stage edge stops it."
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "start"
+      },
+      "stack": [
+       {
+        "type": "scene_motion_set",
+        "fields": {
+         "PROPERTY": "ay"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "bird"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "-900"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "scene_motion_edges",
+        "fields": {
+         "MODE": "stop"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "bird"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "Flap: when space is pressed, set the Bird’s vy to 300 and play its flap animation. Run it, click the stage and keep the bird in the air.",
+   "check": {
+    "all": [
+     {
+      "handler": "key",
+      "contains": [
+       "scene_motion_set"
+      ]
+     },
+     {
+      "handler": "key",
+      "contains": [
+       "scene_play_animation"
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "why": "Setting vy gives one quick push up. Gravity then pulls the bird back down, and that push and fall is the whole game.",
+   "checklist": [
+    {
+     "text": "A script runs when space is pressed",
+     "check": {
+      "handler": "key",
+      "contains": [
+       "scene_motion_set"
+      ]
+     }
+    },
+    {
+     "text": "It plays the Bird’s flap animation",
+     "check": {
+      "handler": "key",
+      "contains": [
+       "scene_play_animation"
+      ]
+     }
+    },
+    {
+     "text": "You ran it",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "hints": [
+    "From {{Events}}, drag “when space key pressed”. In {{Physics}}, use “set sprite … vy to …” for the Bird.",
+    "Under it, add “play sprite Bird animation once and wait” from Looks. The Bird’s costumes are four flap frames: one beat of its wings."
+   ],
+   "select": "bird",
+   "highlight": {
+    "category": "events"
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "Space"
+      },
+      "stack": [
+       {
+        "type": "scene_motion_set",
+        "fields": {
+         "PROPERTY": "vy"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "bird"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "300"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "scene_play_animation",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "bird"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "The lesson wrote a loop that sends a pipe every 1.5 seconds, but every gap is at the same height. Fix it: before each clone, set Pipe’s y to a random number from −40 to 90.",
+   "check": {
+    "all": [
+     {
+      "nested": [
+       "controls_whileUntil",
+       "math_random_int"
+      ]
+     },
+     {
+      "field": [
+       "scene_set",
+       "PROPERTY",
+       "y"
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "kind": "fix",
+   "why": "A clone starts where its sprite is. Pipe waits off the right edge, so every copy starts at Pipe’s height, until you move Pipe first.",
+   "checklist": [
+    {
+     "text": "Pipe moves to a random height in the loop",
+     "check": {
+      "nested": [
+       "controls_whileUntil",
+       "math_random_int"
+      ]
+     }
+    },
+    {
+     "text": "…by setting its y",
+     "check": {
+      "field": [
+       "scene_set",
+       "PROPERTY",
+       "y"
+      ]
+     }
+    },
+    {
+     "text": "You ran it",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "hints": [
+    "Run it: the gaps line up, so you could fly straight through. What decides where each clone starts?",
+    "At the top of the loop, add “set sprite Pipe y to” from Motion, and put “random integer from −40 to 90” (Control) in it."
+   ],
+   "select": "pipe",
+   "highlight": {
+    "category": "motion"
+   },
+   "plant": [
+    {
+     "handler": {
+      "kind": "start"
+     },
+     "stack": [
+      {
+       "type": "controls_whileUntil",
+       "fields": {
+        "MODE": "WHILE"
+       },
+       "inputs": {
+        "BOOL": {
+         "shadow": {
+          "type": "logic_boolean",
+          "fields": {
+           "BOOL": "TRUE"
+          }
+         }
+        },
+        "DO": {
+         "block": {
+          "type": "scene_motion_set",
+          "fields": {
+           "PROPERTY": "vx"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_clone",
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "fields": {
+                 "SPRITE_ID": "pipe"
+                }
+               }
+              }
+             }
+            }
+           },
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "-150"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "py_wait",
+            "inputs": {
+             "SECONDS": {
+              "shadow": {
+               "type": "py_number",
+               "fields": {
+                "VALUE": "1.5"
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "start"
+      },
+      "stack": [
+       {
+        "type": "controls_whileUntil",
+        "fields": {
+         "MODE": "WHILE"
+        },
+        "inputs": {
+         "BOOL": {
+          "shadow": {
+           "type": "logic_boolean",
+           "fields": {
+            "BOOL": "TRUE"
+           }
+          }
+         },
+         "DO": {
+          "block": {
+           "type": "scene_set",
+           "fields": {
+            "PROPERTY": "y"
+           },
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_sprite",
+              "fields": {
+               "SPRITE_ID": "pipe"
+              }
+             }
+            },
+            "VALUE": {
+             "block": {
+              "type": "math_random_int",
+              "inputs": {
+               "FROM": {
+                "shadow": {
+                 "type": "py_number",
+                 "fields": {
+                  "VALUE": "-40"
+                 }
+                }
+               },
+               "TO": {
+                "shadow": {
+                 "type": "py_number",
+                 "fields": {
+                  "VALUE": "90"
+                 }
+                }
+               }
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "scene_motion_set",
+             "fields": {
+              "PROPERTY": "vx"
+             },
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_clone",
+                "inputs": {
+                 "SPRITE": {
+                  "block": {
+                   "type": "scene_sprite",
+                   "fields": {
+                    "SPRITE_ID": "pipe"
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "-150"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "py_wait",
+               "inputs": {
+                "SECONDS": {
+                 "shadow": {
+                  "type": "py_number",
+                  "fields": {
+                   "VALUE": "1.5"
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ],
+    "replacesPlant": 2
+   }
+  },
+  {
+   "text": "Crash: when a Pipe touches the Bird, finish the game as a loss. And when the Bird’s y drops below −115, it hit the ground: finish the game too.",
+   "check": {
+    "all": [
+     {
+      "handler": "overlap",
+      "sprite": "pipe",
+      "contains": [
+       "game_finish"
+      ]
+     },
+     {
+      "handler": "update",
+      "sprite": "bird",
+      "contains": [
+       "controls_if",
+       "game_finish"
+      ]
+     }
+    ]
+   },
+   "why": "The script belongs to Pipe, so every pipe clone checks for the bird. “When Bird updates” runs many times a second, so the ground is noticed at once.",
+   "checklist": [
+    {
+     "text": "When a Pipe touches the Bird, the game ends",
+     "check": {
+      "handler": "overlap",
+      "sprite": "pipe",
+      "contains": [
+       "game_finish"
+      ]
+     }
+    },
+    {
+     "text": "Each update, the Bird checks for the ground",
+     "check": {
+      "handler": "update",
+      "sprite": "bird",
+      "contains": [
+       "controls_if",
+       "game_finish"
+      ]
+     }
+    }
+   ],
+   "hints": [
+    "Select Pipe, then from {{Events}} drag “when Pipe overlaps …” and choose Bird. Inside, put “finish game lose” from {{Game}}.",
+    "Select Bird and drag “when Bird updates”. Inside: if Bird’s y < −115, finish game lose."
+   ],
+   "select": "pipe",
+   "other": "bird",
+   "highlight": {
+    "category": "game"
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "overlap",
+       "sprite": "$sprite",
+       "other": "$other"
+      },
+      "stack": [
+       {
+        "type": "game_finish",
+        "fields": {
+         "WON": "FALSE"
+        },
+        "inputs": {
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Bonk! Game over."
+           }
+          }
+         }
+        }
+       }
+      ]
+     },
+     {
+      "handler": {
+       "kind": "update",
+       "sprite": "$other"
+      },
+      "stack": [
+       {
+        "type": "controls_if",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "logic_compare",
+           "fields": {
+            "OP": "LT"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "scene_get",
+              "fields": {
+               "PROPERTY": "y"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_self"
+                }
+               }
+              }
+             }
+            },
+            "B": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "-115"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "game_finish",
+           "fields": {
+            "WON": "FALSE"
+           },
+           "inputs": {
+            "TEXT": {
+             "shadow": {
+              "type": "text",
+              "fields": {
+               "TEXT": "Splat! Game over."
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "The lesson wrote a score script for Pipe: once a pipe is left of the bird (x below −150), add 1 to the score. It also destroys pipes that leave the stage. Before you run it: what will the score do when you pass a pipe?",
+   "check": {
+    "all": [
+     {
+      "predicted": true
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "kind": "predict",
+   "why": "Read the script before you run it. Every pipe clone runs “when Pipe updates” for itself, about 30 times a second.",
+   "checklist": [
+    {
+     "text": "You chose what will happen",
+     "check": {
+      "predicted": true
+     }
+    },
+    {
+     "text": "You ran it after choosing",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "hints": [
+    "Watch the score in the corner while a pipe slides past the bird.",
+    "How many updates happen after a pipe’s x drops below −150, before it leaves the stage?"
+   ],
+   "select": "pipe",
+   "highlight": {
+    "category": "events"
+   },
+   "predict": {
+    "question": "What will the score do when you pass a pipe?",
+    "choices": [
+     "Go up by 1 for each pipe",
+     "Go up again and again for every pipe",
+     "Stay at 0",
+     "Go down"
+    ],
+    "answer": 1,
+    "explain": "Each update after the pipe passes adds another point: about 30 a second. The pipe needs to remember that it already scored."
+   },
+   "plant": [
+    {
+     "handler": {
+      "kind": "update",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "controls_if",
+       "inputs": {
+        "IF0": {
+         "block": {
+          "type": "logic_compare",
+          "fields": {
+           "OP": "LT"
+          },
+          "inputs": {
+           "A": {
+            "block": {
+             "type": "scene_get",
+             "fields": {
+              "PROPERTY": "x"
+             },
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_self"
+               }
+              }
+             }
+            }
+           },
+           "B": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "-150"
+             }
+            }
+           }
+          }
+         }
+        },
+        "DO0": {
+         "block": {
+          "type": "game_change",
+          "fields": {
+           "FIELD": "score"
+          },
+          "inputs": {
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "1"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "controls_if",
+       "inputs": {
+        "IF0": {
+         "block": {
+          "type": "logic_compare",
+          "fields": {
+           "OP": "LT"
+          },
+          "inputs": {
+           "A": {
+            "block": {
+             "type": "scene_get",
+             "fields": {
+              "PROPERTY": "x"
+             },
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_self"
+               }
+              }
+             }
+            }
+           },
+           "B": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "-300"
+             }
+            }
+           }
+          }
+         }
+        },
+        "DO0": {
+         "block": {
+          "type": "scene_destroy",
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_self"
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "text": "Give each pipe a memory. Pipe has data named “passed”, set to False. Score only when the pipe is past the bird and not “passed”, then set its “passed” to True.",
+   "check": {
+    "all": [
+     {
+      "handler": "update",
+      "sprite": "pipe",
+      "contains": [
+       "scene_data_get"
+      ]
+     },
+     {
+      "handler": "update",
+      "sprite": "pipe",
+      "contains": [
+       "scene_data_set"
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "kind": "fix",
+   "why": "Every clone gets its own copy of its sprite’s data, so each pipe remembers for itself whether it has scored.",
+   "checklist": [
+    {
+     "text": "The pipe reads its “passed” data",
+     "check": {
+      "handler": "update",
+      "sprite": "pipe",
+      "contains": [
+       "scene_data_get"
+      ]
+     }
+    },
+    {
+     "text": "After scoring, it sets “passed” to True",
+     "check": {
+      "handler": "update",
+      "sprite": "pipe",
+      "contains": [
+       "scene_data_set"
+      ]
+     }
+    },
+    {
+     "text": "You ran it",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "hints": [
+    "Select Pipe, press [[More settings]] and open [[Sprite data & behavior]]: its starting data has passed: false. In {{Game}}, “sprite … data named …” reads it and “set sprite … data named … to …” changes it.",
+    "From Logic, put “… and …” in the if: the x check on one side, “not (sprite this sprite data named passed)” on the other. Inside, after “change score by 1”, set this sprite’s data named passed to True (Logic)."
+   ],
+   "select": "pipe",
+   "highlight": {
+    "category": "game"
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "update",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "controls_if",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "py_logic",
+           "fields": {
+            "OP": "and"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "logic_compare",
+              "fields": {
+               "OP": "LT"
+              },
+              "inputs": {
+               "A": {
+                "block": {
+                 "type": "scene_get",
+                 "fields": {
+                  "PROPERTY": "x"
+                 },
+                 "inputs": {
+                  "SPRITE": {
+                   "block": {
+                    "type": "scene_self"
+                   }
+                  }
+                 }
+                }
+               },
+               "B": {
+                "shadow": {
+                 "type": "py_number",
+                 "fields": {
+                  "VALUE": "-150"
+                 }
+                }
+               }
+              }
+             }
+            },
+            "B": {
+             "block": {
+              "type": "py_not",
+              "inputs": {
+               "VALUE": {
+                "block": {
+                 "type": "scene_data_get",
+                 "inputs": {
+                  "SPRITE": {
+                   "block": {
+                    "type": "scene_self"
+                   }
+                  },
+                  "KEY": {
+                   "shadow": {
+                    "type": "text",
+                    "fields": {
+                     "TEXT": "passed"
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "game_change",
+           "fields": {
+            "FIELD": "score"
+           },
+           "inputs": {
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "1"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "scene_data_set",
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_self"
+               }
+              },
+              "KEY": {
+               "shadow": {
+                "type": "text",
+                "fields": {
+                 "TEXT": "passed"
+                }
+               }
+              },
+              "VALUE": {
+               "shadow": {
+                "type": "logic_boolean",
+                "fields": {
+                 "BOOL": "TRUE"
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "controls_if",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "logic_compare",
+           "fields": {
+            "OP": "LT"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "scene_get",
+              "fields": {
+               "PROPERTY": "x"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_self"
+                }
+               }
+              }
+             }
+            },
+            "B": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "-300"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "scene_destroy",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_self"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ],
+    "replacesPlant": 4
+   }
+  },
+  {
+   "text": "Play-test: fly through three pipes.",
+   "check": {
+    "score": 3
+   },
+   "kind": "play",
+   "why": "Click the stage, then tap space: little taps, not a long press. Each pipe scores once now.",
+   "goal": {
+    "score": 3,
+    "label": "pipes passed"
+   }
+  },
+  {
+   "text": "A goal to aim for: when the game starts, wait until the score reaches 10, then finish the game as a win.",
+   "check": {
+    "all": [
+     {
+      "number": [
+       "logic_compare",
+       "B",
+       10
+      ]
+     },
+     {
+      "field": [
+       "game_finish",
+       "WON",
+       "TRUE"
+      ]
+     }
+    ]
+   },
+   "why": "Flappy games never end by themselves. Your rule decides when a player has won.",
+   "checklist": [
+    {
+     "text": "Wait until the score is 10",
+     "check": {
+      "number": [
+       "logic_compare",
+       "B",
+       10
+      ]
+     }
+    },
+    {
+     "text": "Then finish the game as a win",
+     "check": {
+      "field": [
+       "game_finish",
+       "WON",
+       "TRUE"
+      ]
+     }
+    }
+   ],
+   "hints": [
+    "The idea card “Win screen” waits until the score reaches a number, then finishes the game.",
+    "Insert it, then change its 5 to 10 and write your own winning message."
+   ],
+   "recipe": "win-screen",
+   "highlight": {
+    "category": "game"
+   }
+  },
+  {
+   "text": "Play until the game ends: ten pipes to win, one bump to lose.",
+   "check": {
+    "finished": "any"
+   },
+   "kind": "play",
+   "why": "Click the stage, then tap space to flap."
+  }
+ ],
+ "finish": {
+  "text": "A bird that falls and flaps, a stream of pipes at random heights, and a score that counts each pipe once.",
+  "remix": [
+   "Tilt the bird: each update, set its direction from its vy, so it noses down as it falls.",
+   "Harder and harder: every 5 points, make the pipes a little faster or the gap a little smaller.",
+   "Coins in the gaps: clone a coin with each pipe and give an extra point for catching it."
+  ]
+ },
+ "next": "jump-quest"
+}

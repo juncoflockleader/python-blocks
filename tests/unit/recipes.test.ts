@@ -12,7 +12,7 @@ import { levelTypes } from '../../src/ui/levels';
 import { paletteWorkspace } from './palette-workspace';
 import { heldOut } from './recipe-heldout';
 import wishSets from './recipe-wishes.json';
-import { GALLERY_MANIFEST, PREVIEW_MANIFEST, galleryKey, readManifest, recipeFiles, recipeKey } from '../preview-key';
+import { GALLERY_MANIFEST, PREVIEW_MANIFEST, galleryKey, galleryOutputs, readManifest, recipeFiles, recipeKey, type GalleryFile } from '../preview-key';
 
 const spaces: Blockly.Workspace[] = [];
 afterEach(() => spaces.splice(0).forEach(w => w.dispose()));
@@ -31,6 +31,31 @@ const types = (state: Blockly.serialization.blocks.State, into = new Set<string>
 };
 
 describe('recipes', () => {
+  it('set every variable they read, at the start or earlier in the same script', () => {
+    // A variable read before anything sets it stops the program with a NameError (Remember the best score once did).
+    type Node = { type?: string; fields?: Record<string, string>; inputs?: Record<string, { block?: Node; shadow?: Node }>; next?: { block?: Node } };
+    for (const recipe of recipes) {
+      const startSets = new Set<string>();
+      const walk = (node: Node | undefined, visit: (n: Node) => void) => { if (!node) return; visit(node); for (const input of Object.values(node.inputs ?? {})) walk(input.block ?? input.shadow, visit); walk(node.next?.block, visit); };
+      for (const part of recipe.blocks ?? []) if (part.handler.kind === 'start') for (const top of part.stack as Node[]) walk(top, n => { if (n.type === 'py_set') startSets.add(n.fields!.SYMBOL); });
+      for (const part of recipe.blocks ?? []) {
+        const set = new Set(startSets);
+        // Statements run in order; a value is read before the set it feeds, so visit inputs before the set itself.
+        const run = (node: Node | undefined) => {
+          for (let n = node; n; n = n.next?.block) {
+            for (const [name, input] of Object.entries(n.inputs ?? {})) if (!/^(DO\d*|ELSE|STACK)$/.test(name)) walk(input.block ?? input.shadow, m => {
+              if (m.type === 'py_get' && m.fields!.SYMBOL.startsWith('$var:')) expect(set.has(m.fields!.SYMBOL), `${recipe.id} reads ${m.fields!.SYMBOL} before setting it`).toBe(true);
+            });
+            // A set, or a for-each loop's own variable, makes the name readable from here on.
+            if (n.type === 'py_set' || n.type === 'py_for_each') set.add(n.fields!.SYMBOL);
+            for (const [name, input] of Object.entries(n.inputs ?? {})) if (/^(DO\d*|ELSE|STACK)$/.test(name)) run(input.block);
+          }
+        };
+        for (const top of part.stack as Node[]) run(top);
+      }
+    }
+  });
+
   it('cover every group with valid, reviewed content', () => {
     expect(recipes.length).toBeGreaterThanOrEqual(40);
     expect(recipes.flatMap(recipe => recipeProblems(recipe))).toEqual([]);
@@ -70,7 +95,7 @@ describe('recipes', () => {
   it('explain what is missing instead of inserting a half-working idea', () => {
     const w = paletteWorkspace(); spaces.push(w);
     expect(() => placement(w, recipeById('chase')!, '')).toThrow(/needs 2 sprites/);
-    changeScene(w, { ...sceneState(w), sprites: scene('src/scene/example.json').sprites.slice(0, 1) });
+    const example = scene('src/scene/example.json'); changeScene(w, { ...sceneState(w), assets: example.assets, sprites: example.sprites.slice(0, 1) });
     expect(() => placement(w, recipeById('chase')!, '')).toThrow(/needs 2 sprites/);
     expect(() => placement(w, recipeById('next-level')!, '')).toThrow(/needs 2 sprites|needs 2 worlds/);
     expect(placement(w, recipeById('draw-square')!, '').sprite).toBe('player');
@@ -90,7 +115,7 @@ describe('previews', () => {
     const previews = readManifest(PREVIEW_MANIFEST), thumbnails = readManifest(GALLERY_MANIFEST);
     const stale = [
       ...recipeFiles().filter(r => r.blocks && (previews[r.id] !== recipeKey(r) || !existsSync(`public/recipes/${r.preview}`))).map(r => `recipe ${r.id}`),
-      ...JSON.parse(readFileSync('content/gallery.json', 'utf8')).filter((e: { id: string; project: string }) => thumbnails[e.id] !== galleryKey(e.project) || !existsSync(`public/gallery/${e.id}.png`)).map((e: { id: string }) => `gallery ${e.id}`),
+      ...JSON.parse(readFileSync('content/gallery.json', 'utf8')).filter((e: GalleryFile) => thumbnails[e.id] !== galleryKey(e) || !Object.values(galleryOutputs(e.id)).every(file => existsSync(file))).map((e: { id: string }) => `gallery ${e.id}`),
     ];
     expect(stale, 'run tests/e2e/previews.spec.ts locally to re-render').toEqual([]);
   });

@@ -53,6 +53,10 @@ The play header provides Run code, Stop and **Return to editor**. Keyboard focus
 
 Runtime errors remain visible in the play view and the editor's mapped block/traceback diagnostics remain available after returning. Touch and keyboard gameplay, questions, win/loss/replay and Stop work at narrow widths. This is a browser modal with an enlarged stage, not an operating-system fullscreen request. Existing [input help](questions-timers-and-touch.md), keyboard-operable artwork/world/music tools, literal text rendering and focus-reset rules continue to apply.
 
+### Sharp drawing at any size
+
+The stage keeps 480 × 320 stage coordinates for scripts, positions, sensing and pointer input, but its canvas is drawn at its displayed size times the screen's pixel ratio, in whole steps from 1× to 4× (a step is skipped only when it would enlarge the stage by less than a quarter). On an iPad Air in landscape that is 2× in Blocks view, 3× in Stage view and 4× in Large stage; the exported player does the same. Pen marks and stamps go into a pen layer of up to 3 pixels per stage unit (within 8 million pixels, so the largest worlds stay at 1×), graphic effects are computed at 2× for the built-in shapes, and library art is stored at 2×. The canvas's `data-scale` attribute reports the current step.
+
 ## Format and evidence
 
 Language version 18 adds optional `scene.watchers`. Earlier projects and pinned modules remain readable, with no watches by default. There are no new language semantics or authoring APIs for the readout UI.

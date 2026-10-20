@@ -3,7 +3,7 @@
  "title": "Jump quest",
  "level": "builder",
  "minutes": 25,
- "order": 5,
+ "order": 7,
  "summary": "Jump up the ledges with gravity, fire with x and reach the goal star.",
  "ideas": [
   "gravity",
@@ -15,7 +15,7 @@
  "starter": {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 19,
+  "languageVersion": 22,
   "workspace": {
    "blocks": {
     "languageVersion": 0,
@@ -29,20 +29,64 @@
       "id": "player",
       "name": "Explorer",
       "x": -190,
-      "y": -129,
-      "costume": "bird",
-      "size": 55,
+      "y": -120.8,
+      "costume": "stock-explorer-ruby-idle-1",
+      "size": 60,
       "kind": "player",
       "direction": 0,
       "layer": 0,
       "visible": true,
-      "rotationStyle": "none"
+      "rotationStyle": "left-right",
+      "costumes": [
+       "stock-explorer-ruby-walk-1",
+       "stock-explorer-ruby-walk-2",
+       "stock-explorer-ruby-walk-3",
+       "stock-explorer-ruby-walk-4"
+      ],
+      "frameSeconds": 0.12,
+      "animations": [
+       {
+        "name": "idle",
+        "frames": [
+         "stock-explorer-ruby-idle-1",
+         "stock-explorer-ruby-idle-2"
+        ],
+        "seconds": 0.4
+       },
+       {
+        "name": "walk",
+        "frames": [
+         "stock-explorer-ruby-walk-1",
+         "stock-explorer-ruby-walk-2",
+         "stock-explorer-ruby-walk-3",
+         "stock-explorer-ruby-walk-4"
+        ]
+       },
+       {
+        "name": "jump",
+        "frames": [
+         "stock-explorer-ruby-jump"
+        ]
+       },
+       {
+        "name": "happy",
+        "frames": [
+         "stock-explorer-ruby-happy"
+        ]
+       }
+      ],
+      "autoAnimate": {
+       "moving": "walk",
+       "air": "jump",
+       "still": "idle",
+       "turn": true
+      }
      },
      {
       "id": "floor",
       "name": "Ground",
       "x": 0,
-      "y": -145,
+      "y": -150,
       "costume": "floor_art",
       "size": 200,
       "kind": "wall",
@@ -58,8 +102,8 @@
       "id": "step1",
       "name": "First ledge",
       "x": -90,
-      "y": -78,
-      "costume": "platform_art",
+      "y": -86.0,
+      "costume": "stock-platform",
       "size": 100,
       "kind": "wall",
       "direction": 0,
@@ -74,8 +118,8 @@
       "id": "step2",
       "name": "Second ledge",
       "x": 45,
-      "y": -20,
-      "costume": "platform_art",
+      "y": -28.0,
+      "costume": "stock-platform",
       "size": 100,
       "kind": "wall",
       "direction": 0,
@@ -90,8 +134,8 @@
       "id": "step3",
       "name": "Top ledge",
       "x": 165,
-      "y": 25,
-      "costume": "platform_art",
+      "y": 18.6,
+      "costume": "stock-platform",
       "size": 80,
       "kind": "wall",
       "direction": 0,
@@ -118,18 +162,82 @@
     ],
     "assets": [
      {
-      "id": "platform_art",
-      "name": "Green platform",
-      "width": 100,
-      "height": 8,
-      "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAGQAAAAICAYAAAAP1Fp1AAAAMElEQVR4nO3RMREAAAjDwDqsJZyDDDJk+D13SacrjnwHyCFoDoFxCIxDYBwC4xCYA184mvvhDLDhAAAAAElFTkSuQmCC"
-     },
-     {
       "id": "floor_art",
       "name": "Ground",
       "width": 240,
-      "height": 5,
-      "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAPAAAAAFCAYAAAB7CmE4AAAAMklEQVR4nO3TMQ0AMAwEsQAMgxIofwINhy7RSx6833J1bj8gU20HAP8MDMEMDMEMDMEGbzGiKKTqe20AAAAASUVORK5CYII="
+      "height": 10,
+      "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAAAUCAYAAABVoO4uAAAFYElEQVR4AeyZwYscRRjFi96wpxyikJir5CBuDvGiXvSi3kTw6H8uXlQQPASDqKAQhLF/HbrrUdOZruruql6cF+bNvq766vvtvPlmm+x2z7/69nSU7r48js1rNt/5MwdHyfPn+Ttq9uB6/o6dP96D7uOvH4VUTz56HVC6nl5Tg9L19JoalK7fffbwjE0NtQh/SdSgSzXsUYPwKvOdv87D6JkVNF6/7Ss16G374zo1aLwev3r+PH/jLOhXZgXp2pynBs3t6Ro1SNfwnr9j54/3oHv2+Smk+uK7xwGl6+k1NShdT6+pQen6i29uztjUUIvwl0QNulTDHjUIr3phvvP3/J/NAJ8VpJ+VOU8NmtvTNWqQruH9+ffPP+YgFbOC0vX0mhqUrqfX1KB0/ej54/vpfvvr92A5A8+AZ8Az4BnwDLSdgS7437Um4NftBJyAE3ACBybgG/CB4RvtBJyAE3AC15tA996reA/GozEOPNrz+qnw8Hv3X+oHc3w9+KX6vfdhmv8mAbLYO9+lfjAHev+EX6rfex9mjx4e+L37L/WDOcD7J/xS/d77MHv08MDv3X+pH8wB3j/hl+r33ofZo4cHfu/+S/1gDvD+Cb9Uv/c+zB49PPB791/qB3OA90/4pfq992H26OGB7+5+fhAe/dmFd3rhUc3rD4WHr81L+8McXx8+3a99DdP8N/NGFrXzTvvDdP7On593zEI6H7WvYXr+PH/j/HW3/3bh0+9vwye98MjXzsPzcBv4LKD/4efBn3f/vPN89/e+oz/f8ffPw3+K/eQEnIATcAJOwAm0SMA34BYpm+EEnMD9ScDfiRO4Jwn4BnxP3gh/G07ACTgBJ3BdCfgGfF3vt1+tE3AC152AX/09SmD2Bvz3P6/Dry//GIRv/f3CNN/5MwPMguevbQJkTvYI35YeAkzYCG9+2wTInOwRvi39ut7/2RvwDz+9DD/+8moQvvUbANN8588MMAuev7YJkDnZI3xbeggwYSO8+W0TIHOyR/i29Mrvf8aL4TXz2hE+48jqktkb8M2DuKx+NaXwoDLVF7ZZXa5M9asbFh5UpvrCNqvLlal+dcPCg8pUX9hmdbky1a9uWHhQmeoL26wuV6b61Q0LDypTfWGb1eXKVL+6YeFBZaovbLO6XJnqVzcsPKhM9YVtVpcrU/3qhhcOxjutFD1/9jR88P6TQXjZamJhmu/8mQFmocnQCQQmbISXrSYWJmyEbwIVCEzYCC9bTSxM2AjfBCoQmLARXraaWJiwEb4JVCAwYSO8bDWxMGEjfBOoQGDCRnjZ2t3O3oBvbrrw+N2Hg/ClVP5uwN8PED6ez3MwzXf+zACzkDc1sYqZY/YQPu7kOZiwET7vVKyCCRvh406egwkb4fNOxSqYsBE+7uQ5mLARPu9UrIIJG+HjTp6DCRvh807FKpiwET7u5DmYsBE+71Ssggkb4eNOnoMJG+HzTsUqmLARPu7kOZiwET7vVKyCCRvh406egwkb4fNOxSqYsBE+7uQ5mLARPu9UrIIJG+HjzrmbvQGfl5Wt8Htzfn+O8GWnt1fDhI3w2zuWdYAJG+HLTm+vhgkb4bd3LOsAEzbCl53eXg0TNsJv71jWASZshC87vb0aJmyE396xrANM2Ahfdnp7NUzYCL+9Y1kHmLARvuz09mqYsBF+e8eyDjBhI3zZ6e3VMGEj/PaOZR1gwkb4S6er3IBPp9PEVD8tVjbKVF8ZO7VXpvqpoLJRpvrK2Km9MtVPBZWNMtVXxk7tlal+KqhslKm+MnZqr0z1U0Flo0z1lbFTe2WqnwoqG2Wqr4yd2itT/VRQ2ShTfWXs1F6Z6qcCMf8BAAD//6iTgscAAAAGSURBVAMACc0BqwoCatYAAAAASUVORK5CYII=",
+      "resolution": 2
+     },
+     {
+      "id": "stock-platform",
+      "name": "Platform",
+      "width": 96,
+      "height": 24,
+      "stock": "props/platform@1"
+     },
+     {
+      "id": "stock-crate",
+      "name": "Crate",
+      "width": 32,
+      "height": 32,
+      "stock": "props/crate@1"
+     },
+     {
+      "id": "stock-explorer-ruby-idle-1",
+      "name": "Ruby idle 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-ruby-idle-1@1"
+     },
+     {
+      "id": "stock-explorer-ruby-idle-2",
+      "name": "Ruby idle 2",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-ruby-idle-2@1"
+     },
+     {
+      "id": "stock-explorer-ruby-walk-1",
+      "name": "Ruby walk 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-ruby-walk-1@1"
+     },
+     {
+      "id": "stock-explorer-ruby-walk-2",
+      "name": "Ruby walk 2",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-ruby-walk-2@1"
+     },
+     {
+      "id": "stock-explorer-ruby-walk-3",
+      "name": "Ruby walk 3",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-ruby-walk-3@1"
+     },
+     {
+      "id": "stock-explorer-ruby-walk-4",
+      "name": "Ruby walk 4",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-ruby-walk-4@1"
+     },
+     {
+      "id": "stock-explorer-ruby-jump",
+      "name": "Ruby jump",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-ruby-jump@1"
+     },
+     {
+      "id": "stock-explorer-ruby-happy",
+      "name": "Ruby happy",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/explorer-ruby-happy@1"
      }
     ]
    }
@@ -216,5 +324,5 @@
    "Make a harder level with more ledges."
   ]
  },
- "next": "maze-run"
+ "next": "super-hopper"
 }

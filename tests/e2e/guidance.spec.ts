@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
-import { menu, openHelp, openTab, reveal } from './shell';
+import { blockIcons, menu, openHelp, openTab, reveal } from './shell';
 
 // A new browser: Starter level, where Ideas is the default search scope.
 test.use({ storageState: { cookies: [], origins: [] }, viewport: { width: 1024, height: 700 } });
@@ -29,7 +29,7 @@ test('typing “chase” shows a preview and inserts a working chase in one step
   const start = await live(page);
   await page.locator('#run').click(); await expect(page.locator('#status')).toHaveText('Event session running', { timeout: 60_000 });
   await page.waitForTimeout(800);
-  const moved = await live(page), hero = { x: -150, y: -30 };
+  const moved = await live(page), hero = { x: -150, y: -70 };
   expect(Math.hypot(moved.x - hero.x, moved.y - hero.y)).toBeLessThan(Math.hypot(start.x - hero.x, start.y - hero.y) - 40);
   await page.locator('#stop').click();
   // Ideas come first; matching blocks follow them.
@@ -59,20 +59,44 @@ test('the wish box resolves child language locally and its chips need no typing'
   await expect(page.locator('#assist-question')).toHaveValue('photosynthesis in plants');
 });
 
-test('the gallery opens examples with thumbnails, Play and three things to try', async ({ page }) => {
+test('Examples holds finished projects to play and change, with thumbnails and three things to try', async ({ page }) => {
   await page.goto('/'); await page.locator('#examples-open').click();
-  const card = page.locator('#examples-dialog [data-example="catch-the-star-game"]');
+  const card = page.locator('#examples-dialog [data-example="scene-star-game"]');
   await expect(card.locator('img')).toHaveJSProperty('complete', true);
-  expect(await card.locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(240);
-  await expect(page.locator('#examples-dialog .example-card')).toHaveCount(16);
-  await page.locator('#catch-the-star-game').click();
-  await expect(page.locator('#project-title')).toHaveText('Catch the star');
-  await openTab(page, 'help'); await expect(page.locator('[data-nudge="try"]')).toContainText('Win at 10 stars instead of 5.');
-  await page.locator('#examples-open').click(); await page.locator('#pen-patterns-game-play').click();
+  expect(await card.locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(480); // the stage's own size, rendered on a 2× screen
+  // The games that lessons build are under Lessons, not here.
+  await expect(page.locator('#examples-dialog .example-card')).toHaveCount(10);
+  await expect(page.locator('#examples-dialog [data-example="catch-the-star-game"]')).toHaveCount(0);
+  await expect(page.locator('#examples-dialog [data-filter="build"]')).toHaveCount(0);
+  await page.locator('#scene-story-example').click();
+  await expect(page.locator('#project-title')).toHaveText('Story');
+  await openTab(page, 'help'); await expect(page.locator('[data-nudge="try"]')).toBeVisible();
+  await page.locator('#examples-open').click(); await page.locator('#scene-drawing-example-play').click();
   await expect(page.locator('#play-dialog')).toBeVisible(); await expect(page.locator('#play-status')).toHaveText(/Event session running|Finished/, { timeout: 60_000 });
   await page.locator('#play-close').click();
 });
 
+test('Lessons lists the lessons first, then the guided builds, each to start or play', async ({ page }) => {
+  await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
+  await page.locator('#lessons-open').click();
+  const cards = page.locator('#lessons-dialog .lesson-card');
+  await expect(cards).toHaveCount(9);
+  await expect(cards.first()).toHaveAttribute('data-lesson', 'brick-breaker');
+  await expect(cards.nth(1)).toHaveAttribute('data-lesson', 'flappy-flight'); await expect(cards.nth(2)).toHaveAttribute('data-lesson', 'super-hopper');
+  await expect(cards.nth(2).locator('.lesson-kind')).toHaveText('Lesson');
+  await expect(cards.nth(3).locator('.lesson-kind')).toHaveText('Guided build');
+  await expect(cards.first().locator('img')).toHaveJSProperty('complete', true);
+  // Play the finished game first…
+  await page.locator('#lessons-play-pen-patterns').click();
+  await expect(page.locator('#play-dialog')).toBeVisible(); await expect(page.locator('#play-status')).toHaveText(/Event session running|Finished/, { timeout: 60_000 });
+  await page.locator('#play-close').click();
+  // …or start it: a lesson opens its start sheet.
+  await page.locator('#lessons-open').click(); await page.locator('#lessons-start-brick-breaker').click();
+  await expect(page.locator('#lessons-dialog')).toBeHidden(); await expect(page.locator('#lesson-start')).toBeVisible();
+  await page.locator('#lesson-start-cancel').click();
+  // Help names the same section Lessons.
+  await openTab(page, 'help'); await expect(page.locator('#help-nav-builds')).toHaveText('Lessons');
+});
 test('Catch the star can be built step by step, with checks, highlights and a finish', async ({ page }) => {
   test.setTimeout(150_000);
   await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
@@ -85,6 +109,9 @@ test('Catch the star can be built step by step, with checks, highlights and a fi
   await expect(page.locator('#guide-progress')).toHaveText('Step 1 of 7'); await expect(page.locator('#guide-next')).toBeDisabled();
   await expect(page.locator('#start-card')).toBeHidden(); // the starter's empty workspace belongs to the build, not the start card
   await expect(page.locator('#scene-stock')).toHaveClass(/guide-target/);
+  // The step names the Sprites button as it looks: a chip with the button's own icon and label.
+  await expect(page.locator('#guide-step')).toHaveText('Add a star: press Sprites under the stage and choose Star.');
+  const chip = page.locator('#guide-step .ui-ref'); await expect(chip).toHaveText('Sprites'); await expect(chip.locator('svg')).toHaveCount(1);
   // 1. Add a star from the library.
   await page.locator('#scene-stock').click(); await page.locator('#stock-dialog .stock-card[data-stock-id="star"]').click(); await expect(page.locator('#stock-dialog')).toBeHidden();
   await openTab(page, 'help'); await expect(page.locator('#guide-check')).toHaveText(/Done/); await page.locator('#guide-next').click();
@@ -219,20 +246,20 @@ test('Pen patterns: hats and loops dragged from the palette, nested by hand', as
   await showAndInsert(page, 'draw-square'); await nextStep(page);
   await runUntil(page, /Event session running|Finished/); await page.locator('#stop').click(); await nextStep(page);
   // Step 4, in the visible script: a new repeat at the top, then the square's repeat moved inside it.
-  const visibleWhen = async () => { const boxes = (await Promise.all((await workspaceText(page, /^when$/).all()).map(l => l.boundingBox()))).filter(b => b && b.x > canvas.x + 120); return boxes.sort((a, b) => b!.x - a!.x)[0]!; };
+  // Blocks are found by their symbols, which start each block's first row.
+  const visibleWhen = async () => (await blockIcons(page, 'flag')).filter(b => b.x > canvas.x + 120).sort((a, b) => b.x - a.x)[0];
   await page.getByRole('treeitem', { name: 'Control', exact: true }).click();
   const repeat = page.locator('.blocklyToolboxFlyout g.blocklyDraggable').filter({ has: page.locator('text.blocklyText', { hasText: /^repeat$/ }) }).first();
   const repeatBox = (await repeat.boundingBox())!, when = await visibleWhen();
   await dragTo(page, { x: repeatBox.x + 6, y: repeatBox.y + 12 }, { x: when.x + 20, y: when.y + when.height + 20 });
   await expect(workspaceText(page, /^repeat$/)).toHaveCount(2);
-  const repeats = (await Promise.all((await workspaceText(page, /^repeat$/).all()).map(l => l.boundingBox()))).sort((a, b) => a!.y - b!.y);
-  const [outer, square] = repeats;
+  const [outer, square] = await blockIcons(page, 'loop');
   await dragTo(page, { x: square!.x - 5, y: square!.y + square!.height / 2 }, { x: outer!.x + 29, y: outer!.y + outer!.height + 22 });
   await nextStep(page);
   // Step 5: a pen color at the top of the outer repeat.
   await page.getByRole('treeitem', { name: 'Draw', exact: true }).click();
   const color = page.locator('.blocklyToolboxFlyout g.blocklyDraggable').filter({ has: page.locator('text.blocklyText', { hasText: /^set\spen\scolor$/ }) }).first();
-  const colorBox = (await color.boundingBox())!, outerNow = (await Promise.all((await workspaceText(page, /^repeat$/).all()).map(l => l.boundingBox()))).sort((a, b) => a!.y - b!.y)[0]!;
+  const colorBox = (await color.boundingBox())!, [outerNow] = await blockIcons(page, 'loop');
   await dragTo(page, { x: colorBox.x + 6, y: colorBox.y + colorBox.height / 2 }, { x: outerNow.x + 35, y: outerNow.y + outerNow.height + 24 });
   await nextStep(page);
   await runUntil(page, /Event session running|Finished/); await nextStep(page);
@@ -271,7 +298,7 @@ test('Jump quest: gravity, walking, firing and reaching the goal', async ({ page
   await page.locator('#scene-x').fill('-190'); await page.locator('#scene-x').press('Enter');
   await page.locator('#scene-y').fill('-120'); await page.locator('#scene-y').press('Enter');
   await runUntil(page, /You win!/); await nextStep(page);
-  await expect(page.locator('#guide-next-build')).toHaveText('Next build: Maze run');
+  await expect(page.locator('#guide-next-build')).toHaveText('Next lesson: Super Hopper');
 });
 
 test('Talking story: a conversation, a scene change, a new costume and a backdrop event', async ({ page }) => {
@@ -285,5 +312,5 @@ test('Talking story: a conversation, a scene change, a new costume and a backdro
   await nextStep(page);
   await showAndInsert(page, 'backdrop-event'); await nextStep(page);
   await runUntil(page, /Event session running/); await nextStep(page);
-  await expect(page.locator('#guide-finish')).toBeVisible(); await expect(page.locator('#guide-next-build')).toHaveText('Next build: Jump quest');
+  await expect(page.locator('#guide-finish')).toBeVisible(); await expect(page.locator('#guide-next-build')).toHaveText('Next lesson: Brick Breaker');
 });

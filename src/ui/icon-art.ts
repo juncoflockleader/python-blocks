@@ -83,8 +83,38 @@ export const iconArt = {
   alert: '<path d="m12 2 11 20H1Zm0 7v5m0 4h.1"/>',
   lock: '<rect x="4" y="10" width="16" height="12" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3M12 15v3"/>',
   unlock: '<rect x="4" y="10" width="16" height="12" rx="2"/><path d="M7 10V7a5 5 0 0 1 10-1M12 15v3"/>',
+  // Sprites to add: a character with a plus.
+  spriteAdd: '<path d="M3 11 2 4l5 3.5a10 10 0 0 1 6 0L18 4l-1 7v3c0 4-3.6 7-7 7s-7-3-7-7Z"/><path d="M7.5 13h.1m5 0h.1M8.5 17q1.5 1.5 3 0M20 2v5m-2.5-2.5h5"/>',
+  // Block symbols: when the game starts, two sprites touching, waiting, and a decision.
+  flag: '<path d="M6 21V3m0 1h12l-3.5 4.5L18 13H6"/>',
+  touch: '<circle cx="9" cy="12" r="6"/><circle cx="15" cy="12" r="6"/>',
+  hourglass: '<path d="M6 3h12M6 21h12M8 3c0 5 8 6 8 9s-8 4-8 9M16 3c0 5-8 6-8 9s8 4 8 9"/>',
+  decide: '<path d="m12 2 10 10-10 10L2 12Z"/><path d="M9.8 9.6a2.3 2.3 0 1 1 3.3 2.1c-.7.4-1.1.8-1.1 1.6M12 16.2h.1"/>',
+  // Levels: a sprout (Starter), stacked bricks (Builder) and a rocket (Pro).
+  sprout: '<path d="M12 21V11M8 21h8M12 13C12 8 9 5 4 5c0 5 3 8 8 8Zm0-2c0-4 3-7 8-7 0 4-3 7-8 7Z"/>',
+  bricks: '<rect x="3" y="13" width="8" height="7" rx="1"/><rect x="13" y="13" width="8" height="7" rx="1"/><rect x="8" y="4" width="8" height="7" rx="1"/>',
+  rocket: '<path d="M12 2c3.5 2.5 5 6.5 5 10.5L15 16H9l-2-3.5C7 8.5 8.5 4.5 12 2Z"/><circle cx="12" cy="9" r="1.8"/><path d="m9 16-3 3 1-4.5M15 16l3 3-1-4.5M10.5 19l1.5 3 1.5-3"/>',
+  // Stage view: the view switch, the pan hand, fit the world and screen lines.
+  stage: '<rect x="2" y="4" width="20" height="14" rx="2"/><path d="M8 21h8M2 15l6-5 4 3 3-2 7 5"/>',
+  hand: '<path d="M7 12V6a1.5 1.5 0 0 1 3 0v5m0-1V4.5a1.5 1.5 0 0 1 3 0V10m0 0V5.5a1.5 1.5 0 0 1 3 0V11m0 0V8a1.5 1.5 0 0 1 3 0v6c0 4.5-3 8-7.5 8-2.5 0-4-1-5.5-3l-3-4.5a1.6 1.6 0 0 1 2.6-1.9L7 14"/>',
+  fit: '<path d="M3 9V3h6m6 0h6v6m0 6v6h-6m-6 0H3v-6"/><rect x="8" y="9" width="8" height="6" rx="1"/>',
+  grid: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 4v16M2 12h20"/>',
 } as const;
 export type IconName = keyof typeof iconArt;
-export function iconSvg(name: IconName) {
-  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${iconArt[name]}</svg>`;
+/** Moves that centre each drawing's bounds on the 24px grid, measured with
+ * getBBox (tests/e2e/icons.spec.ts re-measures them). Play is centred on its
+ * triangle's weight rather than its box, which looks centred to the eye. */
+export const iconOffsets: Partial<Record<IconName, [number, number]>> = {
+  folder: [-0.5, 0], upload: [0, -0.5], play: [-1, 0], restart: [0, -0.25], check: [-0.5, 0.5], search: [-0.5, -0.5], function: [-0.5, 0],
+  volume: [-0.5, 0], mute: [-0.5, 0], music: [0, 0.75], sprite: [0, -0.5], keyboard: [0, -0.5], game: [0, -1], pen: [-0.5, 0.5], brush: [0, 0.25],
+  eraser: [-0.5, 0], fill: [-0.5, 0.5], rotate: [0.25, 0.25], book: [0, -0.25], clock: [0, 0.5], learn: [0, 0.5], assist: [-0.5, 0.5], logic: [0, 1],
+  library: [-0.5, 0], unlock: [0, 0.25], spriteAdd: [-0.25, 0.5], sprout: [0, -0.5], stage: [0, -0.5], hand: [1.15, -0.5],
+};
+/** An icon's drawing, moved so it sits in the middle of its grid. */
+export function iconMarkup(name: IconName) {
+  const [dx, dy] = iconOffsets[name] ?? [0, 0];
+  return dx || dy ? `<g transform="translate(${dx} ${dy})">${iconArt[name]}</g>` : iconArt[name];
+}
+export function iconSvg(name: IconName, stroke = 'black') {
+  return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="${stroke}" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${iconMarkup(name)}</svg>`;
 }

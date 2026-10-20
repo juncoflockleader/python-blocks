@@ -1,10 +1,14 @@
 import * as Blockly from 'blockly/core';
-import { backdrops, costumes, keys, rotationStyles } from '../scene/model';
+import { FRAMES_ANIMATION, backdrops, costumes, keys, rotationStyles, validAnimationName } from '../scene/model';
 import { sceneState } from '../scene/state';
 import { effectOptions } from '../scene/effects';
 import { motionNumbers } from '../scene/motion';
 
+/** The last choice in a sound block's menu: make a new sound, which the block then picks. */
+export const NEW_SOUND = '__new_sound__';
 export class SceneReferenceField extends Blockly.FieldDropdown {
+  /** Opens the Sound editor for "New sound…"; set by the editor. */
+  static newSound: ((field: SceneReferenceField) => void) | null = null;
   private candidate?: string;
   private cached?: { id: string; name: string };
   constructor(readonly kind: 'sprite' | 'costume' | 'backdrop' | 'world' | 'sound') {
@@ -15,10 +19,14 @@ export class SceneReferenceField extends Blockly.FieldDropdown {
       const current = field.candidate ?? field.getValue();
       const options: [string, string][] = values.map(v => [v.name, v.id]);
       if (current && !values.some(v => v.id === current)) options.push([`${field.cached?.name ?? kind} (unavailable)`, current]);
-      return [[kind === 'world' ? 'base stage' : kind === 'backdrop' ? 'plain color' : `choose ${kind}`, ''], ...options];
+      const make: [string, string][] = kind === 'sound' && SceneReferenceField.newSound ? [['New sound…', NEW_SOUND]] : [];
+      return [[kind === 'world' ? 'base stage' : kind === 'backdrop' ? 'plain color' : `choose ${kind}`, ''], ...options, ...make];
     });
   }
-  protected override doClassValidation_(value: string) { this.candidate = value; this.getOptions(false); return value; }
+  protected override doClassValidation_(value: string) {
+    if (value === NEW_SOUND) { const make = SceneReferenceField.newSound; if (make) setTimeout(() => make(this)); return null; }
+    this.candidate = value; this.getOptions(false); return value;
+  }
   override saveState(full = false) {
     const state = this.getSourceBlock() && sceneState(this.getSourceBlock()!.workspace), id = this.getValue();
     const found = state && (this.kind === 'sound' ? state.sounds ?? [] : this.kind === 'world' ? state.worlds ?? [] : this.kind === 'sprite' ? state.sprites : this.kind === 'backdrop' ? backdrops(state) : costumes(state)).find(v => v.id === id);
@@ -28,6 +36,24 @@ export class SceneReferenceField extends Blockly.FieldDropdown {
   override loadState(state: string | { id: string; name: string }) { this.cached = typeof state === 'object' ? { ...state } : undefined; this.setValue(typeof state === 'string' ? state : state.id); }
   refresh() { const value = this.getValue(); this.getOptions(false); if (value !== null) this.doValueUpdate_(value); this.forceRerender(); }
 }
+/** A menu of the animation names the project's sprites have ("walk", "jump"), plus "frames",
+ * each sprite's frames list. A name no sprite has any more stays, marked unavailable. */
+export class AnimationField extends Blockly.FieldDropdown {
+  constructor(value = 'walk') {
+    super(function () {
+      const field = this as AnimationField, block = field.getSourceBlock(), state = block && sceneState(block.workspace);
+      const names = [...new Set((state?.sprites ?? []).flatMap(s => (s.animations ?? []).map(a => a.name)))].sort((a, b) => a.localeCompare(b));
+      const options: [string, string][] = [...names, FRAMES_ANIMATION].map(n => [n, n]);
+      const current = field.getValue();
+      if (current && !options.some(([, v]) => v === current)) options.push([`${current} (unavailable)`, current]);
+      return options;
+    });
+    this.setValue(value);
+  }
+  protected override doClassValidation_(value: string) { return validAnimationName(value) ? value : null; }
+  static override fromJson(options: Blockly.FieldDropdownFromJsonConfig) { return new AnimationField((options as { value?: string }).value); }
+}
+Blockly.fieldRegistry.register('field_animation', AnimationField as unknown as Blockly.fieldRegistry.RegistrableField);
 for (const kind of ['sprite', 'costume', 'backdrop', 'world'] as const) Blockly.Blocks[`scene_${kind}`] = { init(this: Blockly.Block) {
   this.appendDummyInput().appendField(kind).appendField(new SceneReferenceField(kind), kind === 'world' ? 'WORLD_ID' : kind === 'sprite' ? 'SPRITE_ID' : kind === 'backdrop' ? 'BACKDROP_ID' : 'COSTUME_ID'); this.setOutput(true); this.setColour('#477c9a');
 } };
@@ -113,6 +139,10 @@ Blockly.common.defineBlocksWithJsonArray([
   command('scene_next_costume', 'next costume of sprite %1', [value('SPRITE')]),
   command('scene_frames', 'sprite %1 animation frames', [value('SPRITE')], true),
   command('scene_play_animation', 'play sprite %1 animation once and wait', [value('SPRITE')]),
+  command('scene_animation_play', 'play animation %1 of sprite %2', [{ type: 'field_animation', name: 'ANIMATION', value: 'walk' }, value('SPRITE')]),
+  command('scene_animation_once', 'play animation %1 once and wait for sprite %2', [{ type: 'field_animation', name: 'ANIMATION', value: 'jump' }, value('SPRITE')]),
+  command('scene_animation_stop', 'stop animation of sprite %1', [value('SPRITE')]),
+  command('scene_animation_get', 'animation of sprite %1', [value('SPRITE')], true),
   command('scene_backdrop_set', 'switch stage to backdrop %1', [value('BACKDROP')]),
   command('scene_backdrop_next', 'next backdrop', []),
   command('scene_backdrop_get', 'current backdrop %1', [menu('PROPERTY', [['name', 'backdrop_name'], ['ID', 'backdrop_id']])], true),

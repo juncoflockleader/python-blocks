@@ -87,7 +87,7 @@ describe('scene integration', () => {
     changeScene(w, emptyScene()); await flush(); expect(compile(w).diagnostics.some(d => d.code === 'missing-sprite')).toBe(true);
     w.undo(false); await flush(); expect(compile(w).source).not.toBeNull(); expect(sceneState(w).sprites[0].data).toEqual({ score: 0 });
     const saved = snapshot(w); saved.languageVersion = 11; const restored = ws(); restore(restored, prepareProject(JSON.stringify(saved)).project);
-    expect(snapshot(restored).languageVersion).toBe(19); expect(handlerSignatures(restored)[0].handler!.sprite).toBe('player');
+    expect(snapshot(restored).languageVersion).toBe(22); expect(handlerSignatures(restored)[0].handler!.sprite).toBe('player');
     const archive = unzipSync(pythonExport(compile(restored)).content as Uint8Array); expect(JSON.parse(strFromU8(archive['scene.json'])).sprites[0].data).toEqual({ score: 0 });
   });
 
@@ -169,6 +169,18 @@ describe('scene integration', () => {
     expect(() => validateScene({ ...scene(), assets: [{ id: 'bad', name: 'Bad', width: 2, height: 2, data: 'https://example.com/a.png' }] })).toThrow();
   });
 
+  it('accepts 2× artwork whose PNG holds twice the pixels of its stage size, and nothing else', () => {
+    const png = (width: number, height: number) => { const bytes = Buffer.alloc(24); bytes.set([137,80,78,71,13,10,26,10]); bytes.writeUInt32BE(width, 16); bytes.writeUInt32BE(height, 20); return 'data:image/png;base64,' + bytes.toString('base64'); };
+    const costume = (data: string, resolution?: number) => ({ ...scene(), assets: [{ id: 'fox', name: 'Fox', width: 64, height: 48, data, ...(resolution ? { resolution } : {}) }] }) as SceneState;
+    expect(() => validateScene(costume(png(64, 48)))).not.toThrow();
+    expect(() => validateScene(costume(png(128, 96), 2))).not.toThrow();
+    expect(() => validateScene(costume(png(128, 96)))).toThrow('do not match');
+    expect(() => validateScene(costume(png(64, 48), 2))).toThrow('do not match');
+    expect(() => validateScene(costume(png(192, 144), 3))).toThrow();
+    // A 2× backdrop is 960 × 640 pixels on the 480 × 320 stage.
+    expect(() => validateScene({ ...scene(), backdrops: [{ id: 'sky', name: 'Sky', width: 480, height: 320, data: png(960, 640), resolution: 2 }] })).not.toThrow();
+  });
+
   it('requires explicit event contexts for input and timed actions, and diagnoses missing click targets', () => {
     const w = ws(); changeScene(w, scene()); const glide = plug(plug(plug(plug(block(w, 'scene_glide'), 'SPRITE', ref(w)), 'SECONDS', num(w, 1)), 'X', num(w, 10)), 'Y', num(w, 0)); plug(block(w, 'py_program'), 'BODY', glide);
     expect(compile(w).diagnostics.map(d => d.code)).toContain('wait-context');
@@ -228,7 +240,7 @@ describe('scene integration', () => {
   it('persists rotation style, migrates version 8, and rejects malformed new state', () => {
     const w = ws(); const state = scene(); state.sprites[0].rotationStyle = 'left-right'; state.sprites[0].direction = 90;
     changeScene(w, state); const restored = ws(); restore(restored, { ...snapshot(w), languageVersion: 8 });
-    expect(snapshot(restored).languageVersion).toBe(19); expect(sceneState(restored).sprites[0].rotationStyle).toBe('left-right');
+    expect(snapshot(restored).languageVersion).toBe(22); expect(sceneState(restored).sprites[0].rotationStyle).toBe('left-right');
     expect(bounds(state.sprites[0], state)).toEqual({ width: 48, height: 40 });
     for (const rotationStyle of ['diagonal', null, 1]) expect(() => validateScene({ ...state, sprites: [{ ...state.sprites[0], rotationStyle }] })).toThrow();
     for (const input of [{ kind: 'pointer', x: 1000001, y: 0, down: false, inside: true }, { kind: 'pointer', x: 0, y: 0, down: 'yes', inside: true }]) expect(() => validateInput(input as never)).toThrow();

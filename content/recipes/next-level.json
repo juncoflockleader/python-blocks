@@ -52,5 +52,21 @@
   "preview": "next-level.webm",
   "tryNext": [
     "win-screen"
+  ],
+  "demo": [
+    {
+      "wait": 300
+    },
+    {
+      "key": "ArrowRight",
+      "ms": 800
+    },
+    {
+      "key": "ArrowUp",
+      "ms": 420
+    },
+    {
+      "wait": 600
+    }
   ]
 }

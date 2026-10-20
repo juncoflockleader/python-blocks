@@ -1,7 +1,7 @@
 {
  "format": "python-blocks",
  "formatVersion": 1,
- "languageVersion": 19,
+ "languageVersion": 22,
  "workspace": {
   "blocks": {
    "languageVersion": 0,
@@ -131,121 +131,175 @@
          },
          "DO0": {
           "block": {
-           "type": "game_change",
-           "fields": {
-            "FIELD": "score"
-           },
+           "type": "sound_play",
+           "id": "catch_the_star_game_3c_3",
+           "fields": {},
            "inputs": {
-            "VALUE": {
-             "shadow": {
-              "type": "py_number",
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "catch_the_star_game_3c_1",
               "fields": {
-               "VALUE": "1"
-              }
+               "SOUND_ID": "coin"
+              },
+              "inputs": {}
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "catch_the_star_game_3c_2",
+              "fields": {},
+              "inputs": {}
              }
             }
            },
            "next": {
             "block": {
-             "type": "scene_go",
+             "type": "game_change",
+             "fields": {
+              "FIELD": "score"
+             },
              "inputs": {
-              "SPRITE": {
-               "block": {
-                "type": "scene_sprite",
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
                 "fields": {
-                 "SPRITE_ID": "star"
-                }
-               }
-              },
-              "X": {
-               "block": {
-                "type": "math_random_int",
-                "inputs": {
-                 "FROM": {
-                  "shadow": {
-                   "type": "py_number",
-                   "fields": {
-                    "VALUE": "-200"
-                   }
-                  }
-                 },
-                 "TO": {
-                  "shadow": {
-                   "type": "py_number",
-                   "fields": {
-                    "VALUE": "200"
-                   }
-                  }
-                 }
-                }
-               }
-              },
-              "Y": {
-               "block": {
-                "type": "math_random_int",
-                "inputs": {
-                 "FROM": {
-                  "shadow": {
-                   "type": "py_number",
-                   "fields": {
-                    "VALUE": "-130"
-                   }
-                  }
-                 },
-                 "TO": {
-                  "shadow": {
-                   "type": "py_number",
-                   "fields": {
-                    "VALUE": "130"
-                   }
-                  }
-                 }
+                 "VALUE": "1"
                 }
                }
               }
              },
              "next": {
               "block": {
-               "type": "controls_if",
+               "type": "scene_go",
                "inputs": {
-                "IF0": {
+                "SPRITE": {
                  "block": {
-                  "type": "logic_compare",
+                  "type": "scene_sprite",
                   "fields": {
-                   "OP": "EQ"
-                  },
+                   "SPRITE_ID": "star"
+                  }
+                 }
+                },
+                "X": {
+                 "block": {
+                  "type": "math_random_int",
                   "inputs": {
-                   "A": {
-                    "block": {
-                     "type": "game_get",
-                     "fields": {
-                      "FIELD": "score"
-                     }
-                    }
-                   },
-                   "B": {
+                   "FROM": {
                     "shadow": {
                      "type": "py_number",
                      "fields": {
-                      "VALUE": "5"
+                      "VALUE": "-200"
+                     }
+                    }
+                   },
+                   "TO": {
+                    "shadow": {
+                     "type": "py_number",
+                     "fields": {
+                      "VALUE": "200"
                      }
                     }
                    }
                   }
                  }
                 },
-                "DO0": {
+                "Y": {
                  "block": {
-                  "type": "game_finish",
-                  "fields": {
-                   "WON": "TRUE"
-                  },
+                  "type": "math_random_int",
                   "inputs": {
-                   "TEXT": {
+                   "FROM": {
                     "shadow": {
-                     "type": "text",
+                     "type": "py_number",
                      "fields": {
-                      "TEXT": "You caught 5 stars!"
+                      "VALUE": "-130"
+                     }
+                    }
+                   },
+                   "TO": {
+                    "shadow": {
+                     "type": "py_number",
+                     "fields": {
+                      "VALUE": "130"
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "next": {
+                "block": {
+                 "type": "controls_if",
+                 "inputs": {
+                  "IF0": {
+                   "block": {
+                    "type": "logic_compare",
+                    "fields": {
+                     "OP": "EQ"
+                    },
+                    "inputs": {
+                     "A": {
+                      "block": {
+                       "type": "game_get",
+                       "fields": {
+                        "FIELD": "score"
+                       }
+                      }
+                     },
+                     "B": {
+                      "shadow": {
+                       "type": "py_number",
+                       "fields": {
+                        "VALUE": "5"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  },
+                  "DO0": {
+                   "block": {
+                    "type": "sound_play",
+                    "id": "catch_the_star_game_3c_6",
+                    "fields": {},
+                    "inputs": {
+                     "SOUND": {
+                      "block": {
+                       "type": "sound_asset",
+                       "id": "catch_the_star_game_3c_4",
+                       "fields": {
+                        "SOUND_ID": "win"
+                       },
+                       "inputs": {}
+                      }
+                     },
+                     "OWNER": {
+                      "block": {
+                       "type": "py_none",
+                       "id": "catch_the_star_game_3c_5",
+                       "fields": {},
+                       "inputs": {}
+                      }
+                     }
+                    },
+                    "next": {
+                     "block": {
+                      "type": "game_finish",
+                      "fields": {
+                       "WON": "TRUE"
+                      },
+                      "inputs": {
+                       "TEXT": {
+                        "shadow": {
+                         "type": "text",
+                         "fields": {
+                          "TEXT": "You caught 5 stars!"
+                         }
+                        }
+                       }
+                      }
                      }
                     }
                    }
@@ -294,7 +348,21 @@
      "costume": "star"
     }
    ],
-   "backdrop": "backdrop_meadow"
+   "backdrop": "backdrop_meadow",
+   "sounds": [
+    {
+     "id": "coin",
+     "name": "Coin",
+     "kind": "clip",
+     "stock": "effects/coin@1"
+    },
+    {
+     "id": "win",
+     "name": "Win",
+     "kind": "clip",
+     "stock": "effects/win@1"
+    }
+   ]
   },
   "procedures": [
    {

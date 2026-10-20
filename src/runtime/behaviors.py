@@ -87,6 +87,8 @@ class Behaviors:
             def scan():
                 self.scan_tiles(retain); self.scan_contacts(retain)
             if not self.scene._physics or not self.scene._physics.step(dt, scan): scan()
+            for sprite in list(self.scene.items.values()):
+                if sprite._alive: sprite._animate_tick(now)
             self.scene.worlds.update_camera()
             self.events._enqueue('_pb:tick', {'dt': dt, 'epoch': self.scene.worlds.epoch})
             for name, payload in pending: self.events._enqueue(name, payload)

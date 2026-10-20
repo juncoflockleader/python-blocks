@@ -1,5 +1,6 @@
 import { expect, test } from '@playwright/test';
 import { reveal } from './shell';
+import { stagePixels } from './stage-pixels';
 
 test('blocks generate Python and real Python draws a square', async ({ page }, testInfo) => {
   const errors: string[] = [];
@@ -9,7 +10,7 @@ test('blocks generate Python and real Python draws a square', async ({ page }, t
   await page.getByRole('button', { name: 'Run code' }).click();
   await expect(page.locator('#status')).toHaveText('Finished', { timeout: 60_000 });
   await expect(page.locator('#stage')).toHaveAttribute('data-command-count', '8');
-  const pixel = await page.locator('#stage').evaluate(canvas => Array.from((canvas as HTMLCanvasElement).getContext('2d')!.getImageData(290, 160, 1, 1).data));
+  const pixel = await page.locator('#stage').evaluate(stagePixels, [290, 160, 1, 1]);
   expect(pixel).toEqual([38, 124, 112, 255]);
   expect(errors).toEqual([]);
   await page.screenshot({ path: testInfo.outputPath('playground.png'), fullPage: true });

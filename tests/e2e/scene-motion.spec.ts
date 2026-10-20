@@ -1,6 +1,7 @@
 import { expect, test, type Page } from '@playwright/test';
 import { readFile } from 'node:fs/promises';
 import { reveal } from './shell';
+import { stagePixels } from './stage-pixels';
 
 type B = { type: string; fields?: Record<string, string>; inputs?: Record<string, { block: B }>; next?: { block: B }; [key: string]: unknown };
 const block = (type: string, fields: Record<string, string> = {}, inputs: Record<string, B> = {}): B => ({ type, fields, inputs: Object.fromEntries(Object.entries(inputs).map(([key, b]) => [key, { block: b }])) });
@@ -71,7 +72,7 @@ test('speech timers cannot erase newer dialogue and hidden or destroyed sprites 
 test('rotation styles preserve art orientation and survive Undo and reload', async ({ page }) => {
   await page.goto('/'); await page.locator('#project-file').setInputFiles('tests/fixtures/scene/sequential.json');
   await (await reveal(page, '#scene-direction')).fill('180'); await (await reveal(page, '#scene-rotation')).selectOption('left-right'); await page.keyboard.press('Enter');
-  const pixel = (x: number) => page.locator('#stage').evaluate((canvas, x) => Array.from((canvas as HTMLCanvasElement).getContext('2d')!.getImageData(x, 159, 1, 1).data), x);
+  const pixel = (x: number) => page.locator('#stage').evaluate(stagePixels, [x, 159, 1, 1]);
   await expect.poll(() => pixel(125)).toEqual([232, 185, 79, 255]);
   await (await reveal(page, '#scene-rotation')).selectOption('none'); await page.keyboard.press('Enter');
   await expect.poll(() => pixel(155)).toEqual([232, 185, 79, 255]);

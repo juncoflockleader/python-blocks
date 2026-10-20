@@ -69,7 +69,7 @@ The older `overlaps()` and `touching_point()` operations retain their enclosing-
 
 ## Format and verification
 
-Language version 12 introduced optional sprite targets to handler metadata and optional starting-data dictionaries to sprite metadata, plus behavior/sensing blocks. Current exports use version 19, also preserving motion/kind, worlds/cameras, game presentation, sound/music, touch controls and watchers. Earlier projects through version 18 and modules from versions 5–18 remain readable. Missing data defaults to an empty dictionary; missing handler targets preserve project handlers. Existing module revisions are not rewritten.
+Language version 12 introduced optional sprite targets to handler metadata and optional starting-data dictionaries to sprite metadata, plus behavior/sensing blocks. Current project exports use version 20, also preserving 2× artwork, motion/kind, worlds/cameras, game presentation, sound/music, touch controls and watchers. Earlier projects through version 18 and modules from versions 5–18 remain readable. Missing data defaults to an empty dictionary; missing handler targets preserve project handlers. Existing module revisions are not rewritten.
 
 Evidence lives in [native behavior tests](../tests/python/test_behaviors.py), [pixel-sensing unit tests](../tests/unit/sensing.test.ts), [compiler/project tests](../tests/unit/scene.test.ts), and [Chromium/Pyodide behavior tests](../tests/e2e/behaviors.spec.ts). The increment evidence and parity requirements are recorded in the [2D parity plan](2d-parity-plan.md).
 

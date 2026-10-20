@@ -2,20 +2,22 @@ import { defaultControls } from './touch';
 import { PlayInput } from './play-input';
 import { installSceneNavigation } from './navigation';
 import { installWatchers } from './watchers';
-import { includeStock, stockArtwork } from './stock-art';
+import { findStock, includeStockSet } from './stock-art';
 import { includeWorldTemplate } from './world-templates';
 import { installStockLibrary } from './stock-library';
 import { keys } from './model';
 import { installWorldEditor } from './world-editor';
 import { installMotionEditor } from './motion-editor';
 import { installDataEditor } from './data-editor';
-import { installArtEditor } from './art-editor';
+import { installPaintEditor } from './paint-editor';
 import { installAppearanceEditor } from './appearance-editor';
 import * as Blockly from 'blockly/core';
 import { installScenePalette } from './palette';
 import { Stage } from '../stage';
-import { backdrops, builtins, costumes, spriteFrames, type SceneInput, type RotationStyle } from './model';
+import { FRAMES_ANIMATION, backdrops, builtins, costumes, spriteFrames, type SceneInput, type RotationStyle, type SpriteState } from './model';
 import { changeScene, sceneState } from './state';
+import { installStageView } from './stage-view';
+import { resizeWorld, screenLimits, worldScreens } from './world-size';
 
 const numberField = (id: string, label: string, min: number, max: number) => `<label>${label} <input id="${id}" type="number" inputmode="decimal" min="${min}" max="${max}" step="any" required></label>`;
 const nameAttributes = 'autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"';
@@ -40,16 +42,27 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     <p id="scene-live"></p><p id="scene-error" role="alert"></p>
     <section class="stage-settings" aria-labelledby="stage-settings-title"><h3 id="stage-settings-title">Stage &amp; assets</h3>
       <label class="level-pro">Starting world <select id="scene-browse-world"></select></label>
+      <div class="world-screens level-builder" role="group" aria-labelledby="world-screens-title"><span id="world-screens-title" class="world-screens-title">World size</span>
+        ${(['wide', 'tall'] as const).map(side => `<span class="stepper"><span id="world-${side}-label">Screens ${side}</span><button id="world-${side}-less" class="button secondary ui-icon-only" type="button" aria-label="One screen ${side === 'wide' ? 'narrower' : 'shorter'}" title="One screen ${side === 'wide' ? 'narrower' : 'shorter'}">Fewer</button><output id="world-${side}" aria-labelledby="world-${side}-label">1</output><button id="world-${side}-more" class="button secondary ui-icon-only" type="button" aria-label="One screen ${side === 'wide' ? 'wider' : 'taller'}" title="One screen ${side === 'wide' ? 'wider' : 'taller'}">More</button></span>`).join('')}
+        <p class="tab-note">One screen is the stage. Removing a screen moves its sprites onto the screens that stay; Undo brings it back.</p></div>
       <div class="scene-toolbar"><label>Backdrop <select id="scene-backdrop"></select></label><label>Background <input id="scene-background" type="color" value="#fdfdf9"></label></div>
-      <div class="scene-toolbar" id="stage-assets"><button id="scene-stock-backdrop" class="button secondary">Backdrop library</button><button id="scene-art" class="button secondary">Artwork & frames</button><button id="scene-import" class="button secondary">Import costume</button><input id="scene-image" type="file" accept="image/png,image/jpeg,image/webp" hidden></div>
+      <div class="scene-toolbar" id="stage-assets"><button id="scene-stock-backdrop" class="button secondary">Backdrop library</button><button id="scene-paint-backdrop" class="button secondary">Paint a backdrop</button><button id="scene-import" class="button secondary">Import costume</button><input id="scene-image" type="file" accept="image/png,image/jpeg,image/webp" hidden></div>
     </section>`;
-  document.getElementById('sprite-tray')!.innerHTML = '<div id="scene-cards" class="tray-cards" role="group" aria-label="Choose a sprite"></div><button id="scene-stock" class="button secondary tray-button" title="Add a sprite from the library">Sprite library</button><button id="tray-paint" class="button secondary tray-button" title="Paint a new costume for the selected sprite">Paint</button>';
+  document.getElementById('sprite-tray')!.innerHTML = '<div id="scene-cards" class="tray-cards" role="group" aria-label="Choose a sprite"></div><button id="scene-stock" class="button secondary tray-button tray-sprites" title="Add sprites from the library" aria-label="Add sprites">Sprites</button><button id="tray-paint" class="button secondary tray-button" title="Paint this sprite\'s costumes, or a new sprite">Paint</button><button id="tray-sounds" class="button secondary tray-button" title="Record your voice, make an effect or write a song">Sounds</button>';
   // A non-modal sheet over the tabs: the stage and sprite tray stay visible, so choosing another sprite updates it.
   document.querySelector('.right-column')!.insertAdjacentHTML('beforeend', `<dialog id="sprite-settings" class="sheet" aria-labelledby="sprite-settings-title"><header><h2 id="sprite-settings-title">More settings <span id="sprite-settings-name"></span></h2><button id="sprite-settings-done" class="button primary">Done</button></header>
     <div class="sheet-body scene-editor" id="sprite-settings-body"><form id="scene-more" aria-label="Where the sprite lives"><fieldset id="scene-more-fields"><legend>Where it lives</legend><div class="scene-properties-grid">
       <label class="level-pro">Belongs to <select id="scene-world"></select></label>${numberField('scene-layer', 'Layer', -1000, 1000)}
       <label>Rotation <select id="scene-rotation"><option value="all">All around</option><option value="left-right">Left/right only</option><option value="none">Do not rotate</option></select></label>
-    </div></fieldset></form></div></dialog>`);
+    </div></fieldset>
+    <fieldset id="scene-animate-fields" class="scene-animate"><legend>Animation</legend>
+      <label class="scene-check"><input id="scene-auto" type="checkbox"> Animate while moving</label>
+      <p class="scene-hint" id="scene-auto-hint">Plays one animation while the sprite moves, another in the air, and another when it is still.</p>
+      <div class="scene-properties-grid" id="scene-auto-grid">
+        <label>Moving <select id="scene-auto-moving"></select></label><label>In the air <select id="scene-auto-air"></select></label><label>Still <select id="scene-auto-still"></select></label>
+      </div>
+      <label class="scene-check"><input id="scene-auto-turn" type="checkbox"> Turn to face the way it moves</label>
+    </fieldset></form></div></dialog>`);
   document.querySelector('.stage-wrap')!.insertAdjacentHTML('beforeend', '<p id="stage-dialogue" class="stage-dialogue" role="status" aria-live="polite"></p>');
   document.getElementById('stage-toolbar')!.insertAdjacentHTML('afterbegin', '<button id="scene-reset" class="button secondary" title="Reset stage">Reset stage</button>');
   const el = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -57,6 +70,27 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
   let running = false, ready = false, editing = true, saved = '', selected = '';
   document.querySelector('.stage-wrap')!.insertAdjacentHTML('beforeend', '<div id="touch-controls" class="touch-controls"></div>');
   const playInput = new PlayInput(canvas, stage, el('touch-controls'), input);
+  // The editing view (pan, zoom, map) is installed before the sprite drag below, so it claims pans first.
+  let layout = { world: '', wide: 1, tall: 1, maxWide: 1, maxTall: 1 }, cameraWorld: string | null = null, cameraKey = '';
+  const view = installStageView(stage, canvas, {
+    editing: () => editing, world: () => layout.world, screens: () => layout,
+    resize: (wide, tall) => resize(wide, tall), selectedName: () => stage.getSprite(selected)?.name ?? '',
+  });
+  /** Grow or shrink the current world, in screens. One Undo step; false when it was refused. */
+  const resize = (wide: number, tall: number) => {
+    let done = false;
+    attempt(() => { if (!editing) return; changeScene(workspace, resizeWorld(sceneState(workspace), wide, tall)); done = true; render(true); });
+    return done;
+  };
+  /** The World size steppers show the current world's screens and stop at its limits. */
+  const steppers = () => {
+    for (const side of ['wide', 'tall'] as const) {
+      el(`world-${side}`).textContent = String(layout[side]);
+      el<HTMLButtonElement>(`world-${side}-less`).disabled = !editing || layout[side] <= 1;
+      el<HTMLButtonElement>(`world-${side}-more`).disabled = !editing || layout[side] >= layout[side === 'wide' ? 'maxWide' : 'maxTall'];
+    }
+  };
+  for (const side of ['wide', 'tall'] as const) for (const [delta, id] of [[-1, 'less'], [1, 'more']] as const) el(`world-${side}-${id}`).addEventListener('click', () => resize(layout.wide + (side === 'wide' ? delta : 0), layout.tall + (side === 'tall' ? delta : 0)));
   el('audio-controls').append(el('touch-toggle'));
   el('help-slot').insertAdjacentHTML('beforeend', '<details class="scene-input-settings"><summary>Input help & touch buttons</summary><p>Focus the stage for keys; hold touch buttons to move. A and B send the chosen keys. Answering questions or leaving the window releases held controls.</p><label>Action A key <select id="touch-key-a"></select></label><label>Action B key <select id="touch-key-b"></select></label></details>');
   for (const action of ['a', 'b'] as const) { const select = el<HTMLSelectElement>('touch-key-' + action); select.replaceChildren(...keys.map(([label, key]) => new Option(label, key))); select.addEventListener('change', () => attempt(() => { if (!editing) return; const next = sceneState(workspace); next.controls = { ...(next.controls ?? defaultControls()), [action]: select.value }; changeScene(workspace, next); render(true); })); }
@@ -65,11 +99,14 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     const before = sceneState(workspace), next = structuredClone(before); let added = '';
     if (kind === 'world') await includeWorldTemplate(next,id);
     else {
-      const asset = await includeStock(next,kind,id);
+      const { costume: asset, frames, animations, autoAnimate } = includeStockSet(next,kind,id), art = findStock(kind,id)!;
       if (kind === 'backdrop') (next.worlds?.find(w => w.id === next.world) ?? next).backdrop = asset;
       else {
         added = crypto.randomUUID();
-        next.sprites.push({ id: added, name: uniqueName(stockArtwork.find(a => a.kind === kind && a.id === id)!.name), x: Number(canvas.dataset.cameraX ?? 0), y: Number(canvas.dataset.cameraY ?? 0), ...(next.world ? { world: next.world } : {}), direction: 0, size: 100, layer: 0, visible: true, costume: asset });
+        // A library character brings every pose as named animations (idle, walk, jump, happy; a chick flaps); its frames
+        // are the walk cycle, and it animates while it moves, turning to face left or right. A coin or gem brings its spin.
+        next.sprites.push({ id: added, name: uniqueName(art.name), x: Number(canvas.dataset.cameraX ?? 0), y: Number(canvas.dataset.cameraY ?? 0), ...(next.world ? { world: next.world } : {}), direction: 0, size: 100, layer: 0, visible: true, costume: asset, ...(frames ? { costumes: frames } : {}), ...(animations ? { animations } : {}),
+          ...(autoAnimate ? { rotationStyle: 'left-right' as const, frameSeconds: 0.12, autoAnimate } : {}) });
       }
     }
     signal.throwIfAborted();
@@ -79,15 +116,21 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
   });
   el('scene-stock').addEventListener('click',() => stock.open('costume'));
   el('scene-stock-backdrop').addEventListener('click',() => stock.open('backdrop'));
-  const worlds = installWorldEditor(workspace, () => editing, () => stock.open('world'));
-  const artwork = installArtEditor(workspace, () => selected, () => editing);
-  el('tray-paint').addEventListener('click', () => artwork.paint());
+  // The Paint editor: costumes from the tray or Edit costume, backdrops from Stage & assets, tiles from the world editor.
+  const paint = installPaintEditor(workspace, {
+    canEdit: () => editing, selected: () => selected,
+    viewCentre: () => ({ x: Number(canvas.dataset.cameraX ?? 0), y: Number(canvas.dataset.cameraY ?? 0) }),
+    library: (kind, add) => stock.open(kind, async (_kind, id) => add(id)),
+    done: sprite => { if (sprite) selected = sprite; render(true); if (sprite) choose(sprite); },
+  });
+  const worlds = installWorldEditor(workspace, () => editing, () => stock.open('world'), id => { if (editing) paint.open({ kind: 'tile', id }); });
+  el('tray-paint').addEventListener('click', () => { if (editing) paint.open({ kind: 'costume' }); });
   const choose = (id: string) => { selected = id; select.value = id; loadProperties(); workspace.refreshToolboxSelection(); select.dispatchEvent(new Event('sprite-selection-changed')); };
   const navigation = installSceneNavigation(workspace, choose, id => attempt(() => { if (!editing) return; const state = sceneState(workspace); state.world = id || null; changeScene(workspace,state); render(true); }), () => attempt(() => {
     if (!editing) return; const state = sceneState(workspace), sprite = state.sprites.find(s => s.id === selected); if (!sprite) return;
     if (sprite.world && sprite.world !== state.world) { state.world = sprite.world; changeScene(workspace,state); render(true); }
-    stage.previewCamera(sprite.x,sprite.y); canvas.scrollIntoView({block:'nearest'}); canvas.focus({preventScroll:true});
-  }), () => { const sprite = sceneState(workspace).sprites.find(s => s.id === selected); if (sprite) artwork.open({kind:'costume',id:sprite.costume}); });
+    view.centerOn(sprite.x,sprite.y); canvas.scrollIntoView({block:'nearest'}); canvas.focus({preventScroll:true});
+  }), () => { if (editing) paint.open({ kind: 'costume', sprite: selected }); });
   const appearance = installAppearanceEditor(workspace, () => selected, () => editing);
   const dataEditor = installDataEditor(workspace, () => selected, () => editing);
   const motionEditor = installMotionEditor(workspace, () => selected, () => editing);
@@ -101,6 +144,37 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
   const error = (e: unknown) => { el('scene-error').textContent = e instanceof Error ? e.message : String(e); };
   const attempt = (fn: () => void) => { try { el('scene-error').textContent = ''; fn(); } catch (e) { error(e); } };
   const clearKeys = () => playInput.release();
+  /** Animate while moving: a switch, which animation plays when moving, in the air and still, and turning. */
+  const autoChoices = (sprite: SpriteState) => [['', 'Nothing'], [FRAMES_ANIMATION, 'frames'], ...(sprite.animations ?? []).map(a => [a.name, a.name])];
+  function renderAuto(sprite: SpriteState | undefined) {
+    const auto = sprite?.autoAnimate;
+    el<HTMLInputElement>('scene-auto').checked = !!auto;
+    for (const key of ['moving', 'air', 'still'] as const) {
+      const field = el<HTMLSelectElement>(`scene-auto-${key}`);
+      field.replaceChildren(...(sprite ? autoChoices(sprite) : []).map(([value, label]) => new Option(label, value)));
+      field.value = auto?.[key] ?? ''; field.disabled = !auto;
+    }
+    el<HTMLInputElement>('scene-auto-turn').checked = auto?.turn ?? false; el<HTMLInputElement>('scene-auto-turn').disabled = !auto;
+    el('scene-auto-grid').hidden = !auto;
+  }
+  function applyAuto(changed: 'on' | 'moving' | 'air' | 'still' | 'turn') {
+    if (!editing) return; attempt(() => {
+      const scene = sceneState(workspace), sprite = scene.sprites.find(s => s.id === selected); if (!sprite) return;
+      if (changed === 'on') {
+        if (el<HTMLInputElement>('scene-auto').checked) {
+          const has = (n: string) => sprite.animations?.some(a => a.name === n);
+          sprite.autoAnimate = { moving: has('walk') ? 'walk' : FRAMES_ANIMATION, air: has('jump') ? 'jump' : '', still: has('idle') ? 'idle' : '', turn: true };
+          if ((sprite.rotationStyle ?? 'all') === 'all') sprite.rotationStyle = 'left-right';
+        } else delete sprite.autoAnimate;
+      } else if (sprite.autoAnimate) {
+        if (changed === 'turn') sprite.autoAnimate.turn = el<HTMLInputElement>('scene-auto-turn').checked;
+        else sprite.autoAnimate[changed] = el<HTMLSelectElement>(`scene-auto-${changed}`).value;
+      }
+      changeScene(workspace, scene); render(true);
+    });
+  }
+  el('scene-auto').addEventListener('change', () => applyAuto('on'));
+  for (const key of ['moving', 'air', 'still', 'turn'] as const) el(`scene-auto-${key}`).addEventListener('change', () => applyAuto(key));
   function loadProperties() {
     appearance.refresh(); dataEditor.refresh(); motionEditor.refresh();
     const scene = sceneState(workspace), sprite = scene.sprites.find(s => s.id === selected);
@@ -112,13 +186,14 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     el<HTMLSelectElement>('scene-world').replaceChildren(new Option('Global (all worlds)', ''), ...(scene.worlds ?? []).map(w => new Option(w.name, w.id))); el<HTMLSelectElement>('scene-world').value = sprite?.world ?? '';
     el<HTMLInputElement>('scene-visible').checked = sprite?.visible ?? true;
     el<HTMLSelectElement>('scene-rotation').value = sprite?.rotationStyle ?? 'all';
+    renderAuto(sprite);
     el<HTMLInputElement>('scene-background').value = scene.worlds?.find(w => w.id === scene.world)?.background ?? scene.background;
     el<HTMLSelectElement>('scene-backdrop').replaceChildren(new Option('Plain color', ''), ...backdrops(scene).map(a => new Option(a.name, a.id))); el<HTMLSelectElement>('scene-backdrop').value = (scene.worlds?.find(w => w.id === scene.world) ?? scene).backdrop ?? '';
-    for (const id of ['scene-fields', 'scene-more-fields']) el<HTMLFieldSetElement>(id).disabled = !editing || !sprite;
+    for (const id of ['scene-fields', 'scene-more-fields', 'scene-animate-fields']) el<HTMLFieldSetElement>(id).disabled = !editing || !sprite;
     for (const id of ['scene-copy', 'scene-delete']) el<HTMLButtonElement>(id).disabled = !editing || !sprite;
     for (const action of ['a', 'b'] as const) { el<HTMLSelectElement>('touch-key-' + action).value = (scene.controls ?? defaultControls())[action]; el<HTMLSelectElement>('touch-key-' + action).disabled = !editing; }
     if (editing) playInput.configure(scene.controls);
-    stage.selected = editing ? selected : null; stage.paint(); live();
+    stage.selected = editing ? selected : null; stage.paint(); live(); view.refresh();
   }
   function live() {
     const sprite = stage.getSprite(selected);
@@ -132,15 +207,22 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     saved = json;
     if (!scene.sprites.some(s => s.id === selected)) selected = scene.sprites[0]?.id ?? '';
     select.replaceChildren(...(scene.sprites.length ? scene.sprites.map(s => new Option(s.name + (s.world ? ` · ${scene.worlds?.find(w => w.id === s.world)?.name ?? 'world'}` : ''), s.id)) : [new Option('No sprites yet', '')])); select.value = selected;
-    if (editing) stage.reset(scene);
+    const screens = worldScreens(scene), limits = screenLimits(scene);
+    layout = { world: scene.world ?? '', ...screens, maxWide: limits.wide, maxTall: limits.tall };
+    steppers();
+    // When the world's camera settings change (as with “Move camera here”), show where the game now starts.
+    const camera = JSON.stringify((scene.worlds?.find(w => w.id === scene.world) ?? scene).camera ?? null), moved = layout.world === cameraWorld && camera !== cameraKey;
+    cameraWorld = layout.world; cameraKey = camera;
+    if (editing) { stage.reset(scene); view.sync(); if (moved) view.home(false); }
     loadProperties();
   }
   function controls() {
-    for (const id of ['scene-add', 'scene-stock', 'tray-paint', 'scene-stock-backdrop', 'scene-import', 'scene-background', 'scene-backdrop', 'scene-art', 'scene-worlds']) (el(id) as HTMLButtonElement).disabled = !editing;
+    for (const id of ['scene-add', 'scene-stock', 'tray-paint', 'tray-sounds', 'scene-stock-backdrop', 'scene-import', 'scene-background', 'scene-backdrop', 'scene-paint-backdrop', 'scene-worlds']) (el(id) as HTMLButtonElement).disabled = !editing;
+    steppers();
     el<HTMLButtonElement>('scene-reset').disabled = running;
-    el('scene-mode').textContent = editing ? 'Drag sprites on the stage to place them before running.' : running ? 'Running. Runtime movement does not change your saved layout.' : 'Run result. Reset stage to edit the saved starting layout.';
+    el('scene-mode').textContent = editing ? 'Drag sprites on the stage to place them before running. Drag empty space to look around.' : running ? 'Running. Runtime movement does not change your saved layout.' : 'Run result. Reset stage to edit the saved starting layout.';
     el('scene-mode').dataset.state = editing ? 'editing' : running ? 'running' : 'result';
-    canvas.setAttribute('aria-label', editing ? 'Sprite placement and drawing stage' : 'Interactive stage. Click to focus, then use arrow keys, letters, numbers, or space.');
+    canvas.setAttribute('aria-label', editing ? 'Sprite placement and drawing stage. Arrow keys look around; plus and minus zoom.' : 'Interactive stage. Click to focus, then use arrow keys, letters, numbers, or space.');
     loadProperties();
   }
   const uniqueName = (base: string) => { const names = sceneState(workspace).sprites.map(s => s.name); let n = 1; while (names.includes(`${base} ${n}`)) n++; return `${base} ${n}`; };
@@ -181,7 +263,7 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     if (field.tagName === 'INPUT' && field.type !== 'checkbox') field.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); commit(key); } });
   }
   for (const id of ['scene-properties', 'scene-more']) el(id).addEventListener('submit', event => event.preventDefault());
-  el('scene-art').addEventListener('click', () => artwork.open());
+  el('scene-paint-backdrop').addEventListener('click', () => { if (editing) paint.open({ kind: 'backdrop' }); });
   el('scene-backdrop').addEventListener('change', () => attempt(() => { const scene = sceneState(workspace); (scene.worlds?.find(w => w.id === scene.world) ?? scene).backdrop = el<HTMLSelectElement>('scene-backdrop').value || null; changeScene(workspace, scene); render(true); }));
   el('scene-background').addEventListener('change', () => attempt(() => { const scene = sceneState(workspace); (scene.worlds?.find(w => w.id === scene.world) ?? scene).background = el<HTMLInputElement>('scene-background').value; changeScene(workspace, scene); render(true); }));
   el('scene-reset').addEventListener('click', () => { if (!running) { editing = true; watchers.restore(); render(true); controls(); } });
@@ -228,17 +310,22 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
   render(true); controls();
   return {
     live, watch: watchers.accept, releaseInput: clearKeys, selected: () => selected,
+    /** False while a program runs: the editors wait until it stops. */
+    canEdit: () => editing,
     /** Select a sprite as the tray does (palette defaults, inspector and stage). */
     select(id: string) { if (sceneState(workspace).sprites.some(s => s.id === id)) choose(id); },
     /** Open the stock library on a kind, as the tray and settings buttons do. */
     openLibrary(kind: 'costume' | 'backdrop' | 'world') { if (editing) stock.open(kind); },
     /** On touch screens, show the on-screen controller when the program listens for keys. */
     touchControls(show: boolean) { playInput.showTouch(show); },
-    start(scene = sceneState(workspace)) { stock.close(); worlds.close(); artwork.close(); settings.close(); clearKeys(); drag = null; editing = false; running = true; ready = false; stage.selected = null; stage.reset(scene); playInput.configure(scene.controls); playInput.setEnabled(false); watchers.start(scene); controls(); },
+    start(scene = sceneState(workspace)) { stock.close(); worlds.close(); paint.close(); settings.close(); clearKeys(); drag = null; editing = false; running = true; ready = false; stage.selected = null; stage.reset(scene); view.sync(); playInput.configure(scene.controls); playInput.setEnabled(false); watchers.start(scene); controls(); },
     ready() { ready = true; playInput.setEnabled(true); },
     pause(paused: boolean) { clearKeys(); playInput.setEnabled(ready && !paused); },
     stop() { clearKeys(); playInput.setEnabled(false); ready = false; running = false; watchers.stop(); controls(); },
-    restore() { clearKeys(); playInput.setEnabled(false); ready = false; running = false; editing = true; watchers.restore(); render(true); controls(); },
-    dispose() { settings.remove(); stock.dispose(); worlds.dispose(); artwork.dispose(); playInput.dispose(); workspace.removeChangeListener(changed); window.removeEventListener('pointerup', endDrag); canvas.removeEventListener('pointerdown', pointerDown); canvas.removeEventListener('pointermove', pointerMove); for (const event of ['pointerup', 'pointercancel', 'lostpointercapture']) canvas.removeEventListener(event, endDrag as EventListener); },
+    /** Back to editing. A newly opened project (`fresh`) starts from its own starting views. */
+    restore(fresh = false) { clearKeys(); playInput.setEnabled(false); ready = false; running = false; editing = true; if (fresh) view.forget(); watchers.restore(); render(true); controls(); },
+    /** The stage's editing view: pan, zoom, fit and the tools rail. */
+    view,
+    dispose() { view.dispose(); settings.remove(); stock.dispose(); worlds.dispose(); paint.dispose(); playInput.dispose(); workspace.removeChangeListener(changed); window.removeEventListener('pointerup', endDrag); canvas.removeEventListener('pointerdown', pointerDown); canvas.removeEventListener('pointermove', pointerMove); for (const event of ['pointerup', 'pointercancel', 'lostpointercapture']) canvas.removeEventListener(event, endDrag as EventListener); },
   };
 }

@@ -1,0 +1,1447 @@
+{
+ "id": "brick-breaker",
+ "title": "Brick Breaker",
+ "kind": "lesson",
+ "level": "builder",
+ "minutes": 30,
+ "order": 5,
+ "summary": "Bounce a ball off your paddle and clear a wall of bricks. You build the whole game yourself, one checked step at a time.",
+ "ideas": [
+  "velocity",
+  "bounce",
+  "nested loops",
+  "clone scripts",
+  "lives",
+  "win condition"
+ ],
+ "learn": [
+  "give a sprite velocity, a speed with a direction, and make it bounce off the walls",
+  "build a wall with loops: one repeat for a row, and a repeat around it for the rows",
+  "write one script that every brick runs for itself, because clones share their sprite’s scripts",
+  "decide who wins: 3 rows of 8 make 24 bricks to break"
+ ],
+ "chapters": [
+  {
+   "title": "Paddle",
+   "idea": "A controller moves a sprite while a key is held.",
+   "steps": 2
+  },
+  {
+   "title": "Ball",
+   "idea": "Velocity is a speed with a direction.",
+   "steps": 2
+  },
+  {
+   "title": "Bounce back",
+   "idea": "An event runs when two sprites touch.",
+   "steps": 1
+  },
+  {
+   "title": "Brick wall",
+   "idea": "A loop inside a loop builds rows.",
+   "steps": 2
+  },
+  {
+   "title": "Breaking bricks",
+   "idea": "Every clone runs its sprite’s scripts.",
+   "steps": 2
+  },
+  {
+   "title": "Win or lose",
+   "idea": "The game ends when you decide it does.",
+   "steps": 3
+  }
+ ],
+ "starter": {
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 22,
+  "workspace": {
+   "blocks": {
+    "languageVersion": 0,
+    "blocks": []
+   },
+   "pythonScene": {
+    "version": 1,
+    "background": "#22394a",
+    "assets": [
+     {
+      "id": "stock-paddle",
+      "name": "Paddle",
+      "width": 80,
+      "height": 12,
+      "stock": "props/paddle@1"
+     },
+     {
+      "id": "stock-little-ball",
+      "name": "Little ball",
+      "width": 14,
+      "height": 14,
+      "stock": "props/little-ball@1"
+     },
+     {
+      "id": "stock-brick-red",
+      "name": "Brick red",
+      "width": 44,
+      "height": 14,
+      "stock": "props/brick-red@1"
+     },
+     {
+      "id": "stock-brick-orange",
+      "name": "Brick orange",
+      "width": 44,
+      "height": 14,
+      "stock": "props/brick-orange@1"
+     },
+     {
+      "id": "stock-brick-yellow",
+      "name": "Brick yellow",
+      "width": 44,
+      "height": 14,
+      "stock": "props/brick-yellow@1"
+     },
+     {
+      "id": "stock-brick-green",
+      "name": "Brick green",
+      "width": 44,
+      "height": 14,
+      "stock": "props/brick-green@1"
+     },
+     {
+      "id": "stock-brick-blue",
+      "name": "Brick blue",
+      "width": 44,
+      "height": 14,
+      "stock": "props/brick-blue@1"
+     }
+    ],
+    "sprites": [
+     {
+      "id": "paddle",
+      "name": "Paddle",
+      "x": 0,
+      "y": -135,
+      "direction": 0,
+      "size": 100,
+      "layer": 1,
+      "visible": true,
+      "costume": "stock-paddle",
+      "rotationStyle": "none"
+     },
+     {
+      "id": "ball",
+      "name": "Ball",
+      "x": 0,
+      "y": -100,
+      "direction": 0,
+      "size": 100,
+      "layer": 2,
+      "visible": true,
+      "costume": "stock-little-ball",
+      "rotationStyle": "none"
+     },
+     {
+      "id": "brick",
+      "name": "Brick",
+      "x": -175,
+      "y": 120,
+      "direction": 0,
+      "size": 100,
+      "layer": 1,
+      "visible": false,
+      "costume": "stock-brick-red",
+      "rotationStyle": "none",
+      "costumes": [
+       "stock-brick-red",
+       "stock-brick-orange",
+       "stock-brick-yellow",
+       "stock-brick-green",
+       "stock-brick-blue"
+      ]
+     }
+    ]
+   }
+  }
+ },
+ "steps": [
+  {
+   "text": "Slide the paddle with the arrow keys, but never up or down.",
+   "check": {
+    "all": [
+     {
+      "handler": "start"
+     },
+     {
+      "handler": "start",
+      "contains": [
+       "scene_control"
+      ]
+     },
+     {
+      "number": [
+       "scene_control",
+       "VY",
+       0
+      ]
+     }
+    ]
+   },
+   "why": "A controller moves a sprite while you hold a key. Vertical speed 0 keeps the paddle on its line.",
+   "checklist": [
+    {
+     "text": "A “when game starts” script",
+     "check": {
+      "handler": "start"
+     }
+    },
+    {
+     "text": "It controls the Paddle with the arrow keys",
+     "check": {
+      "handler": "start",
+      "contains": [
+       "scene_control"
+      ]
+     }
+    },
+    {
+     "text": "Vertical speed is 0",
+     "check": {
+      "number": [
+       "scene_control",
+       "VY",
+       0
+      ]
+     }
+    }
+   ],
+   "hints": [
+    "Look in Motion for a block that starts with “control sprite”, and put it under “when game starts” from Events.",
+    "Choose Paddle in its sprite menu, then change the vertical speed to 0."
+   ],
+   "recipe": "arrow-keys",
+   "select": "paddle",
+   "highlight": {
+    "category": "motion"
+   }
+  },
+  {
+   "text": "Keep the paddle on the stage, then run it and slide from edge to edge.",
+   "check": {
+    "all": [
+     {
+      "field": [
+       "scene_motion_edges",
+       "MODE",
+       "stop"
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "why": "“At stage edge: stop” holds a sprite inside the stage. Click the stage before pressing keys.",
+   "checklist": [
+    {
+     "text": "The Paddle stops at the stage edge",
+     "check": {
+      "field": [
+       "scene_motion_edges",
+       "MODE",
+       "stop"
+      ]
+     }
+    },
+    {
+     "text": "You ran it",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "hints": [
+    "In Motion, “sprite … at stage edge …” decides what happens at the edge.",
+    "Add it for the Paddle with “stop”, press [[Run code]], click the stage and hold the arrow keys."
+   ],
+   "select": "paddle",
+   "highlight": {
+    "category": "motion"
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "start"
+      },
+      "stack": [
+       {
+        "type": "scene_motion_edges",
+        "fields": {
+         "MODE": "stop"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "paddle"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "When the game starts, set the Ball’s vx to 150 and its vy to 200. Before you run it: which way will the ball fly first?",
+   "check": {
+    "all": [
+     {
+      "field": [
+       "scene_motion_set",
+       "PROPERTY",
+       "vx"
+      ]
+     },
+     {
+      "field": [
+       "scene_motion_set",
+       "PROPERTY",
+       "vy"
+      ]
+     },
+     {
+      "predicted": true
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "kind": "predict",
+   "why": "Velocity is a speed with a direction. vx moves sideways and vy moves up or down; a minus sign flips the direction.",
+   "checklist": [
+    {
+     "text": "The Ball gets vx",
+     "check": {
+      "field": [
+       "scene_motion_set",
+       "PROPERTY",
+       "vx"
+      ]
+     }
+    },
+    {
+     "text": "The Ball gets vy",
+     "check": {
+      "field": [
+       "scene_motion_set",
+       "PROPERTY",
+       "vy"
+      ]
+     }
+    },
+    {
+     "text": "You chose what will happen",
+     "check": {
+      "predicted": true
+     }
+    },
+    {
+     "text": "You ran it after choosing",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "hints": [
+    "In Physics, “set sprite … vx to …” gives a sprite a speed. You need two of these blocks.",
+    "Under “when game starts”, set the Ball’s vx to 150 and the Ball’s vy to 200."
+   ],
+   "select": "ball",
+   "highlight": {
+    "category": "physics"
+   },
+   "predict": {
+    "question": "Which way will the ball fly first?",
+    "choices": [
+     "Up and to the right",
+     "Down and to the right",
+     "Up and to the left",
+     "Straight up"
+    ],
+    "answer": 0,
+    "explain": "Positive vx moves right and positive vy moves up, so it flies up and to the right, and right off the stage. The next step fixes that."
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "start"
+      },
+      "stack": [
+       {
+        "type": "scene_motion_set",
+        "fields": {
+         "PROPERTY": "vx"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "ball"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "150"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "scene_motion_set",
+        "fields": {
+         "PROPERTY": "vy"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "ball"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "200"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "Make the ball bounce off the walls instead of leaving the stage.",
+   "check": {
+    "all": [
+     {
+      "field": [
+       "scene_motion_edges",
+       "MODE",
+       "bounce"
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "why": "“At stage edge: bounce” flips the ball’s velocity when it reaches an edge, so it stays in play.",
+   "checklist": [
+    {
+     "text": "The Ball bounces at the stage edge",
+     "check": {
+      "field": [
+       "scene_motion_edges",
+       "MODE",
+       "bounce"
+      ]
+     }
+    },
+    {
+     "text": "You ran it",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "hints": [
+    "You used “sprite … at stage edge …” for the paddle. The ball needs one too.",
+    "Add it for the Ball with “bounce”, then run it."
+   ],
+   "select": "ball",
+   "highlight": {
+    "category": "motion"
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "start"
+      },
+      "stack": [
+       {
+        "type": "scene_motion_edges",
+        "fields": {
+         "MODE": "bounce"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "ball"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "When the paddle touches the ball, send the ball up: set its vy to 220.",
+   "check": {
+    "all": [
+     {
+      "handler": "overlap"
+     },
+     {
+      "handler": "overlap",
+      "contains": [
+       "scene_motion_set"
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "why": "An event runs when two sprites start to touch. A positive vy always means up, so the ball leaves the paddle upward.",
+   "checklist": [
+    {
+     "text": "A script runs when the Paddle and the Ball touch",
+     "check": {
+      "handler": "overlap"
+     }
+    },
+    {
+     "text": "It sets the Ball’s vy",
+     "check": {
+      "handler": "overlap",
+      "contains": [
+       "scene_motion_set"
+      ]
+     }
+    },
+    {
+     "text": "You ran it",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "hints": [
+    "From {{Events}}, drag “when … overlaps …” and choose Paddle and Ball.",
+    "Inside it, set the Ball’s vy to 220, then run it and catch the ball."
+   ],
+   "select": "paddle",
+   "other": "ball",
+   "highlight": {
+    "category": "events"
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "overlap",
+       "sprite": "$sprite",
+       "other": "$other"
+      },
+      "stack": [
+       {
+        "type": "scene_motion_set",
+        "fields": {
+         "PROPERTY": "vy"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "ball"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "220"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "This loop makes 8 bricks, but you can see only one. Why? Fix it so each copy appears further right.",
+   "check": {
+    "all": [
+     {
+      "nested": [
+       "controls_repeat_ext",
+       "scene_change"
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "kind": "fix",
+   "why": "A copy starts where the hidden Brick is. Brick never moves, so all 8 copies land in the same place.",
+   "checklist": [
+    {
+     "text": "Brick moves inside the loop",
+     "check": {
+      "nested": [
+       "controls_repeat_ext",
+       "scene_change"
+      ]
+     }
+    },
+    {
+     "text": "You ran it",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "hints": [
+    "Run it and look closely: the 8 copies are all in one place.",
+    "Inside the loop, under “show sprite”, add “change sprite Brick x by 50” from Motion."
+   ],
+   "select": "brick",
+   "highlight": {
+    "category": "motion"
+   },
+   "plant": [
+    {
+     "handler": {
+      "kind": "start"
+     },
+     "stack": [
+      {
+       "type": "controls_repeat_ext",
+       "inputs": {
+        "TIMES": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "8"
+          }
+         }
+        },
+        "DO": {
+         "block": {
+          "type": "scene_visibility",
+          "fields": {
+           "ACTION": "show"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_clone",
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "fields": {
+                 "SPRITE_ID": "brick"
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "start"
+      },
+      "stack": [
+       {
+        "type": "controls_repeat_ext",
+        "inputs": {
+         "TIMES": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "8"
+           }
+          }
+         },
+         "DO": {
+          "block": {
+           "type": "scene_visibility",
+           "fields": {
+            "ACTION": "show"
+           },
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_clone",
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "fields": {
+                  "SPRITE_ID": "brick"
+                 }
+                }
+               }
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "scene_change",
+             "fields": {
+              "PROPERTY": "x"
+             },
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "fields": {
+                 "SPRITE_ID": "brick"
+                }
+               }
+              },
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "50"
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ],
+    "replacesPlant": 5
+   }
+  },
+  {
+   "text": "Three rows: put your row loop inside “repeat 3”. After each row, set Brick’s x back to −175 and change its y by −24.",
+   "check": {
+    "all": [
+     {
+      "nested": [
+       "controls_repeat_ext",
+       "controls_repeat_ext"
+      ]
+     },
+     {
+      "nested": [
+       "controls_repeat_ext",
+       "scene_set"
+      ]
+     },
+     {
+      "field": [
+       "scene_change",
+       "PROPERTY",
+       "y"
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "why": "The inner loop makes one row. The outer loop runs it 3 times and moves down in between: 3 rows of 8.",
+   "checklist": [
+    {
+     "text": "A repeat inside a repeat",
+     "check": {
+      "nested": [
+       "controls_repeat_ext",
+       "controls_repeat_ext"
+      ]
+     }
+    },
+    {
+     "text": "After a row, Brick goes back left",
+     "check": {
+      "nested": [
+       "controls_repeat_ext",
+       "scene_set"
+      ]
+     }
+    },
+    {
+     "text": "…and moves down",
+     "check": {
+      "field": [
+       "scene_change",
+       "PROPERTY",
+       "y"
+      ]
+     }
+    },
+    {
+     "text": "You ran it",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "hints": [
+    "From Control, drag a new “repeat” and put your whole row loop inside it. Make it repeat 3 times.",
+    "Under the row loop, but still inside the new one: set sprite Brick x to −175, then change sprite Brick y by −24."
+   ],
+   "select": "brick",
+   "highlight": {
+    "category": "control"
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "start"
+      },
+      "stack": [
+       {
+        "type": "controls_repeat_ext",
+        "inputs": {
+         "TIMES": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "3"
+           }
+          }
+         },
+         "DO": {
+          "block": {
+           "type": "controls_repeat_ext",
+           "inputs": {
+            "TIMES": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "8"
+              }
+             }
+            },
+            "DO": {
+             "block": {
+              "type": "scene_visibility",
+              "fields": {
+               "ACTION": "show"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_clone",
+                 "inputs": {
+                  "SPRITE": {
+                   "block": {
+                    "type": "scene_sprite",
+                    "fields": {
+                     "SPRITE_ID": "brick"
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "scene_change",
+                "fields": {
+                 "PROPERTY": "x"
+                },
+                "inputs": {
+                 "SPRITE": {
+                  "block": {
+                   "type": "scene_sprite",
+                   "fields": {
+                    "SPRITE_ID": "brick"
+                   }
+                  }
+                 },
+                 "VALUE": {
+                  "shadow": {
+                   "type": "py_number",
+                   "fields": {
+                    "VALUE": "50"
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "scene_set",
+             "fields": {
+              "PROPERTY": "x"
+             },
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "fields": {
+                 "SPRITE_ID": "brick"
+                }
+               }
+              },
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "-175"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_change",
+               "fields": {
+                "PROPERTY": "y"
+               },
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_sprite",
+                  "fields": {
+                   "SPRITE_ID": "brick"
+                  }
+                 }
+                },
+                "VALUE": {
+                 "shadow": {
+                  "type": "py_number",
+                  "fields": {
+                   "VALUE": "-24"
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ],
+    "replacesPlant": 5
+   }
+  },
+  {
+   "text": "When a brick touches the ball: add 1 to the score, send the ball down (vy −220), then destroy this sprite.",
+   "check": {
+    "all": [
+     {
+      "handler": "overlap",
+      "sprite": "brick"
+     },
+     {
+      "handler": "overlap",
+      "sprite": "brick",
+      "contains": [
+       "game_change"
+      ]
+     },
+     {
+      "handler": "overlap",
+      "sprite": "brick",
+      "contains": [
+       "scene_motion_set"
+      ]
+     },
+     {
+      "handler": "overlap",
+      "sprite": "brick",
+      "last": "scene_destroy"
+     }
+    ]
+   },
+   "why": "The script belongs to Brick, so every copy runs it for itself, and “this sprite” means the copy that was hit. Destroy goes last: after it, the script stops.",
+   "checklist": [
+    {
+     "text": "A script runs when a Brick touches the Ball",
+     "check": {
+      "handler": "overlap",
+      "sprite": "brick"
+     }
+    },
+    {
+     "text": "It adds 1 to the score",
+     "check": {
+      "handler": "overlap",
+      "sprite": "brick",
+      "contains": [
+       "game_change"
+      ]
+     }
+    },
+    {
+     "text": "It sends the Ball down",
+     "check": {
+      "handler": "overlap",
+      "sprite": "brick",
+      "contains": [
+       "scene_motion_set"
+      ]
+     }
+    },
+    {
+     "text": "Destroy this sprite comes last",
+     "check": {
+      "handler": "overlap",
+      "sprite": "brick",
+      "last": "scene_destroy"
+     }
+    }
+   ],
+   "hints": [
+    "Select Brick, then from {{Events}} drag “when Brick overlaps …” and choose Ball.",
+    "Inside: change score by 1 (Game), set the Ball’s vy to −220 (Physics), and last, destroy sprite “this sprite” (Game)."
+   ],
+   "select": "brick",
+   "other": "ball",
+   "highlight": {
+    "category": "game"
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "overlap",
+       "sprite": "$sprite",
+       "other": "$other"
+      },
+      "stack": [
+       {
+        "type": "game_change",
+        "fields": {
+         "FIELD": "score"
+        },
+        "inputs": {
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "1"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "scene_motion_set",
+        "fields": {
+         "PROPERTY": "vy"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "ball"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "-220"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "scene_destroy",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_self"
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "Play-test: break five bricks.",
+   "check": {
+    "score": 5
+   },
+   "kind": "play",
+   "why": "For now the ball also bounces off the bottom. In the next chapter, missing it costs a life.",
+   "goal": {
+    "score": 5,
+    "label": "bricks broken"
+   }
+  },
+  {
+   "text": "Start with 3 lives. When the ball drops below the paddle (y under −145), lose a life and serve it again from the middle.",
+   "check": {
+    "all": [
+     {
+      "field": [
+       "game_set",
+       "FIELD",
+       "lives"
+      ]
+     },
+     {
+      "handler": "update",
+      "sprite": "ball",
+      "contains": [
+       "controls_if",
+       "scene_get"
+      ]
+     },
+     {
+      "handler": "update",
+      "sprite": "ball",
+      "contains": [
+       "game_change",
+       "scene_go"
+      ]
+     }
+    ]
+   },
+   "why": "“When Ball updates” runs many times a second, so it notices a miss at once. At 0 lives the game ends by itself.",
+   "checklist": [
+    {
+     "text": "Lives start at 3",
+     "check": {
+      "field": [
+       "game_set",
+       "FIELD",
+       "lives"
+      ]
+     }
+    },
+    {
+     "text": "Each update, the Ball checks how low it is",
+     "check": {
+      "handler": "update",
+      "sprite": "ball",
+      "contains": [
+       "controls_if",
+       "scene_get"
+      ]
+     }
+    },
+    {
+     "text": "A miss loses a life and serves again",
+     "check": {
+      "handler": "update",
+      "sprite": "ball",
+      "contains": [
+       "game_change",
+       "scene_go"
+      ]
+     }
+    }
+   ],
+   "hints": [
+    "Set lives to 3 and show them when the game starts (Game). Then select Ball and drag “when Ball updates” from Events.",
+    "Inside it: if Ball’s y < −145, change lives by −1, move the Ball to x 0 y −60 and set its vy to 220."
+   ],
+   "select": "ball",
+   "highlight": {
+    "category": "events"
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "start"
+      },
+      "stack": [
+       {
+        "type": "game_set",
+        "fields": {
+         "FIELD": "lives"
+        },
+        "inputs": {
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "3"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "game_show",
+        "fields": {
+         "SHOW": "TRUE",
+         "FIELD": "lives"
+        }
+       }
+      ]
+     },
+     {
+      "handler": {
+       "kind": "update",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "controls_if",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "logic_compare",
+           "fields": {
+            "OP": "LT"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "scene_get",
+              "fields": {
+               "PROPERTY": "y"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_self"
+                }
+               }
+              }
+             }
+            },
+            "B": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "-145"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "game_change",
+           "fields": {
+            "FIELD": "lives"
+           },
+           "inputs": {
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "-1"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "scene_go",
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_self"
+               }
+              },
+              "X": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "0"
+                }
+               }
+              },
+              "Y": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "-60"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_motion_set",
+               "fields": {
+                "PROPERTY": "vy"
+               },
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_self"
+                 }
+                },
+                "VALUE": {
+                 "shadow": {
+                  "type": "py_number",
+                  "fields": {
+                   "VALUE": "220"
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "text": "How many bricks did your loops make? Use that number: when the game starts, wait until the score reaches it, then finish the game as a win.",
+   "check": {
+    "all": [
+     {
+      "predicted": true
+     },
+     {
+      "number": [
+       "logic_compare",
+       "B",
+       24
+      ]
+     },
+     {
+      "field": [
+       "game_finish",
+       "WON",
+       "TRUE"
+      ]
+     }
+    ]
+   },
+   "kind": "predict",
+   "why": "Your loops decide how many bricks there are. When the score equals that number, every brick is gone.",
+   "checklist": [
+    {
+     "text": "You chose an answer",
+     "check": {
+      "predicted": true
+     }
+    },
+    {
+     "text": "Wait until the score is 24",
+     "check": {
+      "number": [
+       "logic_compare",
+       "B",
+       24
+      ]
+     }
+    },
+    {
+     "text": "Then finish the game as a win",
+     "check": {
+      "field": [
+       "game_finish",
+       "WON",
+       "TRUE"
+      ]
+     }
+    }
+   ],
+   "hints": [
+    "Count it from your loops: how many rows, and how many bricks in each row?",
+    "The idea card “Win screen” waits until the score is 5. Change the 5 to your answer."
+   ],
+   "recipe": "win-screen",
+   "highlight": {
+    "category": "game"
+   },
+   "predict": {
+    "question": "How many bricks did your loops make?",
+    "choices": [
+     "8",
+     "11",
+     "24",
+     "32"
+    ],
+    "answer": 2,
+    "explain": "3 rows of 8 bricks is 24. When the score reaches 24, the wall is gone."
+   }
+  },
+  {
+   "text": "Play until the game ends, win or lose.",
+   "check": {
+    "finished": "any"
+   },
+   "kind": "play",
+   "why": "Click the stage, then use the arrow keys. Three misses end the game; 24 bricks win it."
+  }
+ ],
+ "finish": {
+  "text": "A paddle, a bouncing ball and a wall of 24 bricks, all made from your own blocks.",
+  "remix": [
+   "Faster and faster: each broken brick makes the ball a little quicker.",
+   "Tough top row: the top bricks change costume on the first hit and break on the second.",
+   "Falling star: sometimes a brick drops a star; catch it for an extra life."
+  ]
+ },
+ "next": "flappy-flight"
+}

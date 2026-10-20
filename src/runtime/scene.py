@@ -64,6 +64,10 @@ class Sprite(Appearance):
         self._state.setdefault('rotationStyle', 'all')
         self._state['costumes'] = list(state.get('costumes', [state['costume']]))
         self._state.setdefault('frameSeconds', 0.1)
+        # Named animations ("walk"), animate-while-moving, and what is playing now.
+        self._state['animations'] = [dict(a, frames=list(a['frames'])) for a in state.get('animations', [])]
+        if state.get('autoAnimate') is not None: self._state['autoAnimate'] = dict(state['autoAnimate'])
+        self._playing = None; self._once = None; self._auto = None; self._moved_at = -1.0; self._last_position = None
         self._state['pen'] = dict(state.get('pen', {'down': False, 'color': '#267c70', 'width': 3, 'opacity': 100}))
         self._state['effects'] = dict(state.get('effects', {}))
         self._effects = self._state['effects']
@@ -84,6 +88,14 @@ class Sprite(Appearance):
         if name in ('frames', 'costume_id', 'frame_seconds'):
             self._check()
             return list(self._state['costumes']) if name == 'frames' else self._state['costume' if name == 'costume_id' else 'frameSeconds']
+        if name == 'animation':
+            self._check()
+            if self._playing and self._playing['token'] == self._animation: return self._playing['name']
+            if self._once and self._once[1] == self._animation: return self._once[0]
+            return self._auto[0] if self._auto else None
+        if name == 'animations':
+            self._check()
+            return ['frames'] + [a['name'] for a in self._state['animations']]
         raise AttributeError(name)
 
     def _check(self):
@@ -310,6 +322,68 @@ class Sprite(Appearance):
     async def play_animation(self):
         await self.animate(self.frames, self.frame_seconds)
 
+    def _animation_named(self, name):
+        if type(name) is not str: raise TypeError('Name the animation with text, like "walk".')
+        if name == 'frames': return list(self._state['costumes']), self._state['frameSeconds']
+        for a in self._state['animations']:
+            if a['name'] == name: return list(a['frames']), a.get('seconds', self._state['frameSeconds'])
+        known = ', '.join(repr(n) for n in self.animations)
+        raise ValueError(f'{self._state["name"]} has no animation called {name!r}. Its animations: {known}. Add one in Paint.')
+
+    def play(self, name):
+        """Loop a named animation until another starts, the costume is set, or stop_animation()."""
+        self._check()
+        frames, seconds = self._animation_named(name)
+        if event_session().state not in ('setup', 'running'): raise RuntimeError('Animation needs a running event handler or async function.')
+        self._animation += 1; self._once = None
+        self._playing = {'name': name, 'frames': frames, 'seconds': seconds, 'started': time.monotonic(), 'token': self._animation}
+        self._owner.enable_motion(); self._show_frame(frames[0])
+
+    async def play_once(self, name):
+        """Play a named animation once, ending on its last costume."""
+        self._check()
+        frames, seconds = self._animation_named(name)
+        self._playing = None
+        once = self._once = (name, self._animation + 1)
+        try: await self.animate(frames, seconds)
+        finally:
+            if self._once is once: self._once = None
+
+    def stop_animation(self):
+        self._check()
+        self._animation += 1; self._playing = None; self._once = None
+
+    def _show_frame(self, costume):
+        if self._state['costume'] != costume:
+            self._state['costume'] = costume
+            self._frame_index = self._state['costumes'].index(costume) if costume in self._state['costumes'] else -1
+            self._send()
+
+    def _animate_tick(self, now):
+        """Advance a looping animation, or animate while moving: walk while it moves, its air
+        animation while gravity holds it off the ground, and still otherwise."""
+        position = (self._state['x'], self._state['y']); last, self._last_position = self._last_position, position
+        playing = self._playing
+        if playing and playing['token'] != self._animation: self._playing = playing = None
+        if playing:
+            index = int((now - playing['started']) / playing['seconds']) % len(playing['frames'])
+            self._show_frame(playing['frames'][index]); return
+        auto = self._state.get('autoAnimate')
+        if not auto or (self._once and self._once[1] == self._animation): return
+        dx = position[0] - last[0] if last else 0; dy = position[1] - last[1] if last else 0
+        if abs(dx) > 0.2 or abs(dy) > 0.2: self._moved_at = now
+        m = self._state['motion']
+        air = m['body'] == 'moving' and m['ay'] != 0 and not self.motion_value('grounded')
+        name = auto['air'] if air and auto['air'] else auto['moving'] if now - self._moved_at < 0.15 else auto['still']
+        if auto['turn'] and abs(dx) > 0.2 and self._state['rotationStyle'] == 'left-right':
+            facing = 0 if dx > 0 else 180
+            if self._state['direction'] != facing: self._state['direction'] = facing; self._send()
+        if not name: self._auto = None; return
+        try: frames, seconds = self._animation_named(name)
+        except ValueError: return
+        if not self._auto or self._auto[0] != name: self._auto = (name, now)
+        self._show_frame(frames[int((now - self._auto[1]) / seconds) % len(frames)])
+
     def clone(self):
         self._check()
         clone = self._owner._create(dict(self._state), template=self.template_id, data=copy.deepcopy(self.data), is_clone=True)
@@ -534,6 +608,9 @@ class Scene(Appearance):
             sprite = Sprite(self, state); self.items[sprite.id] = sprite; sprite._send()
         self.worlds.update_camera()
         if self.worlds.active: self.worlds.enter()
+        # Sprites that animate while moving need the motion clock, in any program that runs as events.
+        module = sys.modules.get('_playground_events')
+        if module and module.events.state == 'setup' and any(s.get('autoAnimate') for s in data['sprites']): self.enable_motion()
 
     def background(self, color):
         import re

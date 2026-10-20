@@ -15,7 +15,7 @@
  "starter": {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 19,
+  "languageVersion": 22,
   "workspace": {
    "blocks": {
     "languageVersion": 0,
@@ -24,18 +24,120 @@
    "pythonScene": {
     "version": 1,
     "background": "#fdfdf9",
-    "assets": [],
+    "assets": [
+     {
+      "id": "stock-rabbit-idle-1",
+      "name": "Rabbit idle 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/rabbit-idle-1@1"
+     },
+     {
+      "id": "stock-rabbit-idle-2",
+      "name": "Rabbit idle 2",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/rabbit-idle-2@1"
+     },
+     {
+      "id": "stock-rabbit-walk-1",
+      "name": "Rabbit walk 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/rabbit-walk-1@1"
+     },
+     {
+      "id": "stock-rabbit-walk-2",
+      "name": "Rabbit walk 2",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/rabbit-walk-2@1"
+     },
+     {
+      "id": "stock-rabbit-walk-3",
+      "name": "Rabbit walk 3",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/rabbit-walk-3@1"
+     },
+     {
+      "id": "stock-rabbit-walk-4",
+      "name": "Rabbit walk 4",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/rabbit-walk-4@1"
+     },
+     {
+      "id": "stock-rabbit-jump",
+      "name": "Rabbit jump",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/rabbit-jump@1"
+     },
+     {
+      "id": "stock-rabbit-happy",
+      "name": "Rabbit happy",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/rabbit-happy@1"
+     }
+    ],
     "sprites": [
      {
       "id": "player",
       "name": "Player",
       "x": 0,
-      "y": -120,
+      "y": -124,
       "direction": 0,
-      "size": 100,
+      "size": 80,
       "layer": 0,
       "visible": true,
-      "costume": "bird"
+      "costume": "stock-rabbit-idle-1",
+      "costumes": [
+       "stock-rabbit-walk-1",
+       "stock-rabbit-walk-2",
+       "stock-rabbit-walk-3",
+       "stock-rabbit-walk-4"
+      ],
+      "rotationStyle": "left-right",
+      "frameSeconds": 0.12,
+      "animations": [
+       {
+        "name": "idle",
+        "frames": [
+         "stock-rabbit-idle-1",
+         "stock-rabbit-idle-2"
+        ],
+        "seconds": 0.4
+       },
+       {
+        "name": "walk",
+        "frames": [
+         "stock-rabbit-walk-1",
+         "stock-rabbit-walk-2",
+         "stock-rabbit-walk-3",
+         "stock-rabbit-walk-4"
+        ]
+       },
+       {
+        "name": "jump",
+        "frames": [
+         "stock-rabbit-jump"
+        ]
+       },
+       {
+        "name": "happy",
+        "frames": [
+         "stock-rabbit-happy"
+        ]
+       }
+      ],
+      "autoAnimate": {
+       "moving": "walk",
+       "air": "jump",
+       "still": "idle",
+       "turn": true
+      }
      },
      {
       "id": "ball",

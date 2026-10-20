@@ -20,6 +20,10 @@ export function installScenePalette(workspace: Blockly.WorkspaceSvg, selected: (
       COLOR: { shadow: { type: 'text', fields: { TEXT: '#267c70' } } },
       FRAMES: { block: { type: 'lists_create_with', extraState: { itemCount: 2 }, inputs: { ADD0: cost, ADD1: { shadow: { type: 'scene_costume', fields: { COSTUME_ID: 'star' } } } } } },
     };
+    // The animation blocks start on an animation the selected sprite has: walk to loop, jump to play once.
+    const own = (scene.sprites.find(s => s.id === target.primary)?.animations ?? []).map(a => a.name);
+    const pick = (...wanted: string[]) => wanted.find(n => own.includes(n)) ?? own[0] ?? 'frames';
+    const animated: Record<string, string> = { scene_animation_play: pick('walk', 'idle'), scene_animation_once: pick('jump', 'happy', 'walk') };
     const specs: [string, string[]][] = [
       ['scene_motion_set', ['SPRITE', 'VALUE']], ['scene_motion_change', ['SPRITE', 'VALUE']], ['scene_motion_get', ['SPRITE']], ['scene_motion_body', ['SPRITE']], ['scene_motion_response', ['SPRITE']], ['scene_motion_edges', ['SPRITE']], ['scene_motion_auto', ['SPRITE']], ['scene_control', ['SPRITE', 'VX', 'VY']], ['scene_jump', ['SPRITE', 'VALUE']], ['scene_motion_stop', ['SPRITE']], ['scene_projectile', ['SPRITE', 'COSTUME', 'VX', 'VY', 'SECONDS']], ['scene_fire', ['SPRITE', 'COSTUME', 'VX', 'VY', 'SECONDS']], ['scene_kind_set', ['SPRITE', 'KIND']], ['scene_of_kind', ['KIND']],
       ['scene_self', []], ['scene_all', []], ['scene_instances', ['SPRITE']], ['scene_data', ['SPRITE']], ['scene_data_get', ['SPRITE', 'KEY']], ['scene_data_set', ['SPRITE', 'KEY', 'VALUE']],
@@ -29,6 +33,7 @@ export function installScenePalette(workspace: Blockly.WorkspaceSvg, selected: (
       ['scene_move', ['SPRITE', 'VALUE']], ['scene_turn', ['SPRITE', 'VALUE']], ['scene_go', ['SPRITE', 'X', 'Y']], ['scene_set', ['SPRITE', 'VALUE']],
       ['scene_visibility', ['SPRITE']], ['scene_costume_set', ['SPRITE', 'COSTUME']], ['scene_clone', ['SPRITE']], ['scene_destroy', ['SPRITE']],
       ['scene_glide', ['SPRITE', 'SECONDS', 'X', 'Y']], ['scene_animate', ['SPRITE', 'FRAMES', 'SECONDS']],
+      ['scene_animation_play', ['SPRITE']], ['scene_animation_once', ['SPRITE']], ['scene_animation_stop', ['SPRITE']], ['scene_animation_get', ['SPRITE']],
       ['scene_next_costume', ['SPRITE']], ['scene_frames', ['SPRITE']], ['scene_play_animation', ['SPRITE']],
       ['scene_change', ['SPRITE', 'VALUE']], ['scene_point', ['SPRITE', 'X', 'Y']],
       ['scene_bounce', ['SPRITE']], ['scene_rotation', ['SPRITE']], ['scene_layer', ['SPRITE']], ['scene_say', ['SPRITE', 'TEXT']], ['scene_say_for', ['SPRITE', 'TEXT', 'SECONDS']],
@@ -36,7 +41,7 @@ export function installScenePalette(workspace: Blockly.WorkspaceSvg, selected: (
     return [
       { kind: 'block', type: 'scene_sprite', fields: { SPRITE_ID: target.primary } },
       { kind: 'block', type: 'scene_costume', fields: { COSTUME_ID: 'bird' } },
-      ...specs.map(([type, names]) => ({ kind: 'block', type, inputs: Object.fromEntries(names.map(name => [name, defaults[name]])) })),
+      ...specs.map(([type, names]) => ({ kind: 'block', type, inputs: Object.fromEntries(names.map(name => [name, defaults[name]])), ...(animated[type] ? { fields: { ANIMATION: animated[type] } } : {}) })),
       { kind: 'block', type: 'scene_create', inputs: { COSTUME: cost } }, { kind: 'block', type: 'scene_lookup', inputs: { NAME: { shadow: { type: 'text', fields: { TEXT: scene.sprites[0]?.name ?? 'Sprite 1' } } } } },
       { kind: 'block', type: 'scene_backdrop', fields: { BACKDROP_ID: scene.backdrop ?? '' } }, { kind: 'block', type: 'scene_backdrop_set', inputs: { BACKDROP: { shadow: { type: 'scene_backdrop', fields: { BACKDROP_ID: 'backdrop_meadow' } } } } }, { kind: 'block', type: 'scene_backdrop_next' }, { kind: 'block', type: 'scene_backdrop_get' },
       { kind: 'block', type: 'scene_background', inputs: { COLOR: { shadow: { type: 'text', fields: { TEXT: '#edf2df' } } } } },
@@ -70,7 +75,7 @@ export function installScenePalette(workspace: Blockly.WorkspaceSvg, selected: (
   });
 
   const motion = new Set(['scene_move','scene_turn','scene_go','scene_set','scene_change','scene_point','scene_bounce','scene_rotation','scene_glide']);
-  const looks = new Set(['scene_visibility','scene_costume','scene_costume_set','scene_animate','scene_next_costume','scene_frames','scene_play_animation','scene_layer','scene_say','scene_say_for','scene_background','scene_backdrop','scene_backdrop_set','scene_backdrop_next','scene_backdrop_get']);
+  const looks = new Set(['scene_visibility','scene_costume','scene_costume_set','scene_animate','scene_next_costume','scene_frames','scene_play_animation','scene_animation_play','scene_animation_once','scene_animation_stop','scene_animation_get','scene_layer','scene_say','scene_say_for','scene_background','scene_backdrop','scene_backdrop_set','scene_backdrop_next','scene_backdrop_get']);
   const family = (type: string) => motion.has(type) ? 'PY_MOTION' : looks.has(type) || type.startsWith('scene_effect') || type.startsWith('scene_stage_effect') ? 'PY_LOOKS' : type.startsWith('scene_pen') || type === 'scene_stamp' ? 'PY_PEN' : type.startsWith('scene_motion') || ['scene_control','scene_jump','scene_projectile','scene_fire'].includes(type) ? 'PY_PHYSICS' : 'PY_SPRITES';
   for (const group of ['PY_SPRITES','PY_MOTION','PY_LOOKS','PY_PEN','PY_PHYSICS']) workspace.registerToolboxCategoryCallback(group, () => sprites().filter(item => item.kind === 'block' && family((item as Blockly.utils.toolbox.BlockInfo).type ?? '') === group));
 }

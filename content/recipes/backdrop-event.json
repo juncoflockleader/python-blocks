@@ -2,7 +2,7 @@
   "id": "backdrop-event",
   "title": "When the backdrop changes",
   "group": "look",
-  "level": "builder",
+  "level": "starter",
   "concepts": [
     "event",
     "sprite"
@@ -83,5 +83,18 @@
   "preview": "backdrop-event.webm",
   "tryNext": [
     "switch-backdrop"
+  ],
+  "previewScene": "backdrops",
+  "demo": [
+    {
+      "wait": 400
+    },
+    {
+      "key": "Space",
+      "ms": 60
+    },
+    {
+      "wait": 900
+    }
   ]
 }

@@ -1,6 +1,7 @@
 import gallery from '../../content/gallery.json';
 import { concepts } from '../assist/catalog';
 import { levelNames, type Level } from '../ui/levels';
+import { loopThumb } from './loop-thumb';
 
 /** One gallery record: a project fixture plus what to notice and try. The
  * academy can reuse the same loader. Ids double as the Open buttons' ids. */
@@ -9,6 +10,10 @@ export type GalleryKind = typeof GALLERY_KINDS[number];
 export interface GalleryEntry {
   id: string; title: string; description: string; kind: GalleryKind; project: string; level: Level;
   tags: (keyof typeof concepts)[]; tryChanging: string[]; build?: string;
+  /** Key presses for the card's looping preview, so the hero moves (the preview suite plays them). */
+  demo?: ({ key: string; ms?: number } | { wait: number })[];
+  /** How long that loop is, in seconds, when not three (Flappy's ends before its first, random, pipe). */
+  loop?: number;
 }
 export const entries = gallery as GalleryEntry[];
 // Bundled like the examples always were, so opening one replaces the project at once.
@@ -24,11 +29,12 @@ export interface GalleryHost {
   /** Replace the project with an example; false when a Python draft must be saved first. */
   open(entry: GalleryEntry, project: unknown): boolean;
   play(): void;
-  startBuild(id: string): void;
 }
-const thumbnail = (id: string) => `${import.meta.env.BASE_URL}gallery/${id}.png`;
-/** Filter chips: everything, the guided builds, then one chip per kind. */
-const FILTERS: [string, string][] = [['all', 'All'], ['build', 'Guided builds'], ['game', 'Games'], ['story', 'Stories'], ['drawing', 'Drawing'], ['music', 'Music'], ['world', 'Worlds'], ['sprites', 'Sprites']];
+/** Filter chips: everything, then one chip per kind. */
+const FILTERS: [string, string][] = [['all', 'All'], ['game', 'Games'], ['story', 'Stories'], ['drawing', 'Drawing'], ['music', 'Music'], ['world', 'Worlds'], ['sprites', 'Sprites']];
+/** Examples are finished projects to play and change. The games that lessons
+ * build are listed under Lessons instead (lessons.ts), with a way to start them. */
+const examples = entries.filter(entry => !entry.build);
 
 export function installGallery(host: GalleryHost) {
   document.body.insertAdjacentHTML('beforeend', `<dialog id="examples-dialog" class="examples-dialog" aria-labelledby="examples-title"><header><h2 id="examples-title">Examples</h2><button id="examples-close" class="button secondary">Close</button></header>
@@ -48,11 +54,10 @@ export function installGallery(host: GalleryHost) {
     } catch (error) { message = error instanceof Error ? error.message : String(error); render(); }
   }
   const items = new Map<GalleryEntry, HTMLLIElement>();
-  for (const entry of entries) {
+  for (const entry of examples) {
     const item = document.createElement('li'), card = document.createElement('article');
     card.className = 'example-card'; card.dataset.example = entry.id;
-    const image = document.createElement('img'); image.className = 'example-thumb'; image.alt = ''; image.loading = 'lazy'; image.src = thumbnail(entry.id);
-    image.addEventListener('error', () => image.replaceWith(Object.assign(document.createElement('div'), { className: 'example-thumb' })), { once: true });
+    const image = loopThumb(entry.id, card);
     const title = document.createElement('strong'), text = document.createElement('span'), tags = document.createElement('p');
     title.textContent = entry.title; text.textContent = entry.description; tags.className = 'recipe-tags';
     for (const tag of entry.tags) { const span = document.createElement('span'); span.textContent = concepts[tag][0]; tags.append(span); }
@@ -63,11 +68,6 @@ export function installGallery(host: GalleryHost) {
     const edit = document.createElement('button'); edit.className = 'button secondary'; edit.id = entry.id; edit.textContent = 'Open to edit';
     edit.setAttribute('aria-label', `Open ${entry.title} to edit`); edit.addEventListener('click', () => open(entry, false));
     actions.append(play, edit);
-    if (entry.build) {
-      const build = document.createElement('button'); build.className = 'button secondary'; build.textContent = 'Build it step by step';
-      build.setAttribute('aria-label', `Build ${entry.title} step by step`); build.addEventListener('click', () => { dialog.close(); host.startBuild(entry.build!); });
-      actions.append(build);
-    }
     card.append(image, title, text, tags, actions); item.append(card); list.append(item); items.set(entry, item);
   }
   const words = (entry: GalleryEntry) => `${entry.title} ${entry.description} ${entry.tags.map(tag => concepts[tag][0]).join(' ')} ${levelNames[entry.level]}`.toLowerCase();
@@ -75,7 +75,7 @@ export function installGallery(host: GalleryHost) {
     const query = search.value.trim().toLowerCase();
     let shown = 0;
     for (const [entry, item] of items) {
-      const visible = (filter === 'all' || (filter === 'build' ? !!entry.build : entry.kind === filter)) && (!query || words(entry).includes(query));
+      const visible = (filter === 'all' || entry.kind === filter) && (!query || words(entry).includes(query));
       item.hidden = !visible; if (visible) shown++;
     }
     for (const chip of chips) chip.setAttribute('aria-pressed', String(chip.dataset.filter === filter));
@@ -91,6 +91,8 @@ export function installGallery(host: GalleryHost) {
     open: show,
     /** Open an entry directly (used by the empty-workspace card). */
     load: (id: string) => { const entry = entries.find(e => e.id === id); if (entry) open(entry, false); },
+    /** Open an entry and run it (used by Lessons' "Play the result"). */
+    play: (id: string) => { const entry = entries.find(e => e.id === id); if (entry) open(entry, true); },
     dispose: () => dialog.remove(),
   };
 }

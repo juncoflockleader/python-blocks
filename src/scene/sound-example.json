@@ -1,7 +1,7 @@
 {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 16,
+  "languageVersion": 22,
   "workspace": {
     "pythonScene": {
       "version": 1,
@@ -254,7 +254,8 @@
           "visible": true,
           "costume": "bird"
         }
-      ]
+      ],
+      "backdrop": "backdrop_meadow"
     },
     "procedures": [
       {

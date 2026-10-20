@@ -96,6 +96,10 @@
 
 .example-card { display: flex; flex-direction: column; gap: 4px; height: 100%; }
 .example-thumb { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 8px; background: #edf2e8; display: block; }
+/* The loop lies over the still and fades in once it is actually playing. */
+.example-thumb-frame { position: relative; }
+.example-loop { position: absolute; inset: 0; height: 100%; background: transparent; opacity: 0; transition: opacity .15s; }
+.example-loop.playing { opacity: 1; }
 .example-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 6px; }
 .example-actions .button { flex: 1 1 auto; padding-inline: 10px; }
 .example-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; }
@@ -106,3 +110,85 @@
 .example-list li[hidden] { display: none; }
 .recipe-target { display: flex; align-items: center; gap: 6px; font-size: 13px; }
 .recipe-target select { min-height: 40px; padding: 0 8px; border: 1px solid #cbd4b4; border-radius: 8px; font: inherit; background: #fff; }
+
+/* Lessons: chapters, the step card, predictions, play-test goals, the checklist, the hint ladder and the start and finish sheets. */
+.guide-lesson { border-color: #267c70; background: #f4faf6; }
+.guide-chapters { display: flex; gap: 4px; margin: 6px 0 8px; }
+.guide-chapters[hidden] { display: none; }
+.guide-chapters span { height: 6px; border-radius: 3px; background: linear-gradient(90deg, #267c70 var(--filled, 0%), #d8decb var(--filled, 0%)); }
+.guide-lesson-active .guide-card-body { display: grid; gap: 8px; padding: 12px; border: 1px solid #c9d8bb; border-radius: 12px; background: #fff; }
+.guide-lesson-active .guide-step { margin: 0; font-size: 15px; font-weight: 700; line-height: 1.35; color: #1d2e26; }
+.guide-why { margin: 0; font-size: 13px; line-height: 1.5; color: #3c5034; }
+.guide-planted { margin: 0; padding: 8px 10px; border: 1px solid #e5cfaa; border-radius: 10px; background: #fff8ed; font-size: 12px; line-height: 1.45; color: #5c3610; }
+.guide-why[hidden], .guide-planted[hidden], .guide-predict[hidden], .guide-goal[hidden], .guide-checklist[hidden], .guide-hints[hidden] { display: none; }
+.guide-choices { display: grid; gap: 6px; }
+.guide-choice { min-height: 44px; padding: 6px 12px; border: 1px solid #d8decb; border-radius: 10px; background: #fff; color: #26382f; font: 500 13px inherit; text-align: left; cursor: pointer; }
+.guide-choice[aria-pressed="true"] { border: 2px solid #267c70; background: #e5f2e8; }
+.guide-choice.guide-choice-answer { border: 2px solid #1f6b3c; }
+.guide-predict-result { margin: 6px 0 0; font-size: 13px; line-height: 1.45; color: #2b5a4b; }
+.guide-predict-result.guide-right { padding: 8px 10px; border-radius: 10px; background: #e5f2e8; color: #1f4f33; }
+.guide-predict-result.guide-wrong { padding: 8px 10px; border-radius: 10px; background: #fff1dd; color: #5c3610; }
+.guide-goal p { margin: 0 0 6px; font-size: 14px; color: #3c5034; }
+#guide-goal-count { font: 700 26px 'Space Grotesk', system-ui, sans-serif; color: #33427a; }
+.guide-goal-pips { display: flex; gap: 4px; }
+.guide-goal-pips span { flex: 1; height: 14px; border-radius: 4px; background: #e3e8f7; }
+.guide-goal-pips span.guide-pip-on { background: #5b6fb5; }
+.guide-checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 13px; line-height: 1.4; }
+.guide-checklist li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 8px; align-items: start; }
+.guide-box { width: 18px; height: 18px; margin-top: 1px; border: 2px solid #b9c4a6; border-radius: 5px; box-sizing: border-box; }
+.guide-ticked .guide-box { border-color: #267c70; background: #267c70 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4'%3E%3Cpath d='m5 12 5 5L20 7'/%3E%3C/svg%3E") center / 12px no-repeat; }
+.guide-hints { margin: 8px 0; padding: 10px; border: 1px dashed #cbd4b4; border-radius: 12px; display: grid; gap: 6px; }
+.guide-hints-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #3c5034; }
+.guide-rungs { display: flex; gap: 3px; width: 72px; }
+.guide-rungs span { flex: 1; height: 5px; border-radius: 3px; background: #e4e7dd; }
+.guide-rungs span.guide-rung-on { background: #dd9250; }
+.guide-hint-text { margin: 0; font-size: 13px; line-height: 1.45; }
+.guide-hint-text:empty { display: none; }
+#guide-hint { justify-self: start; min-height: 40px; }
+.guide-kept { margin: 0 0 8px; padding: 10px 12px; border: 1px solid #c9d8bb; border-radius: 10px; background: #f4faf6; font-size: 13px; }
+.guide-kept p { margin: 0 0 8px; }
+.guide-kept[hidden] { display: none; }
+
+.lesson-dialog { width: min(780px, calc(100vw - 24px)); max-width: calc(100vw - 24px); max-height: calc(100dvh - 24px); padding: 0; border: 1px solid #cbd4b4; border-radius: 18px; background: #fafbf6; color: #26382f; }
+.lesson-dialog h2 { margin: 0; font: 700 30px/1.05 'Space Grotesk', system-ui, sans-serif; color: #1d2e26; }
+.lesson-dialog h3 { margin: 14px 0 6px; font-size: 13px; }
+.lesson-start { display: grid; grid-template-columns: minmax(0, 300px) minmax(0, 1fr); }
+.lesson-start-side { padding: 18px; background: #22394a; color: #e6eef0; }
+.lesson-start-side h3 { color: #b8cad4; letter-spacing: 1px; text-transform: uppercase; font-size: 11px; }
+.lesson-preview { display: block; width: 100%; aspect-ratio: 3 / 2; border-radius: 12px; background: #1b2f3d; object-fit: cover; }
+.lesson-chapters { margin: 0; padding-left: 20px; display: grid; gap: 4px; font-size: 13px; }
+.lesson-chapters li { display: list-item; }
+.lesson-chapter-steps { margin-left: 6px; font-size: 11px; color: #b8cad4; }
+.lesson-start-main, .lesson-finish { padding: 22px 24px; }
+.lesson-eyebrow { margin: 0 0 8px; font: 700 11px 'DM Sans', system-ui, sans-serif; letter-spacing: 1.2px; text-transform: uppercase; color: #2b5a4b; }
+.lesson-lede { margin: 6px 0 10px; font-size: 15px; line-height: 1.5; color: #3c5034; }
+.lesson-chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 0; }
+.lesson-chip { display: inline-flex; align-items: center; min-height: 28px; padding: 0 10px; border-radius: 999px; background: #edf2e1; color: #3c5034; font-size: 12px; font-weight: 600; }
+.lesson-learn { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 13px; line-height: 1.45; }
+.lesson-note { margin: 12px 0 0; font-size: 12px; line-height: 1.45; color: #4e5f49; }
+.lesson-actions { justify-content: flex-end; align-items: center; margin-top: 12px; }
+.lesson-actions .lesson-note { margin: 0 auto 0 0; }
+.lesson-badges { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 8px; }
+.lesson-badges li { display: grid; gap: 2px; padding: 8px 10px; border: 1px solid #d6dfca; border-radius: 12px; background: #fff; font-size: 12px; line-height: 1.35; }
+.lesson-badges strong { font-size: 13px; }
+.lesson-remix { margin: 0; padding-left: 20px; display: grid; gap: 6px; font-size: 13px; line-height: 1.45; }
+@media (max-width: 760px) { .lesson-start { grid-template-columns: minmax(0, 1fr); } }
+.lesson-dialog li { padding: 0; }
+.lesson-dialog li span { display: inline; margin: 0; }
+.lesson-badges li span { display: block; }
+.lesson-dialog .lesson-chapter-steps { margin-left: 8px; }
+.lesson-preview.lesson-preview-missing { visibility: hidden; }
+.lesson-finish .lesson-actions .lesson-note { flex-basis: 100%; margin: 0; }
+
+/* The Lessons catalogue: like Examples, with a kind badge and the lesson first. */
+.lesson-kind { margin: 4px 0 0; font: 700 11px 'DM Sans', system-ui, sans-serif; letter-spacing: .6px; text-transform: uppercase; color: #2b5a4b; }
+.example-card.lesson-card-main { border: 2px solid #267c70; background: #f4faf6; }
+
+/* A control named in lesson text, drawn like the control: its icon and label in a small
+   button-shaped chip, or a palette category's coloured disc. Not interactive. */
+.ui-ref { display: inline-flex; align-items: center; gap: 4px; padding: 0 7px 0 5px; margin: 0 1px; border: 1px solid #b8c7b0; border-radius: 7px; background: #fffef8; color: #24372e; font-weight: 700; font-size: 0.92em; line-height: 1.55; white-space: nowrap; vertical-align: 0.05em; box-shadow: 0 1px 0 #d9e2d2; }
+.ui-ref > svg { flex: 0 0 auto; }
+.ui-ref-category { padding-left: 3px; border-radius: 999px; }
+.ui-ref-dot { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; border-radius: 50%; color: #fff; }
+.ui-ref-dot > svg { width: 12px; height: 12px; }
+@media (forced-colors: active) { .ui-ref { border-color: ButtonText; } .ui-ref-dot { forced-color-adjust: none; } }

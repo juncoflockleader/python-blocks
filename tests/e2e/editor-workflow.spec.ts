@@ -30,7 +30,9 @@ test('focused palettes use the selected sprite and navigation opens its costume 
   await expect(page.locator('.blocklyToolboxFlyout')).not.toContainText('Player');
   await page.getByRole('treeitem',{name:'Looks',exact:true}).click(); await expect(page.locator('.blocklyToolboxFlyout')).toContainText('say');
   await page.getByRole('treeitem',{name:'Physics',exact:true}).click(); await expect(page.locator('.blocklyToolboxFlyout')).toContainText('fire');
-  await (await reveal(page, '#scene-edit-costume')).click(); await expect(page.locator('#art-assets')).toHaveValue(before.workspace.pythonScene.sprites[1].costume); await expect(page.locator('#art-kind')).toHaveValue('costume'); await page.locator('#art-close').click();
+  // Edit costume opens the Paint editor on the selected sprite; Done with no change leaves the project alone.
+  await (await reveal(page, '#scene-edit-costume')).click(); await expect(page.locator('#paint-dialog')).toBeVisible(); await expect(page.locator('#paint-loading')).toBeHidden();
+  await expect(page.locator('#paint-strip-title')).toHaveText('Costumes'); await page.locator('#paint-done').click(); await expect(page.locator('#paint-dialog')).toBeHidden();
   await (await reveal(page, '#scene-script-find')).click(); await expect(page.locator('.blocklyHighlighted')).toHaveCount(1);
   expect((await saved(page)).workspace.pythonScene).toEqual(before.workspace.pythonScene);
   await (await reveal(page, '#scene-filter')).fill('no such sprite'); await expect(page.locator('#scene-filter-empty')).toBeVisible(); await (await reveal(page, '#scene-filter')).fill('');
@@ -96,13 +98,14 @@ test('a narrow large-stage playthrough answers, uses touch, wins and replays wit
   await page.locator('#stage').focus(); await page.keyboard.press('Escape'); await expect(page.locator('#play-dialog')).not.toBeVisible(); await expect(page.locator('.stage-panel #stage')).toHaveCount(1); await expect(page.locator('#play-expand')).toBeFocused();
 });
 
-test('narrow keyboard authoring selects sprites, pins readable values and preserves a pending artwork draft', async ({ page }, info) => {
+test('narrow keyboard authoring selects sprites, pins readable values and renames a costume from the keyboard', async ({ page }, info) => {
   await page.setViewportSize({ width: 744, height: 1000 }); await page.goto('/'); await (await reveal(page, '#scene-story-example')).click();
   const s = (await saved(page)).workspace.pythonScene, second = s.sprites[1];
   await (await reveal(page, '#scene-filter')).fill(second.name); const card = page.locator('#scene-cards button:visible'); await card.focus(); await card.press('Enter'); await expect(page.locator('#scene-selection')).toHaveValue(second.id);
-  await (await reveal(page, '#scene-edit-costume')).focus(); await page.keyboard.press('Enter'); await expect(page.locator('#art-assets')).toHaveValue(second.costume);
-  await page.locator('#art-name').fill('My unfinished art'); await page.locator('#art-close').click();
-  await (await reveal(page, '#scene-selection')).selectOption(s.sprites[0].id); await (await reveal(page, '#scene-edit-costume')).click(); await expect(page.locator('#art-name')).toHaveValue('My unfinished art'); await expect(page.locator('#art-state')).toContainText('unsaved artwork draft'); await page.locator('#art-close').click();
+  await (await reveal(page, '#scene-edit-costume')).focus(); await page.keyboard.press('Enter'); await expect(page.locator('#paint-loading')).toBeHidden(); await expect(page.locator('#paint-owner')).toHaveText(second.name);
+  await page.locator('#paint-name').fill('My renamed art'); await page.keyboard.press('Escape'); await expect(page.locator('#paint-dialog')).toBeHidden(); // Escape is Done
+  await expect.poll(async () => (await saved(page)).workspace.pythonScene.assets.some((a: { name: string }) => a.name === 'My renamed art')).toBe(true);
+  await (await reveal(page, '#scene-selection')).selectOption(second.id); await (await reveal(page, '#scene-edit-costume')).click(); await expect(page.locator('#paint-name')).toHaveValue('My renamed art'); await page.locator('#paint-done').click();
   await (await reveal(page, '#watch-settings summary')).focus(); await page.keyboard.press('Enter'); await (await reveal(page, '#watch-sprite')).selectOption(second.id); await (await reveal(page, '#watch-property')).selectOption('size'); await (await reveal(page, '#watch-add')).focus(); await page.keyboard.press('Enter');
   await expect(page.locator('#watch-values output')).toHaveText(String(second.size)); await (await reveal(page, '#watch-readouts')).scrollIntoViewIfNeeded();
   expect(await page.locator('#panel-output').evaluate(e => e.scrollWidth <= e.clientWidth+1)).toBe(true); await page.screenshot({path:info.outputPath('watcher-authoring-mobile.png')});

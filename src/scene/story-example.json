@@ -1,41 +1,218 @@
 {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 10,
+  "languageVersion": 22,
   "workspace": {
     "pythonScene": {
       "version": 1,
       "background": "#fdfdf9",
-      "assets": [],
+      "assets": [
+        {
+          "id": "stock-explorer-sam-idle-1",
+          "name": "Sam idle 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-sam-idle-1@1"
+        },
+        {
+          "id": "stock-explorer-sam-idle-2",
+          "name": "Sam idle 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-sam-idle-2@1"
+        },
+        {
+          "id": "stock-explorer-sam-walk-1",
+          "name": "Sam walk 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-sam-walk-1@1"
+        },
+        {
+          "id": "stock-explorer-sam-walk-2",
+          "name": "Sam walk 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-sam-walk-2@1"
+        },
+        {
+          "id": "stock-explorer-sam-walk-3",
+          "name": "Sam walk 3",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-sam-walk-3@1"
+        },
+        {
+          "id": "stock-explorer-sam-walk-4",
+          "name": "Sam walk 4",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-sam-walk-4@1"
+        },
+        {
+          "id": "stock-explorer-sam-jump",
+          "name": "Sam jump",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-sam-jump@1"
+        },
+        {
+          "id": "stock-explorer-sam-happy",
+          "name": "Sam happy",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-sam-happy@1"
+        },
+        {
+          "id": "stock-explorer-ruby-idle-1",
+          "name": "Ruby idle 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-idle-1@1"
+        },
+        {
+          "id": "stock-explorer-ruby-idle-2",
+          "name": "Ruby idle 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-idle-2@1"
+        },
+        {
+          "id": "stock-explorer-ruby-walk-1",
+          "name": "Ruby walk 1",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-walk-1@1"
+        },
+        {
+          "id": "stock-explorer-ruby-walk-2",
+          "name": "Ruby walk 2",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-walk-2@1"
+        },
+        {
+          "id": "stock-explorer-ruby-walk-3",
+          "name": "Ruby walk 3",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-walk-3@1"
+        },
+        {
+          "id": "stock-explorer-ruby-walk-4",
+          "name": "Ruby walk 4",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-walk-4@1"
+        },
+        {
+          "id": "stock-explorer-ruby-jump",
+          "name": "Ruby jump",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-jump@1"
+        },
+        {
+          "id": "stock-explorer-ruby-happy",
+          "name": "Ruby happy",
+          "width": 64,
+          "height": 64,
+          "stock": "cast/explorer-ruby-happy@1"
+        }
+      ],
       "sprites": [
         {
           "id": "player",
           "name": "Player",
           "x": -100,
-          "y": 0,
+          "y": -70,
           "direction": 0,
           "size": 100,
           "layer": 0,
           "visible": true,
-          "costume": "bird",
+          "costume": "stock-explorer-sam-idle-1",
           "costumes": [
-            "bird",
-            "star",
-            "bird",
-            "ball"
+            "stock-explorer-sam-idle-1",
+            "stock-explorer-sam-idle-2",
+            "stock-explorer-sam-happy",
+            "stock-explorer-sam-idle-2"
           ],
-          "frameSeconds": 0.25
+          "frameSeconds": 0.25,
+          "rotationStyle": "left-right",
+          "animations": [
+            {
+              "name": "idle",
+              "frames": [
+                "stock-explorer-sam-idle-1",
+                "stock-explorer-sam-idle-2"
+              ],
+              "seconds": 0.4
+            },
+            {
+              "name": "walk",
+              "frames": [
+                "stock-explorer-sam-walk-1",
+                "stock-explorer-sam-walk-2",
+                "stock-explorer-sam-walk-3",
+                "stock-explorer-sam-walk-4"
+              ]
+            },
+            {
+              "name": "jump",
+              "frames": [
+                "stock-explorer-sam-jump"
+              ]
+            },
+            {
+              "name": "happy",
+              "frames": [
+                "stock-explorer-sam-happy"
+              ]
+            }
+          ]
         },
         {
           "id": "friend",
           "name": "Friend",
           "x": 100,
-          "y": 0,
-          "direction": 0,
+          "y": -70,
+          "direction": 180,
           "size": 100,
           "layer": 0,
           "visible": true,
-          "costume": "star"
+          "costume": "stock-explorer-ruby-idle-1",
+          "rotationStyle": "left-right",
+          "animations": [
+            {
+              "name": "idle",
+              "frames": [
+                "stock-explorer-ruby-idle-1",
+                "stock-explorer-ruby-idle-2"
+              ],
+              "seconds": 0.4
+            },
+            {
+              "name": "walk",
+              "frames": [
+                "stock-explorer-ruby-walk-1",
+                "stock-explorer-ruby-walk-2",
+                "stock-explorer-ruby-walk-3",
+                "stock-explorer-ruby-walk-4"
+              ]
+            },
+            {
+              "name": "jump",
+              "frames": [
+                "stock-explorer-ruby-jump"
+              ]
+            },
+            {
+              "name": "happy",
+              "frames": [
+                "stock-explorer-ruby-happy"
+              ]
+            }
+          ]
         }
       ],
       "backdrop": "backdrop_meadow"

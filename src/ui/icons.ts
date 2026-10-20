@@ -1,4 +1,4 @@
-import { iconArt, iconSvg, type IconName } from './icon-art';
+import { iconMarkup, iconSvg, type IconName } from './icon-art';
 import './icons.css';
 
 // Keep action identity separate from its label: buttons such as Run and Python
@@ -6,58 +6,60 @@ import './icons.css';
 // without changing accessible names, focus order, or click handlers.
 const actions: Record<string, IconName> = {};
 const actionGroups: Partial<Record<IconName, string>> = {
-  save: 'save art-save art-speed-save',
-  search: 'block-search-toggle', minus: 'zoom-out', more: 'menu-button', book: 'examples-open menu-examples',
-  sliders: 'sprite-more', brush: 'tray-paint', alert: 'stage-badge', learn: 'menu-pilot',
+  save: 'save',
+  search: 'block-search-toggle', minus: 'zoom-out stage-zoom-out world-wide-less world-tall-less', more: 'menu-button', book: 'examples-open menu-examples',
+  sliders: 'sprite-more', brush: 'tray-paint world-paint-tile', alert: 'stage-badge', learn: 'lessons-open menu-lessons', notes: 'menu-pilot',
   folder: 'open python-recover',
-  download: 'export export-playable recover python-download python-recovery-download module-export module-save-copy art-export pilot-download pilot-download-backup pilot-recovery',
-  upload: 'module-import scene-import art-import sound-import',
-  play: 'debug-resume run play-run sound-preview art-play pilot-start phone-play',
-  stop: 'debug-stop stop play-stop sound-preview-stop sound-record-stop',
+  download: 'export export-playable recover python-download python-recovery-download module-export module-save-copy pilot-download pilot-download-backup pilot-recovery',
+  upload: 'module-import scene-import',
+  play: 'debug-resume run play-run pilot-start phone-play',
+  stop: 'debug-stop stop play-stop',
   restart: 'example scene-reset game-restart',
-  undo: 'language-undo world-undo art-undo art-project-undo sound-undo art-revert python-discard pilot-return',
-  redo: 'language-redo world-redo art-redo art-project-redo',
+  undo: 'language-undo world-undo python-discard pilot-return',
+  redo: 'language-redo world-redo',
   pause: 'debug-pause',
-  close: 'debug-close block-search-clear export-cancel examples-close name-sheet-cancel level-keep migration-cancel language-close lambda-close events-close modules-close module-inspector-close python-cancel question-cancel art-close world-close stock-close sound-close assist-cancel',
-  plus: 'zoom-in name-sheet-confirm parameter-add lambda-parameter-add scene-add art-new art-frame-add world-new sound-new song-new watch-add',
-  trash: 'function-delete handler-delete module-remove python-recovery-remove scene-delete data-remove art-delete art-frame-remove world-delete sound-delete song-clear pilot-clear',
-  copy: 'function-copy handler-copy scene-copy art-duplicate art-save-copy art-frame-copy world-copy sound-copy',
-  check: 'sprite-settings-done level-switch migration-apply function-apply variable-apply handler-apply lambda-apply python-apply motion-use-preset sound-apply pilot-finish',
+  close: 'debug-close block-search-clear export-cancel examples-close name-sheet-cancel level-keep migration-cancel language-close lambda-close events-close modules-close module-inspector-close python-cancel question-cancel world-close stock-close assist-cancel',
+  plus: 'zoom-in stage-zoom-in world-wide-more world-tall-more stage-add-right stage-add-down name-sheet-confirm parameter-add lambda-parameter-add scene-add world-new watch-add',
+  trash: 'function-delete handler-delete module-remove python-recovery-remove scene-delete data-remove world-delete pilot-clear',
+  copy: 'function-copy handler-copy scene-copy world-copy',
+  check: 'sprite-settings-done level-switch migration-apply function-apply variable-apply handler-apply lambda-apply python-apply motion-use-preset pilot-finish',
   edit: 'module-rename python-edit',
   target: 'zoom-reset function-find handler-find lambda-find scene-locate scene-script-find',
   eye: 'debug-start module-inspect python-inspect assist-review',
-  blocks: 'python-blocks python-use-blocks',
+  blocks: 'python-blocks python-use-blocks view-blocks', stage: 'view-stage',
+  pointer: 'stage-tool-select', hand: 'stage-tool-pan', fit: 'stage-fit', flag: 'stage-home', grid: 'stage-grid',
   function: 'language-manage',
   module: 'modules-manage',
   event: 'events-manage scene-events event-send',
   volume: 'audio-enable',
   mute: 'audio-mute',
-  music: 'sound-open sound-example',
-  microphone: 'sound-record',
+  music: 'sound-open sound-example tray-sounds',
   sprite: 'scene-example pilot-sprites',
-  world: 'scene-worlds scene-world-example',
+  world: 'scene-worlds scene-world-example stage-map-show',
   image: 'scene-stock-backdrop',
-  palette: 'scene-art scene-edit-costume',
+  palette: 'scene-paint-backdrop scene-edit-costume',
   keyboard: 'scene-input-example',
   game: 'scene-game-example scene-star-game touch-toggle',
   pen: 'scene-drawing-example',
   move: 'scene-motion-example',
   message: 'scene-story-example assist-send',
   physics: 'scene-behavior-example data-behavior',
-  library: 'scene-stock world-stock',
-  eraser: 'appearance-clear art-clear',
-  selection: 'art-deselect sound-select-all',
-  flipX: 'art-flip-x', flipY: 'art-flip-y', rotate: 'art-rotate',
-  resize: 'art-resize art-scale play-expand',
-  up: 'debug-out art-frame-up', down: 'art-frame-down',
-  left: 'song-prev play-close', right: 'debug-into debug-over song-next',
+  library: 'world-stock', spriteAdd: 'scene-stock',
+  eraser: 'appearance-clear',
+  resize: 'play-expand',
+  up: 'debug-out',
+  left: 'play-close', right: 'debug-into debug-over',
   clock: 'pilot-timer', assist: 'assist-enable menu-assist', lock: 'assist-disable',
 };
 for (const [icon, ids] of Object.entries(actionGroups)) {
   for (const id of ids.split(' ')) actions[id] = icon as IconName;
 }
 
-const categories: Record<string, IconName> = {
+/** The icon a control shows, by its element id or label (lesson text points at controls this way). */
+export const controlIcon = (id: string, label = ''): IconName | undefined => actions[id] ?? labels[label];
+
+/** Each palette category's symbol, by its label; blocks show it too (block-icons.ts). */
+export const categoryIcons: Record<string, IconName> = {
   Program: 'play', Control: 'loop', 'Sensing & input': 'keyboard', Sounds: 'music', Game: 'game',
   Worlds: 'world', Sprites: 'sprite', Motion: 'move', Looks: 'eye', Physics: 'physics',
   'Sprite pen': 'pen', Draw: 'palette', Loops: 'loop', Logic: 'logic', Numbers: 'number',
@@ -111,7 +113,7 @@ function menuIcon(label: string): IconName | undefined {
   return rules.find(([pattern]) => pattern.test(label))?.[1];
 }
 
-const targets = 'button, summary, .design-link, .player footer a, .blocklyToolboxCategory, .blocklyFlyoutButton, .blocklyContextMenu .blocklyMenuItem, #art-tool, #world-tool';
+const targets = 'button, summary, .design-link, .player footer a, .blocklyToolboxCategory, .blocklyFlyoutButton, .blocklyContextMenu .blocklyMenuItem, #world-tool';
 
 /** Decorate newly rendered controls, including dialogs and Blockly flyouts.
  * The observer only visits changed controls/subtrees, never the whole document
@@ -132,12 +134,12 @@ export function installIcons(root: HTMLElement = document.body) {
       svg.setAttribute('y', String((Number(background.getAttribute('height')) - 16) / 2));
       svg.setAttribute('fill', 'none'); svg.setAttribute('stroke', 'currentColor');
       svg.setAttribute('stroke-width', '1.8'); svg.setAttribute('stroke-linecap', 'round'); svg.setAttribute('stroke-linejoin', 'round');
-      svg.innerHTML = iconArt[name]; // Trusted, local SVG constants only.
+      svg.innerHTML = iconMarkup(name); // Trusted, local SVG constants only.
       element.append(svg); return;
     }
     if (!(element instanceof HTMLElement)) return;
     if (element.matches('.blocklyToolboxCategory')) {
-      const name = categories[element.querySelector('.blocklyToolboxCategoryLabel')?.textContent?.trim() ?? ''];
+      const name = categoryIcons[element.querySelector('.blocklyToolboxCategoryLabel')?.textContent?.trim() ?? ''];
       const icon = element.querySelector<HTMLElement>('.blocklyToolboxCategoryIcon');
       if (name && icon) { icon.setAttribute('aria-hidden', 'true'); decorate(icon, name); }
       // The palette shows each category as a coloured disc; Blockly keeps the colour on the row border.
@@ -155,14 +157,13 @@ export function installIcons(root: HTMLElement = document.body) {
       }
       decorate(caption, name); return;
     }
-    // Thumbnails, note/hold marks and controller A/B already are visual icons.
-    if (element.matches('.stock-card, #scene-cards button, #song-grid button, [data-control="a"], [data-control="b"]')) return;
+    // Thumbnails, controller A/B and the Sound editor's own icons already are visual icons.
+    if (element.matches('.stock-card, #scene-cards button, #sound-dialog button, .sprite-sound-play, [data-control="a"], [data-control="b"]')) return;
     const label = element.tagName === 'SUMMARY'
       ? [...element.childNodes].filter(node => node.nodeType === Node.TEXT_NODE).map(node => node.textContent).join('').trim()
       : element.textContent?.trim() ?? '';
     let name: IconName | undefined = actions[element.id] ?? labels[label] ?? arrows[label];
     if (element.id === 'audio-mute') name = label === 'Unmute' ? 'volume' : 'mute';
-    if (element.id === 'art-play') name = label === 'Stop preview' ? 'stop' : 'play';
     if (element.id === 'pilot-timer') name = label.startsWith('Pause') ? 'pause' : 'clock';
     if (element.matches('.python-error-link, #diagnostics button')) name = 'alert';
     if (element.matches('.blocklyContextMenu .blocklyMenuItem')) name = menuIcon(label);
@@ -187,7 +188,7 @@ export function installIcons(root: HTMLElement = document.body) {
   });
   observer.observe(root, { subtree: true, childList: true, characterData: true });
   const change = (event: Event) => {
-    if (event.target instanceof Element && event.target.matches('#art-tool, #world-tool')) apply(event.target);
+    if (event.target instanceof Element && event.target.matches('#world-tool')) apply(event.target);
   };
   root.addEventListener('change', change);
   return () => { observer.disconnect(); root.removeEventListener('change', change); };

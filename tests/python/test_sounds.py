@@ -48,6 +48,13 @@ class SoundTests(unittest.IsolatedAsyncioTestCase):
         self.sounds.stop_all(); self.assertFalse(self.sounds.active)
         with self.assertRaises(RuntimeError): self.sounds.play('hello', actor)
 
+    async def test_loop_asks_the_host_to_repeat_until_stopped(self):
+        actor = self.scene.get('player'); identity = self.sounds.loop('hello', actor)
+        self.assertEqual({k: self.messages[-1][k] for k in ('type', 'sound', 'loop', 'id')}, {'type': 'play', 'sound': 'hello', 'loop': True, 'id': identity})
+        self.sounds.play('hello'); self.assertNotIn('loop', self.messages[-1])
+        with self.assertRaisesRegex(ValueError, 'unavailable'): self.sounds.loop('missing')
+        actor.destroy(); self.assertNotIn(identity, self.sounds.active)   # destroying its owner ends the loop
+
     async def test_note_tempo_capture_instruments_and_cancellation(self):
         self.sounds.set_tempo(60)
         task = asyncio.create_task(self.sounds.note(60, 2, 'snare')); self.tasks.append(task); await until(lambda: self.messages)

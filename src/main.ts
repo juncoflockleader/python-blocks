@@ -1,10 +1,11 @@
 import './style.css';
 import { installIcons } from './ui/icons';
+import { installBlockIcons } from './ui/block-icons';
 import { installBlockSearch } from './ui/block-search';
 import { installDebugger, debugOptions } from './ui/debugger';
 import { installPlayView } from './scene/play-view';
 import { Questions } from './scene/questions';
-import { SoundEditor } from './scene/sound-editor';
+import { installSoundEditor, installSoundList } from './scene/sound-editor';
 import { SoundPlayer } from './runtime/audio';
 import { GameView } from './scene/game';
 import { Blockly, squareProject } from './blocks';
@@ -34,8 +35,9 @@ import { installGuide } from './guide/builds';
 import { installNudges, type FixKind } from './guide/nudges';
 import { installFixes, type RuntimeFault } from './guide/fixes';
 import { installGallery } from './guide/gallery';
+import { installLessons } from './guide/lessons';
 import { atLeast, installLevels, levelNames, requiredLevel, storedLevel, toolboxFor, LEVEL_KEY, type Level } from './ui/levels';
-import { installHelpSections, installInputHints, installLevelControl, installMenu, installPaletteHint, installPythonPlacement, installTabs, shellMarkup, trackKeyboard } from './ui/shell';
+import { installHelpSections, installInputHints, installLevelControl, installMenu, installPaletteHint, installPythonPlacement, installTabs, installViewSwitch, shellMarkup, trackKeyboard } from './ui/shell';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = shellMarkup + `<dialog id="migration-dialog"><h2>Choose startup order</h2><p>This older project has several loose stacks. Choose their order inside Program.</p><ol id="migration-order"></ol><p id="migration-error" role="alert"></p><button id="migration-apply" class="button primary">Use this order</button><button id="migration-cancel" class="button secondary">Cancel</button></dialog>`;
 
@@ -59,6 +61,8 @@ const help = installHelpSections();
 // The title is cosmetic editor state, kept with the autosave so a reload shows the same name.
 const TITLE_KEY = 'python-blocks.title.v1';
 const projectTitle = element('#project-title');
+/** A lesson keeps the project it replaced here until the learner returns to it. */
+const KEPT_KEY = 'python-blocks.guide.kept.v1';
 const setTitle = (text: string) => { projectTitle.textContent = text; try { localStorage.setItem(TITLE_KEY, text); } catch { /* the title still shows in this tab */ } };
 const outputState = () => { element('#output-empty').hidden = !outputPanel.hidden || !element('#diagnostics-panel').hidden; };
 function announceOutput(kind: 'print' | 'error') {
@@ -97,6 +101,7 @@ const gameView = new GameView(element('#game-overlay'), () => {
 stage.onReset = () => gameView.reset();
 let eventReady = false;
 let sceneEditor: ReturnType<typeof installSceneEditor> | undefined;
+let viewSwitch: ReturnType<typeof installViewSwitch> | undefined;
 const updateEventControls = () => {
   element('#event-input').hidden = (runningCompilation ?? compilation)?.executionMode !== 'events';
   element<HTMLButtonElement>('#event-send').disabled = !eventReady || !runningCompilation || !!debuggerView?.paused;
@@ -115,6 +120,7 @@ const runner = new PythonRunner(event => {
   if (event.type === 'watch-values') sceneEditor?.watch(event.values);
   if (event.type === 'scene') {
     if (event.command.type === 'game') {
+      guide.score(event.command.state.score);
       if (event.command.state.result) { eventReady = false; sceneEditor?.stop(); updateEventControls(); guide.gameOver(event.command.state.result.won); }
       gameView.accept(event.command.state);
     }
@@ -172,12 +178,15 @@ const paletteHint = installPaletteHint(() => element('#blockly').querySelector<H
 element('#zoom-in').addEventListener('click', () => workspace.zoomCenter(1));
 element('#zoom-out').addEventListener('click', () => workspace.zoomCenter(-1));
 element('#zoom-reset').addEventListener('click', () => { workspace.setScale(startScale); workspace.scrollCenter(); });
-const soundEditor = new SoundEditor(workspace);
+const soundEditor = installSoundEditor(workspace, { canEdit: () => sceneEditor?.canEdit() ?? true });
 const disposeLanguageEditor = installLanguageEditor(workspace);
 sceneEditor = installSceneEditor(workspace, stage, value => runner.input(value), { spriteAdded: name => nudges.spriteAdded(name) });
-element('#stage-assets').insertAdjacentHTML('beforeend', '<button id="sound-open" class="button secondary">Sounds & music</button>');
-element('#sound-open').addEventListener('click', () => soundEditor.open());
+// Sounds: the tray button, and a list in the Sprite tab under the sprite's buttons.
+const soundList = installSoundList(workspace, element('#scene-edit-costume').closest<HTMLElement>('.scene-toolbar')!, sound => soundEditor.open({ sound }));
+element('#tray-sounds').addEventListener('click', () => soundEditor.open());
 installLevels(workspace, () => sceneEditor?.selected() ?? '');
+// Every command and event block carries its family's symbol; installed before any project loads.
+installBlockIcons(workspace);
 // Guidance: reviewed recipes inserted by the app, the gallery, guided builds and nudges.
 let preferredTarget: string | undefined;
 const cards: CardHost = {
@@ -209,8 +218,9 @@ const gallery = installGallery({
     return true;
   },
   play() { element('#play-expand').click(); element('#play-run').click(); },
-  startBuild: id => guide.begin(id),
 });
+// Lessons and guided builds have their own catalogue, apart from Examples.
+const lessons = installLessons({ start: id => guide.begin(id), play: id => gallery.play(id) });
 const ideas = installIdeas({
   ...cards, show: recipe => ideas.show(recipe), reveal: () => showHelp('ideas'),
   askAi: wish => { if (level === 'starter') return null; showHelp('more'); assist?.prepare(wish); element<HTMLDetailsElement>('#assist-panel').scrollIntoView({ block: 'start' }); return 'Your wish is in AI assist (Help → More). Review what will be shared, then Send.'; },
@@ -222,12 +232,36 @@ const nudges = installNudges({
 });
 const guide = installGuide({
   workspace, level: () => level, setLevel: next => levelControl.set(next),
-  load(project, title) { if (!installProject(prepareProject(JSON.stringify(project)).project)) return false; setTitle(title); return true; },
+  // A guided build works in the blocks, so it starts in Blocks view.
+  load(project, title) { if (!installProject(prepareProject(JSON.stringify(project)).project)) return false; setTitle(title); viewSwitch?.show('blocks'); return true; },
   select: id => sceneEditor?.select(id), prefer: id => { preferredTarget = id; }, showRecipe: recipe => ideas.show(recipe), reveal: list => { if (list) showHelp('builds'); else tabs.activate('help'); }, notify: helpDot,
   finished: () => helpDot(),
   stopped: () => nudges.empty(!workspace.getTopBlocks(false).length),
   download: (name, text) => download(name, text, 'application/json'),
   revision: typeof __APP_REVISION__ === 'string' ? __APP_REVISION__ : 'development (revision unavailable)',
+  insert(parts, title, select, other, replace = []) {
+    const lesson: Recipe = { id: 'lesson', title, group: 'game', phrases: [], level, concepts: ['event'], steps: [], blocks: parts };
+    const group = Blockly.Events.getGroup(); Blockly.Events.setGroup(group || true);
+    try {
+      for (const id of replace) workspace.getBlockById(id)?.dispose(true);
+      return insertRecipe(workspace, lesson, select ?? sceneEditor?.selected() ?? '', other).map(block => block.id);
+    } finally { Blockly.Events.setGroup(group); }
+  },
+  keep() {
+    saveCurrentProject();
+    try { localStorage.setItem(KEPT_KEY, JSON.stringify({ title: projectTitle.textContent ?? '', project: snapshot(workspace) })); return true; } catch { return false; }
+  },
+  restore() {
+    let kept: { title: string; project: unknown } | null = null;
+    try { kept = JSON.parse(localStorage.getItem(KEPT_KEY) ?? 'null'); } catch { kept = null; }
+    if (!kept || !installProject(prepareProject(JSON.stringify(kept.project)).project)) return false;
+    setTitle(kept.title || 'My project'); offerLevel();
+    try { localStorage.removeItem(KEPT_KEY); } catch { /* the kept copy stays until it can be removed */ }
+    return true;
+  },
+  kept() { try { return localStorage.getItem(KEPT_KEY) !== null; } catch { return false; } },
+  play() { element('#run').click(); },
+  tabLabel(text) { const label = element('#tab-help').firstChild; if (label) label.textContent = text; },
 });
 // A block's "!" at Starter and Builder offers a step-by-step fix instead of Blockly's plain bubble.
 const fixes = installFixes({
@@ -260,11 +294,19 @@ let exportController: AbortController | null = null;
 pythonEditor = installPythonEditor(workspace, {
   compilation: () => compilation ?? compile(workspace),
   changed: () => updateCode(),
-  applied: () => { runner.stop(); idle(); sceneEditor?.restore(); paint(); status.textContent = 'Python applied'; updateCode(); },
+  applied: () => { runner.stop(); idle(); sceneEditor?.restore(); soundList.refresh(); paint(); status.textContent = 'Python applied'; updateCode(); },
   download: (name, source) => download(name, source, 'text/x-python'),
 });
 
 const pythonPlacement = installPythonPlacement(() => Blockly.svgResize(workspace));
+viewSwitch = installViewSwitch(view => {
+  Blockly.hideChaff(); pythonPlacement.refresh();
+  // The workspace was hidden in Stage view: let Blockly measure it again.
+  if (view === 'blocks') { Blockly.svgResize(workspace); paletteHint.refresh(); }
+  sceneEditor?.view.refresh();
+});
+// "Go to script" centres a script in the workspace, so it opens Blocks view first.
+element('#scene-script-find').addEventListener('click', () => viewSwitch?.show('blocks'), { capture: true });
 
 debuggerView = installDebugger(workspace, {
   reveal: () => tabs.activate('output'),
@@ -336,7 +378,7 @@ function installProject(project: ReturnType<typeof snapshot>) {
   soundEditor.close();
   pythonEditor?.reset();
   restore(workspace, project);
-  runner.stop(); idle(); sceneEditor?.restore(); paint();
+  runner.stop(); idle(); sceneEditor?.restore(true); soundList.refresh(); paint();
   autosaveEnabled = true; recoveryText = null; element('#recover').hidden = true;
   output.textContent = ''; outputPanel.hidden = true; element('#error-details').hidden = true; badge.hidden = true; tabs.mark('output', false);
   status.textContent = 'Ready'; updateCode();
@@ -390,7 +432,7 @@ try {
   notice.textContent = `Saved work could not be restored: ${error instanceof Error ? error.message : error} Download it for recovery, or open another project. Autosave is paused.`;
   element('#recover').hidden = !recoveryText;
 }
-sceneEditor.restore();
+sceneEditor.restore(); soundList.refresh();
 updateCode(autosaveEnabled);
 // A browser that has never chosen a level gets a one-time offer for its saved project.
 try { if (localStorage.getItem(LEVEL_KEY) === null && !element<HTMLDialogElement>('#migration-dialog').open) offerLevel(); } catch { /* storage unavailable */ }
@@ -420,7 +462,7 @@ assist = installAssist({
     return element('#python').textContent ?? '';
   },
 });
-let updatePending = false;
+let updatePending = false, updateGroup = '';
 workspace.addChangeListener(event => {
   if (event.type === Blockly.Events.SELECTED) {
     const id = (event as Blockly.Events.Selected).newElementId;
@@ -428,9 +470,17 @@ workspace.addChangeListener(event => {
     pythonEditor?.follow(id && workspace.getBlockById(id) ? id : null);
   }
   if (!event.isUiEvent) nudges.activity();
-  if (event.isUiEvent || updatePending) return;
+  if (event.isUiEvent) return;
+  updateGroup = event.group;
+  if (updatePending) return;
   updatePending = true;
-  queueMicrotask(() => { updatePending = false; updateCode(); });
+  queueMicrotask(() => {
+    updatePending = false;
+    // A block that gains or loses a warning re-renders and may bump a neighbour. That move
+    // belongs to the change that caused it, so a single Undo reverts both.
+    const group = Blockly.Events.getGroup(); Blockly.Events.setGroup(updateGroup || false);
+    try { updateCode(); } finally { Blockly.Events.setGroup(group || false); }
+  });
 });
 const resizeObserver = new ResizeObserver(() => Blockly.svgResize(workspace));
 resizeObserver.observe(element('#blockly'));
@@ -527,4 +577,4 @@ element<HTMLInputElement>('#project-file').addEventListener('change', async even
     else if (installProject(prepared.project)) { setTitle(file.name.replace(/\.python-blocks\.json$|\.json$/i, '') || 'My project'); offerLevel(); }
   } catch (error) { notice.textContent = `Could not open project: ${error instanceof Error ? error.message : error}. Your current work is unchanged.`; }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); blockSearch.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); blockSearch.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });

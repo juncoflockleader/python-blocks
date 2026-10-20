@@ -31,7 +31,12 @@ export interface Recipe {
   tryNext?: string[];
   preview?: string;
   demo?: DemoAction[];
+  /** The project its preview is recorded in, when the plain stage would not show the effect:
+   * the hero walking into the star, a hero whose clicks score, Space switching the backdrop, or the Music example. */
+  previewScene?: PreviewScene;
 }
+export const PREVIEW_SCENES = ['touch', 'clicker', 'backdrops', 'music'] as const;
+export type PreviewScene = typeof PREVIEW_SCENES[number];
 
 const modules = import.meta.glob<Recipe>('../../content/recipes/*.json', { eager: true, import: 'default' });
 export const recipes: Recipe[] = Object.values(modules).sort((a, b) => RECIPE_GROUPS.indexOf(a.group) - RECIPE_GROUPS.indexOf(b.group) || a.id.localeCompare(b.id));
@@ -43,6 +48,7 @@ export function recipeProblems(recipe: Recipe, all: Recipe[] = recipes): string[
   const need = (ok: unknown, message: string) => { if (!ok) problems.push(`${recipe.id || '(no id)'}: ${message}`); };
   need(/^[a-z][a-z0-9-]{1,40}$/.test(recipe.id ?? ''), 'id must be lowercase words joined by hyphens');
   need(all.filter(r => r.id === recipe.id).length === 1, 'id must be unique');
+  need(recipe.previewScene === undefined || PREVIEW_SCENES.includes(recipe.previewScene), 'previewScene must be touch, clicker, backdrops or music');
   need(typeof recipe.title === 'string' && recipe.title.length > 3 && recipe.title.length <= 60, 'title needs 4–60 characters');
   need(RECIPE_GROUPS.includes(recipe.group), 'unknown group');
   need(Array.isArray(recipe.phrases) && recipe.phrases.length >= 3 && recipe.phrases.every(p => typeof p === 'string' && p.trim() === p && p.length > 1), 'needs at least three trimmed phrases');
@@ -68,7 +74,7 @@ export function placement(workspace: Blockly.Workspace, recipe: Recipe, selected
   const sprite = scene.sprites.find(s => s.id === selected) ?? scene.sprites[0];
   const other = scene.sprites.find(s => s.id === target && s.id !== sprite?.id) ?? scene.sprites.find(s => s.id !== sprite?.id);
   const sprites = recipe.needs?.sprites ?? 0, worlds = recipe.needs?.worlds ?? 0;
-  if (sprites && scene.sprites.length < sprites) throw new Error(sprites === 1 ? 'Add a sprite first: use Sprite library under the stage.' : `This idea needs ${sprites} sprites. Add another from the Sprite library under the stage.`);
+  if (sprites && scene.sprites.length < sprites) throw new Error(sprites === 1 ? 'Add a sprite first: press Sprites under the stage.' : `This idea needs ${sprites} sprites. Add another with Sprites under the stage.`);
   if (worlds && (scene.worlds?.length ?? 0) < worlds) throw new Error(`This idea needs ${worlds} worlds. Open Worlds & tilemaps in the Sprite tab to add them.`);
   return { sprite: sprite?.id, other: other?.id ?? sprite?.id, world2: scene.worlds?.find(w => w.id !== scene.world)?.id, variables: new Map() };
 }
