@@ -5,7 +5,7 @@
  "level": "builder",
  "minutes": 25,
  "order": 6,
- "summary": "Tap to flap a bird through gaps in the pipes. Gravity pulls, you push, and every pipe you pass scores once.",
+ "summary": "Tap to flap a little bird through the pipes. Don’t bump!",
  "ideas": [
   "gravity",
   "velocity",
@@ -15,30 +15,30 @@
   "win condition"
  ],
  "learn": [
-  "make gravity pull with an acceleration, and flap by setting a speed",
-  "send clones from one hidden pipe, each at a random height",
-  "predict what a script does before you run it, then fix it",
-  "give every clone its own memory with sprite data"
+  "make a bird fall, then flap with the space key",
+  "send pipes at different heights, again and again",
+  "guess what blocks will do, then fix a bug",
+  "help each pipe remember if it scored"
  ],
  "chapters": [
   {
    "title": "Fall and flap",
-   "idea": "Gravity is an acceleration; a flap sets the speed.",
+   "idea": "Gravity pulls down. A flap pushes up.",
    "steps": 2
   },
   {
    "title": "Pipes",
-   "idea": "A clone starts where its sprite is.",
+   "idea": "A copy starts where its sprite is.",
    "steps": 2
   },
   {
    "title": "Score",
-   "idea": "Each clone keeps its own data.",
+   "idea": "Each pipe can remember things.",
    "steps": 3
   },
   {
    "title": "Win or lose",
-   "idea": "You decide when the game ends.",
+   "idea": "You make the rules for winning.",
    "steps": 2
   }
  ],
@@ -201,7 +201,8 @@
  },
  "steps": [
   {
-   "text": "When the game starts, set the Bird’s ay to −900 and make it stop at the stage edge. Before you run it: what will the bird do?",
+   "title": "Make the bird fall",
+   "text": "Real birds fall if they don’t flap. Give yours <<gravity|ay>>!",
    "check": {
     "all": [
      {
@@ -238,10 +239,10 @@
     ]
    },
    "kind": "predict",
-   "why": "ay is an acceleration: gravity. It does not set a speed; it keeps adding downward speed, every moment.",
+   "why": "<<ay>> is gravity. It pulls the bird down a little more every moment, so it falls faster and faster.",
    "checklist": [
     {
-     "text": "The Bird gets gravity: ay −900",
+     "text": "Snap ((Physics|set sprite Bird ay to −900)) under ((Events|when game starts))",
      "check": {
       "all": [
        {
@@ -262,7 +263,7 @@
      }
     },
     {
-     "text": "The Bird stops at the stage edge",
+     "text": "Add ((Motion|sprite Bird at stage edge stop)) so it stays on the <<stage>>",
      "check": {
       "field": [
        "scene_motion_edges",
@@ -272,21 +273,21 @@
      }
     },
     {
-     "text": "You chose what will happen",
+     "text": "Make your guess",
      "check": {
       "predicted": true
      }
     },
     {
-     "text": "You ran it after choosing",
+     "text": "Press [[Run code]] to see",
      "check": {
       "ran": true
      }
     }
    ],
    "hints": [
-    "In {{Physics}}, “set sprite … vx to …” has a menu: choose ay. Put it under “when game starts” from {{Events}}.",
-    "Set the Bird’s ay to −900. Then add “sprite Bird at stage edge stop” from Motion."
+    "The ((Physics|set sprite … vx to …)) block has a menu. Pick ay in it. Snap it under ((Events|when game starts)).",
+    "Pick Bird, pick ay, and type −900. The minus means down. Then add ((Motion|sprite Bird at stage edge stop)) from {{Motion}}."
    ],
    "select": "bird",
    "highlight": {
@@ -296,12 +297,12 @@
     "question": "What will the bird do?",
     "choices": [
      "Fall faster and faster, then stop at the bottom",
-     "Fall at one steady speed",
-     "Float where it is",
+     "Fall slowly, at one speed",
+     "Float in the air",
      "Fly up and away"
     ],
     "answer": 0,
-    "explain": "Gravity adds a little more downward speed every moment, so the bird falls faster and faster until the stage edge stops it."
+    "explain": "Gravity pulls a bit harder every moment. So the bird speeds up until the edge stops it."
    },
    "solution": {
     "parts": [
@@ -353,10 +354,15 @@
       ]
      }
     ]
+   },
+   "coach": "Gravity is in Physics. Tap it!",
+   "clip": {
+    "seconds": 2
    }
   },
   {
-   "text": "Flap: when space is pressed, set the Bird’s vy to 300 and play its flap animation. Run it, click the stage and keep the bird in the air.",
+   "title": "Flap!",
+   "text": "Press [space] to give the bird a quick push up.",
    "check": {
     "all": [
      {
@@ -376,10 +382,10 @@
      }
     ]
    },
-   "why": "Setting vy gives one quick push up. Gravity then pulls the bird back down, and that push and fall is the whole game.",
+   "why": "<<vy>> is speed up and down. 300 is a fast push up. Then gravity pulls the bird back down. Push, fall, push, fall: that’s the whole game!",
    "checklist": [
     {
-     "text": "A script runs when space is pressed",
+     "text": "Under ((Events|when space key pressed)), set the Bird’s <<vy>> to 300",
      "check": {
       "handler": "key",
       "contains": [
@@ -388,7 +394,7 @@
      }
     },
     {
-     "text": "It plays the Bird’s flap animation",
+     "text": "Add ((Looks|play sprite Bird animation once and wait)) to flap its wings",
      "check": {
       "handler": "key",
       "contains": [
@@ -397,15 +403,15 @@
      }
     },
     {
-     "text": "You ran it",
+     "text": "Run it. Tap the game, then tap [space]!",
      "check": {
       "ran": true
      }
     }
    ],
    "hints": [
-    "From {{Events}}, drag “when space key pressed”. In {{Physics}}, use “set sprite … vy to …” for the Bird.",
-    "Under it, add “play sprite Bird animation once and wait” from Looks. The Bird’s costumes are four flap frames: one beat of its wings."
+    "In {{Events}}, find ((Events|when space key pressed)). In {{Physics}}, use ((Physics|set sprite Bird vy to 300)).",
+    "Then add ((Looks|play sprite Bird animation once and wait)) from {{Looks}}. The Bird’s four <<costumes|costume>> beat its wings once."
    ],
    "select": "bird",
    "highlight": {
@@ -459,10 +465,53 @@
       ]
      }
     ]
+   },
+   "coach": "Find “when space key pressed” in Events.",
+   "keys": "space",
+   "clip": {
+    "demo": [
+     {
+      "key": "Space",
+      "ms": 70
+     },
+     {
+      "wait": 380
+     },
+     {
+      "key": "Space",
+      "ms": 70
+     },
+     {
+      "wait": 380
+     },
+     {
+      "key": "Space",
+      "ms": 70
+     },
+     {
+      "wait": 380
+     },
+     {
+      "key": "Space",
+      "ms": 70
+     },
+     {
+      "wait": 380
+     },
+     {
+      "key": "Space",
+      "ms": 70
+     },
+     {
+      "wait": 380
+     }
+    ],
+    "seconds": 3
    }
   },
   {
-   "text": "The lesson wrote a loop that sends a pipe every 1.5 seconds, but every gap is at the same height. Fix it: before each clone, set Pipe’s y to a random number from −40 to 90.",
+   "title": "Pipes at different heights",
+   "text": "We made blocks that send a pipe every 1.5 seconds. But there’s a bug: every gap is at the same height. Too easy!",
    "check": {
     "all": [
      {
@@ -484,10 +533,10 @@
     ]
    },
    "kind": "fix",
-   "why": "A clone starts where its sprite is. Pipe waits off the right edge, so every copy starts at Pipe’s height, until you move Pipe first.",
+   "why": "Each new pipe is a <<clone>>, a copy of Pipe. A copy starts where Pipe is. So move Pipe first, then copy it!",
    "checklist": [
     {
-     "text": "Pipe moves to a random height in the loop",
+     "text": "At the top of the ((Control|repeat while true)), move Pipe to a <<random>> height: ((Control|random integer from −40 to 90))",
      "check": {
       "nested": [
        "controls_whileUntil",
@@ -496,7 +545,7 @@
      }
     },
     {
-     "text": "…by setting its y",
+     "text": "…using ((Motion|set sprite Pipe y to))",
      "check": {
       "field": [
        "scene_set",
@@ -506,15 +555,15 @@
      }
     },
     {
-     "text": "You ran it",
+     "text": "Run it and watch the gaps move",
      "check": {
       "ran": true
      }
     }
    ],
    "hints": [
-    "Run it: the gaps line up, so you could fly straight through. What decides where each clone starts?",
-    "At the top of the loop, add “set sprite Pipe y to” from Motion, and put “random integer from −40 to 90” (Control) in it."
+    "Run it. All the gaps line up! What decides where each copy starts?",
+    "At the top of the repeat, add ((Motion|set sprite Pipe y to)). Put ((Control|random integer from −40 to 90)) in its hole."
    ],
    "select": "pipe",
    "highlight": {
@@ -709,10 +758,15 @@
      }
     ],
     "replacesPlant": 2
+   },
+   "coach": "“set sprite … y to” is in Motion.",
+   "clip": {
+    "seconds": 3
    }
   },
   {
-   "text": "Crash: when a Pipe touches the Bird, finish the game as a loss. And when the Bird’s y drops below −115, it hit the ground: finish the game too.",
+   "title": "Bonk! Game over",
+   "text": "Crashing should end the game. There are two ways to crash: hit a pipe, or hit the ground.",
    "check": {
     "all": [
      {
@@ -732,10 +786,10 @@
      }
     ]
    },
-   "why": "The script belongs to Pipe, so every pipe clone checks for the bird. “When Bird updates” runs many times a second, so the ground is noticed at once.",
+   "why": "These blocks belong to Pipe, so every pipe copy checks for the bird. ((Events|when Bird updates)) runs about 30 times a second (<<see why|updates>>), so a crash is noticed right away.",
    "checklist": [
     {
-     "text": "When a Pipe touches the Bird, the game ends",
+     "text": "In ((Events|when Pipe overlaps Bird)), put ((Game|finish game lose))",
      "check": {
       "handler": "overlap",
       "sprite": "pipe",
@@ -745,7 +799,7 @@
      }
     },
     {
-     "text": "Each update, the Bird checks for the ground",
+     "text": "In ((Events|when Bird updates)), if the Bird’s <<y>> is below −115, finish the game too",
      "check": {
       "handler": "update",
       "sprite": "bird",
@@ -757,8 +811,8 @@
     }
    ],
    "hints": [
-    "Select Pipe, then from {{Events}} drag “when Pipe overlaps …” and choose Bird. Inside, put “finish game lose” from {{Game}}.",
-    "Select Bird and drag “when Bird updates”. Inside: if Bird’s y < −115, finish game lose."
+    "Pick Pipe. From {{Events}}, drag ((Events|when Pipe overlaps …)) and choose Bird. Put ((Game|finish game lose)) inside.",
+    "Pick Bird. Drag ((Events|when Bird updates)). Inside: if Bird’s y < −115, finish game lose."
    ],
    "select": "pipe",
    "other": "bird",
@@ -857,10 +911,15 @@
       ]
      }
     ]
+   },
+   "coach": "Ending the game is in Game.",
+   "clip": {
+    "seconds": 2.5
    }
   },
   {
-   "text": "The lesson wrote a score script for Pipe: once a pipe is left of the bird (x below −150), add 1 to the score. It also destroys pipes that leave the stage. Before you run it: what will the score do when you pass a pipe?",
+   "title": "Guess the score",
+   "text": "We made blocks that add 1 point when a pipe goes past the bird. Read them before you run them!",
    "check": {
     "all": [
      {
@@ -872,16 +931,16 @@
     ]
    },
    "kind": "predict",
-   "why": "Read the script before you run it. Every pipe clone runs “when Pipe updates” for itself, about 30 times a second.",
+   "why": "Every pipe copy runs ((Events|when Pipe updates)) by itself, about 30 times a second.",
    "checklist": [
     {
-     "text": "You chose what will happen",
+     "text": "Make your guess",
      "check": {
       "predicted": true
      }
     },
     {
-     "text": "You ran it after choosing",
+     "text": "Press [[Run code]] to see",
      "check": {
       "ran": true
      }
@@ -889,7 +948,7 @@
    ],
    "hints": [
     "Watch the score in the corner while a pipe slides past the bird.",
-    "How many updates happen after a pipe’s x drops below −150, before it leaves the stage?"
+    "After a pipe goes past, how many times does ((Events|when Pipe updates)) run before the pipe leaves?"
    ],
    "select": "pipe",
    "highlight": {
@@ -904,7 +963,7 @@
      "Go down"
     ],
     "answer": 1,
-    "explain": "Each update after the pipe passes adds another point: about 30 a second. The pipe needs to remember that it already scored."
+    "explain": "It goes up about 30 times a second while the pipe is past the bird! The pipe needs to remember that it already scored."
    },
    "plant": [
     {
@@ -1021,10 +1080,12 @@
       }
      ]
     }
-   ]
+   ],
+   "keys": "space"
   },
   {
-   "text": "Give each pipe a memory. Pipe has data named “passed”, set to False. Score only when the pipe is past the bird and not “passed”, then set its “passed” to True.",
+   "title": "Each pipe remembers",
+   "text": "Let’s fix the score. Each pipe has a <<note|data>> called “passed”. It starts as False. Score only if it isn’t True yet.",
    "check": {
     "all": [
      {
@@ -1047,10 +1108,10 @@
     ]
    },
    "kind": "fix",
-   "why": "Every clone gets its own copy of its sprite’s data, so each pipe remembers for itself whether it has scored.",
+   "why": "Every copy gets its own <<note|data>>. So each pipe remembers by itself if it already scored.",
    "checklist": [
     {
-     "text": "The pipe reads its “passed” data",
+     "text": "Check the note: ((Game|sprite this sprite data named passed))",
      "check": {
       "handler": "update",
       "sprite": "pipe",
@@ -1060,7 +1121,7 @@
      }
     },
     {
-     "text": "After scoring, it sets “passed” to True",
+     "text": "After scoring, ((Game|set sprite this sprite data named passed to True))",
      "check": {
       "handler": "update",
       "sprite": "pipe",
@@ -1070,15 +1131,15 @@
      }
     },
     {
-     "text": "You ran it",
+     "text": "Run it",
      "check": {
       "ran": true
      }
     }
    ],
    "hints": [
-    "Select Pipe, press [[More settings]] and open [[Sprite data & behavior]]: its starting data has passed: false. In {{Game}}, “sprite … data named …” reads it and “set sprite … data named … to …” changes it.",
-    "From Logic, put “… and …” in the if: the x check on one side, “not (sprite this sprite data named passed)” on the other. Inside, after “change score by 1”, set this sprite’s data named passed to True (Logic)."
+    "Pick Pipe, press [[More settings]] and open [[Sprite data & behavior]]: there’s passed: false. In {{Game}}, ((Game|sprite … data named …)) reads it.",
+    "Use ((Logic|… and …)) in the if: the x check on one side, ((Logic|not …)) with the note on the other. After ((Game|change score by 1)), set the note to True."
    ],
    "select": "pipe",
    "highlight": {
@@ -1267,22 +1328,26 @@
      }
     ],
     "replacesPlant": 4
-   }
+   },
+   "coach": "Sprite notes are in Game."
   },
   {
-   "text": "Play-test: fly through three pipes.",
+   "title": "Play it: 3 pipes",
+   "text": "Fly through three pipes!",
    "check": {
     "score": 3
    },
    "kind": "play",
-   "why": "Click the stage, then tap space: little taps, not a long press. Each pipe scores once now.",
+   "why": "Tap the game, then tap [space]. Little taps work best!",
    "goal": {
     "score": 3,
     "label": "pipes passed"
-   }
+   },
+   "keys": "space"
   },
   {
-   "text": "A goal to aim for: when the game starts, wait until the score reaches 10, then finish the game as a win.",
+   "title": "How to win",
+   "text": "A game needs a way to win. Let’s win at 10 points!",
    "check": {
     "all": [
      {
@@ -1301,7 +1366,7 @@
      }
     ]
    },
-   "why": "Flappy games never end by themselves. Your rule decides when a player has won.",
+   "why": "Flappy games never stop by themselves. You make the rule for winning.",
    "checklist": [
     {
      "text": "Wait until the score is 10",
@@ -1314,7 +1379,7 @@
      }
     },
     {
-     "text": "Then finish the game as a win",
+     "text": "Then ((Game|finish game win))",
      "check": {
       "field": [
        "game_finish",
@@ -1325,29 +1390,32 @@
     }
    ],
    "hints": [
-    "The idea card “Win screen” waits until the score reaches a number, then finishes the game.",
-    "Insert it, then change its 5 to 10 and write your own winning message."
+    "The idea card “Win screen” waits for a score, then you win.",
+    "Insert it, change its 5 to 10, and write your own winning message!"
    ],
    "recipe": "win-screen",
    "highlight": {
     "category": "game"
-   }
+   },
+   "coach": "Winning is in Game."
   },
   {
-   "text": "Play until the game ends: ten pipes to win, one bump to lose.",
+   "title": "Play to the end",
+   "text": "Ten pipes to win. One bump and it’s over!",
    "check": {
     "finished": "any"
    },
    "kind": "play",
-   "why": "Click the stage, then tap space to flap."
+   "why": "Tap the game, then tap [space] to flap.",
+   "keys": "space"
   }
  ],
  "finish": {
-  "text": "A bird that falls and flaps, a stream of pipes at random heights, and a score that counts each pipe once.",
+  "text": "Your bird falls and flaps, the pipes keep coming, and every pipe counts once. You made a real game!",
   "remix": [
-   "Tilt the bird: each update, set its direction from its vy, so it noses down as it falls.",
-   "Harder and harder: every 5 points, make the pipes a little faster or the gap a little smaller.",
-   "Coins in the gaps: clone a coin with each pipe and give an extra point for catching it."
+   "Nose dive: make the bird tip down as it falls. Set its direction from its <<vy>>.",
+   "Harder and harder: every 5 points, make the pipes a little faster.",
+   "Coins in the gaps: put a coin in each gap for a bonus point."
   ]
  },
  "next": "jump-quest"

@@ -1,6 +1,6 @@
 import { test, expect, type Page } from '@playwright/test';
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
-import { GALLERY_MANIFEST, PREVIEW_MANIFEST, galleryKey, galleryOutputs, previewOutputs, readManifest, recipeFiles, recipeFixture, recipeKey, type GalleryFile, type RecipeFile } from '../preview-key';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { GALLERY_MANIFEST, LESSON_MANIFEST, PREVIEW_MANIFEST, galleryKey, galleryOutputs, lessonClipFixture, lessonClipId, lessonClipKey, lessonClipOutputs, lessonClips, previewOutputs, readManifest, recipeFiles, recipeFixture, recipeKey, type GalleryFile, type RecipeFile } from '../preview-key';
 import { reveal } from './shell';
 
 /** Recipe previews and gallery thumbnails are rendered here, from fixture
@@ -157,4 +157,26 @@ for (const entry of gallery) test(`gallery loop: ${entry.id}`, async ({ page }) 
     writeFileSync(files[kind], bytes);
   }
   writeFileSync(GALLERY_MANIFEST, JSON.stringify({ ...readManifest(GALLERY_MANIFEST), [entry.id]: key }, null, 1) + '\n');
+});
+
+// Each lesson step with a clip: its project, built step by step, run with the step's keys; shown on the step's card as "Watch".
+for (const clip of lessonClips()) test(`lesson clip: ${lessonClipId(clip)}`, async ({ page }) => {
+  const manifest = readManifest(LESSON_MANIFEST), key = lessonClipKey(clip), files = lessonClipOutputs(clip);
+  if (manifest[lessonClipId(clip)] === key && Object.values(files).every(file => existsSync(file))) return;
+  stale(`The clip for ${lessonClipId(clip)}`);
+  await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
+  await page.locator('#project-file').setInputFiles(lessonClipFixture(clip));
+  await expect(page.locator('#scene-cards button').first()).toBeVisible();
+  await baseline(page);
+  await page.locator('#run').click();
+  await expect(page.locator('#status')).toHaveText(/Event session running|Finished|You win!|Game over|Let’s try again/, { timeout: 60_000 });
+  const recording = record(page, (clip.clip.seconds ?? 3) * 1000); await demo(page, clip.clip.demo, lessonClipFixture(clip));
+  const outputs = await recording;
+  mkdirSync('public/lessons', { recursive: true });
+  for (const kind of ['webm', 'mp4', 'poster'] as const) {
+    const bytes = Buffer.from(outputs[kind], 'base64');
+    expect(bytes.length, `${lessonClipId(clip)} ${kind}`).toBeGreaterThan(1000);
+    writeFileSync(files[kind], bytes);
+  }
+  writeFileSync(LESSON_MANIFEST, JSON.stringify({ ...readManifest(LESSON_MANIFEST), [lessonClipId(clip)]: key }, null, 1) + '\n');
 });

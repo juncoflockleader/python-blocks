@@ -11,7 +11,8 @@ import { appendRecipe, placement, recipeById, recipes, type Recipe } from '../..
 import { atLeast, palette, requiredLevel } from '../../src/ui/levels';
 import { checkGuidance, concepts, instructionsFor, responseSchemaFor } from '../../src/assist/catalog';
 import { paletteWorkspace } from './palette-workspace';
-import { knownCategory, knownControl, plainText } from '../../src/guide/ui-refs';
+import { knownCategory, knownControl, markupIn, plainText } from '../../src/guide/ui-refs';
+import { WORDS, knownWord } from '../../src/guide/words';
 
 const spaces: Blockly.Workspace[] = [];
 afterEach(() => spaces.splice(0).forEach(w => w.dispose()));
@@ -45,10 +46,34 @@ describe('guided builds', () => {
 
   it('name real controls and palette categories, which show as chips with their icons', () => {
     const texts = [...builds.flatMap(b => [...b.steps.flatMap(s => [s.text, s.why ?? '', ...(s.hints ?? []), ...(s.checklist ?? []).map(c => c.text)]), b.finish.text, ...b.finish.remix]), ...entries.flatMap(e => e.tryChanging)];
-    const refs = texts.flatMap(text => [...text.matchAll(/\[\[([^\]]+)\]\]|\{\{([^}]+)\}\}/g)]);
-    expect(refs.length).toBeGreaterThan(25);
-    for (const [, control, category] of refs) expect(control !== undefined ? knownControl(control) : knownCategory(category), control ?? category).toBe(true);
+    const found = texts.map(markupIn), controls = found.flatMap(f => f.controls), categories = found.flatMap(f => f.categories), words = found.flatMap(f => f.words);
+    expect(controls.length + categories.length).toBeGreaterThan(25);
+    for (const control of controls) expect(knownControl(control), control).toBe(true);
+    for (const category of categories) expect(knownCategory(category), category).toBe(true);
+    for (const word of words) expect(knownWord(word), word).toBe(true);
     expect(plainText('Press [[Run code]], then drag from {{Events}}.')).toBe('Press Run code, then drag from Events.');
+    expect(plainText('Snap ((Physics|set sprite Bird vy to 300)) and give it <<gravity|ay>>, then tap [space] or [←].')).toBe('Snap set sprite Bird vy to 300 and give it gravity, then tap space or left arrow.');
+    expect(Object.values(WORDS).every(word => word.say.split(/(?<=[.!?])\s+/).every(sentence => sentence.split(' ').length <= 22))).toBe(true);
+  });
+
+  it('speak to young readers in lessons: a goal per step, short sentences, block pictures, and no programmer words', () => {
+    // Words a lesson leaves out of its own sentences (a block picture or a word card may still show them).
+    const jargon = /\b(script|scripts|handler|acceleration|velocity|loop|loops|event|variable|boolean|integer|execute|instance|function|parameter|predict)\b/i;
+    for (const lesson of builds.filter(b => b.kind === 'lesson')) {
+      const texts = [lesson.summary, ...lesson.learn!, ...lesson.chapters!.flatMap(c => [c.title, c.idea]), lesson.finish.text, ...lesson.finish.remix];
+      for (const [index, step] of lesson.steps.entries()) {
+        const where = `${lesson.id} step ${index + 1}`;
+        expect(step.title, where).toBeTruthy(); expect(step.title!.split(' ').length, where).toBeLessThanOrEqual(6);
+        texts.push(step.title!, step.text, step.why ?? '', ...(step.hints ?? []), ...(step.checklist ?? []).map(c => c.text));
+        if (step.predict) texts.push(step.predict.question, ...step.predict.choices, step.predict.explain);
+        if (step.kind !== 'play') expect(`${step.text} ${step.hints?.join(' ')} ${step.checklist?.map(c => c.text).join(' ')}`, `${where} shows a block`).toMatch(/\(\([A-Z][^|]*\|/);
+      }
+      for (const text of texts) {
+        const sentences = plainText(text.replace(/\(\([^)]*\)\)|<<[^>]*>>/g, 'it')).split(/(?<=[.!?:])\s+/);
+        expect(text.replace(/\(\([^)]*\)\)|<<[^>]*>>|\[\[[^\]]*\]\]/g, ''), `${lesson.id}: “${text}”`).not.toMatch(jargon);
+        for (const sentence of sentences) expect(sentence.split(/\s+/).length, `${lesson.id}: “${sentence}”`).toBeLessThanOrEqual(24);
+      }
+    }
   });
 
   it('point at real recipes, sprites and palette categories of their level', () => {

@@ -5,7 +5,7 @@
  "level": "builder",
  "minutes": 35,
  "order": 8,
- "summary": "Run, jump and stomp across a scrolling level five screens wide. Collect coins, mind the pits and reach the flag.",
+ "summary": "Run, jump and stomp through a big level. Grab coins, jump the pits, and reach the flag!",
  "ideas": [
   "gravity",
   "jumping",
@@ -15,40 +15,40 @@
   "lives"
  ],
  "learn": [
-  "make a hero fall, run and jump only from the ground",
-  "explore a world five screens wide while the camera follows",
-  "collect coins with one script that every clone runs",
-  "choose between a stomp and an ouch with if and else"
+  "make a hero fall, run, and jump only from the ground",
+  "explore a level five screens wide",
+  "collect coins and stomp on beetles",
+  "choose what happens with if and else"
  ],
  "chapters": [
   {
    "title": "Run",
-   "idea": "Gravity pulls; solid tiles hold you up.",
+   "idea": "Gravity pulls down. The ground holds you up.",
    "steps": 3
   },
   {
    "title": "Jump",
-   "idea": "Jump only when standing on something.",
+   "idea": "You can only jump from the ground.",
    "steps": 1
   },
   {
    "title": "Coins",
-   "idea": "One script serves every clone.",
+   "idea": "One set of blocks works for every coin.",
    "steps": 2
   },
   {
    "title": "Pits",
-   "idea": "Check a position every update.",
+   "idea": "Keep checking where the hero is.",
    "steps": 1
   },
   {
    "title": "Beetles",
-   "idea": "If and else choose between two outcomes.",
+   "idea": "If this, do that. Else, do the other thing.",
    "steps": 2
   },
   {
    "title": "The flag",
-   "idea": "Reach the goal to win.",
+   "idea": "Reach the flag to win!",
    "steps": 2
   }
  ],
@@ -1922,7 +1922,8 @@
  },
  "steps": [
   {
-   "text": "This level is five screens wide. When the game starts, set the Hero’s ay to −1200. Before you run it: what will the Hero do?",
+   "title": "Make the hero fall",
+   "text": "This level is five screens wide! First, give the Hero <<gravity|ay>>.",
    "check": {
     "all": [
      {
@@ -1952,10 +1953,10 @@
     ]
    },
    "kind": "predict",
-   "why": "Gravity is an acceleration that pulls down. The grass tiles in this world are solid, like floors.",
+   "why": "<<ay>> is gravity: it pulls down. The grass is <<solid>>, like a floor.",
    "checklist": [
     {
-     "text": "The Hero gets gravity: ay −1200",
+     "text": "Snap ((Physics|set sprite Hero ay to −1200)) under ((Events|when game starts))",
      "check": {
       "all": [
        {
@@ -1976,21 +1977,21 @@
      }
     },
     {
-     "text": "You chose what will happen",
+     "text": "Make your guess",
      "check": {
       "predicted": true
      }
     },
     {
-     "text": "You ran it after choosing",
+     "text": "Press [[Run code]] to see",
      "check": {
       "ran": true
      }
     }
    ],
    "hints": [
-    "In {{Physics}}, use “set sprite … vx to …” and choose ay in its menu. Put it under “when game starts”.",
-    "Choose Hero in the sprite menu and type −1200."
+    "In {{Physics}}, use ((Physics|set sprite … vx to …)) and pick ay in its menu. Snap it under ((Events|when game starts)).",
+    "Pick Hero and type −1200."
    ],
    "select": "hero",
    "highlight": {
@@ -2005,7 +2006,7 @@
      "Fly up"
     ],
     "answer": 0,
-    "explain": "Gravity pulls the Hero down faster and faster. The grass is solid, so the Hero lands on it and stops."
+    "explain": "Gravity pulls the Hero down. The grass is solid, so the Hero lands on it."
    },
    "solution": {
     "parts": [
@@ -2041,10 +2042,15 @@
       ]
      }
     ]
+   },
+   "coach": "Gravity is in Physics. Tap it!",
+   "clip": {
+    "seconds": 2
    }
   },
   {
-   "text": "Run: control the Hero with the arrow keys, horizontal speed 180 and vertical speed 0. Run it and walk right: the camera follows.",
+   "title": "Run!",
+   "text": "Walk the Hero with [←] and [→]. The <<camera>> follows!",
    "check": {
     "all": [
      {
@@ -2065,10 +2071,10 @@
      }
     ]
    },
-   "why": "Vertical speed 0 leaves up and down to gravity. The world’s camera is set to follow the Hero, so the level scrolls as you walk.",
+   "why": "Vertical speed 0 leaves up and down to gravity. The camera follows the Hero, so the level slides along as you walk.",
    "checklist": [
     {
-     "text": "The Hero is controlled with the arrow keys",
+     "text": "Snap ((Motion|control sprite Hero with arrow keys)) under ((Events|when game starts))",
      "check": {
       "handler": "start",
       "contains": [
@@ -2077,7 +2083,7 @@
      }
     },
     {
-     "text": "Vertical speed is 0",
+     "text": "Make the vertical speed 0",
      "check": {
       "number": [
        "scene_control",
@@ -2087,15 +2093,15 @@
      }
     },
     {
-     "text": "You ran it",
+     "text": "Run it, tap the game, and hold [→]",
      "check": {
       "ran": true
      }
     }
    ],
    "hints": [
-    "In {{Motion}}, find “control sprite … with arrow keys …” and add it under “when game starts”.",
-    "Choose Hero, set the horizontal speed to 180 and the vertical speed to 0. Click the stage before you press the keys."
+    "In {{Motion}}, find ((Motion|control sprite … with arrow keys …)). Snap it under ((Events|when game starts)).",
+    "Pick Hero. Horizontal speed 180, vertical speed 0. Tap the game before you press keys."
    ],
    "select": "hero",
    "highlight": {
@@ -2143,10 +2149,22 @@
       ]
      }
     ]
+   },
+   "coach": "The walking block is in Motion.",
+   "keys": "arrows",
+   "clip": {
+    "demo": [
+     {
+      "key": "ArrowRight",
+      "ms": 2400
+     }
+    ],
+    "seconds": 3
    }
   },
   {
-   "text": "Face the way you walk: when the left arrow is pressed, set the Hero’s direction to 180. When the right arrow is pressed, set it to 0.",
+   "title": "Face the way you walk",
+   "text": "The Hero always looks right. Make it turn around when you press [←].",
    "check": {
     "all": [
      {
@@ -2182,10 +2200,10 @@
      }
     ]
    },
-   "why": "The Hero’s rotation style is left-right: a direction of 180 flips the picture to face left instead of turning it upside down.",
+   "why": "Direction 180 means facing left. The Hero flips like a mirror. It doesn’t turn upside down.",
    "checklist": [
     {
-     "text": "When ← is pressed, the Hero turns to 180",
+     "text": "When [←] is pressed, ((Motion|set sprite Hero direction to 180))",
      "check": {
       "number": [
        "scene_set",
@@ -2195,7 +2213,7 @@
      }
     },
     {
-     "text": "When → is pressed, it turns back to 0",
+     "text": "When [→] is pressed, set it back to 0",
      "check": {
       "all": [
        {
@@ -2223,8 +2241,8 @@
     }
    ],
    "hints": [
-    "From {{Events}}, drag “when space key pressed” and change the key to the left arrow. In {{Motion}}, “set sprite … x to …” has a menu: choose direction.",
-    "Make two scripts: left arrow sets the Hero’s direction to 180, right arrow sets it to 0."
+    "From {{Events}}, drag ((Events|when space key pressed)) and change space to left arrow. In {{Motion}}, ((Motion|set sprite … x to …)) has a menu: pick direction.",
+    "Make two of them: [←] sets direction to 180, and [→] sets it to 0."
    ],
    "select": "hero",
    "highlight": {
@@ -2297,10 +2315,26 @@
       ]
      }
     ]
+   },
+   "coach": "Key blocks are in Events.",
+   "keys": "arrows",
+   "clip": {
+    "demo": [
+     {
+      "key": "ArrowRight",
+      "ms": 900
+     },
+     {
+      "key": "ArrowLeft",
+      "ms": 1100
+     }
+    ],
+    "seconds": 3
    }
   },
   {
-   "text": "Jump: when space is pressed, the Hero jumps if grounded at speed 520. Before you run it: what happens if you press space again while the Hero is in the air?",
+   "title": "Jump!",
+   "text": "Press [space] to jump. But only from the ground!",
    "check": {
     "all": [
      {
@@ -2318,10 +2352,10 @@
     ]
    },
    "kind": "predict",
-   "why": "A jump sets an upward speed and gravity brings the Hero back. “If grounded” checks that the Hero is standing on something first.",
+   "why": "A jump is a quick push up, and gravity brings the Hero back down. “If <<grounded>>” means: only when standing on something.",
    "checklist": [
     {
-     "text": "When space is pressed, the Hero jumps",
+     "text": "Under ((Events|when space key pressed)), add ((Physics|sprite Hero jump if grounded at speed 520))",
      "check": {
       "handler": "key",
       "contains": [
@@ -2330,28 +2364,28 @@
      }
     },
     {
-     "text": "You chose what will happen",
+     "text": "Make your guess",
      "check": {
       "predicted": true
      }
     },
     {
-     "text": "You ran it after choosing",
+     "text": "Press [[Run code]] to see",
      "check": {
       "ran": true
      }
     }
    ],
    "hints": [
-    "In {{Physics}}, find “sprite … jump if grounded at speed …”.",
-    "Put it under “when space key pressed”, choose Hero and type 520."
+    "In {{Physics}}, find ((Physics|sprite … jump if grounded at speed …)).",
+    "Snap it under ((Events|when space key pressed)). Pick Hero and type 520."
    ],
    "select": "hero",
    "highlight": {
     "category": "physics"
    },
    "predict": {
-    "question": "What happens if you press space in the air?",
+    "question": "What happens if you press space while the Hero is in the air?",
     "choices": [
      "Nothing: it jumps only from the ground",
      "It jumps again, higher and higher",
@@ -2359,7 +2393,7 @@
      "It stops in the air"
     ],
     "answer": 0,
-    "explain": "“Jump if grounded” only works while the Hero stands on something, so nobody can fly to the flag."
+    "explain": "“Jump if grounded” only works on the ground. So no flying up to the flag!"
    },
    "solution": {
     "parts": [
@@ -2393,10 +2427,32 @@
       ]
      }
     ]
+   },
+   "coach": "Jumping is in Physics.",
+   "keys": "space",
+   "clip": {
+    "demo": [
+     {
+      "wait": 300
+     },
+     {
+      "key": "Space",
+      "ms": 80
+     },
+     {
+      "wait": 350
+     },
+     {
+      "key": "Space",
+      "ms": 80
+     }
+    ],
+    "seconds": 2.5
    }
   },
   {
-   "text": "The lesson wrote a script that puts 12 coins in the level, but the Hero walks right through them. Make each coin add 1 to the score and disappear when the Hero touches it.",
+   "title": "Grab the coins",
+   "text": "We put 12 coins in the level, but the Hero walks right through them! Make each coin give a point and disappear.",
    "check": {
     "all": [
      {
@@ -2418,17 +2474,17 @@
     ]
    },
    "kind": "fix",
-   "why": "The coins are clones of one hidden Coin. A script on Coin runs for every clone, and “this sprite” is the coin that was touched.",
+   "why": "The coins are <<clones|clone>> of one hidden Coin. Blocks on Coin work for every coin. <<this sprite>> means the coin you touched.",
    "checklist": [
     {
-     "text": "A script runs when a Coin touches the Hero",
+     "text": "Pick Coin and drag ((Events|when Coin overlaps Hero))",
      "check": {
       "handler": "overlap",
       "sprite": "coin"
      }
     },
     {
-     "text": "It adds 1 to the score",
+     "text": "Add ((Game|change score by 1))",
      "check": {
       "handler": "overlap",
       "sprite": "coin",
@@ -2438,7 +2494,7 @@
      }
     },
     {
-     "text": "Destroy this sprite comes last",
+     "text": "Last of all: ((Game|destroy sprite this sprite))",
      "check": {
       "handler": "overlap",
       "sprite": "coin",
@@ -2447,8 +2503,8 @@
     }
    ],
    "hints": [
-    "Select Coin, then from {{Events}} drag “when Coin overlaps …” and choose Hero.",
-    "Inside: change score by 1 (Game), then destroy sprite “this sprite” (Game). Destroy goes last."
+    "Pick Coin. From {{Events}}, drag ((Events|when Coin overlaps …)) and choose Hero.",
+    "Inside: ((Game|change score by 1)), then ((Game|destroy sprite this sprite)). <<Destroy|destroy>> goes last."
    ],
    "select": "coin",
    "other": "hero",
@@ -2797,22 +2853,35 @@
       ]
      }
     ]
+   },
+   "coach": "“When … overlaps” is in Events.",
+   "clip": {
+    "demo": [
+     {
+      "key": "ArrowRight",
+      "ms": 2400
+     }
+    ],
+    "seconds": 3
    }
   },
   {
-   "text": "Play-test: collect five coins.",
+   "title": "Play it: 5 coins",
+   "text": "Collect five coins!",
    "check": {
     "score": 5
    },
    "kind": "play",
-   "why": "The first coins are on the grass right in front of you. Click the stage, then hold the right arrow.",
+   "why": "The first coins are right in front of you. Tap the game, then hold [→].",
    "goal": {
     "score": 5,
     "label": "coins collected"
-   }
+   },
+   "keys": "arrows"
   },
   {
-   "text": "Mind the gap: start with 3 lives. When the Hero falls below the world (y under −200), lose a life and move it back to the start: x −128, y 40.",
+   "title": "Watch out for pits",
+   "text": "Falling into a pit should cost a life. Start with 3 lives.",
    "check": {
     "all": [
      {
@@ -2840,10 +2909,10 @@
      }
     ]
    },
-   "why": "The pits have no ground, so gravity keeps pulling. “When Hero updates” notices the fall at once. At 0 lives the game ends by itself.",
+   "why": "Pits have no ground, so the Hero keeps falling. ((Events|when Hero updates)) runs about 30 times a second (<<see why|updates>>), so it notices right away. At 0 lives, the game ends.",
    "checklist": [
     {
-     "text": "Lives start at 3",
+     "text": "When the game starts, ((Game|set lives to 3))",
      "check": {
       "field": [
        "game_set",
@@ -2853,7 +2922,7 @@
      }
     },
     {
-     "text": "Each update, the Hero checks how low it is",
+     "text": "In ((Events|when Hero updates)), check if the Hero’s <<y>> is below −200",
      "check": {
       "handler": "update",
       "sprite": "hero",
@@ -2864,7 +2933,7 @@
      }
     },
     {
-     "text": "A fall loses a life and starts again",
+     "text": "If it is: ((Game|change lives by −1)) and ((Motion|move sprite Hero to x −128 y 40))",
      "check": {
       "handler": "update",
       "sprite": "hero",
@@ -2876,8 +2945,8 @@
     }
    ],
    "hints": [
-    "From Game, set lives to 3 when the game starts. Then select Hero and drag “when Hero updates” from Events.",
-    "Inside: if Hero’s y < −200, change lives by −1 and move the Hero to x −128 y 40."
+    "From {{Game}}, set lives to 3 when the game starts. Then pick Hero and drag ((Events|when Hero updates)) from {{Events}}.",
+    "Inside: if Hero’s y < −200, then ((Game|change lives by −1)) and ((Motion|move sprite Hero to x −128 y 40))."
    ],
    "select": "hero",
    "highlight": {
@@ -3004,10 +3073,22 @@
       ]
      }
     ]
+   },
+   "coach": "Lives are in Game.",
+   "keys": "arrows",
+   "clip": {
+    "demo": [
+     {
+      "key": "ArrowRight",
+      "ms": 3000
+     }
+    ],
+    "seconds": 3.5
    }
   },
   {
-   "text": "Beetles: set the Beetle’s vx to −60 and make it bounce on wall collision. Then move a clone of Beetle to x 1600, y −80. Before you run it: what will a beetle do at a stone block?",
+   "title": "Beetles!",
+   "text": "Make the Beetle walk, and send a second beetle further on. What will a beetle do at a grey block?",
    "check": {
     "all": [
      {
@@ -3032,10 +3113,10 @@
     ]
    },
    "kind": "predict",
-   "why": "Stone blocks are solid tiles. A clone copies its sprite’s motion when it is made, so the second beetle walks too.",
+   "why": "Grey blocks are <<solid>>. A <<clone>> copies its sprite’s speed, so the second beetle walks too.",
    "checklist": [
     {
-     "text": "The Beetle bounces off walls",
+     "text": "Under ((Events|when game starts)): ((Physics|set sprite Beetle vx to −60)) and ((Physics|sprite Beetle on wall collision bounce))",
      "check": {
       "field": [
        "scene_motion_response",
@@ -3045,7 +3126,7 @@
      }
     },
     {
-     "text": "A clone of Beetle goes further on",
+     "text": "Send a copy further on: ((Motion|move sprite clone sprite Beetle to x 1600 y −80))",
      "check": {
       "nested": [
        "scene_go",
@@ -3054,28 +3135,28 @@
      }
     },
     {
-     "text": "You chose what will happen",
+     "text": "Make your guess",
      "check": {
       "predicted": true
      }
     },
     {
-     "text": "You ran it after choosing",
+     "text": "Press [[Run code]] to see",
      "check": {
       "ran": true
      }
     }
    ],
    "hints": [
-    "In Physics: “set sprite Beetle vx to −60” and “sprite Beetle on wall collision bounce”, under “when game starts”.",
-    "Then add “move sprite … to x … y …” from Motion and put “clone sprite Beetle” (Game) in its sprite slot. Use x 1600, y −80."
+    "In {{Physics}}: ((Physics|set sprite Beetle vx to −60)) and ((Physics|sprite Beetle on wall collision bounce)), under ((Events|when game starts)).",
+    "Then add ((Motion|move sprite … to x … y …)) and put ((Game|clone sprite Beetle)) in its sprite hole. Use x 1600 and y −80."
    ],
    "select": "beetle",
    "highlight": {
     "category": "physics"
    },
    "predict": {
-    "question": "What will a beetle do at a stone block?",
+    "question": "What will a beetle do at a grey block?",
     "choices": [
      "Turn around and walk back",
      "Stop there",
@@ -3083,7 +3164,7 @@
      "Jump over it"
     ],
     "answer": 0,
-    "explain": "Bounce flips the speed that hit the wall: vx −60 becomes 60, so the beetle walks back and forth between two blocks."
+    "explain": "<<Bounce|bounce>> flips its speed: −60 becomes 60. So the beetle walks back and forth."
    },
    "solution": {
     "parts": [
@@ -3171,10 +3252,12 @@
       ]
      }
     ]
-   }
+   },
+   "coach": "Walking speed is in Physics."
   },
   {
-   "text": "Stomp or ouch: when a Beetle touches the Hero, if the Hero’s vy is below 0, set the Hero’s vy to 380, add 5 to the score and destroy this sprite. Else, lose a life and move the Hero back to the start.",
+   "title": "Stomp or ouch",
+   "text": "When a beetle touches the Hero: landing on top is a stomp! Walking into it is an ouch.",
    "check": {
     "all": [
      {
@@ -3206,17 +3289,17 @@
      }
     ]
    },
-   "why": "vy below 0 means moving down: the Hero is landing on top. Walking into a beetle has vy 0, so that is an ouch.",
+   "why": "vy below 0 means falling down, so the Hero is landing on top: stomp! Walking in has vy 0: ouch! (<<What is if … else?|if>>)",
    "checklist": [
     {
-     "text": "A script runs when a Beetle touches the Hero",
+     "text": "Pick Beetle and drag ((Events|when Beetle overlaps Hero))",
      "check": {
       "handler": "overlap",
       "sprite": "beetle"
      }
     },
     {
-     "text": "It checks the Hero’s vy",
+     "text": "Use ((Control|if … else)) to check the Hero’s <<vy>>",
      "check": {
       "handler": "overlap",
       "sprite": "beetle",
@@ -3226,7 +3309,7 @@
      }
     },
     {
-     "text": "Falling: the Hero bounces up and the Beetle is destroyed",
+     "text": "If the Hero is falling: bounce it up, add 5 points, and destroy the beetle",
      "check": {
       "handler": "overlap",
       "sprite": "beetle",
@@ -3237,7 +3320,7 @@
      }
     },
     {
-     "text": "Otherwise: lose a life and start again",
+     "text": "Else: lose a life and go back to the start",
      "check": {
       "handler": "overlap",
       "sprite": "beetle",
@@ -3249,8 +3332,8 @@
     }
    ],
    "hints": [
-    "Select Beetle and drag “when Beetle overlaps …”, choosing Hero. Inside it, use “if … else” from Control.",
-    "Test: “sprite Hero motion vy” (Physics) < 0. If: set Hero vy to 380, change score by 5, destroy this sprite. Else: change lives by −1 and move Hero to x −128 y 40."
+    "Pick Beetle and drag ((Events|when Beetle overlaps …)), choosing Hero. Inside, use ((Control|if … else)) from {{Control}}.",
+    "Check ((Physics|sprite Hero motion vy)) < 0. If: set Hero vy to 380, change score by 5, destroy this sprite. Else: change lives by −1 and move Hero to x −128 y 40."
    ],
    "select": "beetle",
    "other": "hero",
@@ -3418,10 +3501,12 @@
       ]
      }
     ]
-   }
+   },
+   "coach": "“if … else” is in Control."
   },
   {
-   "text": "The flag: when the Hero touches the Flag, finish the game as a win.",
+   "title": "Reach the flag",
+   "text": "Touch the flag to win!",
    "check": {
     "all": [
      {
@@ -3439,10 +3524,10 @@
      }
     ]
    },
-   "why": "The flag is at the end of the fifth screen, up the stone stairs. Reaching it is the goal of the whole level.",
+   "why": "The flag is at the end of screen five, up the grey stairs. Reaching it is the goal of the whole level.",
    "checklist": [
     {
-     "text": "A script runs when the Hero touches the Flag",
+     "text": "Pick Hero and drag ((Events|when Hero overlaps Flag))",
      "check": {
       "handler": "overlap",
       "contains": [
@@ -3451,7 +3536,7 @@
      }
     },
     {
-     "text": "It finishes the game as a win",
+     "text": "Inside, ((Game|finish game win))",
      "check": {
       "field": [
        "game_finish",
@@ -3462,31 +3547,34 @@
     }
    ],
    "hints": [
-    "Select Hero, then from {{Events}} drag “when Hero overlaps …” and choose Flag.",
-    "Inside, put “finish game win” from Game, with your own message."
+    "Pick Hero. From {{Events}}, drag ((Events|when Hero overlaps …)) and choose Flag.",
+    "Inside, put ((Game|finish game win)) with your own message."
    ],
    "recipe": "reach-goal",
    "select": "hero",
    "other": "flag",
    "highlight": {
     "category": "game"
-   }
+   },
+   "coach": "Winning is in Game."
   },
   {
-   "text": "Play until the game ends: reach the flag, or lose all three lives.",
+   "title": "Play to the end",
+   "text": "Reach the flag, or lose all three lives.",
    "check": {
     "finished": "any"
    },
    "kind": "play",
-   "why": "Click the stage. Arrow keys walk, space jumps. Land on beetles from above."
+   "why": "Tap the game. [←] [→] walk and [space] jumps. Land on beetles from above!",
+   "keys": "both"
   }
  ],
  "finish": {
-  "text": "A hero who runs, jumps and stomps through a five-screen level, with coins, pits, beetles and a flag.",
+  "text": "Your hero runs, jumps and stomps through a big level, with coins, pits, beetles and a flag. Amazing!",
   "remix": [
-   "Checkpoint: after the first beetle, make the Hero start again from there instead.",
-   "Bigger level: in [[Stage view]], press [[Add screen]] and paint more ledges, pits and blocks.",
-   "Bounce pad: paint a new tile and make the Hero jump extra high when it lands on it."
+   "Checkpoint: after the first beetle, make the Hero start again from there.",
+   "Bigger level: in [[Stage view]], press [[Add screen]] and paint more ledges and pits.",
+   "Bounce pad: paint a new tile, and make the Hero jump extra high on it."
   ]
  },
  "next": "maze-run"
