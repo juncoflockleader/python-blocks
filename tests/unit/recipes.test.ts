@@ -12,7 +12,7 @@ import { levelTypes } from '../../src/ui/levels';
 import { paletteWorkspace } from './palette-workspace';
 import { heldOut } from './recipe-heldout';
 import wishSets from './recipe-wishes.json';
-import { GALLERY_MANIFEST, PREVIEW_MANIFEST, galleryKey, readManifest, recipeFiles, recipeKey } from '../preview-key';
+import { GALLERY_MANIFEST, PREVIEW_MANIFEST, galleryKey, galleryOutputs, readManifest, recipeFiles, recipeKey, type GalleryFile } from '../preview-key';
 
 const spaces: Blockly.Workspace[] = [];
 afterEach(() => spaces.splice(0).forEach(w => w.dispose()));
@@ -115,7 +115,7 @@ describe('previews', () => {
     const previews = readManifest(PREVIEW_MANIFEST), thumbnails = readManifest(GALLERY_MANIFEST);
     const stale = [
       ...recipeFiles().filter(r => r.blocks && (previews[r.id] !== recipeKey(r) || !existsSync(`public/recipes/${r.preview}`))).map(r => `recipe ${r.id}`),
-      ...JSON.parse(readFileSync('content/gallery.json', 'utf8')).filter((e: { id: string; project: string }) => thumbnails[e.id] !== galleryKey(e.project) || !existsSync(`public/gallery/${e.id}.png`)).map((e: { id: string }) => `gallery ${e.id}`),
+      ...JSON.parse(readFileSync('content/gallery.json', 'utf8')).filter((e: GalleryFile) => thumbnails[e.id] !== galleryKey(e) || !Object.values(galleryOutputs(e.id)).every(file => existsSync(file))).map((e: { id: string }) => `gallery ${e.id}`),
     ];
     expect(stale, 'run tests/e2e/previews.spec.ts locally to re-render').toEqual([]);
   });

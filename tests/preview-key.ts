@@ -19,7 +19,11 @@ export function recipeFixture(recipe: RecipeFile) {
 }
 const sha = (text: string) => createHash('sha256').update(text).digest('hex').slice(0, 16);
 export const recipeKey = (recipe: RecipeFile) => sha(JSON.stringify({ renderer: PREVIEW_RENDERER, blocks: recipe.blocks, variables: recipe.variables, needs: recipe.needs, demo: recipe.demo, fixture: readFileSync(recipeFixture(recipe), 'utf8') }));
-export const galleryKey = (project: string) => sha(JSON.stringify({ renderer: PREVIEW_RENDERER, project: readFileSync(project, 'utf8') }));
+export const GALLERY_RENDERER = 2; // 1: a still a second after Run. 2: a three-second loop (WebM and MP4; `loop` may shorten it) with the entry's key presses, its still the frame at 1.5 s.
+export interface GalleryFile { id: string; project: string; demo?: unknown[]; loop?: number }
+export const galleryKey = (entry: GalleryFile) => sha(JSON.stringify({ renderer: GALLERY_RENDERER, recording: PREVIEW_RENDERER, demo: entry.demo, loop: entry.loop, project: readFileSync(entry.project, 'utf8') }));
+/** The files one gallery card's preview consists of. */
+export const galleryOutputs = (id: string) => ({ webm: `public/gallery/${id}.webm`, mp4: `public/gallery/${id}.mp4`, poster: `public/gallery/${id}.png` });
 export const PREVIEW_MANIFEST = 'public/recipes/manifest.json';
 export const GALLERY_MANIFEST = 'public/gallery/manifest.json';
 export const readManifest = (path: string): Record<string, string> => { try { return JSON.parse(readFileSync(path, 'utf8')); } catch { return {}; } };

@@ -9,6 +9,7 @@ const fields = [['volume %', 'volume'], ['pitch semitones', 'pitch'], ['pan −1
 const block = (type: string, message0: string, args0: unknown[], output = false, tooltip = '') => ({ type, message0, args0, ...(output ? { output: null } : { previousStatement: null, nextStatement: null }), colour: '#9470a8', inputsInline: false, tooltip });
 Blockly.common.defineBlocksWithJsonArray([
   block('sound_play', 'start sound %1 for sprite %2 (None for stage)', [value('SOUND'), value('OWNER')], false, 'Overlaps other playback. Use Stop or destroy its owner to stop it.'),
+  block('sound_loop', 'start sound %1 looping for sprite %2 (None for stage)', [value('SOUND'), value('OWNER')], false, 'Plays the sound again and again, for background music. Stop sounds, Stop, or destroying its owner ends it.'),
   block('sound_wait', 'play sound %1 until done for sprite %2 (None for stage)', [value('SOUND'), value('OWNER')], false, 'Waits for actual playback completion, or until this sound is stopped.'),
   block('sound_stop', 'stop sounds for sprite %1 (None for stage)', [value('OWNER')]),
   block('sound_stop_all', 'stop all sounds', []),
@@ -25,7 +26,7 @@ const owner = { shadow: { type: 'py_none' } };
 export const soundsToolbox: Blockly.utils.toolbox.FlyoutItemInfo[] = [
   { kind: 'button', text: 'Edit sounds', callbackkey: 'PB_EDIT_SOUNDS' },
   { kind: 'block', type: 'sound_asset' },
-  ...['sound_play', 'sound_wait'].map(type => ({ kind: 'block', type, inputs: { SOUND: { block: { type: 'sound_asset' } }, OWNER: owner } })),
+  ...['sound_play', 'sound_loop', 'sound_wait'].map(type => ({ kind: 'block', type, inputs: { SOUND: { block: { type: 'sound_asset' } }, OWNER: owner } })),
   { kind: 'block', type: 'sound_stop', inputs: { OWNER: owner } }, { kind: 'block', type: 'sound_stop_all' },
   ...['sound_set', 'sound_change'].map(type => ({ kind: 'block', type, inputs: { VALUE: numberInput(type === 'sound_set' ? 100 : -10), OWNER: owner } })),
   { kind: 'block', type: 'sound_get', inputs: { OWNER: owner } }, { kind: 'block', type: 'sound_clear', inputs: { OWNER: owner } },

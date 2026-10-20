@@ -1,7 +1,7 @@
 {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 21,
+  "languageVersion": 22,
   "workspace": {
     "pythonScene": {
       "version": 1,
@@ -33,7 +33,44 @@
             "stock-explorer-sam-walk-3",
             "stock-explorer-sam-walk-4"
           ],
-          "frameSeconds": 0.12
+          "frameSeconds": 0.12,
+          "animations": [
+            {
+              "name": "idle",
+              "frames": [
+                "stock-explorer-sam-idle-1",
+                "stock-explorer-sam-idle-2"
+              ],
+              "seconds": 0.4
+            },
+            {
+              "name": "walk",
+              "frames": [
+                "stock-explorer-sam-walk-1",
+                "stock-explorer-sam-walk-2",
+                "stock-explorer-sam-walk-3",
+                "stock-explorer-sam-walk-4"
+              ]
+            },
+            {
+              "name": "jump",
+              "frames": [
+                "stock-explorer-sam-jump"
+              ]
+            },
+            {
+              "name": "happy",
+              "frames": [
+                "stock-explorer-sam-happy"
+              ]
+            }
+          ],
+          "autoAnimate": {
+            "moving": "walk",
+            "air": "jump",
+            "still": "idle",
+            "turn": true
+          }
         },
         {
           "id": "floor",
@@ -224,6 +261,512 @@
           "name": "Win",
           "kind": "clip",
           "stock": "effects/win@1"
+        },
+        {
+          "id": "music",
+          "name": "Adventure",
+          "kind": "song",
+          "tempo": 120,
+          "beats": 16,
+          "notes": [
+            {
+              "at": 0,
+              "beats": 0.25,
+              "pitch": 36,
+              "instrument": "kick",
+              "volume": 33
+            },
+            {
+              "at": 0.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 0.0,
+              "beats": 2,
+              "pitch": 48,
+              "instrument": "square",
+              "volume": 18
+            },
+            {
+              "at": 0.0,
+              "beats": 1,
+              "pitch": 72,
+              "instrument": "triangle",
+              "volume": 42
+            },
+            {
+              "at": 0.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 1,
+              "beats": 0.25,
+              "pitch": 38,
+              "instrument": "snare",
+              "volume": 27
+            },
+            {
+              "at": 1.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 1.0,
+              "beats": 1,
+              "pitch": 76,
+              "instrument": "triangle",
+              "volume": 42
+            },
+            {
+              "at": 1.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 2,
+              "beats": 0.25,
+              "pitch": 36,
+              "instrument": "kick",
+              "volume": 33
+            },
+            {
+              "at": 2.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 2.0,
+              "beats": 2,
+              "pitch": 43,
+              "instrument": "square",
+              "volume": 18
+            },
+            {
+              "at": 2.0,
+              "beats": 1,
+              "pitch": 79,
+              "instrument": "triangle",
+              "volume": 42
+            },
+            {
+              "at": 2.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 3,
+              "beats": 0.25,
+              "pitch": 38,
+              "instrument": "snare",
+              "volume": 27
+            },
+            {
+              "at": 3.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 3.0,
+              "beats": 1,
+              "pitch": 76,
+              "instrument": "triangle",
+              "volume": 42
+            },
+            {
+              "at": 3.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 4,
+              "beats": 0.25,
+              "pitch": 36,
+              "instrument": "kick",
+              "volume": 33
+            },
+            {
+              "at": 4.0,
+              "beats": 2,
+              "pitch": 41,
+              "instrument": "square",
+              "volume": 18
+            },
+            {
+              "at": 4.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 4.0,
+              "beats": 1,
+              "pitch": 77,
+              "instrument": "triangle",
+              "volume": 42
+            },
+            {
+              "at": 4.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 5,
+              "beats": 0.25,
+              "pitch": 38,
+              "instrument": "snare",
+              "volume": 27
+            },
+            {
+              "at": 5.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 5.0,
+              "beats": 1,
+              "pitch": 81,
+              "instrument": "triangle",
+              "volume": 42
+            },
+            {
+              "at": 5.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 6,
+              "beats": 0.25,
+              "pitch": 36,
+              "instrument": "kick",
+              "volume": 33
+            },
+            {
+              "at": 6.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 6.0,
+              "beats": 2,
+              "pitch": 48,
+              "instrument": "square",
+              "volume": 18
+            },
+            {
+              "at": 6.0,
+              "beats": 1,
+              "pitch": 79,
+              "instrument": "triangle",
+              "volume": 42
+            },
+            {
+              "at": 6.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 7,
+              "beats": 0.25,
+              "pitch": 38,
+              "instrument": "snare",
+              "volume": 27
+            },
+            {
+              "at": 7.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 7.0,
+              "beats": 1,
+              "pitch": 76,
+              "instrument": "triangle",
+              "volume": 42
+            },
+            {
+              "at": 7.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 8,
+              "beats": 0.25,
+              "pitch": 36,
+              "instrument": "kick",
+              "volume": 33
+            },
+            {
+              "at": 8.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 8.0,
+              "beats": 2,
+              "pitch": 50,
+              "instrument": "square",
+              "volume": 18
+            },
+            {
+              "at": 8.0,
+              "beats": 1,
+              "pitch": 74,
+              "instrument": "triangle",
+              "volume": 42
+            },
+            {
+              "at": 8.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 9,
+              "beats": 0.25,
+              "pitch": 38,
+              "instrument": "snare",
+              "volume": 27
+            },
+            {
+              "at": 9.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 9.0,
+              "beats": 1,
+              "pitch": 77,
+              "instrument": "triangle",
+              "volume": 42
+            },
+            {
+              "at": 9.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 10,
+              "beats": 0.25,
+              "pitch": 36,
+              "instrument": "kick",
+              "volume": 33
+            },
+            {
+              "at": 10.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 10.0,
+              "beats": 2,
+              "pitch": 43,
+              "instrument": "square",
+              "volume": 18
+            },
+            {
+              "at": 10.0,
+              "beats": 1,
+              "pitch": 76,
+              "instrument": "triangle",
+              "volume": 42
+            },
+            {
+              "at": 10.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 11,
+              "beats": 0.25,
+              "pitch": 38,
+              "instrument": "snare",
+              "volume": 27
+            },
+            {
+              "at": 11.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 11.0,
+              "beats": 1,
+              "pitch": 72,
+              "instrument": "triangle",
+              "volume": 42
+            },
+            {
+              "at": 11.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 12,
+              "beats": 0.25,
+              "pitch": 36,
+              "instrument": "kick",
+              "volume": 33
+            },
+            {
+              "at": 12.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 12.0,
+              "beats": 2,
+              "pitch": 43,
+              "instrument": "square",
+              "volume": 18
+            },
+            {
+              "at": 12.0,
+              "beats": 1,
+              "pitch": 74,
+              "instrument": "triangle",
+              "volume": 42
+            },
+            {
+              "at": 12.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 13,
+              "beats": 0.25,
+              "pitch": 38,
+              "instrument": "snare",
+              "volume": 27
+            },
+            {
+              "at": 13.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 13.0,
+              "beats": 1,
+              "pitch": 71,
+              "instrument": "triangle",
+              "volume": 42
+            },
+            {
+              "at": 13.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 14,
+              "beats": 0.25,
+              "pitch": 36,
+              "instrument": "kick",
+              "volume": 33
+            },
+            {
+              "at": 14.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 14.0,
+              "beats": 2,
+              "pitch": 48,
+              "instrument": "square",
+              "volume": 18
+            },
+            {
+              "at": 14.0,
+              "beats": 2,
+              "pitch": 72,
+              "instrument": "triangle",
+              "volume": 42
+            },
+            {
+              "at": 14.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 15,
+              "beats": 0.25,
+              "pitch": 38,
+              "instrument": "snare",
+              "volume": 27
+            },
+            {
+              "at": 15.0,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            },
+            {
+              "at": 15.5,
+              "beats": 0.25,
+              "pitch": 42,
+              "instrument": "hat",
+              "volume": 15
+            }
+          ]
         }
       ]
     },
@@ -330,11 +873,11 @@
         "async": true
       },
       {
-        "id": "animate_explorer_handler",
-        "name": "animate_explorer",
+        "id": "play_music_handler",
+        "name": "play_music",
         "parameters": [
           {
-            "id": "animate_explorer_handler_payload",
+            "id": "play_music_handler_payload",
             "name": "payload"
           }
         ],
@@ -1033,293 +1576,35 @@
         },
         {
           "type": "py_handler",
-          "id": "animate_explorer_handler_block",
+          "id": "play_music_handler_block",
           "x": 2012,
           "y": 32,
           "extraState": {
-            "functionId": "animate_explorer_handler"
+            "functionId": "play_music_handler"
           },
           "inputs": {
             "BODY": {
               "block": {
-                "type": "controls_whileUntil",
-                "id": "game_example_3c_35",
-                "fields": {
-                  "MODE": "WHILE"
-                },
+                "type": "sound_loop",
+                "id": "game_example_3c_12",
+                "fields": {},
                 "inputs": {
-                  "BOOL": {
+                  "SOUND": {
                     "block": {
-                      "type": "logic_boolean",
-                      "id": "game_example_3c_34",
+                      "type": "sound_asset",
+                      "id": "game_example_3c_10",
                       "fields": {
-                        "BOOL": "TRUE"
+                        "SOUND_ID": "music"
                       },
                       "inputs": {}
                     }
                   },
-                  "DO": {
+                  "OWNER": {
                     "block": {
-                      "type": "controls_if",
-                      "id": "game_example_3c_24",
+                      "type": "py_none",
+                      "id": "game_example_3c_11",
                       "fields": {},
-                      "inputs": {
-                        "IF0": {
-                          "block": {
-                            "type": "scene_key",
-                            "id": "game_example_3c_21",
-                            "fields": {
-                              "KEY": "ArrowRight"
-                            },
-                            "inputs": {}
-                          }
-                        },
-                        "DO0": {
-                          "block": {
-                            "type": "scene_set",
-                            "id": "game_example_3c_23",
-                            "fields": {
-                              "PROPERTY": "direction"
-                            },
-                            "inputs": {
-                              "SPRITE": {
-                                "block": {
-                                  "type": "scene_sprite",
-                                  "id": "game_example_3c_22",
-                                  "fields": {
-                                    "SPRITE_ID": "player"
-                                  },
-                                  "inputs": {}
-                                }
-                              },
-                              "VALUE": {
-                                "shadow": {
-                                  "type": "py_number",
-                                  "fields": {
-                                    "VALUE": "0"
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      },
-                      "next": {
-                        "block": {
-                          "type": "controls_if",
-                          "id": "game_example_3c_28",
-                          "fields": {},
-                          "inputs": {
-                            "IF0": {
-                              "block": {
-                                "type": "scene_key",
-                                "id": "game_example_3c_25",
-                                "fields": {
-                                  "KEY": "ArrowLeft"
-                                },
-                                "inputs": {}
-                              }
-                            },
-                            "DO0": {
-                              "block": {
-                                "type": "scene_set",
-                                "id": "game_example_3c_27",
-                                "fields": {
-                                  "PROPERTY": "direction"
-                                },
-                                "inputs": {
-                                  "SPRITE": {
-                                    "block": {
-                                      "type": "scene_sprite",
-                                      "id": "game_example_3c_26",
-                                      "fields": {
-                                        "SPRITE_ID": "player"
-                                      },
-                                      "inputs": {}
-                                    }
-                                  },
-                                  "VALUE": {
-                                    "shadow": {
-                                      "type": "py_number",
-                                      "fields": {
-                                        "VALUE": "180"
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          },
-                          "next": {
-                            "block": {
-                              "type": "controls_if",
-                              "id": "game_example_3c_32",
-                              "fields": {},
-                              "inputs": {
-                                "IF0": {
-                                  "block": {
-                                    "type": "logic_negate",
-                                    "id": "game_example_3c_15",
-                                    "fields": {},
-                                    "inputs": {
-                                      "BOOL": {
-                                        "block": {
-                                          "type": "scene_motion_get",
-                                          "id": "game_example_3c_14",
-                                          "fields": {
-                                            "PROPERTY": "grounded"
-                                          },
-                                          "inputs": {
-                                            "SPRITE": {
-                                              "block": {
-                                                "type": "scene_sprite",
-                                                "id": "game_example_3c_13",
-                                                "fields": {
-                                                  "SPRITE_ID": "player"
-                                                },
-                                                "inputs": {}
-                                              }
-                                            }
-                                          }
-                                        }
-                                      }
-                                    }
-                                  }
-                                },
-                                "DO0": {
-                                  "block": {
-                                    "type": "scene_costume_set",
-                                    "id": "game_example_3c_18",
-                                    "fields": {},
-                                    "inputs": {
-                                      "SPRITE": {
-                                        "block": {
-                                          "type": "scene_sprite",
-                                          "id": "game_example_3c_16",
-                                          "fields": {
-                                            "SPRITE_ID": "player"
-                                          },
-                                          "inputs": {}
-                                        }
-                                      },
-                                      "COSTUME": {
-                                        "block": {
-                                          "type": "scene_costume",
-                                          "id": "game_example_3c_17",
-                                          "fields": {
-                                            "COSTUME_ID": "stock-explorer-sam-jump"
-                                          },
-                                          "inputs": {}
-                                        }
-                                      }
-                                    }
-                                  }
-                                },
-                                "IF1": {
-                                  "block": {
-                                    "type": "logic_operation",
-                                    "id": "game_example_3c_12",
-                                    "fields": {
-                                      "OP": "OR"
-                                    },
-                                    "inputs": {
-                                      "A": {
-                                        "block": {
-                                          "type": "scene_key",
-                                          "id": "game_example_3c_10",
-                                          "fields": {
-                                            "KEY": "ArrowLeft"
-                                          },
-                                          "inputs": {}
-                                        }
-                                      },
-                                      "B": {
-                                        "block": {
-                                          "type": "scene_key",
-                                          "id": "game_example_3c_11",
-                                          "fields": {
-                                            "KEY": "ArrowRight"
-                                          },
-                                          "inputs": {}
-                                        }
-                                      }
-                                    }
-                                  }
-                                },
-                                "DO1": {
-                                  "block": {
-                                    "type": "scene_next_costume",
-                                    "id": "game_example_3c_20",
-                                    "fields": {},
-                                    "inputs": {
-                                      "SPRITE": {
-                                        "block": {
-                                          "type": "scene_sprite",
-                                          "id": "game_example_3c_19",
-                                          "fields": {
-                                            "SPRITE_ID": "player"
-                                          },
-                                          "inputs": {}
-                                        }
-                                      }
-                                    }
-                                  }
-                                },
-                                "ELSE": {
-                                  "block": {
-                                    "type": "scene_costume_set",
-                                    "id": "game_example_3c_31",
-                                    "fields": {},
-                                    "inputs": {
-                                      "SPRITE": {
-                                        "block": {
-                                          "type": "scene_sprite",
-                                          "id": "game_example_3c_29",
-                                          "fields": {
-                                            "SPRITE_ID": "player"
-                                          },
-                                          "inputs": {}
-                                        }
-                                      },
-                                      "COSTUME": {
-                                        "block": {
-                                          "type": "scene_costume",
-                                          "id": "game_example_3c_30",
-                                          "fields": {
-                                            "COSTUME_ID": "stock-explorer-sam-idle-1"
-                                          },
-                                          "inputs": {}
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              },
-                              "extraState": {
-                                "elseIfCount": 1,
-                                "hasElse": true
-                              },
-                              "next": {
-                                "block": {
-                                  "type": "py_wait",
-                                  "id": "game_example_3c_33",
-                                  "fields": {},
-                                  "inputs": {
-                                    "SECONDS": {
-                                      "shadow": {
-                                        "type": "py_number",
-                                        "fields": {
-                                          "VALUE": "0.1"
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "inputs": {}
                     }
                   }
                 }

@@ -96,6 +96,10 @@
 
 .example-card { display: flex; flex-direction: column; gap: 4px; height: 100%; }
 .example-thumb { width: 100%; aspect-ratio: 3 / 2; object-fit: cover; border-radius: 8px; background: #edf2e8; display: block; }
+/* The loop lies over the still and fades in once it is actually playing. */
+.example-thumb-frame { position: relative; }
+.example-loop { position: absolute; inset: 0; height: 100%; background: transparent; opacity: 0; transition: opacity .15s; }
+.example-loop.playing { opacity: 1; }
 .example-actions { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; padding-top: 6px; }
 .example-actions .button { flex: 1 1 auto; padding-inline: 10px; }
 .example-filters { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; }

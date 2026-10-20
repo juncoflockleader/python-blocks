@@ -252,7 +252,7 @@ Initial recipe set, grouped by what a child asks for. About forty recipes cover 
 
 ### 3.3 Example gallery
 
-Replace the eleven buttons with a gallery dialog, also used as the empty-workspace card. Each card has a thumbnail from the fixture screenshot, a one-line description, the concept tags from the level table, **Play**, **Open to edit** and three **Try changing…** prompts shown in the Help tab after opening. Opening an example while the current project has unsaved changes keeps today's confirmation through the Python draft flush.
+Replace the eleven buttons with a gallery dialog, also used as the empty-workspace card. Each card has a thumbnail from the fixture screenshot (since Phase 4 of the [art plan](creative-tools-and-art-plan.md), a three-second loop of the game being played, shown on hover, focus, or on screen on a tablet), a one-line description, the concept tags from the level table, **Play**, **Open to edit** and three **Try changing…** prompts shown in the Help tab after opening. Opening an example while the current project has unsaved changes keeps today's confirmation through the Python draft flush.
 
 The ten current examples stay. Add the six small games of section 3.4 and the academy capstones as they land. A gallery entry is a JSON record pointing at the project fixture, so the academy can reuse the same loader.
 

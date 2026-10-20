@@ -4,7 +4,8 @@ import './sound.css';
 import { SceneReferenceField } from '../blocks/scene';
 import { changeScene, sceneState } from './state';
 import { SOUND_RATE, encodeWave, synthesize, synthesizeTone, validSong, validateSounds, type Instrument, type Note, type Song, type Sound } from './sound';
-import { librarySound, soundSamples } from './sound-library';
+import { SOUND_LIBRARY, librarySound, soundSamples } from './sound-library';
+import { MUSIC_LIBRARY, musicSong } from './music-library';
 import { EFFECTS, MAX_SAMPLES, defaultEffect, makeEffect, peaks, trimSilence, tune, type EffectSettings, type Range, type Tune } from './sound-edit';
 
 /** The Sound editor: a full-screen editor for every sound in the project, in
@@ -14,7 +15,7 @@ import { EFFECTS, MAX_SAMPLES, defaultEffect, makeEffect, peaks, trimSilence, tu
  * saved until Done, which writes every change as one project Undo step, so the
  * editor never asks "Are you sure?"; deleting a sound can be undone. */
 const MAX_SOUNDS = 24;
-type Mode = 'empty' | 'clip' | 'song' | 'record' | 'effect';
+type Mode = 'empty' | 'clip' | 'song' | 'record' | 'effect' | 'library';
 type Made = 'recording' | 'effect' | 'import' | 'sound';
 interface Draft { id: string; name: string; kind: 'clip' | 'song'; samples: Float32Array | null; song: Song | null; source: Sound | null; edited: boolean; made: Made }
 interface Snapshot { drafts: Draft[]; current: string | null }
@@ -27,7 +28,7 @@ export interface SoundStart {
   /** The sound to show first. */
   sound?: string;
   /** Start making a new sound: `menu` shows the choices. */
-  create?: 'menu' | 'record' | 'effect' | 'song' | 'import';
+  create?: 'menu' | 'record' | 'effect' | 'song' | 'import' | 'library';
   /** Called with the newest sound made in this visit, as part of Done's Undo step (a block's "New sound…"). */
   pick?: (id: string) => void;
 }
@@ -36,7 +37,7 @@ const icon = (d: string, size = 20, fill = false) => `<svg width="${size}" heigh
 const ICONS = {
   music: 'M9 17V5l12-3v12M9 17a3 3 0 1 1-6 0a3 3 0 1 1 6 0M21 14a3 3 0 1 1-6 0a3 3 0 1 1 6 0', undo: 'm9 4-6 6 6 6M3 10h11a7 7 0 0 1 7 7v3', redo: 'm15 4 6 6-6 6m6-6H10a7 7 0 0 0-7 7v3',
   done: 'm4 12 5 6L21 5', plus: 'M12 4v16M4 12h16', minus: 'M4 12h16', more: 'M5 12h.1M12 12h.1M19 12h.1', play: 'M7 4v16l13-8Z', stop: 'M6 6h12v12H6Z',
-  mic: 'M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3ZM5 11a7 7 0 0 0 14 0M12 18v3', sparkle: 'M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18',
+  mic: 'M12 3a3 3 0 0 0-3 3v6a3 3 0 0 0 6 0V6a3 3 0 0 0-3-3ZM5 11a7 7 0 0 0 14 0M12 18v3', library: 'M3 3h4v18H3Zm7 0h4v18h-4Zm6 1 3-1 3 17-3 1Z', sparkle: 'M12 3v4M12 17v4M3 12h4M17 12h4M6 6l2.5 2.5M15.5 15.5 18 18M18 6l-2.5 2.5M8.5 15.5 6 18',
   upload: 'M12 16V4m-5 5 5-5 5 5M4 15v6h16v-6', copy: 'M8 8h13v13H8ZM16 4V3H3v13h1', trash: 'M3 6h18M8 6V3h8v3M5 6l1 15h12l1-15', close: 'm6 6 12 12M18 6 6 18', dice: 'M4 4h16v16H4ZM9 9h.1M15 15h.1M15 9h.1M9 15h.1',
 };
 const TUNE_BUTTONS: [string, [Tune, string, string][]][] = [
@@ -56,7 +57,8 @@ export function installSoundEditor(workspace: Blockly.WorkspaceSvg, host: SoundH
   dialog.id = 'sound-dialog'; dialog.setAttribute('aria-labelledby', 'sound-title'); dialog.dataset.playing = 'false';
   const option = (id: string, title: string, text: string, d: string) => `<button type="button" class="paint-option sound-option" data-new="${id}"><span class="paint-option-icon">${icon(d, 22)}</span><strong>${title}</strong><span>${text}</span></button>`;
   const options = option('record', 'Record your voice', '3, 2, 1, then talk. Up to a minute.', ICONS.mic) + option('effect', 'Make an effect', 'Jump, coin, laser, win and more.', ICONS.sparkle)
-    + option('song', 'Write a song', 'Tap notes and drums on a grid.', ICONS.music) + option('import', 'Import a sound file', 'A WAV, MP3 or Ogg file up to a minute.', ICONS.upload);
+    + option('song', 'Write a song', 'Tap notes and drums on a grid.', ICONS.music) + option('import', 'Import a sound file', 'A WAV, MP3 or Ogg file up to a minute.', ICONS.upload)
+    + option('library', 'Sound library', 'Effects and music loops to start from.', ICONS.library);
   dialog.innerHTML = `
     <header class="paint-top sound-top">
       <h2 id="sound-title" class="visually-hidden">Sounds</h2>
@@ -116,6 +118,11 @@ export function installSoundEditor(workspace: Blockly.WorkspaceSvg, host: SoundH
           <canvas id="sound-effect-wave" class="sound-effect-wave" role="img" aria-label="The effect"></canvas>
           <div class="sound-transport"><button id="sound-effect-play" class="sound-play" type="button">${icon(ICONS.play, 16, true)}<span>Play</span></button><button id="sound-effect-another" class="paint-plain" type="button">${icon(ICONS.dice, 16)}Make another</button><span class="paint-spacer"></span><button id="sound-effect-add" class="paint-done" type="button">${icon(ICONS.plus, 16)}Add to my sounds</button></div>
           <p class="paint-small sound-help">Each effect is worked out right here, so it is yours to change. Make another tries a new version of the same kind.</p>
+        </div>
+        <div id="sound-library" class="sound-panel sound-library">
+          <div class="sound-library-head"><h3>Sound library</h3><div class="sound-library-tabs" role="group" aria-label="Kind of sound"><button id="sound-lib-effects" class="paint-plain" type="button" aria-pressed="true">Effects</button><button id="sound-lib-music" class="paint-plain" type="button" aria-pressed="false">Music</button></div></div>
+          <p id="sound-library-note" class="paint-small"></p>
+          <div id="sound-library-items" class="sound-library-items"></div>
         </div>
         <div id="sound-song" class="sound-panel sound-song">
           <div class="sound-transport">
@@ -279,9 +286,9 @@ export function installSoundEditor(workspace: Blockly.WorkspaceSvg, host: SoundH
   function show(next: Mode) {
     if (next !== 'record' && recording) cancelRecording();
     mode = next;
-    for (const [id, panel] of [['sound-empty', 'empty'], ['sound-clip', 'clip'], ['sound-record', 'record'], ['sound-effect', 'effect'], ['sound-song', 'song']] as const) el(id).hidden = mode !== panel;
+    for (const [id, panel] of [['sound-empty', 'empty'], ['sound-clip', 'clip'], ['sound-record', 'record'], ['sound-effect', 'effect'], ['sound-song', 'song'], ['sound-library', 'library']] as const) el(id).hidden = mode !== panel;
     el('sound-tune').hidden = mode !== 'clip'; el('sound-effect-controls').hidden = mode !== 'effect'; el('song-tools').hidden = mode !== 'song';
-    el('sound-side').hidden = mode === 'empty' || mode === 'record';
+    el('sound-side').hidden = mode === 'empty' || mode === 'record' || mode === 'library';
     dialog.dataset.mode = mode;
     render();
   }
@@ -294,7 +301,7 @@ export function installSoundEditor(workspace: Blockly.WorkspaceSvg, host: SoundH
     el('sound-name-field').hidden = !naming;
     if (naming) { el('sound-name-label').textContent = d!.kind === 'song' ? 'Song' : 'Sound'; if (document.activeElement !== el('sound-name')) el<HTMLInputElement>('sound-name').value = d!.name; }
     renderCards();
-    if (mode === 'clip') renderClip(); else if (mode === 'song') renderSong(); else if (mode === 'effect') renderEffect(); else if (mode === 'record') renderRecord();
+    if (mode === 'clip') renderClip(); else if (mode === 'song') renderSong(); else if (mode === 'effect') renderEffect(); else if (mode === 'record') renderRecord(); else if (mode === 'library') renderLibrary();
     renderTransport();
   }
   function meta(d: Draft) {
@@ -651,14 +658,66 @@ export function installSoundEditor(workspace: Blockly.WorkspaceSvg, host: SoundH
     dialog.querySelector(`.song-page[data-page="${current}"]`)?.classList.add('now');
   }
 
+  // ── The sound library: effects as designed (references) and music loops (editable songs) ──
+  let shelf: 'effects' | 'music' = 'effects', listening: string | null = null;
+  function renderLibrary() {
+    el('sound-lib-effects').setAttribute('aria-pressed', String(shelf === 'effects')); el('sound-lib-music').setAttribute('aria-pressed', String(shelf === 'music'));
+    el('sound-library-note').textContent = shelf === 'effects' ? 'Tap ▶ to listen first. An effect added from here costs the project nothing; changing it later makes it yours.' : 'Loops for background music. Each one is added as a song you can change in the song editor; start it with “start sound … looping”.';
+    const items = shelf === 'effects'
+      ? SOUND_LIBRARY.map(e => ({ key: `effect:${e.effect}`, name: e.name, detail: `${(soundSamples(librarySound(e.effect)).length / SOUND_RATE).toFixed(1)} s`, draw: (c: HTMLCanvasElement) => drawPeaks(c, soundSamples(librarySound(e.effect))) }))
+      : MUSIC_LIBRARY.map(m => ({ key: `music:${m.id}`, name: m.name, detail: `${m.mood} · ${m.tempo} BPM · ${Math.round(m.beats * 60 / m.tempo)} s`, draw: (c: HTMLCanvasElement) => drawRoll(c, m.notes, m.beats) }));
+    el('sound-library-items').replaceChildren(...items.map(item => {
+      const card = document.createElement('div'); card.className = 'sound-library-card'; card.dataset.library = item.key;
+      const title = document.createElement('strong'); title.textContent = item.name;
+      const detail = document.createElement('span'); detail.className = 'paint-small'; detail.textContent = item.detail;
+      const canvas = document.createElement('canvas'); canvas.width = 240; canvas.height = 64; canvas.setAttribute('aria-hidden', 'true'); item.draw(canvas);
+      const listen = document.createElement('button'); listen.type = 'button'; listen.className = 'paint-plain'; listen.dataset.libraryListen = item.key;
+      const playingNow = listening === item.key && playing?.what === 'list';
+      listen.innerHTML = icon(playingNow ? ICONS.stop : ICONS.play, 14, true); listen.append(playingNow ? 'Stop' : 'Listen'); listen.setAttribute('aria-label', `${playingNow ? 'Stop' : 'Listen to'} ${item.name}`);
+      const addButton = document.createElement('button'); addButton.type = 'button'; addButton.className = 'paint-plain sound-library-add'; addButton.dataset.libraryAdd = item.key;
+      addButton.innerHTML = icon(ICONS.plus, 14); addButton.append('Add'); addButton.setAttribute('aria-label', `Add ${item.name}`);
+      const row = document.createElement('div'); row.className = 'sound-library-actions'; row.append(listen, addButton);
+      card.append(title, detail, canvas, row); return card;
+    }));
+  }
+  function drawPeaks(canvas: HTMLCanvasElement, samples: Float32Array) {
+    const c = canvas.getContext('2d')!, n = 80, p = peaks(samples, n), mid = canvas.height / 2; c.clearRect(0, 0, canvas.width, canvas.height); c.fillStyle = '#8c67a2';
+    for (let i = 0; i < n; i++) { const lo = p[i * 2], hi = p[i * 2 + 1]; c.fillRect(i * canvas.width / n, mid - hi * mid * 0.9, 2, Math.max(1.5, (hi - lo) * mid * 0.9)); }
+  }
+  function drawRoll(canvas: HTMLCanvasElement, notes: Note[], beats: number) {
+    const c = canvas.getContext('2d')!, melody = notes.filter(n => !DRUMS.some(([id]) => id === n.instrument)), lo = Math.min(...melody.map(n => n.pitch)), hi = Math.max(...melody.map(n => n.pitch));
+    c.clearRect(0, 0, canvas.width, canvas.height);
+    for (const n of notes) {
+      const drum = DRUMS.some(([id]) => id === n.instrument), x = n.at / beats * canvas.width;
+      c.fillStyle = drum ? '#4e5f49' : MELODY.find(([id]) => id === n.instrument)?.[2] ?? '#8c67a2';
+      if (drum) c.fillRect(x, canvas.height - 5, 3, 3);
+      else c.fillRect(x, 6 + (hi - n.pitch) / Math.max(1, hi - lo) * (canvas.height - 18), Math.max(3, n.beats / beats * canvas.width - 1), 4);
+    }
+  }
+  function libraryItem(key: string) {
+    const [kind, id] = key.split(':');
+    if (kind === 'effect') { const e = SOUND_LIBRARY.find(x => x.effect === id)!; return { name: e.name, samples: () => soundSamples(librarySound(e.effect)), add: () => { const draftId = identity(), name = uniqueName(e.name); add({ id: draftId, name, kind: 'clip', samples: soundSamples(librarySound(e.effect)), song: null, source: { ...librarySound(e.effect, draftId), name }, edited: false, made: 'effect' }); } }; }
+    const m = MUSIC_LIBRARY.find(x => x.id === id)!;
+    return { name: m.name, samples: () => synthesize(m), add: () => { const draftId = identity(), name = uniqueName(m.name), song = musicSong(m, draftId, name); add({ id: draftId, name, kind: 'song', samples: null, song, source: null, edited: true, made: 'sound' }); } };
+  }
+  el('sound-library').addEventListener('click', event => {
+    const button = (event.target as HTMLElement).closest<HTMLButtonElement>('button'); if (!button) return;
+    if (button.id === 'sound-lib-effects' || button.id === 'sound-lib-music') { stop(); shelf = button.id === 'sound-lib-effects' ? 'effects' : 'music'; renderLibrary(); return; }
+    const key = button.dataset.libraryListen ?? button.dataset.libraryAdd; if (!key) return;
+    if (button.dataset.libraryAdd) { stop(); if (drafts.length >= MAX_SOUNDS) { toast(`A project holds up to ${MAX_SOUNDS} sounds. Delete one to add another.`, button); return; } libraryItem(key).add(); return; }
+    if (listening === key && playing?.what === 'list') { stop(); renderLibrary(); return; }
+    listening = key; play(libraryItem(key).samples(), 'list'); renderLibrary();
+  });
+
   // ── Making new sounds ──
-  function begin(kind: 'record' | 'effect' | 'song' | 'import') {
+  function begin(kind: 'record' | 'effect' | 'song' | 'import' | 'library') {
     closeMenus();
     if (drafts.length >= MAX_SOUNDS) { toast(`A project holds up to ${MAX_SOUNDS} sounds. Delete one to add another.`, el('sound-new')); return; }
     stop(); recordTarget = null;
     if (kind === 'record') { el('sound-mic-problem').hidden = true; show('record'); }
     else if (kind === 'effect') { effect = defaultEffect(effect.kind); effectSamples = makeEffect(effect); show('effect'); requestAnimationFrame(drawEffect); }
     else if (kind === 'song') add({ id: identity(), name: uniqueName('Song'), kind: 'song', samples: null, song: { id: '', name: '', kind: 'song', tempo: 120, beats: 16, notes: [] }, source: null, edited: true, made: 'sound' });
+    else if (kind === 'library') show('library');
     else el<HTMLInputElement>('sound-file').click();
   }
   el<HTMLInputElement>('sound-file').addEventListener('change', async () => {
@@ -713,6 +772,7 @@ export function installSoundEditor(workspace: Blockly.WorkspaceSvg, host: SoundH
     const clip = playing?.what === 'clip' && !(selection && playing.from === selection[0] && playing.to === selection[1]);
     const label = (id: string, on: boolean) => { const b = el(id); b.innerHTML = `${icon(on ? ICONS.stop : ICONS.play, 16, true)}<span>${on ? 'Stop' : 'Play'}</span>`; b.setAttribute('aria-pressed', String(on)); };
     label('sound-play', clip); label('song-play', playing?.what === 'song'); label('sound-effect-play', playing?.what === 'effect');
+    if (mode === 'library' && !el('sound-library').hidden) renderLibrary();
   }
 
   // ── Controls ──
@@ -720,7 +780,7 @@ export function installSoundEditor(workspace: Blockly.WorkspaceSvg, host: SoundH
   el('sound-undo').addEventListener('click', () => stepBack()); el('sound-redo').addEventListener('click', () => stepBack(true));
   el('sound-toast-undo').addEventListener('click', () => stepBack());
   el('sound-new').addEventListener('click', openSheet); el('sound-sheet-close').addEventListener('click', closeMenus);
-  dialog.querySelectorAll<HTMLElement>('[data-new]').forEach(b => b.addEventListener('click', () => begin(b.dataset.new as 'record')));
+  dialog.querySelectorAll<HTMLElement>('[data-new]').forEach(b => b.addEventListener('click', () => begin(b.dataset.new as 'record' | 'library')));
   dialog.querySelectorAll<HTMLElement>('[data-sound-card]').forEach(b => b.addEventListener('click', () => cardAction(b.dataset.soundCard!, el('sound-card-menu').dataset.sound!)));
   dialog.querySelectorAll<HTMLElement>('[data-tune]').forEach(b => b.addEventListener('click', () => applyTune(b.dataset.tune as Tune)));
   el<HTMLInputElement>('sound-name').addEventListener('change', () => {

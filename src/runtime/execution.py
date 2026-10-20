@@ -107,6 +107,7 @@ async def run_event_program(source, on_ready=lambda: None, files=None):
             except BaseException as error:
                 from _playground_events import SessionFinished
                 if isinstance(error, SessionFinished): return json.dumps({'type': 'done'})
+                if session.state == 'setup': session.state = 'closed'   # a later program must not join a session that never ran
                 return error_result(error)
     except BaseException as error:
         return error_result(error)

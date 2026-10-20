@@ -1,7 +1,7 @@
 {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 21,
+  "languageVersion": 22,
   "workspace": {
     "pythonScene": {
       "version": 1,
@@ -107,7 +107,38 @@
             "stock-robot-walk-4"
           ],
           "rotationStyle": "left-right",
-          "frameSeconds": 0.12
+          "frameSeconds": 0.12,
+          "animations": [
+            {
+              "name": "idle",
+              "frames": [
+                "stock-robot-idle-1",
+                "stock-robot-idle-2"
+              ],
+              "seconds": 0.4
+            },
+            {
+              "name": "walk",
+              "frames": [
+                "stock-robot-walk-1",
+                "stock-robot-walk-2",
+                "stock-robot-walk-3",
+                "stock-robot-walk-4"
+              ]
+            },
+            {
+              "name": "jump",
+              "frames": [
+                "stock-robot-jump"
+              ]
+            },
+            {
+              "name": "happy",
+              "frames": [
+                "stock-robot-happy"
+              ]
+            }
+          ]
         },
         {
           "id": "goal",

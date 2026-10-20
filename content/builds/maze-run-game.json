@@ -1,7 +1,7 @@
 {
  "format": "python-blocks",
  "formatVersion": 1,
- "languageVersion": 21,
+ "languageVersion": 22,
  "workspace": {
   "blocks": {
    "languageVersion": 0,
@@ -148,243 +148,6 @@
                 "type": "scene_world",
                 "fields": {
                  "WORLD_ID": "space"
-                }
-               }
-              }
-             }
-            }
-           }
-          }
-         }
-        }
-       }
-      }
-     }
-    },
-    {
-     "type": "py_handler",
-     "id": "animate_explorer_handler_block",
-     "x": 1360,
-     "y": 30,
-     "extraState": {
-      "functionId": "animate_explorer_handler"
-     },
-     "inputs": {
-      "BODY": {
-       "block": {
-        "type": "controls_whileUntil",
-        "id": "maze_run_game_3c_23",
-        "fields": {
-         "MODE": "WHILE"
-        },
-        "inputs": {
-         "BOOL": {
-          "block": {
-           "type": "logic_boolean",
-           "id": "maze_run_game_3c_22",
-           "fields": {
-            "BOOL": "TRUE"
-           },
-           "inputs": {}
-          }
-         },
-         "DO": {
-          "block": {
-           "type": "controls_if",
-           "id": "maze_run_game_3c_12",
-           "fields": {},
-           "inputs": {
-            "IF0": {
-             "block": {
-              "type": "scene_key",
-              "id": "maze_run_game_3c_9",
-              "fields": {
-               "KEY": "ArrowRight"
-              },
-              "inputs": {}
-             }
-            },
-            "DO0": {
-             "block": {
-              "type": "scene_set",
-              "id": "maze_run_game_3c_11",
-              "fields": {
-               "PROPERTY": "direction"
-              },
-              "inputs": {
-               "SPRITE": {
-                "block": {
-                 "type": "scene_sprite",
-                 "id": "maze_run_game_3c_10",
-                 "fields": {
-                  "SPRITE_ID": "explorer"
-                 },
-                 "inputs": {}
-                }
-               },
-               "VALUE": {
-                "shadow": {
-                 "type": "py_number",
-                 "fields": {
-                  "VALUE": "0"
-                 }
-                }
-               }
-              }
-             }
-            }
-           },
-           "next": {
-            "block": {
-             "type": "controls_if",
-             "id": "maze_run_game_3c_16",
-             "fields": {},
-             "inputs": {
-              "IF0": {
-               "block": {
-                "type": "scene_key",
-                "id": "maze_run_game_3c_13",
-                "fields": {
-                 "KEY": "ArrowLeft"
-                },
-                "inputs": {}
-               }
-              },
-              "DO0": {
-               "block": {
-                "type": "scene_set",
-                "id": "maze_run_game_3c_15",
-                "fields": {
-                 "PROPERTY": "direction"
-                },
-                "inputs": {
-                 "SPRITE": {
-                  "block": {
-                   "type": "scene_sprite",
-                   "id": "maze_run_game_3c_14",
-                   "fields": {
-                    "SPRITE_ID": "explorer"
-                   },
-                   "inputs": {}
-                  }
-                 },
-                 "VALUE": {
-                  "shadow": {
-                   "type": "py_number",
-                   "fields": {
-                    "VALUE": "180"
-                   }
-                  }
-                 }
-                }
-               }
-              }
-             },
-             "next": {
-              "block": {
-               "type": "controls_if",
-               "id": "maze_run_game_3c_20",
-               "fields": {},
-               "inputs": {
-                "IF0": {
-                 "block": {
-                  "type": "logic_operation",
-                  "id": "maze_run_game_3c_6",
-                  "fields": {
-                   "OP": "OR"
-                  },
-                  "inputs": {
-                   "A": {
-                    "block": {
-                     "type": "scene_key",
-                     "id": "maze_run_game_3c_4",
-                     "fields": {
-                      "KEY": "ArrowLeft"
-                     },
-                     "inputs": {}
-                    }
-                   },
-                   "B": {
-                    "block": {
-                     "type": "scene_key",
-                     "id": "maze_run_game_3c_5",
-                     "fields": {
-                      "KEY": "ArrowRight"
-                     },
-                     "inputs": {}
-                    }
-                   }
-                  }
-                 }
-                },
-                "DO0": {
-                 "block": {
-                  "type": "scene_next_costume",
-                  "id": "maze_run_game_3c_8",
-                  "fields": {},
-                  "inputs": {
-                   "SPRITE": {
-                    "block": {
-                     "type": "scene_sprite",
-                     "id": "maze_run_game_3c_7",
-                     "fields": {
-                      "SPRITE_ID": "explorer"
-                     },
-                     "inputs": {}
-                    }
-                   }
-                  }
-                 }
-                },
-                "ELSE": {
-                 "block": {
-                  "type": "scene_costume_set",
-                  "id": "maze_run_game_3c_19",
-                  "fields": {},
-                  "inputs": {
-                   "SPRITE": {
-                    "block": {
-                     "type": "scene_sprite",
-                     "id": "maze_run_game_3c_17",
-                     "fields": {
-                      "SPRITE_ID": "explorer"
-                     },
-                     "inputs": {}
-                    }
-                   },
-                   "COSTUME": {
-                    "block": {
-                     "type": "scene_costume",
-                     "id": "maze_run_game_3c_18",
-                     "fields": {
-                      "COSTUME_ID": "stock-explorer-sam-idle-1"
-                     },
-                     "inputs": {}
-                    }
-                   }
-                  }
-                 }
-                }
-               },
-               "extraState": {
-                "elseIfCount": 0,
-                "hasElse": true
-               },
-               "next": {
-                "block": {
-                 "type": "py_wait",
-                 "id": "maze_run_game_3c_21",
-                 "fields": {},
-                 "inputs": {
-                  "SECONDS": {
-                   "shadow": {
-                    "type": "py_number",
-                    "fields": {
-                     "VALUE": "0.1"
-                    }
-                   }
-                  }
-                 }
                 }
                }
               }
@@ -1568,7 +1331,44 @@
       "stock-explorer-sam-walk-4"
      ],
      "rotationStyle": "left-right",
-     "frameSeconds": 0.12
+     "frameSeconds": 0.12,
+     "animations": [
+      {
+       "name": "idle",
+       "frames": [
+        "stock-explorer-sam-idle-1",
+        "stock-explorer-sam-idle-2"
+       ],
+       "seconds": 0.4
+      },
+      {
+       "name": "walk",
+       "frames": [
+        "stock-explorer-sam-walk-1",
+        "stock-explorer-sam-walk-2",
+        "stock-explorer-sam-walk-3",
+        "stock-explorer-sam-walk-4"
+       ]
+      },
+      {
+       "name": "jump",
+       "frames": [
+        "stock-explorer-sam-jump"
+       ]
+      },
+      {
+       "name": "happy",
+       "frames": [
+        "stock-explorer-sam-happy"
+       ]
+      }
+     ],
+     "autoAnimate": {
+      "moving": "walk",
+      "air": "jump",
+      "still": "idle",
+      "turn": true
+     }
     },
     {
      "id": "door",
@@ -1639,22 +1439,6 @@
      "order": 1,
      "sprite": "explorer"
     }
-   },
-   {
-    "id": "animate_explorer_handler",
-    "name": "animate_explorer",
-    "parameters": [
-     {
-      "id": "animate_explorer_handler_payload",
-      "name": "payload"
-     }
-    ],
-    "handler": {
-     "event": "start",
-     "order": 2
-    },
-    "returnTypes": null,
-    "async": true
    }
   ]
  }

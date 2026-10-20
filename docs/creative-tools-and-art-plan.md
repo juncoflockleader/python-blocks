@@ -1,6 +1,6 @@
 # Creative tools and art: inventory and plan
 
-Status: approved 2026-10-18 with every recommendation in section 4 accepted. Phase 3a (sharp stage) is done ([record](#phase-3a-record)), and so is Phase 1, the Paint editor ([record](#phase-1-record)). Phase 2, the Sound editor, is built ([record](#phase-2-record)), Phase 3b, the art pass, is wired in ([record](#phase-3b-record)), and Phase 3c rebuilt the examples around it ([record](#phase-3c-record)). The owner asked for three things:
+Status: approved 2026-10-18 with every recommendation in section 4 accepted. Phase 3a (sharp stage) is done ([record](#phase-3a-record)), and so is Phase 1, the Paint editor ([record](#phase-1-record)). Phase 2, the Sound editor, is built ([record](#phase-2-record)), Phase 3b, the art pass, is wired in ([record](#phase-3b-record)), and Phase 3c rebuilt the examples around it ([record](#phase-3c-record)). Phase 4, animation and sound, is built too ([record](#phase-4-record)); its mocks are boards M0–M5. The owner asked for three things:
 
 1. Redo the **draw window** (Artwork & frames): it is hard to use, tools are hard to find, and some taps do nothing.
 2. A **sound editor** that records the learner's voice and lets them tune the waveform.
@@ -263,6 +263,50 @@ Not done in this phase: looping gallery previews (cards keep a 2× still); resty
 
 Tests changed with the art: the platformer's landing heights (a ledge top plus half the explorer's box), the Forest trail template's picture count, the recipe test that copies the Sprites example's sprites now copies their costumes, the guidance hero stands on the grass, and the event-runtime harness serves the sound library.
 
+### Phase 4: Animation and sound
+
+Phase 3 left four things open, and the owner chose them as Phase 4 on 2026-10-19. Mocks are on the design canvas (boards M0–M5); each part is built after review.
+
+**4a. Named animations.** Today a sprite has one frames list, played by "next costume" or "play animation once". A library character has eight poses, but nothing knows which are idle, walk or jump, so the examples needed hand-written walking scripts (Phase 3c).
+
+- A sprite can have **named animations**: lists of its costumes under a name. A library character brings *idle*, *walk*, *jump* and *happy*; a learner adds their own in the Paint editor, where the costume strip groups frames into rows by animation, each with a name, a play button and a speed.
+- **Animate while moving**, a switch in the sprite's settings: the runtime plays *walk* while the sprite moves (by physics, arrow-key control or a script changing its position), *jump* while it is in the air, and *idle* when it stops, and turns a left-right sprite to face the way it moves. This replaces the walking scripts in the examples.
+- Blocks (Looks): **play animation [walk ▾] of sprite**, which loops until another starts; **play animation [jump ▾] once and wait**; **stop animation**; and the reporter **animation name**. Python: `sprite.play("walk")`, `await sprite.play_once("jump")`, `sprite.stop_animation()`, `sprite.animation`. The existing frames list becomes the animation named *frames*, so older projects play as before.
+- Format: `animations` on a sprite (up to 8 names, 1–64 costumes each) and `autoAnimate`. Language version 22.
+
+**4b. Sound library and loops.** Library effects exist as references, but the only way to them is Make an effect, and there is no music.
+
+- **+ New → Sound library** in the Sound editor: two shelves, *Effects* (the ten effects, more variations of each) and *Music*: six original loops (Adventure, Calm meadow, Chase, Spooky cave, Space drift, Victory) written as songs, so adding one gives an editable song in the song editor, a few hundred bytes each. Every item plays on tap before it is added.
+- A **loop** block: **start sound [ ▾] looping for sprite**, stopped by the stop blocks; Python `sounds.loop(sound, owner)`. Background music in a game no longer needs a forever loop.
+- The examples' games get a quiet music loop where it suits (Star game, Super Hopper, Platformer).
+
+**4c. Looping gallery previews.** Gallery cards show a still. Each example, build and lesson gets a three-second recording made by the preview suite, like the recipes' (WebM, MP4 for iPad, and a poster), with a few key presses so the hero moves. Cards show the poster and play the loop while hovered, focused or on screen on a tablet; nothing plays with reduced motion.
+
+**4d. The lessons in the library's style.** Brick Breaker, Flappy Flight and Super Hopper keep their steps, checks and scripts; their pictures become library art, which also shrinks their files (Flappy and Super Hopper embed about 170–220 KB of pictures each). New library pieces, drawn in the cast's style: Paddle, Ball, Brick (five colours), Pipe (a pair that stretches), Flag, a Beetle that walks, and a Chick that flaps, plus a brick tile set. The drafts on board M5 are drawn at the lessons' own sizes (Paddle 80 × 12, Brick 44 × 14, the Pipe pair with Flappy's 64-unit gap), so collisions stay the same. The lessons were drawn in nearly this style already, so the gain is movement, reusable pieces and size rather than looks. Super Hopper's hero becomes Sam with animate-while-moving; its coins spin.
+
+**Acceptance:** a library character dropped on the stage with arrow-key control walks, jumps and idles with no scripts; a learner makes a two-frame "wave" animation in Paint and plays it with a block; the Platformer and Star game run without their walking scripts and look the same; a music loop added from the library plays under a game and stops with Stop; every gallery card loops; the three lessons walk through end to end with their new art; projects from version 21 open and play unchanged.
+
+**Decisions (proposed):** (1) the frames list becomes the animation *frames* rather than a separate concept; (2) Animate while moving is off for existing sprites and on for library characters added from now on; (3) music loops are songs (editable, tiny) rather than recorded clips; (4) gallery cards play while on screen on tablets, where there is no hover; (5) the Flappy Flight hero becomes a new library Chick with a flap animation (the built-in Bird stays one costume), and Flappy keeps its own sky, added to the library as a backdrop, since it suits the game better than City park.
+
+#### Phase 4 record
+
+Built on 2026-10-19 with every proposed decision accepted (the frames list is the animation *frames*; animate while moving is off for existing sprites and on for library characters; music loops are songs; cards play on screen on tablets; Flappy's hero is a new library Chick and its sky a library backdrop).
+
+| Part | What shipped | Where |
+| --- | --- | --- |
+| Named animations | `animations` on a sprite (up to 8, each 1–64 of its costumes, an optional speed of 0.02–10 s) and `autoAnimate` (the animations for moving, in the air and still, and whether to turn), validated with the sprite; deleting a costume takes it out of its animations and lets go of one left empty. Language version 22, reading 1–21 as before. Library characters bring idle (0.4 s a frame), walk, jump and happy; coins and gems *spin*, the rocket *flame*. | [model.ts](../src/scene/model.ts), [assets.ts](../src/scene/assets.ts), [catalog.ts](../src/art/catalog.ts) |
+| Paint rows | The costume strip groups costumes into one row per animation; + New animation, rename (names checked as typed), delete, **Also use in …** on a costume's menu, and each row's own speed. The frames list shows as a *frames* row only when it is not one of the named ones, so older sprites look as before. Done saves the animations with the costumes as one Undo step and renames them in the blocks that play them. | [paint-editor.ts](../src/scene/paint-editor.ts) |
+| Runtime and blocks | **play animation [walk ▾] of sprite** (loops), **… once and wait**, **stop animation** and the **animation** reporter, with dropdowns of the project's animation names; Python `sprite.play("walk")`, `await sprite.play_once("jump")`, `sprite.stop_animation()`, `sprite.animation`. Animate while moving ticks on the motion clock after the physics step: walk after a move of more than 0.2 units within 0.15 s, jump when falling or rising under gravity off the ground, idle otherwise, turning left-right sprites by their movement; a script's animation wins. The runtime starts the clock itself when an event session sets up a scene that uses it, so programs (and hand-edited Python) need no extra line. | [scene.py](../src/runtime/scene.py), [behaviors.py](../src/runtime/behaviors.py), [scene.ts](../src/blocks/scene.ts), [compiler.ts](../src/language/compiler.ts) |
+| Sprite settings | **More settings → Animation**: the switch and the moving, in the air and still choices, and Turn to face the way it moves | [editor.ts](../src/scene/editor.ts) |
+| Examples | The heroes of Sprites, Motion, Platformer, Worlds, the Star game, Dodge, Jump quest and Maze run animate while moving; their walking scripts are gone | [src/scene](../src/scene), [content/builds](../content/builds) |
+| Sound library | **+ New → Sound library** in the Sound editor: *Effects* (the ten effects as designed, each with its waveform) and *Music* (six original loops: Adventure, Calm meadow, Chase, Spooky cave, Space drift, Victory, each with its mood, speed and a picture of its notes); Listen first, then Add. A loop is added as the project's own song. | [sound-editor.ts](../src/scene/sound-editor.ts), [music-library.ts](../src/scene/music-library.ts) |
+| Looping | **start sound [ ▾] looping for sprite** and `sounds.loop(sound, owner)`: the play command asks the host to repeat with no gap until stop sounds, Stop, the game's end or the sprite's destruction. The Star game (Calm meadow), Platformer (Adventure) and Super Hopper (Chase) start one quietly | [sounds.py](../src/runtime/sounds.py), [audio.ts](../src/runtime/audio.ts), [sounds.ts](../src/blocks/sounds.ts) |
+| New library art | Characters: Chick (52 × 40: idle, flap 1–4, jump, happy; flaps whenever it is in the air) and Beetle (36 × 30, two walk frames). Objects: Paddle, Little ball, Brick in five colours, Pipe pair, Flag. A Brick tile set and two backdrops, City sky and Hills. A library entry now says how its character animates, so a Chick added from the library flaps rather than walks. | [critters.ts](../src/art/critters.ts), [props.ts](../src/art/props.ts), [tiles.ts](../src/art/tiles.ts), [backdrops.ts](../src/art/backdrops.ts) |
+| Lessons | Brick Breaker (Paddle, Little ball, red Bricks with all five colours as costumes), Flappy Flight (the Chick at 77%, the old bird's 40 × 30, whose four flap frames are what **play animation once** plays; Pipe pair; City sky) and Super Hopper (Sam at 72% animating while moving, the lesson still teaching him to face the way he walks; spinning coins; Beetles that step and face the way they patrol; the Flag; joined grass, brick and metal tiles; Hills). Steps, checks and scripts are unchanged, one hint now says the Bird has four flap frames, and all three walk through end to end. Flappy Flight went from 172 to 30 KB and Super Hopper from 214 to 66 KB. | [content/builds](../content/builds) |
+| Gallery loops | Every example, build and lesson card has a three-second loop (Flappy's is 1.8 s, ending before its first, random, pipe) recorded by the preview suite with a few key presses, as WebM and MP4, and a still from 1.5 s in. Cards keep the still and lay the loop over it while hovered or focused, or while on screen on a touch screen; the loop is fetched only when first wanted, and nothing plays with reduced motion. All 19 loops add 1.7 MB. | [loop-thumb.ts](../src/guide/loop-thumb.ts), [previews.spec.ts](../tests/e2e/previews.spec.ts), [gallery.json](../content/gallery.json) |
+
+Not done in this phase: more variations of each library effect (the Effects shelf has the ten as designed); a tighter collision box for the 64 × 64 cast, so Sam's box in Super Hopper is 46 × 46 against the old hero's 34 × 46 and he stops a little short of walls (the Platformer has had the same since Phase 3c).
+
 ### Sequencing
 
 | Order | Work | Why this order |
@@ -272,6 +316,7 @@ Tests changed with the art: the platformer's landing heights (a ledge top plus h
 | 3 | Phase 2 Sound editor (mocks, then build) | Independent of Paint but shares its full-screen editor shell |
 | 4 | Phase 3b art pass and referenced assets | Needs the `resolution` field from Phase 1 and the sharp stage from 3a |
 | 5 | Phase 3c examples | Needs the new cast |
+| 6 | Phase 4 animation and sound (4a, 4b, then 4d, 4c) | Named animations simplify the examples and lessons; the previews are recorded last, once everything they show is final |
 
 ## 4. Decisions for the owner
 

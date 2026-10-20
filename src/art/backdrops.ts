@@ -114,10 +114,46 @@ function desert(c: Ctx) {
   c.strokeStyle = '#d9a967'; c.lineWidth = 1.2; for (let i = 0; i < 6; i++) { const y = 280 + i * 7; c.beginPath(); c.moveTo((i * 70) % 300, y); c.quadraticCurveTo((i * 70) % 300 + 40, y - 4, (i * 70) % 300 + 80, y); c.stroke(); }
 }
 
+/** Flappy Flight's sky: clouds over a pale city, a row of bushes, and a striped path to land on. */
+function citySky(c: Ctx) {
+  c.save(); c.beginPath(); c.rect(0, 0, 480, 320); c.clip();   // the last building and bush run past the edge
+  sky(c, '#7dccef', '#c9eaf3', 270);
+  for (const [x, y, s] of [[70, 62, 1.25], [250, 40, 0.95], [400, 86, 1.3], [170, 118, 0.8]] as const) cloud(c, x, y, s, '#f4fbff');
+  for (let i = 0; i < 12; i++) {
+    const x = i * 42, top = 236 - i * 3;
+    c.fillStyle = '#b3dde2'; c.fillRect(x, top, 34, 290 - top);
+    c.fillStyle = '#d6eef0';
+    for (let row = 0; top + 9 + row * 12 < 262; row++) for (const dx of [5, 14, 23]) c.fillRect(x + dx, top + 9 + row * 12, 5, 6);
+  }
+  c.fillStyle = '#86c97a'; c.beginPath();
+  for (let x = 12; x < 492; x += 24) { c.moveTo(x + 13, 278); c.arc(x, 278, 13, 0, Math.PI * 2); }
+  c.fill(); c.fillRect(0, 276, 480, 12);
+  c.fillStyle = '#93d96c'; c.fillRect(0, 288, 480, 2); c.fillStyle = '#6fbf4e'; c.fillRect(0, 290, 480, 4); c.fillStyle = '#4f9a3d'; c.fillRect(0, 294, 480, 2);
+  c.fillStyle = '#dcbf75'; c.fillRect(0, 296, 480, 24);
+  c.save(); c.beginPath(); c.rect(0, 296, 480, 24); c.clip(); c.fillStyle = '#cfae64';
+  for (let x = -24; x < 500; x += 24) { c.beginPath(); c.moveTo(x, 320); c.lineTo(x + 8, 320); c.lineTo(x + 22, 296); c.lineTo(x + 14, 296); c.closePath(); c.fill(); }
+  c.restore(); c.restore();
+}
+/** Super Hopper's sky: a soft sun, clouds and two rows of rounded hills with a few trees. */
+function rollingHills(c: Ctx) {
+  sky(c, '#7ccbee', '#e6f4f3', 300);
+  ellipse(c, 400, 57, 36, 36, '#c4e3dc', null); ellipse(c, 400, 57, 26, 26, '#fff3b0', null);
+  for (const [x, y, s] of [[82, 70, 1.3], [232, 50, 0.95], [330, 110, 0.85], [450, 150, 0.55]] as const) cloud(c, x, y, s, '#f4fbff');
+  const ridge = (start: number, curves: [number, number, number, number][], fill: string) => {
+    c.beginPath(); c.moveTo(0, 320); c.lineTo(0, start);
+    for (const [cx, cy, x, y] of curves) c.quadraticCurveTo(cx, cy, x, y);
+    c.lineTo(480, 320); c.closePath(); c.fillStyle = fill; c.fill();
+  };
+  ridge(320, [[50, 196, 135, 196], [190, 196, 230, 250], [300, 180, 360, 188], [440, 196, 480, 240]], '#a9d99f');
+  for (const [x, y] of [[60, 234], [120, 220], [380, 212], [430, 224]] as const) { c.fillStyle = '#6f8a5c'; c.fillRect(x - 1.5, y + 6, 3, 8); ellipse(c, x, y, 9, 11, '#5ea868', null); }
+  ridge(320, [[60, 254, 145, 253], [230, 252, 280, 300], [330, 244, 405, 248], [460, 250, 480, 268]], '#86c47f');
+}
+
 export const BACKDROPS: Backdrop[] = [
   { id: 'meadow', name: 'Meadow', draw: meadow }, { id: 'night', name: 'Night', draw: night },
   { id: 'cave', name: 'Cave', draw: cave }, { id: 'snow', name: 'Snow', draw: snow },
   { id: 'castle', name: 'Castle', draw: castle }, { id: 'desert', name: 'Desert', draw: desert },
+  { id: 'city-sky', name: 'City sky', draw: citySky }, { id: 'hills', name: 'Hills', draw: rollingHills },
 ];
 export function paintBackdrop(c: Ctx, id: string) {
   const backdrop = BACKDROPS.find(b => b.id === id); if (!backdrop) throw new Error(`No backdrop ${id}`);

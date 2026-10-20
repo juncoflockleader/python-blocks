@@ -81,7 +81,7 @@ function renderSong(song: Pick<Song, 'tempo' | 'beats' | 'notes'>): Float32Array
   return samples.map(x => Math.max(-1, Math.min(1, x)));
 }
 export type AudioCommand =
-  | { type: 'play'; id: number; owner: string; settings: SoundSettings; sound: string }
+  | { type: 'play'; id: number; owner: string; settings: SoundSettings; sound: string; loop?: true }
   | { type: 'tone'; id: number; owner: string; settings: SoundSettings; pitch: number; seconds: number; instrument: Instrument }
   | { type: 'settings'; owner: string; settings: SoundSettings }
   | { type: 'stop'; owner: string | null }
@@ -96,6 +96,6 @@ export function validAudioCommand(v: unknown): v is AudioCommand {
   if (!owner || !validSoundSettings(c.settings)) return false;
   if (c.type === 'settings') return true;
   if (!identity) return false;
-  if (c.type === 'play') return typeof c.sound === 'string' && /^[A-Za-z0-9_-]{1,48}$/.test(c.sound);
+  if (c.type === 'play') return typeof c.sound === 'string' && /^[A-Za-z0-9_-]{1,48}$/.test(c.sound) && (c.loop === undefined || c.loop === true);
   return c.type === 'tone' && finite(c.seconds, .005, 32) && Number.isInteger(c.pitch) && finite(c.pitch, 21, 108) && instruments.includes(c.instrument);
 }

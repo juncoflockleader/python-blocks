@@ -15,7 +15,7 @@
  "starter": {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 21,
+  "languageVersion": 22,
   "workspace": {
    "blocks": {
     "languageVersion": 0,
@@ -43,7 +43,44 @@
        "stock-explorer-ruby-walk-3",
        "stock-explorer-ruby-walk-4"
       ],
-      "frameSeconds": 0.12
+      "frameSeconds": 0.12,
+      "animations": [
+       {
+        "name": "idle",
+        "frames": [
+         "stock-explorer-ruby-idle-1",
+         "stock-explorer-ruby-idle-2"
+        ],
+        "seconds": 0.4
+       },
+       {
+        "name": "walk",
+        "frames": [
+         "stock-explorer-ruby-walk-1",
+         "stock-explorer-ruby-walk-2",
+         "stock-explorer-ruby-walk-3",
+         "stock-explorer-ruby-walk-4"
+        ]
+       },
+       {
+        "name": "jump",
+        "frames": [
+         "stock-explorer-ruby-jump"
+        ]
+       },
+       {
+        "name": "happy",
+        "frames": [
+         "stock-explorer-ruby-happy"
+        ]
+       }
+      ],
+      "autoAnimate": {
+       "moving": "walk",
+       "air": "jump",
+       "still": "idle",
+       "turn": true
+      }
      },
      {
       "id": "floor",

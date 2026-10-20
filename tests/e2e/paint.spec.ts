@@ -181,7 +181,7 @@ test('paints a backdrop that becomes the starting backdrop, switched by events a
 
 test('the library and a picture become new costumes', async ({ page }) => {
   await load(page); await openPaint(page);
-  await page.locator('#paint-new').click(); await page.locator('[data-new="library"]').click(); await expect(page.locator('#stock-dialog')).toBeVisible();
+  await page.locator('#paint-new').click(); await page.locator('#paint-dialog [data-new="library"]').click(); await expect(page.locator('#stock-dialog')).toBeVisible();
   await page.locator('[data-stock-id="fox"]').click(); await expect(page.locator('#stock-dialog')).toBeHidden();
   await expect(page.locator('.paint-card')).toHaveCount(2); await expect(page.locator('#paint-name')).toHaveValue('Fox'); expect(await doc(page).evaluate(c => (c as HTMLCanvasElement).width)).toBe(128);
   const png = await page.evaluate(() => { const c = document.createElement('canvas'); c.width = 600; c.height = 300; const ctx = c.getContext('2d')!; ctx.fillStyle = '#225577'; ctx.fillRect(0, 0, 600, 300); return c.toDataURL('image/png').slice(22); });

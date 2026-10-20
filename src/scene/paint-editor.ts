@@ -1,7 +1,7 @@
-import type * as Blockly from 'blockly/core';
+import * as Blockly from 'blockly/core';
 import './paint.css';
 import { assetData, paintBuiltinBackdrop, paintBuiltinCostume } from './assets';
-import { builtinBackdrops, builtins, isStock, resolutionOf, spriteFrames, type Costume, type SceneState } from './model';
+import { FRAMES_ANIMATION, ANIMATION_LIMITS, builtinBackdrops, builtins, isStock, resolutionOf, spriteFrames, validAnimationName, type Costume, type SceneState } from './model';
 import { changeScene, sceneState } from './state';
 import { blocky, contentBox, downsample, fillMask, floodMask, hex, lineCells, rgba, shapeCells, type Box, type FillStyle } from './paint-pixels';
 import { findStock, stockCanvas } from './stock-art';
@@ -18,7 +18,9 @@ export type PaintTarget = { kind: 'costume'; sprite?: string } | { kind: 'backdr
 type Tool = 'brush' | 'eraser' | 'fill' | 'line' | 'rect' | 'ellipse' | 'text' | 'select' | 'pick';
 /** `assetId` is the project picture this doc rewrites; built-ins and library art have none, so a change makes a new picture. */
 interface Doc { key: string; assetId: string | null; origin: string | null; name: string; width: number; height: number; canvas: HTMLCanvasElement; changed: boolean; renamed: boolean; stock?: boolean }
-type Step = { kind: 'pixels'; doc: Doc; image: ImageData; width: number; height: number } | { kind: 'frames'; frames: Doc[]; current: number };
+/** One row of the costume strip: a named animation, or the sprite's frames list. `original` is its name when Paint opened. */
+interface Row { name: string; original: string | null; docs: Doc[]; fps: number; seconds?: number; timed: boolean; frames: boolean }
+type Step = { kind: 'pixels'; doc: Doc; image: ImageData; width: number; height: number } | { kind: 'frames'; rows: Row[]; row: number; current: number };
 export interface PaintHost {
   canEdit(): boolean;
   /** The selected sprite ('' for none). */
@@ -92,6 +94,9 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
       </section>
       <aside class="paint-strip" aria-label="Costumes">
         <div class="paint-strip-head"><span id="paint-strip-title">Costumes</span><span id="paint-strip-count"></span></div>
+        <div id="paint-rows" class="paint-rows" role="group" aria-label="Animations"></div>
+        <button id="paint-new-anim" class="paint-plain paint-new-anim" type="button">${icon(ICONS.plus, 16)}New animation</button>
+        <div id="paint-anim" class="paint-anim"><label for="paint-anim-name">Animation</label><input id="paint-anim-name" maxlength="24" autocomplete="off" spellcheck="false"><button id="paint-anim-delete" class="paint-icon-button" type="button" aria-label="Delete this animation">${icon(ICONS.trash, 18)}</button></div>
         <div id="paint-cards" class="paint-cards" role="listbox" aria-label="Costumes"></div>
         <button id="paint-new" class="paint-new" type="button" aria-haspopup="dialog">${icon(ICONS.plus, 16)}New</button>
         <button id="paint-options" class="paint-plain" type="button" aria-haspopup="menu">${icon(ICONS.more, 16)}<span id="paint-options-label">Costume options</span></button>
@@ -117,6 +122,8 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
 
   // Session state
   let kind: Kind = 'costume', spriteId: string | null = null, docs: Doc[] = [], current = 0, token = 0, loading = false;
+  // Costume rows: the open row's docs are `docs`. framesFollow names the animation the frames list matched when Paint opened.
+  let rows: Row[] = [], row = 0, framesFollow: string | null = null, rowsChanged = false;
   let tool: Tool = 'brush', color = '#d7794c', size = 4, pixel = false, filled = true, fillStyle: FillStyle = 'solid', onion = false;
   let recent: string[] = ['#263f4b', '#fff5dc', '#b85f43'];
   let undo: Step[] = [], redo: Step[] = [];
@@ -131,7 +138,9 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
   const doc = () => docs[current];
   const ctxOf = (d: Doc) => d.canvas.getContext('2d', { willReadFrequently: true })!;
   const nextKey = () => `doc${++keySerial}`;
-  const unique = () => [...new Set(docs)];
+  const unique = () => [...new Set(kind === 'costume' ? rows.flatMap(r => r.docs) : docs)];
+  const idOf = (d: Doc) => d.assetId ?? d.origin;
+  const fpsOf = (seconds: number | undefined) => Math.max(1, Math.min(12, Math.round(1 / (seconds ?? 0.1))));
   const label = (k: Kind) => k === 'costume' ? 'costume' : k === 'backdrop' ? 'backdrop' : 'tile';
   function newCanvas(width: number, height: number) { const c = document.createElement('canvas'); c.width = width * RES; c.height = height * RES; c.className = 'paint-doc'; return c; }
 
@@ -160,23 +169,30 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
         const sprite = scene.sprites.find(s => s.id === (target.sprite ?? host.selected()));
         spriteId = sprite?.id ?? null;
         if (sprite) {
-          const frames = spriteFrames(sprite), loaded = new Map<string, Doc>();
-          for (const id of frames) if (!loaded.has(id)) loaded.set(id, await docFor(id, 'costume', scene));
-          docs = frames.map(id => loaded.get(id)!); current = Math.max(0, frames.indexOf(sprite.costume));
-          fps = Math.max(1, Math.min(12, Math.round(1 / (sprite.frameSeconds ?? 0.1))));
-        } else { docs = [blank(64, 64, 'Costume 1')]; fps = 10; }
+          const frames = spriteFrames(sprite), named = sprite.animations ?? [], loaded = new Map<string, Doc>();
+          for (const id of [...frames, ...named.flatMap(a => a.frames)]) if (!loaded.has(id)) loaded.set(id, await docFor(id, 'costume', scene));
+          const spriteFps = fpsOf(sprite.frameSeconds);
+          rows = named.map(a => ({ name: a.name, original: a.name, docs: a.frames.map(id => loaded.get(id)!), fps: a.seconds ? fpsOf(a.seconds) : spriteFps, seconds: a.seconds, timed: false, frames: false }));
+          // The frames list gets its own row unless it is one of the animations (a library character's walk).
+          const same = named.find(a => a.frames.length === frames.length && a.frames.every((f, i) => f === frames[i]));
+          framesFollow = same?.name ?? null;
+          if (!same) rows.unshift({ name: FRAMES_ANIMATION, original: null, docs: frames.map(id => loaded.get(id)!), fps: spriteFps, timed: false, frames: true });
+          row = Math.max(0, rows.findIndex(r => r.docs.some(d => idOf(d) === sprite.costume)));
+          docs = rows[row].docs; current = Math.max(0, docs.findIndex(d => idOf(d) === sprite.costume)); fps = rows[row].fps;
+        } else { docs = [blank(64, 64, 'Costume 1')]; fps = 10; rows = [{ name: FRAMES_ANIMATION, original: null, docs, fps, timed: false, frames: true }]; row = 0; framesFollow = null; }
+        rowsChanged = false;
         pixel = false;
       } else if (target.kind === 'backdrop') {
         const world = scene.worlds?.find(w => w.id === scene.world), start = world ? world.backdrop : scene.backdrop;
         const ids = [...builtinBackdrops.map(a => a.id), ...(scene.backdrops ?? []).map(a => a.id)];
         for (const id of ids) docs.push(await docFor(id, 'backdrop', scene));
         if (start) current = Math.max(0, ids.indexOf(start)); else { docs.push(blank(480, 320, uniqueName('Backdrop', scene))); current = docs.length - 1; }
-        pixel = false;
+        pixel = false; rows = [{ name: '', original: null, docs, fps, timed: false, frames: true }]; row = 0;
       } else {
         const world = scene.worlds?.find(w => w.id === scene.world);
         const ids = [...new Set([target.id, ...(world?.map.tiles ?? []).filter((t): t is string => !!t)])];
         for (const id of ids) docs.push(await docFor(id, 'costume', scene));
-        current = 0; pixel = true;
+        current = 0; pixel = true; rows = [{ name: '', original: null, docs, fps, timed: false, frames: true }]; row = 0;
       }
       if (ticket !== token) return;
       size = pixel ? 1 : 4; tool = 'brush';
@@ -191,7 +207,7 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
   // ── History ──
   const pixelsOf = (d: Doc) => ctxOf(d).getImageData(0, 0, d.canvas.width, d.canvas.height);
   const capture = (d: Doc): Step => ({ kind: 'pixels', doc: d, image: pixelsOf(d), width: d.width, height: d.height });
-  const structure = (): Step => ({ kind: 'frames', frames: [...docs], current });
+  const structure = (): Step => ({ kind: 'frames', rows: rows.map(r => ({ ...r, docs: [...r.docs] })), row, current });
   function remember(step: Step) {
     undo.push(step); redo = [];
     // About 96 MB of pictures: a backdrop is 2.4 MB, a 64-unit costume 64 KB.
@@ -199,7 +215,7 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
     while (bytes > 96_000_000 && undo.length > 1) { const old = undo.shift()!; if (old.kind === 'pixels') bytes -= old.image.data.length; }
   }
   function restore(step: Step): Step {
-    if (step.kind === 'frames') { const inverse = structure(); docs = step.frames; current = Math.min(step.current, docs.length - 1); structureChanged = true; show(); return inverse; }
+    if (step.kind === 'frames') { const inverse = structure(); rows = step.rows; row = Math.min(step.row, rows.length - 1); docs = rows[row].docs; fps = rows[row].fps; current = Math.min(step.current, docs.length - 1); structureChanged = true; rowsChanged = true; show(); return inverse; }
     const inverse = capture(step.doc), d = step.doc;
     d.width = step.width; d.height = step.height; d.canvas.width = step.image.width; d.canvas.height = step.image.height;
     ctxOf(d).putImageData(step.image, 0, 0); d.changed = true;
@@ -218,6 +234,7 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
     slot.replaceChildren(doc()?.canvas ?? '');
     el<HTMLInputElement>('paint-name').value = doc()?.name ?? '';
     onionLayer(); layout(); cards(); render();
+    if (!playing) preview(current);
   }
   function onionLayer() {
     const layer = el<HTMLCanvasElement>('paint-onion-layer'), show = onion && kind === 'costume' && docs.length > 1;
@@ -494,9 +511,66 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
       card.addEventListener('contextmenu', event => { event.preventDefault(); cardMenu(i, card); });
       card.addEventListener('pointerdown', event => cardDown(event, i, card));
     });
-    el('paint-strip-count').textContent = `${docs.length} ${docs.length === 1 ? label(kind) : label(kind) + 's'}`;
+    el('paint-strip-count').textContent = `${unique().length} ${unique().length === 1 ? label(kind) : label(kind) + 's'}`;
+    rowsView();
   }
   function select(i: number) { if (i === current || i < 0 || i >= docs.length) return; place(); commitText(); current = i; show(); }
+
+  // ── Animation rows ──
+  function rowsView() {
+    const list = el('paint-rows'), named = kind === 'costume';
+    list.hidden = !named; el('paint-new-anim').hidden = !named; el('paint-anim').hidden = !named || rows[row]?.frames !== false;
+    if (!named) return;
+    list.replaceChildren(...rows.map((r, i) => {
+      const button = document.createElement('button'); button.type = 'button'; button.className = 'paint-row'; button.dataset.row = String(i);
+      button.setAttribute('aria-pressed', String(i === row)); button.setAttribute('aria-label', `${r.name}: ${r.docs.length} ${r.docs.length === 1 ? 'costume' : 'costumes'}`);
+      const name = document.createElement('span'); name.className = 'paint-row-name'; name.textContent = r.name;
+      const count = document.createElement('span'); count.className = 'paint-row-count'; count.textContent = String(r.docs.length);
+      const strip = document.createElement('span'); strip.className = 'paint-row-strip'; strip.setAttribute('aria-hidden', 'true');
+      for (const d of r.docs.slice(0, 3)) { const c = document.createElement('canvas'); c.width = 52; c.height = 52; drawThumb(c, d); strip.append(c); }
+      button.append(name, strip, count);
+      button.addEventListener('click', () => openRow(i));
+      return button;
+    }));
+    const open = rows[row];
+    list.querySelector<HTMLElement>('[aria-pressed="true"]')?.scrollIntoView({ block: 'nearest' });
+    if (open && !open.frames && document.activeElement !== el('paint-anim-name')) el<HTMLInputElement>('paint-anim-name').value = open.name;
+    el<HTMLButtonElement>('paint-new-anim').disabled = rows.filter(r => !r.frames).length >= ANIMATION_LIMITS.animations;
+  }
+  function openRow(i: number) {
+    if (i === row || !rows[i]) return;
+    place(); commitText(); if (playing) play(false);
+    row = i; docs = rows[i].docs; fps = rows[i].fps; current = 0; show(); fit();
+  }
+  function newAnimation() {
+    const names = new Set(rows.map(r => r.name)); let n = 1; while (names.has(`animation ${n}`)) n++;
+    remember(structure()); structureChanged = true; rowsChanged = true;
+    rows.push({ name: `animation ${n}`, original: null, docs: doc() ? [doc()] : [], fps, timed: true, frames: false });
+    openRow(rows.length - 1);
+    const field = el<HTMLInputElement>('paint-anim-name'); field.focus(); field.select();
+  }
+  function renameAnimation() {
+    const open = rows[row], field = el<HTMLInputElement>('paint-anim-name'); if (!open || open.frames) return;
+    const name = field.value.trim();
+    if (name === open.name) return;
+    const problem = !validAnimationName(name) ? 'Start the name with a letter; use letters, numbers and spaces, up to 24.' : name === FRAMES_ANIMATION || rows.some((r, i) => i !== row && r.name === name) ? `There is already an animation called “${name}”.` : '';
+    if (problem) { toast(problem, field); field.value = open.name; return; }
+    remember(structure()); open.name = name; structureChanged = true; rowsChanged = true; rowsView();
+  }
+  function deleteAnimation() {
+    const open = rows[row]; if (!open || open.frames) return;
+    remember(structure()); structureChanged = true; rowsChanged = true;
+    rows.splice(row, 1);
+    if (!rows.length) rows.push({ name: FRAMES_ANIMATION, original: null, docs: [...open.docs], fps: open.fps, timed: false, frames: true });
+    row = Math.max(0, Math.min(row, rows.length - 1)); docs = rows[row].docs; fps = rows[row].fps; current = 0; show();
+  }
+  /** Put the chosen costume into another animation too (the same picture, not a copy). */
+  function copyToRow(target: number) {
+    const d = doc(), to = rows[target]; if (!d || !to) return;
+    if (to.docs.length >= ANIMATION_LIMITS.frames) { toast(`An animation holds up to ${ANIMATION_LIMITS.frames} costumes.`, el('paint-cards')); return; }
+    remember(structure()); structureChanged = true; rowsChanged = true; to.docs.push(d); rowsView();
+    toast(`Added to ${to.name}.`, el('paint-rows'));
+  }
   function drawThumb(canvas: HTMLCanvasElement, d: Doc) {
     const ctx = canvas.getContext('2d')!, k = Math.min((canvas.width - 8) / d.canvas.width, (canvas.height - 8) / d.canvas.height);
     ctx.clearRect(0, 0, canvas.width, canvas.height); ctx.imageSmoothingEnabled = !pixel || k < 1;
@@ -534,6 +608,7 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
     const menu = el('paint-card-menu'), noun = label(kind);
     const items: [string, string, string, boolean?][] = [['duplicate', 'Duplicate', ICONS.copy]];
     if (kind === 'costume') items.push(['earlier', 'Move earlier', ICONS.earlier, index === 0], ['later', 'Move later', ICONS.later, index === docs.length - 1]);
+    if (kind === 'costume') rows.forEach((r, i) => { if (i !== row) items.push([`row:${i}`, `Also use in ${r.name}`, ICONS.copy, r.docs.includes(doc())]); });
     items.push(['download', 'Download PNG', ICONS.download]);
     if (kind === 'costume') items.push(['delete', `Delete this ${noun}`, ICONS.trash, docs.length < 2]);
     menu.innerHTML = `<span class="paint-menu-title">${noun[0].toUpperCase() + noun.slice(1)} ${index + 1}</span>` + items.map(([id, text, d, off]) => `<button type="button" role="menuitem" data-card="${id}" ${off ? 'disabled' : ''} class="${id === 'delete' ? 'danger' : ''}">${icon(d, 18)}${text}</button>`).join('');
@@ -542,6 +617,7 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
   }
   function cardAction(action: string) {
     closeMenus(); const d = doc();
+    if (action.startsWith('row:')) { copyToRow(Number(action.slice(4))); return; }
     if (action === 'download') { download(); return; }
     if (action === 'duplicate') {
       if (!room(1)) return;
@@ -652,10 +728,10 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
   function done() {
     if (loading) { dialog.close(); return; }
     place(); commitText();
-    const touched = unique().some(d => d.changed || d.renamed) || structureChanged || fpsChanged;
+    const touched = unique().some(d => d.changed || d.renamed) || structureChanged || fpsChanged || rowsChanged;
     if (!touched) { close(); return; }
     try {
-      const scene = sceneState(workspace), next = structuredClone(scene), ids = new Map<Doc, string>();
+      const scene = sceneState(workspace), next = structuredClone(scene), ids = new Map<Doc, string>(), renames = new Map<string, string>();
       const list = kind === 'backdrop' ? (next.backdrops ??= []) : next.assets;
       for (const d of unique()) {
         // Unchanged pictures keep their id; library art can be renamed in place, built-ins cannot.
@@ -678,20 +754,38 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
           sprite = { id: crypto.randomUUID(), name: `Sprite ${n}`, x: Math.round(centre.x), y: Math.round(centre.y), ...(next.world ? { world: next.world } : {}), direction: 0, size: 100, layer: 0, visible: true, costume: ids.get(doc())! };
           next.sprites.push(sprite);
         }
-        const frames = docs.map(d => ids.get(d)!);
-        if (frames.length > 1 || sprite.costumes) sprite.costumes = frames;
-        sprite.costume = ids.get(doc())!;
-        if (fpsChanged) sprite.frameSeconds = Math.round(100 / fps) / 100;
+        const id = (d: Doc) => ids.get(d)!, framesRow = rows.find(r => r.frames), named = rows.filter(r => !r.frames);
+        const seconds = (r: Row) => Math.round(100 / r.fps) / 100;
+        if (framesRow) {
+          const frames = framesRow.docs.map(id);
+          if (frames.length > 1 || sprite.costumes) sprite.costumes = frames;
+          if (framesRow.timed) sprite.frameSeconds = seconds(framesRow);
+        } else { const follow = named.find(r => r.original === framesFollow); if (follow) sprite.costumes = follow.docs.map(id); }
+        if (named.length) sprite.animations = named.map(r => ({ name: r.name, frames: r.docs.map(id), ...(r.timed ? { seconds: seconds(r) } : r.seconds ? { seconds: r.seconds } : {}) }));
+        else delete sprite.animations;
+        // Animate while moving follows a renamed animation and lets go of a deleted one.
+        const now = (n: string) => n === '' || n === FRAMES_ANIMATION ? n : named.find(r => r.original === n)?.name ?? (named.some(r => r.name === n) ? n : '');
+        if (sprite.autoAnimate) sprite.autoAnimate = { ...sprite.autoAnimate, moving: now(sprite.autoAnimate.moving), air: now(sprite.autoAnimate.air), still: now(sprite.autoAnimate.still) };
+        for (const r of named) if (r.original && r.original !== r.name) renames.set(r.original, r.name);
+        sprite.costume = id(doc());
         painted = sprite.id;
       } else if (kind === 'backdrop') {
         const world = next.worlds?.find(w => w.id === next.world);
         if (world) world.backdrop = ids.get(doc())!; else next.backdrop = ids.get(doc())!;
       }
-      changeScene(workspace, next);
+      // One Undo step: the scene and any blocks that name a renamed animation.
+      const group = Blockly.Events.getGroup(); if (!group) Blockly.Events.setGroup(true);
+      try {
+        changeScene(workspace, next);
+        if (renames.size) for (const block of workspace.getAllBlocks(false)) {
+          const field = block.getField('ANIMATION'), name = field?.getValue();
+          if (field && typeof name === 'string' && renames.has(name)) field.setValue(renames.get(name)!);
+        }
+      } finally { if (!group) Blockly.Events.setGroup(false); }
       close(); host.done(painted);
     } catch (error) { toast(error instanceof Error ? error.message : String(error), el('paint-done')); }
   }
-  function close() { play(false); token++; stroke = null; selection = null; text = null; closeMenus(); if (dialog.open) dialog.close(); docs = []; slot.replaceChildren(); undo = []; redo = []; }
+  function close() { play(false); token++; stroke = null; selection = null; text = null; closeMenus(); if (dialog.open) dialog.close(); docs = []; rows = []; slot.replaceChildren(); undo = []; redo = []; }
 
   // ── Messages next to the control that caused them ──
   function toast(message: string, anchor: HTMLElement) {
@@ -770,7 +864,12 @@ export function installPaintEditor(workspace: Blockly.WorkspaceSvg, host: PaintH
   on('paint-keep', () => { sizing.stretch = false; sizeControls(); }); on('paint-stretch', () => { sizing.stretch = true; sizeControls(); });
   on('paint-size-apply', applySize); on('paint-size-cancel', () => { el('paint-size-box').hidden = true; });
   on('paint-play', () => play(!playing));
-  el<HTMLInputElement>('paint-fps').addEventListener('input', () => { fps = Number(el<HTMLInputElement>('paint-fps').value); fpsChanged = true; render(); });
+  el<HTMLInputElement>('paint-fps').addEventListener('input', () => { fps = Number(el<HTMLInputElement>('paint-fps').value); fpsChanged = true; if (rows[row]) { rows[row].fps = fps; rows[row].timed = true; } render(); });
+  el('paint-new-anim').addEventListener('click', () => newAnimation());
+  el('paint-anim-delete').addEventListener('click', () => deleteAnimation());
+  const animName = el<HTMLInputElement>('paint-anim-name');
+  animName.addEventListener('change', () => renameAnimation());
+  animName.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); renameAnimation(); animName.blur(); } else if (event.key === 'Escape') { event.stopPropagation(); animName.value = rows[row]?.name ?? ''; animName.blur(); } });
   el<HTMLInputElement>('paint-file').addEventListener('change', () => { const file = el<HTMLInputElement>('paint-file').files?.[0]; el<HTMLInputElement>('paint-file').value = ''; if (file) void importPicture(file); });
   el<HTMLInputElement>('paint-text').addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); commitText(); } else if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); text = null; el('paint-text').hidden = true; } });
   el<HTMLInputElement>('paint-text').addEventListener('blur', () => setTimeout(commitText, 0));

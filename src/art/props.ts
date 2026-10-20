@@ -1,8 +1,10 @@
 import { CREAM, INK, LINE, box, curve, ellipse, line, shade, shape, type Ctx } from './draw';
 
 /** Library props in the cast's style. Each is drawn centred on the origin in
- * its own size; coins and gems have a six-frame spin. */
-export interface Prop { id: string; name: string; width: number; height: number; frames: number; draw(c: Ctx, frame: number): void }
+ * its own size; coins and gems have a six-frame spin, and a brick comes in five
+ * colours (`variants`: one picture each, drawn as frames). The game pieces are
+ * drawn at the lessons' sizes, so their collisions stay the same. */
+export interface Prop { id: string; name: string; width: number; height: number; frames: number; variants?: string[]; draw(c: Ctx, frame: number): void }
 
 /** How wide a spinning thing looks in each of six frames. */
 const SPIN = [1, 0.72, 0.22, 0.22, 0.72, 1];
@@ -80,6 +82,36 @@ function rocket(c: Ctx, frame: number) {
   box(c, -10, 14, 20, 5, 2, '#e0846a');
 }
 
+function paddle(c: Ctx) {
+  box(c, -39, -5.5, 78, 11, 5.5, shade(c, -5.5, 5.5, '#7fd0c4', '#3f9e94'));
+  box(c, -39, -5.5, 12, 11, 5.5, '#f2c14e'); box(c, 27, -5.5, 12, 11, 5.5, '#f2c14e');
+  line(c, [[-25, -2.6], [25, -2.6]], '#ffffff99', 1.6);
+}
+function ball(c: Ctx) {
+  ellipse(c, 0, 0, 6, 6, shade(c, -6, 6, '#ffffff', '#ffe4a8'));
+  ellipse(c, -2, -2.2, 1.6, 1.1, '#ffffff', null, LINE, -0.6);
+}
+const BRICKS: [string, string, string][] = [['red', '#f08c76', '#d9604c'], ['orange', '#f6b26b', '#e58d40'], ['yellow', '#f8d77a', '#e8b94f'], ['green', '#9fd47f', '#6fb256'], ['blue', '#8fc7e0', '#4f93b8']];
+function brick(c: Ctx, colour: number) {
+  const [, light, base] = BRICKS[colour];
+  box(c, -21, -6, 42, 12, 3, shade(c, -6, 6, light, base));
+  line(c, [[-17, -3.4], [17, -3.4]], '#ffffff88', 1.4);
+}
+/** Two pipes with a 64-unit gap between their lips, as one picture, so a pair moves as one sprite. */
+function pipes(c: Ctx) {
+  const body = (y0: number, y1: number) => { box(c, -10, y0, 20, y1 - y0, 2, shade(c, y0, y1, '#86cf6d', '#5aa84a')); line(c, [[-5, y0 + 4], [-5, y1 - 4]], '#c6efaa', 2); };
+  const lip = (y: number) => { box(c, -12.5, y, 25, 9, 2.5, shade(c, y, y + 9, '#9be07f', '#4f9a40')); line(c, [[-8, y + 2.6], [8, y + 2.6]], '#d6f5bf', 1.4); };
+  body(-127, -40); lip(-41); body(40, 127); lip(32);
+}
+function flag(c: Ctx) {
+  box(c, -16, 112, 22, 14, 3, shade(c, 112, 126, '#d6cfbf', '#aaa293'));
+  box(c, -7, -112, 4, 226, 2, shade(c, -112, 114, '#e8edf0', '#a9b6bc'));
+  ellipse(c, -5, -116, 4.5, 4.5, '#f2c14e');
+  c.beginPath(); c.moveTo(-3, -108); c.quadraticCurveTo(10, -104, 19, -96); c.quadraticCurveTo(9, -88, -3, -84); c.closePath();
+  c.fillStyle = shade(c, -108, -84, '#f08c76', '#d9604c'); c.fill(); c.strokeStyle = INK; c.lineWidth = LINE; c.stroke();
+  shape(c, [[4, -100], [5.6, -97], [8.6, -96.6], [6.3, -94.6], [7, -91.6], [4, -93.2], [1, -91.6], [1.7, -94.6], [-0.6, -96.6], [2.4, -97]], CREAM, null);
+}
+
 export const PROPS: Prop[] = [
   { id: 'coin', name: 'Coin', width: 32, height: 32, frames: 6, draw: coin },
   { id: 'gem', name: 'Gem', width: 32, height: 32, frames: 6, draw: gem },
@@ -92,6 +124,11 @@ export const PROPS: Prop[] = [
   { id: 'tree', name: 'Tree', width: 64, height: 64, frames: 1, draw: tree },
   { id: 'flower', name: 'Flower', width: 64, height: 64, frames: 1, draw: flower },
   { id: 'rocket', name: 'Rocket', width: 64, height: 64, frames: 2, draw: rocket },
+  { id: 'paddle', name: 'Paddle', width: 80, height: 12, frames: 1, draw: paddle },
+  { id: 'little-ball', name: 'Little ball', width: 14, height: 14, frames: 1, draw: ball },
+  { id: 'brick', name: 'Brick', width: 44, height: 14, frames: 5, variants: BRICKS.map(([name]) => name), draw: brick },
+  { id: 'pipes', name: 'Pipe pair', width: 26, height: 255, frames: 1, draw: pipes },
+  { id: 'flag', name: 'Flag', width: 40, height: 256, frames: 1, draw: flag },
 ];
 export function paintProp(c: Ctx, id: string, frame = 0) {
   const prop = PROPS.find(p => p.id === id); if (!prop) throw new Error(`No prop ${id}`);

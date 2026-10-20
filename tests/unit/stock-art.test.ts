@@ -19,13 +19,21 @@ describe('library catalogue', () => {
     for (const e of STOCK_ENTRIES) for (const ref of [...e.assets, e.costume, ...(e.frames ?? [])]) expect(stockAsset(ref), `${e.id} ${ref}`).toBeDefined();
   });
 
-  it('has the cast with eight poses each, spinning props, six tile sets and eight backdrops', () => {
+  it('has the cast with eight poses each, a chick and a beetle, spinning props, the lessons’ pieces, seven tile sets and ten backdrops', () => {
     const characters = LIBRARY.filter(e => e.category === 'Characters');
-    expect(characters.map(e => e.name)).toEqual(['Fox', 'Cat', 'Rabbit', 'Robot', 'Turtle', 'Bee', 'Fish', 'Sam', 'Ruby']);
-    for (const c of characters) { expect(c.assets).toHaveLength(FRAMES.length); expect(c.frames).toHaveLength(4); }
+    expect(characters.map(e => e.name)).toEqual(['Fox', 'Cat', 'Rabbit', 'Robot', 'Turtle', 'Bee', 'Fish', 'Sam', 'Ruby', 'Chick', 'Beetle']);
+    for (const c of characters.slice(0, 9)) { expect(c.assets).toHaveLength(FRAMES.length); expect(c.frames).toHaveLength(4); expect(c.autoAnimate).toEqual({ moving: 'walk', air: 'jump', still: 'idle', turn: true }); }
+    const chick = LIBRARY.find(e => e.id === 'chick')!, beetle = LIBRARY.find(e => e.id === 'beetle')!;
+    expect([chick.width, chick.height, chick.assets.length, chick.animations!.map(a => a.name)]).toEqual([52, 40, 8, ['idle', 'flap', 'jump', 'happy']]);
+    expect(chick.autoAnimate).toEqual({ moving: 'flap', air: 'flap', still: 'idle', turn: true });
+    expect([beetle.width, beetle.height, beetle.frames, beetle.autoAnimate]).toEqual([36, 30, ['cast/beetle-walk-1@1', 'cast/beetle-walk-2@1'], { moving: 'walk', air: '', still: '', turn: true }]);
     expect(LIBRARY.find(e => e.id === 'coin')!.frames).toHaveLength(6);
-    expect(LIBRARY.filter(e => e.category === 'Tiles').map(e => e.id)).toEqual(['grass-tiles', 'snow-tiles', 'cave-tiles', 'castle-tiles', 'sand-tiles', 'metal-tiles']);
-    expect(LIBRARY.filter(e => e.category === 'Backdrops')).toHaveLength(8);
+    // The lessons' pieces, at the lessons' sizes so their collisions stay the same.
+    expect(['paddle', 'little-ball', 'brick', 'pipes', 'flag'].map(id => { const e = LIBRARY.find(x => x.id === id)!; return [e.width, e.height, e.assets.length]; }))
+      .toEqual([[80, 12, 1], [14, 14, 1], [44, 14, 5], [26, 255, 1], [40, 256, 1]]);
+    expect(LIBRARY.find(e => e.id === 'brick')!.animations).toBeUndefined();
+    expect(LIBRARY.filter(e => e.category === 'Tiles').map(e => e.id)).toEqual(['grass-tiles', 'snow-tiles', 'cave-tiles', 'castle-tiles', 'sand-tiles', 'metal-tiles', 'brick-tiles']);
+    expect(LIBRARY.filter(e => e.category === 'Backdrops').map(e => e.id)).toEqual(['cave', 'snow', 'castle', 'desert', 'city-sky', 'hills', 'forest', 'reef', 'city', 'space']);
     // The dialog also lists the built-in shapes and backdrops.
     expect(stockArtwork.filter(a => a.builtin).map(a => a.id)).toEqual(['bird', 'star', 'ball', 'box', 'backdrop_meadow', 'backdrop_night']);
   });

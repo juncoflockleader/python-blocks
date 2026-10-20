@@ -28,7 +28,8 @@ describe('editor workflow state', () => {
       if (block.inputs?.OTHER) expect(block.inputs.OTHER, block.type).toEqual({block:{type:'scene_sprite',fields:{SPRITE_ID:'player'}}});
     }
     expect(groups.find(g => g.name === 'PY_SPRITES')!.blocks.length).toBeLessThan(18);
-    for (const g of groups) expect(g.blocks.length,g.name).toBeLessThan(27);
+    // Looks also holds the four named-animation blocks (play, play once, stop, animation name).
+    for (const g of groups) expect(g.blocks.length,g.name).toBeLessThan(g.name === 'PY_LOOKS' ? 31 : 27);
   });
   it('validates saved watchers and bounded results without rejecting recoverable missing sprite references', () => {
     const watch: Watch = {id:'watch',sprite:'gone',property:'data',key:'score'};
@@ -48,6 +49,6 @@ describe('editor workflow state', () => {
     s.sprites[0].name = 'Renamed'; changeScene(w,s); expect(sceneState(w).watchers).toEqual(s.watchers);
     s.sprites = s.sprites.filter(s => s.id !== 'player'); changeScene(w,s); expect(sceneState(w).watchers![0].sprite).toBe('player');
     const zip = unzipSync(pythonExport(captured).content as Uint8Array); expect(JSON.parse(strFromU8(zip['scene.json'])).watchers).toEqual(s.watchers);
-    const copy = ws(); restore(copy,prepareProject(JSON.stringify({...snapshot(w),languageVersion:17})).project); expect(snapshot(copy).languageVersion).toBe(21); expect(sceneState(copy).watchers).toEqual(s.watchers);
+    const copy = ws(); restore(copy,prepareProject(JSON.stringify({...snapshot(w),languageVersion:17})).project); expect(snapshot(copy).languageVersion).toBe(22); expect(sceneState(copy).watchers).toEqual(s.watchers);
   });
 });

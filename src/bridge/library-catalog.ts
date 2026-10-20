@@ -15,7 +15,7 @@ export const libraryCalls: LibraryCall[] = [
   call('input_timer_reset', '_pb_inputs', 'reset_timer'), call('input_cancel_questions', '_pb_inputs', 'cancel_questions'),
   call('input_ask', '_pb_inputs', 'ask', ['TEXT'], false, true), call('input_ask_value', '_pb_inputs', 'ask', ['TEXT'], true, true),
   call('scene_key', '_pb_inputs', 'key_down', [field('KEY')], true),
-  call('sound_play', '_pb_sounds', 'play', ['SOUND', 'OWNER']), call('sound_wait', '_pb_sounds', 'play_wait', ['SOUND', 'OWNER'], false, true),
+  call('sound_play', '_pb_sounds', 'play', ['SOUND', 'OWNER']), call('sound_loop', '_pb_sounds', 'loop', ['SOUND', 'OWNER']), call('sound_wait', '_pb_sounds', 'play_wait', ['SOUND', 'OWNER'], false, true),
   call('sound_stop', '_pb_sounds', 'stop', ['OWNER']), call('sound_stop_all', '_pb_sounds', 'stop_all'), call('sound_clear', '_pb_sounds', 'clear_effects', ['OWNER']),
   call('sound_set', '_pb_sounds', 'set', [field('FIELD'), 'VALUE', 'OWNER']), call('sound_change', '_pb_sounds', 'change', [field('FIELD'), 'VALUE', 'OWNER']), call('sound_get', '_pb_sounds', 'get', [field('FIELD'), 'OWNER'], true),
   call('sound_tempo', '_pb_sounds', 'set_tempo', ['VALUE']), call('sound_note', '_pb_sounds', 'note', ['NOTE', 'BEATS', field('INSTRUMENT'), 'OWNER'], false, true), call('sound_rest', '_pb_sounds', 'rest', ['BEATS'], false, true),
@@ -49,6 +49,7 @@ export const libraryCalls: LibraryCall[] = [
   call('scene_move', 'sprite', 'move', ['VALUE']), call('scene_turn', 'sprite', 'turn', ['VALUE']), call('scene_go', 'sprite', 'go_to', ['X', 'Y']),
   call('scene_set', 'sprite', 'set', [field('PROPERTY'), 'VALUE']), call('scene_change', 'sprite', 'change', [field('PROPERTY'), 'VALUE']),
   call('scene_costume_set', 'sprite', 'costume', ['COSTUME']), call('scene_next_costume', 'sprite', 'next_costume'), call('scene_play_animation', 'sprite', 'play_animation', [], false, true),
+  call('scene_animation_play', 'sprite', 'play', [field('ANIMATION')]), call('scene_animation_once', 'sprite', 'play_once', [field('ANIMATION')], false, true), call('scene_animation_stop', 'sprite', 'stop_animation'),
   call('scene_destroy', 'sprite', 'destroy'), call('scene_clone', 'sprite', 'clone', [], true), call('scene_point', 'sprite', 'point_towards', ['X', 'Y']), call('scene_bounce', 'sprite', 'bounce'), call('scene_stamp', 'sprite', 'stamp'),
   call('scene_glide', 'sprite', 'glide', ['SECONDS', 'X', 'Y'], false, true), call('scene_animate', 'sprite', 'animate', ['FRAMES', 'SECONDS'], false, true),
   call('scene_rotation', 'sprite', 'rotation_style', [field('STYLE')]), call('scene_layer', 'sprite', 'to_layer', [field('PLACE')]),
@@ -63,5 +64,6 @@ export const libraryProperties: LibraryProperty[] = [
   ...['scene_backdrop_get', 'scene_world_get', 'scene_camera_get'].map(type => ({ type, target: '_pb_scene' as const, field: 'PROPERTY' })),
   { type: 'scene_pointer', target: '_pb_inputs', field: 'PROPERTY' }, { type: 'scene_get', target: 'sprite', field: 'PROPERTY' },
   { type: 'scene_frames', target: 'sprite', property: 'frames' }, { type: 'scene_data', target: 'sprite', property: 'data' },
+  { type: 'scene_animation_get', target: 'sprite', property: 'animation' },
 ];
 export const libraryBlockTypes = new Set([...libraryCalls.map(r => r.type), ...libraryProperties.map(r => r.type), 'scene_sprite', 'scene_costume', 'scene_backdrop', 'scene_world', 'sound_asset', 'scene_data_get', 'scene_data_set']);

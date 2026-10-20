@@ -243,3 +243,38 @@ test('pan, volume and clear effects change real stereo output for a playing chan
   await key(page,'c'); await expect.poll(async () => Math.min(...await stereo())).toBeGreaterThan(.02);
   const [left,right] = await stereo(); expect(Math.abs(left-right)).toBeLessThan(.001);
 });
+test('the sound library plays before adding, adds an effect as a reference and a music loop as an editable song', async ({ page }, info) => {
+  await setup(page); await openSounds(page);
+  await page.locator('#sound-empty [data-new="library"]').click(); expect(await mode(page)).toBe('library');
+  await expect(page.locator('#sound-side')).toBeHidden();
+  await expect(page.locator('#sound-library-items .sound-library-card')).toHaveCount(10);
+  await page.getByRole('button', { name: 'Listen to Coin', exact: true }).click(); await expect.poll(() => rms(page)).toBeGreaterThan(.001);
+  await page.getByRole('button', { name: 'Add Coin', exact: true }).click();
+  await expect.poll(() => mode(page)).toBe('clip'); await expect(page.locator('#sound-name')).toHaveValue('Coin 1');
+  await page.locator('#sound-new').click(); await page.locator('#sound-sheet [data-new="library"]').click();
+  await page.locator('#sound-lib-music').click(); await expect(page.locator('#sound-library-items .sound-library-card')).toHaveCount(6);
+  await expect(page.locator('[data-library="music:chase"]')).toContainText('150 BPM');
+  await page.getByRole('button', { name: 'Listen to Chase', exact: true }).click(); await expect.poll(() => rms(page)).toBeGreaterThan(.001);
+  await page.screenshot({ path: info.outputPath('library.png') });
+  await page.getByRole('button', { name: 'Add Chase', exact: true }).click();
+  await expect.poll(() => mode(page)).toBe('song'); await expect(page.locator('#sound-name')).toHaveValue('Chase 1'); await expect(page.locator('#song-length')).toHaveText('16 beats');
+  expect(await page.locator('#sound-dialog').evaluate(d => d.scrollWidth <= d.clientWidth + 1 && d.scrollHeight <= d.clientHeight + 1)).toBe(true);
+  await page.locator('#sound-done').click();
+  await expect.poll(async () => (await sounds(page)).length).toBe(2);
+  const [coin, chase] = await sounds(page);
+  expect(coin).toMatchObject({ name: 'Coin 1', kind: 'clip', stock: 'effects/coin@1' }); expect(coin.data).toBeUndefined();
+  expect(chase).toMatchObject({ name: 'Chase 1', kind: 'song', tempo: 150, beats: 16 }); expect(chase.notes.length).toBeGreaterThan(40);
+});
+test('start sound looping keeps a short sound playing until stop sounds', async ({page}) => {
+  await setup(page);
+  const clip = {id:'chime',name:'Chime',kind:'clip',data:encodeWave(synthesizeTone(69,0.25,'sine'))};
+  await install(page,[['start',b('sound_loop',{}, {SOUND:t('chime'),OWNER:none()})],['key:s',b('sound_stop_all')]]);
+  const current = await saved(page); current.workspace.pythonScene.sounds = [clip];
+  await page.locator('#project-file').setInputFiles({name:'loop.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(current))});
+  await expect.poll(async () => (await saved(page)).workspace.pythonScene.sounds[0].id).toBe('chime');
+  await (await reveal(page, '#tab-python')).click(); await expect(page.locator('#python')).toContainText('_pb_sounds.loop("chime", None)');
+  await run(page); await expect(page.locator('#audio-status')).toHaveAttribute('data-voices','1');
+  await page.waitForTimeout(900);   // three times the sound's length
+  await expect(page.locator('#audio-status')).toHaveAttribute('data-voices','1'); await expect.poll(() => rms(page)).toBeGreaterThan(.001);
+  await key(page,'s'); await expect(page.locator('#audio-status')).toHaveAttribute('data-voices','0'); await expect.poll(() => rms(page)).toBeLessThan(.0001);
+});

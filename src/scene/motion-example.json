@@ -1,7 +1,7 @@
 {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 21,
+  "languageVersion": 22,
   "workspace": {
     "pythonScene": {
       "version": 1,
@@ -82,7 +82,44 @@
             "stock-rabbit-walk-3",
             "stock-rabbit-walk-4"
           ],
-          "frameSeconds": 0.12
+          "frameSeconds": 0.12,
+          "animations": [
+            {
+              "name": "idle",
+              "frames": [
+                "stock-rabbit-idle-1",
+                "stock-rabbit-idle-2"
+              ],
+              "seconds": 0.4
+            },
+            {
+              "name": "walk",
+              "frames": [
+                "stock-rabbit-walk-1",
+                "stock-rabbit-walk-2",
+                "stock-rabbit-walk-3",
+                "stock-rabbit-walk-4"
+              ]
+            },
+            {
+              "name": "jump",
+              "frames": [
+                "stock-rabbit-jump"
+              ]
+            },
+            {
+              "name": "happy",
+              "frames": [
+                "stock-rabbit-happy"
+              ]
+            }
+          ],
+          "autoAnimate": {
+            "moving": "walk",
+            "air": "jump",
+            "still": "idle",
+            "turn": true
+          }
         },
         {
           "id": "friend",
@@ -214,25 +251,6 @@
                                             "type": "scene_pointer",
                                             "fields": {
                                               "PROPERTY": "pointer_y"
-                                            }
-                                          }
-                                        }
-                                      },
-                                      "next": {
-                                        "block": {
-                                          "type": "scene_next_costume",
-                                          "id": "motion_example_3c_2",
-                                          "fields": {},
-                                          "inputs": {
-                                            "SPRITE": {
-                                              "block": {
-                                                "type": "scene_sprite",
-                                                "id": "motion_example_3c_1",
-                                                "fields": {
-                                                  "SPRITE_ID": "player"
-                                                },
-                                                "inputs": {}
-                                              }
                                             }
                                           }
                                         }

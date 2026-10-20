@@ -20,7 +20,16 @@ export interface SpritePen { down: boolean; color: string; width: number; opacit
 export const defaultPen = (): SpritePen => ({ down: false, color: '#267c70', width: 3, opacity: 100 });
 export type RotationStyle = 'all' | 'left-right' | 'none';
 export const rotationStyles = [['all around', 'all'], ['left/right only', 'left-right'], ['do not rotate', 'none']];
-export interface SpriteState { id: string; name: string; x: number; y: number; direction: number; size: number; layer: number; visible: boolean; costume: string; rotationStyle?: RotationStyle; costumes?: string[]; frameSeconds?: number; pen?: SpritePen; effects?: Effects; data?: Record<string, unknown>; motion?: Partial<Motion>; kind?: string; world?: string }
+/** A named list of a sprite's costumes, played by name ("walk"); `seconds` per costume, else the sprite's frameSeconds. */
+export interface SpriteAnimation { name: string; frames: string[]; seconds?: number }
+/** Animate while moving: which animation plays while the sprite moves, is in the air, or is still ('' for none),
+ * and whether a left-right sprite turns to face the way it moves. */
+export interface AutoAnimate { moving: string; air: string; still: string; turn: boolean }
+/** The frames list (`costumes`) is the animation named "frames"; named animations sit beside it. */
+export const FRAMES_ANIMATION = 'frames';
+export const ANIMATION_LIMITS = { animations: 8, frames: 64 } as const;
+export const validAnimationName = (n: unknown): n is string => typeof n === 'string' && /^[A-Za-z][A-Za-z0-9 _-]{0,23}$/.test(n) && n === n.trim();
+export interface SpriteState { id: string; name: string; x: number; y: number; direction: number; size: number; layer: number; visible: boolean; costume: string; rotationStyle?: RotationStyle; costumes?: string[]; frameSeconds?: number; animations?: SpriteAnimation[]; autoAnimate?: AutoAnimate; pen?: SpritePen; effects?: Effects; data?: Record<string, unknown>; motion?: Partial<Motion>; kind?: string; world?: string }
 export interface Bubble { text: string; style: 'say' | 'think' }
 export interface SceneState { watchers?: Watch[]; controls?: Controls; sounds?: Sound[]; version: 1; background: string; sprites: SpriteState[]; assets: Costume[]; backdrops?: Costume[]; backdrop?: string | null; effects?: Effects; worlds?: World[]; world?: string | null; camera?: Camera }
 export const builtins = [
@@ -58,6 +67,20 @@ export function validData(value: unknown): value is Record<string, unknown> {
 }
 const id = (v: unknown): v is string => typeof v === 'string' && /^[A-Za-z0-9_-]{1,48}$/.test(v);
 const name = (v: unknown): v is string => typeof v === 'string' && v.trim() === v && v.length > 0 && v.length <= 48 && !/[\x00-\x1f]/.test(v);
+function validAnimations(list: unknown, assetIds?: Set<string>): list is SpriteAnimation[] {
+  if (!Array.isArray(list) || list.length > ANIMATION_LIMITS.animations) return false;
+  const names = new Set<string>();
+  for (const a of list as SpriteAnimation[]) {
+    if (!a || !validAnimationName(a.name) || a.name === FRAMES_ANIMATION || names.has(a.name) || !Array.isArray(a.frames) || !a.frames.length || a.frames.length > ANIMATION_LIMITS.frames) return false;
+    if (!a.frames.every(f => id(f) && (!assetIds || assetIds.has(f))) || a.seconds !== undefined && !finite(a.seconds, 0.02, 10)) return false;
+    names.add(a.name);
+  }
+  return true;
+}
+function validAutoAnimate(auto: unknown, animations: SpriteAnimation[] = []): auto is AutoAnimate {
+  const a = auto as AutoAnimate, known = (n: unknown) => n === '' || n === FRAMES_ANIMATION || animations.some(x => x.name === n);
+  return !!a && typeof a === 'object' && known(a.moving) && known(a.air) && known(a.still) && typeof a.turn === 'boolean';
+}
 export function validSprite(value: unknown, assetIds?: Set<string>): value is SpriteState {
   if (!value || typeof value !== 'object') return false;
   const s = value as SpriteState;
@@ -65,6 +88,7 @@ export function validSprite(value: unknown, assetIds?: Set<string>): value is Sp
   if (s.motion !== undefined && !validMotion(s.motion) || s.kind !== undefined && !validKind(s.kind)) return false;
   if (s.data !== undefined && !validData(s.data)) return false;
   if ((s.pen !== undefined && !validPen(s.pen)) || (s.effects !== undefined && !validEffects(s.effects))) return false;
+  if (s.animations !== undefined && !validAnimations(s.animations, assetIds) || s.autoAnimate !== undefined && !validAutoAnimate(s.autoAnimate, s.animations)) return false;
   return id(s.id) && name(s.name) && finite(s.x, -1e6, 1e6) && finite(s.y, -1e6, 1e6) && finite(s.direction, 0, 360) && finite(s.size, 5, 400) && finite(s.layer, -1000, 1000) && typeof s.visible === 'boolean' && id(s.costume) && (!assetIds || assetIds.has(s.costume)) && (s.rotationStyle === undefined || rotationStyles.some(([, style]) => style === s.rotationStyle)) && (s.costumes === undefined || (Array.isArray(s.costumes) && s.costumes.length > 0 && s.costumes.length <= 64 && s.costumes.every(c => id(c) && (!assetIds || assetIds.has(c))))) && (s.frameSeconds === undefined || finite(s.frameSeconds, 0.02, 10));
 }
 export function validateScene(value: unknown): asserts value is SceneState {

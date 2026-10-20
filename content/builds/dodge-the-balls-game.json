@@ -1,7 +1,7 @@
 {
  "format": "python-blocks",
  "formatVersion": 1,
- "languageVersion": 21,
+ "languageVersion": 22,
  "workspace": {
   "blocks": {
    "languageVersion": 0,
@@ -555,7 +555,44 @@
       "stock-rabbit-walk-4"
      ],
      "rotationStyle": "left-right",
-     "frameSeconds": 0.12
+     "frameSeconds": 0.12,
+     "animations": [
+      {
+       "name": "idle",
+       "frames": [
+        "stock-rabbit-idle-1",
+        "stock-rabbit-idle-2"
+       ],
+       "seconds": 0.4
+      },
+      {
+       "name": "walk",
+       "frames": [
+        "stock-rabbit-walk-1",
+        "stock-rabbit-walk-2",
+        "stock-rabbit-walk-3",
+        "stock-rabbit-walk-4"
+       ]
+      },
+      {
+       "name": "jump",
+       "frames": [
+        "stock-rabbit-jump"
+       ]
+      },
+      {
+       "name": "happy",
+       "frames": [
+        "stock-rabbit-happy"
+       ]
+      }
+     ],
+     "autoAnimate": {
+      "moving": "walk",
+      "air": "jump",
+      "still": "idle",
+      "turn": true
+     }
     },
     {
      "id": "ball",

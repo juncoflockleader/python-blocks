@@ -9,9 +9,9 @@ import type { ExecutionMode } from '../runtime/protocol';
 import { canonical, moduleKey, moduleState, reachableModules, resolveModuleCall, validateModuleState, type ModuleCallBlock, type ModuleDefinition, type ModulePin, type ModuleState } from './modules';
 import { installPythonVariables } from './variables';
 
-export const LANGUAGE_VERSION = 21;
+export const LANGUAGE_VERSION = 22;
 const inputBlocks = new Set(['input_timer', 'input_timer_reset', 'input_ask', 'input_ask_value', 'input_answer', 'input_cancel_questions']);
-const soundBlocks = new Set(['sound_asset', 'sound_play', 'sound_wait', 'sound_stop', 'sound_stop_all', 'sound_set', 'sound_change', 'sound_get', 'sound_clear', 'sound_tempo', 'sound_tempo_get', 'sound_note', 'sound_rest']);
+const soundBlocks = new Set(['sound_asset', 'sound_play', 'sound_loop', 'sound_wait', 'sound_stop', 'sound_stop_all', 'sound_set', 'sound_change', 'sound_get', 'sound_clear', 'sound_tempo', 'sound_tempo_get', 'sound_note', 'sound_rest']);
 const gameBlocks = new Set(['game_set', 'game_change', 'game_get', 'game_show', 'game_message', 'game_lives_rule', 'game_countdown', 'game_countdown_stop', 'game_finish', 'game_effect', 'game_effect_clear']);
 const motionBlocks = new Set(['scene_camera_follow', 'scene_world_set', 'scene_world_restart', 'scene_motion_set', 'scene_motion_change', 'scene_motion_body', 'scene_motion_response', 'scene_motion_edges', 'scene_motion_auto', 'scene_control', 'scene_jump', 'scene_projectile', 'scene_fire']);
 export const supportedBlocks = new Set([
@@ -23,6 +23,7 @@ export const supportedBlocks = new Set([
   'scene_effect_set', 'scene_effect_change', 'scene_effect_get', 'scene_effect_clear', 'scene_stage_effect_set', 'scene_stage_effect_change', 'scene_stage_effect_get', 'scene_stage_effect_clear',
   'scene_sprite', 'scene_costume', 'scene_lookup', 'scene_create', 'scene_move', 'scene_turn', 'scene_go', 'scene_set', 'scene_get', 'scene_visibility', 'scene_costume_set', 'scene_clone', 'scene_destroy', 'scene_overlaps', 'scene_glide', 'scene_animate', 'scene_key', 'scene_background',
   'scene_backdrop', 'scene_backdrop_set', 'scene_backdrop_next', 'scene_backdrop_get', 'scene_next_costume', 'scene_frames', 'scene_play_animation',
+  'scene_animation_play', 'scene_animation_once', 'scene_animation_stop', 'scene_animation_get',
   'scene_change', 'scene_point', 'scene_distance', 'scene_touching_point', 'scene_edge', 'scene_bounce', 'scene_rotation', 'scene_layer', 'scene_say', 'scene_say_for', 'scene_pointer',
   'py_lambda',
   'py_function_ref', 'py_module_function_ref', 'py_dynamic_call', 'py_dynamic_call_value',
@@ -148,7 +149,7 @@ function generator() {
   for (const type of ['scene_touching_color', 'scene_color_touching']) g.forBlock[type] = (b, gen) => [`${sprite(b, gen)}.touching_color(${v(b, gen, 'COLOR')}, ${type === 'scene_color_touching' ? v(b, gen, 'OWN_COLOR') : 'None'}, ${v(b, gen, 'TOLERANCE')})`, Order.FUNCTION_CALL];
   g.forBlock['sound_asset'] = (b, gen) => [gen.quote_(b.getFieldValue('SOUND_ID')), Order.ATOMIC];
   for (const [type, method, args] of [
-    ['sound_play', 'play', ['SOUND', 'OWNER']], ['sound_wait', 'play_wait', ['SOUND', 'OWNER']],
+    ['sound_play', 'play', ['SOUND', 'OWNER']], ['sound_loop', 'loop', ['SOUND', 'OWNER']], ['sound_wait', 'play_wait', ['SOUND', 'OWNER']],
     ['sound_stop', 'stop', ['OWNER']], ['sound_stop_all', 'stop_all', []], ['sound_clear', 'clear_effects', ['OWNER']],
     ['sound_tempo', 'set_tempo', ['VALUE']], ['sound_rest', 'rest', ['BEATS']],
   ] as const) g.forBlock[type] = (b, gen) => { gen.useScene('sounds'); return `${['sound_wait', 'sound_rest'].includes(type) ? 'await ' : ''}_pb_sounds.${method}(${args.map(a => v(b, gen, a)).join(', ')})\n`; };
@@ -221,6 +222,11 @@ function generator() {
     ['scene_point', 'point_towards', ['X', 'Y']], ['scene_bounce', 'bounce', []], ['scene_stamp', 'stamp', []],
     ['scene_glide', 'glide', ['SECONDS', 'X', 'Y']], ['scene_animate', 'animate', ['FRAMES', 'SECONDS']],
   ] as const) g.forBlock[type] = (b, gen) => `${['scene_glide', 'scene_animate', 'scene_play_animation'].includes(type) ? 'await ' : ''}${sprite(b, gen)}.${method}(${args.map(a => v(b, gen, a)).join(', ')})\n`;
+  // Named animations: play loops until another starts; once waits for the last costume.
+  g.forBlock['scene_animation_play'] = (b, gen) => `${sprite(b, gen)}.play(${gen.quote_(b.getFieldValue('ANIMATION'))})\n`;
+  g.forBlock['scene_animation_once'] = (b, gen) => `await ${sprite(b, gen)}.play_once(${gen.quote_(b.getFieldValue('ANIMATION'))})\n`;
+  g.forBlock['scene_animation_stop'] = (b, gen) => `${sprite(b, gen)}.stop_animation()\n`;
+  g.forBlock['scene_animation_get'] = (b, gen) => [`${sprite(b, gen)}.animation`, Order.MEMBER];
   g.forBlock['scene_set'] = (b, gen) => `${sprite(b, gen)}.set(${gen.quote_(b.getFieldValue('PROPERTY'))}, ${v(b, gen, 'VALUE')})\n`;
   g.forBlock['scene_change'] = (b, gen) => `${sprite(b, gen)}.change(${gen.quote_(b.getFieldValue('PROPERTY'))}, ${v(b, gen, 'VALUE')})\n`;
   g.forBlock['scene_rotation'] = (b, gen) => `${sprite(b, gen)}.rotation_style(${gen.quote_(b.getFieldValue('STYLE'))})\n`;
@@ -430,11 +436,11 @@ export function compileUnit(workspace: Blockly.Workspace, options: UnitOptions =
     if (block.type === 'scene_sprite' && (!scene.sprites.some(s => s.id === block.getFieldValue('SPRITE_ID')) || options.module)) report('missing-sprite', options.module ? 'Pass a sprite as a parameter when exporting a function module.' : 'Choose an existing scene sprite. Deleted sprites stay unresolved until restored.', block);
     if (block.type === 'scene_backdrop' && block.getFieldValue('BACKDROP_ID') && !(options.module ? builtinBackdrops : backdrops(scene)).some(a => a.id === block.getFieldValue('BACKDROP_ID'))) report('missing-backdrop', 'Choose an available backdrop; pass project backdrops as module parameters.', block);
     if (block.type === 'scene_costume' && !(options.module ? builtins : costumes(scene)).some(a => a.id === block.getFieldValue('COSTUME_ID'))) report('missing-costume', 'Choose an available costume; pass project costumes as module parameters.', block);
-    if (['scene_key', 'scene_pointer', 'scene_glide', 'scene_animate', 'scene_say_for', 'scene_play_animation'].includes(block.type)) {
+    if (['scene_key', 'scene_pointer', 'scene_glide', 'scene_animate', 'scene_say_for', 'scene_play_animation', 'scene_animation_play', 'scene_animation_once'].includes(block.type)) {
       result.requiresEvents = true;
       if (result.executionMode !== 'events' && !options.module) report('event-context', 'Add an event handler to use live input or timed sprite actions.', block);
     }
-    if (['input_ask', 'input_ask_value', 'sound_wait', 'sound_note', 'sound_rest', 'py_wait', 'scene_glide', 'scene_animate', 'scene_say_for', 'scene_play_animation'].includes(block.type) && !asyncContext) report('wait-context', 'Wait belongs inside an event handler or a function explicitly marked async.', block);
+    if (['input_ask', 'input_ask_value', 'sound_wait', 'sound_note', 'sound_rest', 'py_wait', 'scene_glide', 'scene_animate', 'scene_say_for', 'scene_play_animation', 'scene_animation_once'].includes(block.type) && !asyncContext) report('wait-context', 'Wait belongs inside an event handler or a function explicitly marked async.', block);
     if (block.type === 'py_emit') {
       result.requiresEvents = true;
       if (result.executionMode !== 'events' && !options.module) report('event-context', 'Add an event handler to run a project that sends events.', block);

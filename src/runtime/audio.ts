@@ -68,7 +68,8 @@ export class SoundPlayer implements AudioHost {
         if (command.type === 'play') { if (this.buffers.size >= 8) this.buffers.delete(this.buffers.keys().next().value!); this.buffers.set(command.sound, buffer); }
       }
       const source = this.context.createBufferSource(), gain = this.context.createGain(), pan = this.context.createStereoPanner();
-      source.buffer = buffer; source.connect(gain); gain.connect(pan); pan.connect(this.master!);
+      // A looping sound plays until it is stopped; it never ends by itself.
+      source.buffer = buffer; source.loop = command.type === 'play' && command.loop === true; source.connect(gain); gain.connect(pan); pan.connect(this.master!);
       const voice = { owner: command.owner, source, gain, pan }; this.settings(voice, command.settings);
       this.voices.set(command.id, voice); source.onended = () => this.end(command.id, false); source.start(); this.onChange();
     } catch (error) { this.end(command.id, true, false); this.complete(command.id, error instanceof Error ? error.message : String(error)); }

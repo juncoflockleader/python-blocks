@@ -14,7 +14,7 @@ import { installAppearanceEditor } from './appearance-editor';
 import * as Blockly from 'blockly/core';
 import { installScenePalette } from './palette';
 import { Stage } from '../stage';
-import { backdrops, builtins, costumes, spriteFrames, type SceneInput, type RotationStyle } from './model';
+import { FRAMES_ANIMATION, backdrops, builtins, costumes, spriteFrames, type SceneInput, type RotationStyle, type SpriteState } from './model';
 import { changeScene, sceneState } from './state';
 import { installStageView } from './stage-view';
 import { resizeWorld, screenLimits, worldScreens } from './world-size';
@@ -54,7 +54,15 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     <div class="sheet-body scene-editor" id="sprite-settings-body"><form id="scene-more" aria-label="Where the sprite lives"><fieldset id="scene-more-fields"><legend>Where it lives</legend><div class="scene-properties-grid">
       <label class="level-pro">Belongs to <select id="scene-world"></select></label>${numberField('scene-layer', 'Layer', -1000, 1000)}
       <label>Rotation <select id="scene-rotation"><option value="all">All around</option><option value="left-right">Left/right only</option><option value="none">Do not rotate</option></select></label>
-    </div></fieldset></form></div></dialog>`);
+    </div></fieldset>
+    <fieldset id="scene-animate-fields" class="scene-animate"><legend>Animation</legend>
+      <label class="scene-check"><input id="scene-auto" type="checkbox"> Animate while moving</label>
+      <p class="scene-hint" id="scene-auto-hint">Plays one animation while the sprite moves, another in the air, and another when it is still.</p>
+      <div class="scene-properties-grid" id="scene-auto-grid">
+        <label>Moving <select id="scene-auto-moving"></select></label><label>In the air <select id="scene-auto-air"></select></label><label>Still <select id="scene-auto-still"></select></label>
+      </div>
+      <label class="scene-check"><input id="scene-auto-turn" type="checkbox"> Turn to face the way it moves</label>
+    </fieldset></form></div></dialog>`);
   document.querySelector('.stage-wrap')!.insertAdjacentHTML('beforeend', '<p id="stage-dialogue" class="stage-dialogue" role="status" aria-live="polite"></p>');
   document.getElementById('stage-toolbar')!.insertAdjacentHTML('afterbegin', '<button id="scene-reset" class="button secondary" title="Reset stage">Reset stage</button>');
   const el = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
@@ -91,12 +99,14 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     const before = sceneState(workspace), next = structuredClone(before); let added = '';
     if (kind === 'world') await includeWorldTemplate(next,id);
     else {
-      const { costume: asset, frames } = includeStockSet(next,kind,id), art = findStock(kind,id)!;
+      const { costume: asset, frames, animations, autoAnimate } = includeStockSet(next,kind,id), art = findStock(kind,id)!;
       if (kind === 'backdrop') (next.worlds?.find(w => w.id === next.world) ?? next).backdrop = asset;
       else {
         added = crypto.randomUUID();
-        // A library character brings every pose; its frames are the walk cycle, and it turns to face left or right.
-        next.sprites.push({ id: added, name: uniqueName(art.name), x: Number(canvas.dataset.cameraX ?? 0), y: Number(canvas.dataset.cameraY ?? 0), ...(next.world ? { world: next.world } : {}), direction: 0, size: 100, layer: 0, visible: true, costume: asset, ...(frames ? { costumes: frames } : {}), ...(art.category === 'Characters' && !art.builtin ? { rotationStyle: 'left-right' as const, frameSeconds: 0.12 } : {}) });
+        // A library character brings every pose as named animations (idle, walk, jump, happy; a chick flaps); its frames
+        // are the walk cycle, and it animates while it moves, turning to face left or right. A coin or gem brings its spin.
+        next.sprites.push({ id: added, name: uniqueName(art.name), x: Number(canvas.dataset.cameraX ?? 0), y: Number(canvas.dataset.cameraY ?? 0), ...(next.world ? { world: next.world } : {}), direction: 0, size: 100, layer: 0, visible: true, costume: asset, ...(frames ? { costumes: frames } : {}), ...(animations ? { animations } : {}),
+          ...(autoAnimate ? { rotationStyle: 'left-right' as const, frameSeconds: 0.12, autoAnimate } : {}) });
       }
     }
     signal.throwIfAborted();
@@ -134,6 +144,37 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
   const error = (e: unknown) => { el('scene-error').textContent = e instanceof Error ? e.message : String(e); };
   const attempt = (fn: () => void) => { try { el('scene-error').textContent = ''; fn(); } catch (e) { error(e); } };
   const clearKeys = () => playInput.release();
+  /** Animate while moving: a switch, which animation plays when moving, in the air and still, and turning. */
+  const autoChoices = (sprite: SpriteState) => [['', 'Nothing'], [FRAMES_ANIMATION, 'frames'], ...(sprite.animations ?? []).map(a => [a.name, a.name])];
+  function renderAuto(sprite: SpriteState | undefined) {
+    const auto = sprite?.autoAnimate;
+    el<HTMLInputElement>('scene-auto').checked = !!auto;
+    for (const key of ['moving', 'air', 'still'] as const) {
+      const field = el<HTMLSelectElement>(`scene-auto-${key}`);
+      field.replaceChildren(...(sprite ? autoChoices(sprite) : []).map(([value, label]) => new Option(label, value)));
+      field.value = auto?.[key] ?? ''; field.disabled = !auto;
+    }
+    el<HTMLInputElement>('scene-auto-turn').checked = auto?.turn ?? false; el<HTMLInputElement>('scene-auto-turn').disabled = !auto;
+    el('scene-auto-grid').hidden = !auto;
+  }
+  function applyAuto(changed: 'on' | 'moving' | 'air' | 'still' | 'turn') {
+    if (!editing) return; attempt(() => {
+      const scene = sceneState(workspace), sprite = scene.sprites.find(s => s.id === selected); if (!sprite) return;
+      if (changed === 'on') {
+        if (el<HTMLInputElement>('scene-auto').checked) {
+          const has = (n: string) => sprite.animations?.some(a => a.name === n);
+          sprite.autoAnimate = { moving: has('walk') ? 'walk' : FRAMES_ANIMATION, air: has('jump') ? 'jump' : '', still: has('idle') ? 'idle' : '', turn: true };
+          if ((sprite.rotationStyle ?? 'all') === 'all') sprite.rotationStyle = 'left-right';
+        } else delete sprite.autoAnimate;
+      } else if (sprite.autoAnimate) {
+        if (changed === 'turn') sprite.autoAnimate.turn = el<HTMLInputElement>('scene-auto-turn').checked;
+        else sprite.autoAnimate[changed] = el<HTMLSelectElement>(`scene-auto-${changed}`).value;
+      }
+      changeScene(workspace, scene); render(true);
+    });
+  }
+  el('scene-auto').addEventListener('change', () => applyAuto('on'));
+  for (const key of ['moving', 'air', 'still', 'turn'] as const) el(`scene-auto-${key}`).addEventListener('change', () => applyAuto(key));
   function loadProperties() {
     appearance.refresh(); dataEditor.refresh(); motionEditor.refresh();
     const scene = sceneState(workspace), sprite = scene.sprites.find(s => s.id === selected);
@@ -145,9 +186,10 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     el<HTMLSelectElement>('scene-world').replaceChildren(new Option('Global (all worlds)', ''), ...(scene.worlds ?? []).map(w => new Option(w.name, w.id))); el<HTMLSelectElement>('scene-world').value = sprite?.world ?? '';
     el<HTMLInputElement>('scene-visible').checked = sprite?.visible ?? true;
     el<HTMLSelectElement>('scene-rotation').value = sprite?.rotationStyle ?? 'all';
+    renderAuto(sprite);
     el<HTMLInputElement>('scene-background').value = scene.worlds?.find(w => w.id === scene.world)?.background ?? scene.background;
     el<HTMLSelectElement>('scene-backdrop').replaceChildren(new Option('Plain color', ''), ...backdrops(scene).map(a => new Option(a.name, a.id))); el<HTMLSelectElement>('scene-backdrop').value = (scene.worlds?.find(w => w.id === scene.world) ?? scene).backdrop ?? '';
-    for (const id of ['scene-fields', 'scene-more-fields']) el<HTMLFieldSetElement>(id).disabled = !editing || !sprite;
+    for (const id of ['scene-fields', 'scene-more-fields', 'scene-animate-fields']) el<HTMLFieldSetElement>(id).disabled = !editing || !sprite;
     for (const id of ['scene-copy', 'scene-delete']) el<HTMLButtonElement>(id).disabled = !editing || !sprite;
     for (const action of ['a', 'b'] as const) { el<HTMLSelectElement>('touch-key-' + action).value = (scene.controls ?? defaultControls())[action]; el<HTMLSelectElement>('touch-key-' + action).disabled = !editing; }
     if (editing) playInput.configure(scene.controls);

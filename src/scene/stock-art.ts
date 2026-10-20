@@ -1,5 +1,5 @@
 import { paintBuiltinBackdrop, paintBuiltinCostume, type AssetKind } from './assets';
-import { builtins, builtinBackdrops, isStock, STOCK_LIMITS, type Costume, type SceneState } from './model';
+import { builtins, builtinBackdrops, isStock, STOCK_LIMITS, type AutoAnimate, type Costume, type SceneState, type SpriteAnimation } from './model';
 import { LIBRARY, STOCK_ENTRIES, stockAsset, stockAssetById, stockEntry } from '../art/catalog';
 import { paintStockBox } from '../art/raster';
 
@@ -33,8 +33,9 @@ export async function stockCanvas(art: StockArtwork, pixels = 1) {
 }
 
 /** Add library art to a scene as references (each reference once). Returns the
- * asset to show first and, for animated entries, the frames in order. */
-export function includeStockSet(scene: SceneState, kind: AssetKind, id: string, only?: 'first'): { costume: string; frames?: string[] } {
+ * asset to show first and, for animated entries, the frames in order, the named
+ * animations and, for characters, how they animate while moving. */
+export function includeStockSet(scene: SceneState, kind: AssetKind, id: string, only?: 'first'): { costume: string; frames?: string[]; animations?: SpriteAnimation[]; autoAnimate?: AutoAnimate } {
   const art = findStock(kind, id); if (!art) throw new Error('Choose available library artwork.');
   if (art.builtin) return { costume: art.id };
   const entry = stockEntry(kind, id)!, list = kind === 'costume' ? scene.assets : (scene.backdrops ??= []);
@@ -42,7 +43,10 @@ export function includeStockSet(scene: SceneState, kind: AssetKind, id: string, 
   const limit = kind === 'costume' ? STOCK_LIMITS.costumes : STOCK_LIMITS.backdrops;
   if (list.filter(a => isStock(a)).length + fresh.length > limit) throw new Error(`A project can use ${limit} library ${kind === 'costume' ? 'costumes' : 'backdrops'}. Remove some sprites or backdrops it no longer uses.`);
   for (const a of fresh) list.push({ id: a.id, name: a.name, width: a.width, height: a.height, stock: a.ref } satisfies Costume);
-  return { costume: stockAsset(entry.costume)!.id, ...(entry.frames && !only ? { frames: entry.frames.map(ref => stockAsset(ref)!.id) } : {}) };
+  const ids = (refs: string[]) => refs.map(ref => stockAsset(ref)!.id);
+  return { costume: stockAsset(entry.costume)!.id, ...(entry.frames && !only ? { frames: ids(entry.frames) } : {}),
+    ...(entry.animations && !only ? { animations: entry.animations.map(a => ({ name: a.name, frames: ids(a.frames), ...(a.seconds ? { seconds: a.seconds } : {}) })) } : {}),
+    ...(entry.autoAnimate && !only ? { autoAnimate: { ...entry.autoAnimate } } : {}) };
 }
 /** Add just one picture of an entry (a world template's backdrop); returns its id. */
 export async function includeStock(scene: SceneState, kind: AssetKind, id: string) { return includeStockSet(scene, kind, id, 'first').costume; }

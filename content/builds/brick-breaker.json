@@ -55,7 +55,7 @@
  "starter": {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 19,
+  "languageVersion": 22,
   "workspace": {
    "blocks": {
     "languageVersion": 0,
@@ -66,25 +66,53 @@
     "background": "#22394a",
     "assets": [
      {
-      "id": "paddle_art",
-      "name": "Paddle bar",
+      "id": "stock-paddle",
+      "name": "Paddle",
       "width": 80,
       "height": 12,
-      "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAAMCAYAAAD1XTohAAAATklEQVR42mNgQAPH7/f8H8W4MQMuMBo4FATkaIBQGIijgUFBAI4GBIWBOBoIowE4GoCj5eBoLTwaGBS3BefsTv4/ionHOHsko4FDWsABANUvTOZqvEj2AAAAAElFTkSuQmCC"
+      "stock": "props/paddle@1"
      },
      {
-      "id": "brick_art",
-      "name": "Brick",
-      "width": 44,
-      "height": 14,
-      "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACwAAAAOCAYAAABU4P48AAAAOUlEQVR42mNgAIIPi2v+DwUMcivDk1rv/0MJjzp41MGjDh518KiDRx08zB28M8Hq/1DC4PbEUHIsANI2U38+V7l6AAAAAElFTkSuQmCC"
-     },
-     {
-      "id": "ball_art",
-      "name": "Ball",
+      "id": "stock-little-ball",
+      "name": "Little ball",
       "width": 14,
       "height": 14,
-      "data": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAA4AAAAOCAYAAAAfSC3RAAAAQ0lEQVR42mNgQAM71k7+jw0z4AMwRf9/fUDBeDVj04DNAJI1YWjG5Tx8GsGaSdGEYusQ00hW4JAdHRQlAIqSHKmJHABeYzgTgFfLZAAAAABJRU5ErkJggg=="
+      "stock": "props/little-ball@1"
+     },
+     {
+      "id": "stock-brick-red",
+      "name": "Brick red",
+      "width": 44,
+      "height": 14,
+      "stock": "props/brick-red@1"
+     },
+     {
+      "id": "stock-brick-orange",
+      "name": "Brick orange",
+      "width": 44,
+      "height": 14,
+      "stock": "props/brick-orange@1"
+     },
+     {
+      "id": "stock-brick-yellow",
+      "name": "Brick yellow",
+      "width": 44,
+      "height": 14,
+      "stock": "props/brick-yellow@1"
+     },
+     {
+      "id": "stock-brick-green",
+      "name": "Brick green",
+      "width": 44,
+      "height": 14,
+      "stock": "props/brick-green@1"
+     },
+     {
+      "id": "stock-brick-blue",
+      "name": "Brick blue",
+      "width": 44,
+      "height": 14,
+      "stock": "props/brick-blue@1"
      }
     ],
     "sprites": [
@@ -97,7 +125,7 @@
       "size": 100,
       "layer": 1,
       "visible": true,
-      "costume": "paddle_art",
+      "costume": "stock-paddle",
       "rotationStyle": "none"
      },
      {
@@ -109,7 +137,7 @@
       "size": 100,
       "layer": 2,
       "visible": true,
-      "costume": "ball_art",
+      "costume": "stock-little-ball",
       "rotationStyle": "none"
      },
      {
@@ -121,8 +149,15 @@
       "size": 100,
       "layer": 1,
       "visible": false,
-      "costume": "brick_art",
-      "rotationStyle": "none"
+      "costume": "stock-brick-red",
+      "rotationStyle": "none",
+      "costumes": [
+       "stock-brick-red",
+       "stock-brick-orange",
+       "stock-brick-yellow",
+       "stock-brick-green",
+       "stock-brick-blue"
+      ]
      }
     ]
    }

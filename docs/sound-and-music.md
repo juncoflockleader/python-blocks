@@ -6,7 +6,7 @@ The **Sound editor** lets learners record their voice, tune it, make sound effec
 
 Four ways in, one editor: **Sounds** in the sprite tray (beside Sprites and Paint), the **Sounds** list in the Sprite tab (play any sound, tap its name to open it, or **Edit sounds**), **Edit sounds** at the top of the palette's Sounds blocks, and **New sound…** at the end of a sound block's menu. After Done, a block that chose New sound… uses the newest sound made in that visit; the new sound and the block's choice are one Undo step. The editor opens full screen, like Paint, and is not available while a program runs.
 
-The editor shows every sound in the project on the left, the sound being worked on in the middle and its tools on the right. **+ New** offers **Record your voice**, **Make an effect**, **Write a song** and **Import a sound file**. Each card's **⋯** menu duplicates or deletes a sound. Nothing is saved until **Done** (or Escape), which writes every change as one project Undo step; a note under the stage then offers **Undo**. Inside the editor, Undo and Redo (Ctrl/⌘+Z, Ctrl/⌘+Shift+Z) cover every edit, rename, new sound and deletion, so the editor never asks "Are you sure?": a deleted sound comes back with the note's **Undo**. Deleting a sound that blocks use leaves those blocks reporting a missing sound until another is picked or the deletion is undone.
+The editor shows every sound in the project on the left, the sound being worked on in the middle and its tools on the right. **+ New** offers **Record your voice**, **Make an effect**, **Write a song**, **Import a sound file** and the **Sound library**. Each card's **⋯** menu duplicates or deletes a sound. Nothing is saved until **Done** (or Escape), which writes every change as one project Undo step; a note under the stage then offers **Undo**. Inside the editor, Undo and Redo (Ctrl/⌘+Z, Ctrl/⌘+Shift+Z) cover every edit, rename, new sound and deletion, so the editor never asks "Are you sure?": a deleted sound comes back with the note's **Undo**. Deleting a sound that blocks use leaves those blocks reporting a missing sound until another is picked or the deletion is undone.
 
 ## Recording
 
@@ -36,6 +36,21 @@ Effects are baked into the sound's samples. A sound never grows past 60 seconds:
 
 An effect added just as designed (sliders in the middle, not remade) is saved as a **library sound**: a reference such as `effects/coin@1` instead of recorded data, made from the same numbers whenever it plays ([sound-library.ts](../src/scene/sound-library.ts)). It costs the project almost nothing, which is why every example game can have its own coin, jump, hit and win sounds. Tuning, trimming or duplicating a library sound bakes it into the project as ordinary data. Library sounds count toward the 24 sounds like any other.
 
+## The sound library
+
+**Sound library** is a place to listen before making anything ([music-library.ts](../src/scene/music-library.ts), [sound-library.ts](../src/scene/sound-library.ts)). Its **Effects** shelf shows the ten effects as designed, each with its waveform and length; **Music** shows six original loops, each with its mood, speed, length and a small picture of its notes:
+
+| Loop | Mood | Speed and length |
+|---|---|---|
+| Adventure | Bright and bouncy | 120 BPM, 16 beats (8 s) |
+| Calm meadow | Gentle, for stories | 90 BPM, 16 beats (11 s) |
+| Chase | Fast, for dodging | 150 BPM, 16 beats (6 s) |
+| Spooky cave | Dark and slow | 80 BPM, 16 beats (12 s) |
+| Space drift | Floaty, for space | 100 BPM, 16 beats (10 s) |
+| Victory | A short fanfare | 130 BPM, 8 beats (4 s) |
+
+**Listen** plays one in the editor (tap again to stop) and **Add** puts it in the project. An effect comes in as a library reference, like an effect made with Make an effect. A loop comes in as an ordinary **song**: the project's own copy of its notes, which the song editor can change, so there is nothing new to save or license. Every loop ends exactly on its last beat, so it repeats without a gap when started with **start sound … looping**.
+
 ## Composing songs
 
 **Write a song** opens a grid of quarter-beat columns, four beats at a time, with a strip of the whole song above it (tap a segment to show those beats; it follows the playhead while playing). Melody rows are the white keys of an octave (C4–C5 to start); arrows move the octave, and **♯ Show sharps** adds the black keys. Below are Kick, Snare and Hat lanes. Tap a square to add a note, and tap a note to remove it; a new note plays as it is placed. Notes take the chosen instrument (Soft triangle, Game square, Flute sine, Buzzy sawtooth), each in its own colour, and the chosen length (¼, ½, 1 or 2 beats). **Speed** sets beats a minute and **Length** adds or removes four beats. Arrow keys move between squares.
@@ -52,6 +67,7 @@ Songs keep their format: a tempo of 30–300 BPM, up to 64 beats and 60 seconds,
 from playground import sounds
 
 sounds.play("first_song")              # start without waiting, stage channel
+sounds.loop("music")                   # play again and again until stopped
 await sounds.play_wait("voice", actor) # wait for this playback instance
 sounds.set("volume", 70, actor)
 sounds.change("pitch", 12, actor)
@@ -67,7 +83,7 @@ await sounds.note(60, .25, "kick")
 await sounds.rest(.5)
 ```
 
-Every action has a corresponding Sounds block, with stable asset dropdowns and an explicit sprite input (`None` means the stage). Wait, note and rest require a handler or explicitly async helper. Sound-using projects and reusable helpers automatically enable the event session. Modules receive project assets and sprites through parameters. Python remains the language executing the program.
+**start sound … looping** (`sounds.loop`) repeats a sound with no gap until stop sounds, Stop, the game finishing or the destruction of its sprite ends it, which makes it the block for background music; the Star game, the Platformer and Super Hopper start a library loop this way. Every action has a corresponding Sounds block, with stable asset dropdowns and an explicit sprite input (`None` means the stage). Wait, note and rest require a handler or explicitly async helper. Sound-using projects and reusable helpers automatically enable the event session. Modules receive project assets and sprites through parameters. Python remains the language executing the program.
 
 Volume is 0–100%, pan −100 (left) to 100 (right), and pitch −24 to 24 semitones. Set rejects out-of-range values; change clamps to the valid range. These settings affect both existing and future playback on that channel. Pitch is a tape-speed effect: +12 doubles speed/pitch and halves remaining duration. It affects an entire saved song's timing as well as its notes. Note/rest actions capture the library tempo when they start; changing it does not reschedule existing actions or change a saved song's own tempo.
 
@@ -77,14 +93,14 @@ Run and the Sound editor enable Web Audio from a user gesture. **Enable audio** 
 
 ## Persistence and bounds
 
-Language version **16** introduced sound blocks and optional `sounds` scene assets. Current project exports use version 21 (modules 19); earlier project versions 1–20 and pinned module versions 5–19 remain readable. The scene serializer preserves sound-only projects. Project JSON and source ZIP exports include the captured WAV data and editable scores. **Export playable** also includes the browser host and runtime, retaining actual audio playback and completion; see [portable playback](portable-playback.md).
+Language version **16** introduced sound blocks and optional `sounds` scene assets. Current project exports use version 22 (modules 19); earlier project versions 1–21 and pinned module versions 5–19 remain readable. The scene serializer preserves sound-only projects. Project JSON and source ZIP exports include the captured WAV data and editable scores. **Export playable** also includes the browser host and runtime, retaining actual audio playback and completion; see [portable playback](portable-playback.md).
 
 There are at most 24 sound/song assets (+ New is disabled at 24 with a note to delete one), 32 concurrent playback instances and 20,000 learner sound commands per run. Browser buffers cache at most eight assets. Scenes fit within 12 MB UTF-8 and complete projects within 16 MB; module bundles retain their 2 MB limit. Browser storage may offer less space: a visible save warning directs the learner to Save project when autosave cannot fit. A Done or import that would break these limits keeps the previous saved scene and says why.
 
 ## Verification
 
-The [model/compiler tests](../tests/unit/sounds.test.ts) cover canonical WAV validation, original instrument samples/envelopes, score/command bounds, stable references, sound-only persistence, captured exports, version-15 migration, source mapping and imported sound helpers. [Native tests](../tests/python/test_sounds.py) cover host completion, stopped/cancelled waits, clone channels, destruction, tempo capture, error origin, atomic validation, overlap bounds and terminal cancellation. [Runner tests](../tests/unit/runner.test.ts) cover playback completion routing across worker replacement.
+The [model/compiler tests](../tests/unit/sounds.test.ts) cover canonical WAV validation, original instrument samples/envelopes, score/command bounds, stable references, sound-only persistence, captured exports, version-15 migration, source mapping, imported sound helpers, the music loops (valid songs that end on their last beat, added as the project's own copy) and the looping play command. [Native tests](../tests/python/test_sounds.py) cover host completion, stopped/cancelled waits, clone channels, destruction, tempo capture, error origin, atomic validation, overlap bounds, terminal cancellation and the loop request. [Runner tests](../tests/unit/runner.test.ts) cover playback completion routing across worker replacement.
 
-[Sound editing tests](../tests/unit/sound-edit.test.ts) check that Higher and Lower move the pitch by two semitones and keep the length, Faster and Slower resample, Tune works on a selection, Keep, Cut, Reverse, fades and Louder, Echo's repeats and the 60-second limits, trimming the quiet ends, waveform peaks, and that every effect kind is bounded and repeatable. The [browser tests](../tests/e2e/sounds.spec.ts) record with the countdown from a generated MediaStream, tune a selected part with Undo and Redo, save with Done and undo it, make effects and songs, delete without a browser dialog and undo it, open the editor from the tray, the Sprite tab, the palette and a block's New sound…, show the blocked and missing microphone messages, keep a recording when Done is pressed, import a file, explain the 24-sound limit, and measure real Web Audio output for overlap, stereo pan/volume/clear effects, mute, pitch-dependent completion, owner destruction, Stop/restart and game finish. Generated streams exercise the actual MediaRecorder; they do not verify physical microphone hardware or OS permission dialogs.
+[Sound editing tests](../tests/unit/sound-edit.test.ts) check that Higher and Lower move the pitch by two semitones and keep the length, Faster and Slower resample, Tune works on a selection, Keep, Cut, Reverse, fades and Louder, Echo's repeats and the 60-second limits, trimming the quiet ends, waveform peaks, and that every effect kind is bounded and repeatable. The [browser tests](../tests/e2e/sounds.spec.ts) record with the countdown from a generated MediaStream, tune a selected part with Undo and Redo, save with Done and undo it, make effects and songs, delete without a browser dialog and undo it, open the editor from the tray, the Sprite tab, the palette and a block's New sound…, show the blocked and missing microphone messages, keep a recording when Done is pressed, import a file, explain the 24-sound limit, listen to and add an effect and a music loop from the Sound library, keep a looping sound playing until stop sounds, and measure real Web Audio output for overlap, stereo pan/volume/clear effects, mute, pitch-dependent completion, owner destruction, Stop/restart and game finish. Generated streams exercise the actual MediaRecorder; they do not verify physical microphone hardware or OS permission dialogs.
 
 The design follows the browser's [Web Audio user activation and playback guidance](https://developer.mozilla.org/en-US/docs/Web/API/Web_Audio_API/Best_practices) and uses [AudioBufferSourceNode completion](https://developer.mozilla.org/en-US/docs/Web/API/AudioBufferSourceNode). The feature baseline includes Arcade's [music reference](https://arcade.makecode.com/reference/music), alongside the Scratch sound workflow in the [feature survey](research/block-programming-feature-survey.md).

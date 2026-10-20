@@ -14,6 +14,71 @@
       "Change how far each arrow press moves the player.",
       "Make Friend glide to a different corner.",
       "Print a message when the player is clicked."
+    ],
+    "demo": [
+      {
+        "key": "ArrowRight",
+        "ms": 70
+      },
+      {
+        "wait": 170
+      },
+      {
+        "key": "ArrowRight",
+        "ms": 70
+      },
+      {
+        "wait": 170
+      },
+      {
+        "key": "ArrowRight",
+        "ms": 70
+      },
+      {
+        "wait": 170
+      },
+      {
+        "key": "ArrowRight",
+        "ms": 70
+      },
+      {
+        "wait": 170
+      },
+      {
+        "key": "ArrowUp",
+        "ms": 70
+      },
+      {
+        "wait": 170
+      },
+      {
+        "key": "ArrowUp",
+        "ms": 70
+      },
+      {
+        "wait": 170
+      },
+      {
+        "key": "ArrowUp",
+        "ms": 70
+      },
+      {
+        "wait": 170
+      },
+      {
+        "key": "ArrowLeft",
+        "ms": 70
+      },
+      {
+        "wait": 170
+      },
+      {
+        "key": "ArrowLeft",
+        "ms": 70
+      },
+      {
+        "wait": 170
+      }
     ]
   },
   {
@@ -31,6 +96,15 @@
       "Make the sprite glide faster or slower.",
       "Change what the sprite says when it bounces.",
       "Point toward a fixed spot instead of the pointer."
+    ],
+    "demo": [
+      {
+        "wait": 1200
+      },
+      {
+        "key": "Space",
+        "ms": 80
+      }
     ]
   },
   {
@@ -99,6 +173,20 @@
       "Make the jump higher.",
       "Move a ledge to make it harder.",
       "Make the explorer walk faster."
+    ],
+    "demo": [
+      {
+        "key": "ArrowRight",
+        "ms": 700
+      },
+      {
+        "key": "Space",
+        "ms": 80
+      },
+      {
+        "key": "ArrowRight",
+        "ms": 900
+      }
     ]
   },
   {
@@ -116,6 +204,16 @@
       "Paint a new wall in [[Worlds & tilemaps]].",
       "Make the camera stop following.",
       "Move the flag to a new spot."
+    ],
+    "demo": [
+      {
+        "key": "ArrowRight",
+        "ms": 900
+      },
+      {
+        "key": "ArrowDown",
+        "ms": 700
+      }
     ]
   },
   {
@@ -133,6 +231,20 @@
       "Give yourself more time on the countdown.",
       "Change the winning message.",
       "Make a hazard give back a life instead."
+    ],
+    "demo": [
+      {
+        "key": "ArrowRight",
+        "ms": 700
+      },
+      {
+        "key": "ArrowUp",
+        "ms": 500
+      },
+      {
+        "key": "ArrowLeft",
+        "ms": 600
+      }
     ]
   },
   {
@@ -150,6 +262,15 @@
       "Change two notes in the melody.",
       "Make the tune slower with tempo.",
       "Use a different instrument."
+    ],
+    "demo": [
+      {
+        "wait": 900
+      },
+      {
+        "key": "Space",
+        "ms": 80
+      }
     ]
   },
   {
@@ -167,6 +288,16 @@
       "Ask a different question.",
       "Change the color the explorer must find.",
       "Show the timer when you win."
+    ],
+    "demo": [
+      {
+        "key": "ArrowRight",
+        "ms": 800
+      },
+      {
+        "key": "ArrowUp",
+        "ms": 500
+      }
     ]
   },
   {
@@ -185,7 +316,21 @@
       "Win at 10 stars instead of 5.",
       "Add a countdown."
     ],
-    "build": "catch-the-star"
+    "build": "catch-the-star",
+    "demo": [
+      {
+        "key": "ArrowRight",
+        "ms": 600
+      },
+      {
+        "key": "ArrowUp",
+        "ms": 600
+      },
+      {
+        "key": "ArrowLeft",
+        "ms": 400
+      }
+    ]
   },
   {
     "id": "dodge-the-balls-game",
@@ -203,7 +348,17 @@
       "Start with more lives.",
       "Make more balls appear."
     ],
-    "build": "dodge-the-balls"
+    "build": "dodge-the-balls",
+    "demo": [
+      {
+        "key": "ArrowLeft",
+        "ms": 700
+      },
+      {
+        "key": "ArrowRight",
+        "ms": 1000
+      }
+    ]
   },
   {
     "id": "pen-patterns-game",
@@ -257,7 +412,21 @@
       "Fire projectiles faster.",
       "Move the goal star."
     ],
-    "build": "jump-quest"
+    "build": "jump-quest",
+    "demo": [
+      {
+        "key": "ArrowRight",
+        "ms": 700
+      },
+      {
+        "key": "Space",
+        "ms": 80
+      },
+      {
+        "key": "ArrowRight",
+        "ms": 800
+      }
+    ]
   },
   {
     "id": "maze-run-game",
@@ -275,7 +444,17 @@
       "Move the flag.",
       "Make the explorer slower."
     ],
-    "build": "maze-run"
+    "build": "maze-run",
+    "demo": [
+      {
+        "key": "ArrowRight",
+        "ms": 800
+      },
+      {
+        "key": "ArrowDown",
+        "ms": 700
+      }
+    ]
   },
   {
     "id": "brick-breaker-game",
@@ -294,7 +473,17 @@
       "Add a fourth row of bricks, and change the winning score to match.",
       "Make the paddle wider: select it, press [[Paint]], then More, Canvas size."
     ],
-    "build": "brick-breaker"
+    "build": "brick-breaker",
+    "demo": [
+      {
+        "key": "ArrowLeft",
+        "ms": 500
+      },
+      {
+        "key": "ArrowRight",
+        "ms": 900
+      }
+    ]
   },
   {
     "id": "flappy-flight-game",
@@ -313,7 +502,45 @@
       "Make gravity stronger or the flap weaker, then try to win again.",
       "Change the winning score from 10 to 20."
     ],
-    "build": "flappy-flight"
+    "build": "flappy-flight",
+    "loop": 1.8,
+    "demo": [
+      {
+        "key": "Space",
+        "ms": 70
+      },
+      {
+        "wait": 480
+      },
+      {
+        "key": "Space",
+        "ms": 70
+      },
+      {
+        "wait": 480
+      },
+      {
+        "key": "Space",
+        "ms": 70
+      },
+      {
+        "wait": 480
+      },
+      {
+        "key": "Space",
+        "ms": 70
+      },
+      {
+        "wait": 480
+      },
+      {
+        "key": "Space",
+        "ms": 70
+      },
+      {
+        "wait": 480
+      }
+    ]
   },
   {
     "id": "super-hopper-game",
@@ -332,6 +559,20 @@
       "Make the beetles faster: change their vx from −60 to −120.",
       "Make the level longer: in [[Stage view]], press [[Add screen]] and paint more ground."
     ],
-    "build": "super-hopper"
+    "build": "super-hopper",
+    "demo": [
+      {
+        "key": "ArrowRight",
+        "ms": 600
+      },
+      {
+        "key": "Space",
+        "ms": 80
+      },
+      {
+        "key": "ArrowRight",
+        "ms": 1100
+      }
+    ]
   }
 ]

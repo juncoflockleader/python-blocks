@@ -1,7 +1,7 @@
 {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 21,
+  "languageVersion": 22,
   "workspace": {
     "pythonScene": {
       "version": 1,
@@ -33,7 +33,44 @@
             "stock-fox-walk-3",
             "stock-fox-walk-4"
           ],
-          "frameSeconds": 0.12
+          "frameSeconds": 0.12,
+          "animations": [
+            {
+              "name": "idle",
+              "frames": [
+                "stock-fox-idle-1",
+                "stock-fox-idle-2"
+              ],
+              "seconds": 0.4
+            },
+            {
+              "name": "walk",
+              "frames": [
+                "stock-fox-walk-1",
+                "stock-fox-walk-2",
+                "stock-fox-walk-3",
+                "stock-fox-walk-4"
+              ]
+            },
+            {
+              "name": "jump",
+              "frames": [
+                "stock-fox-jump"
+              ]
+            },
+            {
+              "name": "happy",
+              "frames": [
+                "stock-fox-happy"
+              ]
+            }
+          ],
+          "autoAnimate": {
+            "moving": "walk",
+            "air": "jump",
+            "still": "idle",
+            "turn": true
+          }
         },
         {
           "id": "item_0",
@@ -67,7 +104,44 @@
             "stock-bee-walk-4"
           ],
           "rotationStyle": "left-right",
-          "frameSeconds": 0.12
+          "frameSeconds": 0.12,
+          "animations": [
+            {
+              "name": "idle",
+              "frames": [
+                "stock-bee-idle-1",
+                "stock-bee-idle-2"
+              ],
+              "seconds": 0.4
+            },
+            {
+              "name": "walk",
+              "frames": [
+                "stock-bee-walk-1",
+                "stock-bee-walk-2",
+                "stock-bee-walk-3",
+                "stock-bee-walk-4"
+              ]
+            },
+            {
+              "name": "jump",
+              "frames": [
+                "stock-bee-jump"
+              ]
+            },
+            {
+              "name": "happy",
+              "frames": [
+                "stock-bee-happy"
+              ]
+            }
+          ],
+          "autoAnimate": {
+            "moving": "walk",
+            "air": "jump",
+            "still": "idle",
+            "turn": true
+          }
         },
         {
           "id": "item_2",
@@ -101,7 +175,44 @@
             "stock-bee-walk-4"
           ],
           "rotationStyle": "left-right",
-          "frameSeconds": 0.12
+          "frameSeconds": 0.12,
+          "animations": [
+            {
+              "name": "idle",
+              "frames": [
+                "stock-bee-idle-1",
+                "stock-bee-idle-2"
+              ],
+              "seconds": 0.4
+            },
+            {
+              "name": "walk",
+              "frames": [
+                "stock-bee-walk-1",
+                "stock-bee-walk-2",
+                "stock-bee-walk-3",
+                "stock-bee-walk-4"
+              ]
+            },
+            {
+              "name": "jump",
+              "frames": [
+                "stock-bee-jump"
+              ]
+            },
+            {
+              "name": "happy",
+              "frames": [
+                "stock-bee-happy"
+              ]
+            }
+          ],
+          "autoAnimate": {
+            "moving": "walk",
+            "air": "jump",
+            "still": "idle",
+            "turn": true
+          }
         },
         {
           "id": "item_4",
@@ -1108,6 +1219,148 @@
           "name": "Win",
           "kind": "clip",
           "stock": "effects/win@1"
+        },
+        {
+          "id": "music",
+          "name": "Calm meadow",
+          "kind": "song",
+          "tempo": 90,
+          "beats": 16,
+          "notes": [
+            {
+              "at": 0.0,
+              "beats": 4,
+              "pitch": 53,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 0.0,
+              "beats": 4,
+              "pitch": 57,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 0.0,
+              "beats": 4,
+              "pitch": 60,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 0.0,
+              "beats": 2,
+              "pitch": 69,
+              "instrument": "sine",
+              "volume": 39
+            },
+            {
+              "at": 2.0,
+              "beats": 2,
+              "pitch": 72,
+              "instrument": "sine",
+              "volume": 39
+            },
+            {
+              "at": 4.0,
+              "beats": 4,
+              "pitch": 46,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 4.0,
+              "beats": 4,
+              "pitch": 50,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 4.0,
+              "beats": 4,
+              "pitch": 53,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 4.0,
+              "beats": 2,
+              "pitch": 70,
+              "instrument": "sine",
+              "volume": 39
+            },
+            {
+              "at": 6.0,
+              "beats": 2,
+              "pitch": 69,
+              "instrument": "sine",
+              "volume": 39
+            },
+            {
+              "at": 8.0,
+              "beats": 4,
+              "pitch": 48,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 8.0,
+              "beats": 4,
+              "pitch": 52,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 8.0,
+              "beats": 4,
+              "pitch": 55,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 8.0,
+              "beats": 2,
+              "pitch": 67,
+              "instrument": "sine",
+              "volume": 39
+            },
+            {
+              "at": 10.0,
+              "beats": 2,
+              "pitch": 69,
+              "instrument": "sine",
+              "volume": 39
+            },
+            {
+              "at": 12.0,
+              "beats": 4,
+              "pitch": 53,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 12.0,
+              "beats": 4,
+              "pitch": 57,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 12.0,
+              "beats": 4,
+              "pitch": 60,
+              "instrument": "triangle",
+              "volume": 21
+            },
+            {
+              "at": 12.0,
+              "beats": 4,
+              "pitch": 65,
+              "instrument": "sine",
+              "volume": 39
+            }
+          ]
         }
       ]
     },
@@ -1129,11 +1382,11 @@
         "async": true
       },
       {
-        "id": "animate_fox_handler",
-        "name": "animate_fox",
+        "id": "play_music_handler",
+        "name": "play_music",
         "parameters": [
           {
-            "id": "animate_fox_handler_payload",
+            "id": "play_music_handler_payload",
             "name": "payload"
           }
         ],
@@ -1722,234 +1975,35 @@
         },
         {
           "type": "py_handler",
-          "id": "animate_fox_handler_block",
+          "id": "play_music_handler_block",
           "x": 1290,
           "y": 40,
           "extraState": {
-            "functionId": "animate_fox_handler"
+            "functionId": "play_music_handler"
           },
           "inputs": {
             "BODY": {
               "block": {
-                "type": "controls_whileUntil",
-                "id": "star_game_example_3c_29",
-                "fields": {
-                  "MODE": "WHILE"
-                },
+                "type": "sound_loop",
+                "id": "star_game_example_3c_12",
+                "fields": {},
                 "inputs": {
-                  "BOOL": {
+                  "SOUND": {
                     "block": {
-                      "type": "logic_boolean",
-                      "id": "star_game_example_3c_28",
+                      "type": "sound_asset",
+                      "id": "star_game_example_3c_10",
                       "fields": {
-                        "BOOL": "TRUE"
+                        "SOUND_ID": "music"
                       },
                       "inputs": {}
                     }
                   },
-                  "DO": {
+                  "OWNER": {
                     "block": {
-                      "type": "controls_if",
-                      "id": "star_game_example_3c_18",
+                      "type": "py_none",
+                      "id": "star_game_example_3c_11",
                       "fields": {},
-                      "inputs": {
-                        "IF0": {
-                          "block": {
-                            "type": "scene_key",
-                            "id": "star_game_example_3c_15",
-                            "fields": {
-                              "KEY": "ArrowRight"
-                            },
-                            "inputs": {}
-                          }
-                        },
-                        "DO0": {
-                          "block": {
-                            "type": "scene_set",
-                            "id": "star_game_example_3c_17",
-                            "fields": {
-                              "PROPERTY": "direction"
-                            },
-                            "inputs": {
-                              "SPRITE": {
-                                "block": {
-                                  "type": "scene_sprite",
-                                  "id": "star_game_example_3c_16",
-                                  "fields": {
-                                    "SPRITE_ID": "player"
-                                  },
-                                  "inputs": {}
-                                }
-                              },
-                              "VALUE": {
-                                "shadow": {
-                                  "type": "py_number",
-                                  "fields": {
-                                    "VALUE": "0"
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      },
-                      "next": {
-                        "block": {
-                          "type": "controls_if",
-                          "id": "star_game_example_3c_22",
-                          "fields": {},
-                          "inputs": {
-                            "IF0": {
-                              "block": {
-                                "type": "scene_key",
-                                "id": "star_game_example_3c_19",
-                                "fields": {
-                                  "KEY": "ArrowLeft"
-                                },
-                                "inputs": {}
-                              }
-                            },
-                            "DO0": {
-                              "block": {
-                                "type": "scene_set",
-                                "id": "star_game_example_3c_21",
-                                "fields": {
-                                  "PROPERTY": "direction"
-                                },
-                                "inputs": {
-                                  "SPRITE": {
-                                    "block": {
-                                      "type": "scene_sprite",
-                                      "id": "star_game_example_3c_20",
-                                      "fields": {
-                                        "SPRITE_ID": "player"
-                                      },
-                                      "inputs": {}
-                                    }
-                                  },
-                                  "VALUE": {
-                                    "shadow": {
-                                      "type": "py_number",
-                                      "fields": {
-                                        "VALUE": "180"
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          },
-                          "next": {
-                            "block": {
-                              "type": "controls_if",
-                              "id": "star_game_example_3c_26",
-                              "fields": {},
-                              "inputs": {
-                                "IF0": {
-                                  "block": {
-                                    "type": "logic_operation",
-                                    "id": "star_game_example_3c_12",
-                                    "fields": {
-                                      "OP": "OR"
-                                    },
-                                    "inputs": {
-                                      "A": {
-                                        "block": {
-                                          "type": "scene_key",
-                                          "id": "star_game_example_3c_10",
-                                          "fields": {
-                                            "KEY": "ArrowLeft"
-                                          },
-                                          "inputs": {}
-                                        }
-                                      },
-                                      "B": {
-                                        "block": {
-                                          "type": "scene_key",
-                                          "id": "star_game_example_3c_11",
-                                          "fields": {
-                                            "KEY": "ArrowRight"
-                                          },
-                                          "inputs": {}
-                                        }
-                                      }
-                                    }
-                                  }
-                                },
-                                "DO0": {
-                                  "block": {
-                                    "type": "scene_next_costume",
-                                    "id": "star_game_example_3c_14",
-                                    "fields": {},
-                                    "inputs": {
-                                      "SPRITE": {
-                                        "block": {
-                                          "type": "scene_sprite",
-                                          "id": "star_game_example_3c_13",
-                                          "fields": {
-                                            "SPRITE_ID": "player"
-                                          },
-                                          "inputs": {}
-                                        }
-                                      }
-                                    }
-                                  }
-                                },
-                                "ELSE": {
-                                  "block": {
-                                    "type": "scene_costume_set",
-                                    "id": "star_game_example_3c_25",
-                                    "fields": {},
-                                    "inputs": {
-                                      "SPRITE": {
-                                        "block": {
-                                          "type": "scene_sprite",
-                                          "id": "star_game_example_3c_23",
-                                          "fields": {
-                                            "SPRITE_ID": "player"
-                                          },
-                                          "inputs": {}
-                                        }
-                                      },
-                                      "COSTUME": {
-                                        "block": {
-                                          "type": "scene_costume",
-                                          "id": "star_game_example_3c_24",
-                                          "fields": {
-                                            "COSTUME_ID": "stock-fox-idle-1"
-                                          },
-                                          "inputs": {}
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              },
-                              "extraState": {
-                                "elseIfCount": 0,
-                                "hasElse": true
-                              },
-                              "next": {
-                                "block": {
-                                  "type": "py_wait",
-                                  "id": "star_game_example_3c_27",
-                                  "fields": {},
-                                  "inputs": {
-                                    "SECONDS": {
-                                      "shadow": {
-                                        "type": "py_number",
-                                        "fields": {
-                                          "VALUE": "0.1"
-                                        }
-                                      }
-                                    }
-                                  }
-                                }
-                              }
-                            }
-                          }
-                        }
-                      }
+                      "inputs": {}
                     }
                   }
                 }

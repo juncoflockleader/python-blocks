@@ -14,7 +14,7 @@
  "starter": {
   "format": "python-blocks",
   "formatVersion": 1,
-  "languageVersion": 21,
+  "languageVersion": 22,
   "workspace": {
    "blocks": {
     "languageVersion": 0,
@@ -99,7 +99,44 @@
        "stock-explorer-sam-walk-4"
       ],
       "rotationStyle": "left-right",
-      "frameSeconds": 0.12
+      "frameSeconds": 0.12,
+      "animations": [
+       {
+        "name": "idle",
+        "frames": [
+         "stock-explorer-sam-idle-1",
+         "stock-explorer-sam-idle-2"
+        ],
+        "seconds": 0.4
+       },
+       {
+        "name": "walk",
+        "frames": [
+         "stock-explorer-sam-walk-1",
+         "stock-explorer-sam-walk-2",
+         "stock-explorer-sam-walk-3",
+         "stock-explorer-sam-walk-4"
+        ]
+       },
+       {
+        "name": "jump",
+        "frames": [
+         "stock-explorer-sam-jump"
+        ]
+       },
+       {
+        "name": "happy",
+        "frames": [
+         "stock-explorer-sam-happy"
+        ]
+       }
+      ],
+      "autoAnimate": {
+       "moving": "walk",
+       "air": "jump",
+       "still": "idle",
+       "turn": true
+      }
      }
     ]
    }

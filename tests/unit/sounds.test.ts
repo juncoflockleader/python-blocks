@@ -11,6 +11,8 @@ import { pythonExport } from '../../src/project/python-export';
 import { decodeWave, encodeWave, SOUND_RATE, synthesize, synthesizeTone, validateSounds, validAudioCommand, defaultSoundSettings, type Song } from '../../src/scene/sound';
 import { changeScene, sceneState } from '../../src/scene/state';
 import { emptyScene, validateScene } from '../../src/scene/model';
+import { MUSIC_LIBRARY, musicSong } from '../../src/scene/music-library';
+import { SOUND_LIBRARY, librarySound, soundSamples } from '../../src/scene/sound-library';
 const spaces: Blockly.Workspace[] = [];
 const ws = () => { const w = createWorkspace(); spaces.push(w); return w; };
 afterEach(() => spaces.splice(0).forEach(w => w.dispose()));
@@ -38,7 +40,7 @@ describe('sound assets and generated Python', () => {
     const line = result.source!.split('\n').findIndex(s => s.includes('await _pb_sounds.note')) + 1; expect(w.getBlockById(blockForLine(result,'program.py',line)!)!.type).toBe('sound_note');
     const archive = unzipSync(pythonExport(result).content as Uint8Array); expect(JSON.parse(strFromU8(archive['scene.json'])).sounds).toEqual(result.scene!.sounds);
     const restored = ws(); restore(restored, snapshot(w)); expect(compile(restored).source).toBe(result.source);
-    expect(prepareProject(JSON.stringify({...snapshot(w),languageVersion:15})).project.languageVersion).toBe(21);
+    expect(prepareProject(JSON.stringify({...snapshot(w),languageVersion:15})).project.languageVersion).toBe(22);
   });
   it('preserves sound-only projects, stable references, undo and invalid-import recovery', () => {
     const w = ws(); changeScene(w, {...emptyScene(),sounds:[song]});
@@ -66,5 +68,28 @@ describe('sound assets and generated Python', () => {
     expect(compile(w).executionMode).toBe('events'); expect(compile(w).requiresSound).toBe(true);
     call.nextConnection!.connect(plug(block(w,'sound_rest'),'BEATS',block(w,'py_number',{VALUE:'1'})).previousConnection!);
     expect(compile(w).diagnostics.some(d => d.code === 'wait-context')).toBe(true);
+  });
+});
+
+describe('the sound library and looping', () => {
+  it('offers music loops that are valid, audible songs which end on their last beat', () => {
+    expect(MUSIC_LIBRARY.map(m => m.id)).toEqual(['adventure', 'meadow', 'chase', 'cave', 'space', 'victory']);
+    for (const loop of MUSIC_LIBRARY) {
+      const added = musicSong(loop, `${loop.id}_1`, `${loop.name} 1`); expect(() => validateSounds([added]), loop.id).not.toThrow();
+      expect(Math.max(...loop.notes.map(n => n.at + n.beats)), loop.id).toBeLessThanOrEqual(loop.beats);
+      const seconds = loop.beats * 60 / loop.tempo; expect(seconds, loop.id).toBeGreaterThanOrEqual(3); expect(seconds, loop.id).toBeLessThanOrEqual(12);
+      const samples = synthesize(added); expect(samples.reduce((m, x) => Math.max(m, Math.abs(x)), 0), loop.id).toBeGreaterThan(.05);
+      added.notes[0].pitch += 1; expect(loop.notes[0].pitch).not.toBe(added.notes[0].pitch);   // the added song is the project's own copy
+    }
+    for (const effect of SOUND_LIBRARY) expect(soundSamples(librarySound(effect.effect, 'x')).length, effect.effect).toBeGreaterThan(SOUND_RATE * .05);
+  });
+
+  it('compiles start sound looping to loop() in an event session, with a play command that asks to loop', () => {
+    const w = ws(); changeScene(w, { ...emptyScene(), sounds: [song] });
+    plug(block(w,'py_program'),'BODY',plug(plug(block(w,'sound_loop'),'SOUND',block(w,'text',{TEXT:'song'})),'OWNER',block(w,'py_none')));
+    const result = compile(w); expect(result.executionMode).toBe('events'); expect(result.source).toContain('_pb_sounds.loop("song", None)');
+    const settings = defaultSoundSettings(), play = { type:'play', id:1, owner:'$stage', settings, sound:'song' };
+    expect(validAudioCommand({ ...play, loop: true })).toBe(true); expect(validAudioCommand(play)).toBe(true);
+    expect(validAudioCommand({ ...play, loop: false })).toBe(false); expect(validAudioCommand({ ...play, loop: 1 })).toBe(false);
   });
 });

@@ -33,6 +33,13 @@ export function removeAsset(scene: SceneState, kind: AssetKind, id: string): Sce
       const frames = spriteFrames(sprite).filter(frame => frame !== id);
       if (sprite.costumes) sprite.costumes = frames.length ? frames : ['bird'];
       if (sprite.costume === id) sprite.costume = frames[0] ?? 'bird';
+      // Animations lose the costume too; one left with no costumes goes, and so does auto-animation's use of it.
+      if (sprite.animations) {
+        sprite.animations = sprite.animations.map(a => ({ ...a, frames: a.frames.filter(f => f !== id) })).filter(a => a.frames.length);
+        if (!sprite.animations.length) delete sprite.animations;
+        const auto = sprite.autoAnimate, kept = (n: string) => n === '' || n === 'frames' || !!sprite.animations?.some(a => a.name === n);
+        if (auto) sprite.autoAnimate = { ...auto, moving: kept(auto.moving) ? auto.moving : '', air: kept(auto.air) ? auto.air : '', still: kept(auto.still) ? auto.still : '' };
+      }
     }
   }
   return next;

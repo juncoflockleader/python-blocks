@@ -1,6 +1,7 @@
 import { builds, type Build } from './builds';
 import { entries } from './gallery';
 import { levelNames } from '../ui/levels';
+import { loopThumb } from './loop-thumb';
 
 /** The Lessons catalogue, kept apart from Examples: every lesson and guided
  * build, each with a picture of the game it ends in, how long it takes, and
@@ -10,7 +11,6 @@ export interface LessonsHost {
   /** Open and run the finished game (a gallery entry). */
   play(entryId: string): void;
 }
-const thumbnail = (id: string) => `${import.meta.env.BASE_URL}gallery/${id}.png`;
 const text = (tag: string, className: string, content = '') => Object.assign(document.createElement(tag), { className, textContent: content });
 
 export function installLessons(host: LessonsHost) {
@@ -21,8 +21,7 @@ export function installLessons(host: LessonsHost) {
     const game = entries.find(entry => entry.build === build.id);
     const item = document.createElement('li'), article = document.createElement('article');
     article.className = `example-card lesson-card${build.kind === 'lesson' ? ' lesson-card-main' : ''}`; article.dataset.lesson = build.id;
-    const image = document.createElement('img'); image.className = 'example-thumb'; image.alt = ''; image.loading = 'lazy'; image.src = thumbnail(`${build.id}-game`);
-    image.addEventListener('error', () => image.replaceWith(text('div', 'example-thumb')), { once: true });
+    const image = loopThumb(`${build.id}-game`, article);
     const kind = text('p', 'lesson-kind', build.kind === 'lesson' ? 'Lesson' : 'Guided build');
     const title = text('strong', '', build.title), summary = text('span', '', build.summary);
     const tags = text('p', 'recipe-tags');

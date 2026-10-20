@@ -1,6 +1,7 @@
 import gallery from '../../content/gallery.json';
 import { concepts } from '../assist/catalog';
 import { levelNames, type Level } from '../ui/levels';
+import { loopThumb } from './loop-thumb';
 
 /** One gallery record: a project fixture plus what to notice and try. The
  * academy can reuse the same loader. Ids double as the Open buttons' ids. */
@@ -9,6 +10,10 @@ export type GalleryKind = typeof GALLERY_KINDS[number];
 export interface GalleryEntry {
   id: string; title: string; description: string; kind: GalleryKind; project: string; level: Level;
   tags: (keyof typeof concepts)[]; tryChanging: string[]; build?: string;
+  /** Key presses for the card's looping preview, so the hero moves (the preview suite plays them). */
+  demo?: ({ key: string; ms?: number } | { wait: number })[];
+  /** How long that loop is, in seconds, when not three (Flappy's ends before its first, random, pipe). */
+  loop?: number;
 }
 export const entries = gallery as GalleryEntry[];
 // Bundled like the examples always were, so opening one replaces the project at once.
@@ -25,7 +30,6 @@ export interface GalleryHost {
   open(entry: GalleryEntry, project: unknown): boolean;
   play(): void;
 }
-const thumbnail = (id: string) => `${import.meta.env.BASE_URL}gallery/${id}.png`;
 /** Filter chips: everything, then one chip per kind. */
 const FILTERS: [string, string][] = [['all', 'All'], ['game', 'Games'], ['story', 'Stories'], ['drawing', 'Drawing'], ['music', 'Music'], ['world', 'Worlds'], ['sprites', 'Sprites']];
 /** Examples are finished projects to play and change. The games that lessons
@@ -53,8 +57,7 @@ export function installGallery(host: GalleryHost) {
   for (const entry of examples) {
     const item = document.createElement('li'), card = document.createElement('article');
     card.className = 'example-card'; card.dataset.example = entry.id;
-    const image = document.createElement('img'); image.className = 'example-thumb'; image.alt = ''; image.loading = 'lazy'; image.src = thumbnail(entry.id);
-    image.addEventListener('error', () => image.replaceWith(Object.assign(document.createElement('div'), { className: 'example-thumb' })), { once: true });
+    const image = loopThumb(entry.id, card);
     const title = document.createElement('strong'), text = document.createElement('span'), tags = document.createElement('p');
     title.textContent = entry.title; text.textContent = entry.description; tags.className = 'recipe-tags';
     for (const tag of entry.tags) { const span = document.createElement('span'); span.textContent = concepts[tag][0]; tags.append(span); }

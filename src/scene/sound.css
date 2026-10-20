@@ -11,7 +11,7 @@
 .sound-chip-icon { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 8px; background: #8c67a2; color: #fff; }
 
 .sound-body { flex: 1; min-height: 0; display: grid; grid-template-columns: 232px minmax(0, 1fr) 248px; }
-#sound-dialog[data-mode=empty] .sound-body, #sound-dialog[data-mode=record] .sound-body { grid-template-columns: 232px minmax(0, 1fr); }
+#sound-dialog[data-mode=empty] .sound-body, #sound-dialog[data-mode=record] .sound-body, #sound-dialog[data-mode=library] .sound-body { grid-template-columns: 232px minmax(0, 1fr); }
 #sound-dialog[data-mode=song] .sound-body { grid-template-columns: 232px minmax(0, 1fr) 200px; }
 
 /* Sounds in the project */
@@ -148,3 +148,16 @@
   .sound-kinds { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .sound-slider span { min-width: 0; }
 }
+
+/* The sound library: two shelves of cards to listen to and add. */
+.sound-library { display: flex; flex-direction: column; gap: 10px; padding: 16px; overflow-y: auto; }
+.sound-library[hidden] { display: none; }
+.sound-library-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.sound-library-head h3 { margin: 0; font: 700 20px 'Space Grotesk', system-ui, sans-serif; }
+.sound-library-tabs { display: flex; gap: 6px; }
+.sound-library-tabs [aria-pressed="true"] { background: #267c70; border-color: #267c70; color: #fff; }
+.sound-library-items { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 10px; }
+.sound-library-card { display: flex; flex-direction: column; gap: 6px; padding: 10px; border: 1px solid #d8decb; border-radius: 12px; background: #fff; }
+.sound-library-card canvas { width: 100%; height: 48px; }
+.sound-library-actions { display: flex; gap: 6px; flex-wrap: wrap; }
+.sound-library-add { color: #1d5f56; }

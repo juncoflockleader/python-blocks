@@ -1,12 +1,12 @@
-# Artwork, animation frames and backdrops
+# Artwork, animations and backdrops
 
 The 2D editor supports original bitmap artwork, saved sprite frame sequences, and programmable backdrops. These extend the scene library and creation tools; the core language still uses ordinary Python objects, functions, loops, and explicit async calls.
 
 ## Stock library
 
-**Sprite library** opens a visual picker with search and Characters, Objects and Tiles categories: the four built-ins, nine characters, eleven objects and six tile sets ([the library](#the-library) lists them). Choosing one adds a sprite at the center of the current view, belonging to the selected world when there is one.
+**Sprite library** opens a visual picker with search and Characters, Objects and Tiles categories: the four built-ins, eleven characters, sixteen objects and seven tile sets ([the library](#the-library) lists them). Choosing one adds a sprite at the center of the current view, belonging to the selected world when there is one.
 
-**Backdrop library** offers ten backdrops, from Meadow and Night to Cave, Snow, Castle, Desert, Forest, Coral reef, City park and Space. Choosing one changes the starting backdrop of the current world or base stage. **Worlds & tilemaps → World library** adds a complete editable map whose ground joins into shapes (grassy tops, platforms, stone steps); see the [world guide](worlds-tilemaps-and-cameras.md).
+**Backdrop library** offers twelve backdrops, from Meadow and Night to Cave, Snow, Castle, Desert, City sky, Hills, Forest, Coral reef, City park and Space. Choosing one changes the starting backdrop of the current world or base stage. **Worlds & tilemaps → World library** adds a complete editable map whose ground joins into shapes (grassy tops, platforms, stone steps); see the [world guide](worlds-tilemaps-and-cameras.md).
 
 The new stock art is original code-drawn artwork. Choosing it rasterizes a PNG into the project at 2× (a 64-unit costume is stored as 128 × 128 pixels and marked `resolution: 2`), so it stays sharp on high-density screens; it needs no external asset service. The original six built-ins keep their existing IDs. New artwork receives a fresh ID, so a learner's asset named or identified as `cat`, for example, is never overwritten. An identical saved stock image is reused on later additions. Editing a shared image changes every sprite using it; duplicate the artwork for an independent variation.
 
@@ -49,6 +49,21 @@ scene.set_backdrop("backdrop_night")
 
 The awaited line belongs inside an async handler/function. `sprite.costume_id` and `sprite.frame_seconds` report the current costume and saved duration. `await sprite.animate(frames, seconds)` remains available for a program-supplied sequence. Setting a costume or starting another animation supersedes the previous animation. Clones copy frame order, duration, current frame position and sprite properties; changing one clone does not change the original.
 
+## Named animations
+
+A sprite can also have **named animations**: lists of its costumes under a name, each with its own speed. A library character brings four, *idle* (breathing, slowly), *walk*, *jump* and *happy* (the Chick has *flap* in place of *walk*, the Beetle just *walk*); a coin or gem brings *spin* and the rocket *flame*. In Paint the costume strip groups the costumes into a row per animation, each showing its first pictures and how many it has; tap a row to see and paint its costumes, and its speed slider sets that animation's speed. **+ New animation** starts one with the current costume (rename it in the **Animation** field, then add costumes with **+ New** or **Also use in …** on another costume's menu), and the bin deletes the open one. The sprite's frames list (what next costume and play animation once use) shows as its own *frames* row when it is not one of the named animations, so older projects look as they did. Renaming an animation renames it in the blocks that play it.
+
+**Animate while moving**, under the sprite's **More settings → Animation**, plays one animation while the sprite moves, another while it is in the air (gravity and not on the ground), and another when it is still, and turns a left/right sprite to face the way it moves. It notices any movement: arrow-key control, physics, or a script changing x and y. Library characters have it on, with walk, jump and idle (a Chick flaps when moving or in the air; a Beetle walks); the examples' heroes use it instead of walking scripts, Super Hopper's coins spin with it (an animation only for *still*), and its beetles face the way they patrol. Nothing more needs adding to the program: the runtime starts the clock that animates whenever a sprite uses it. It runs while the project runs as events (handlers, keys, motion), the only time anything moves.
+
+| Block (Looks) | Python | What it does |
+| --- | --- | --- |
+| play animation [walk] of sprite | `sprite.play("walk")` | Loops the animation until another starts, a costume is set, or stop. Takes over from animate while moving. |
+| play animation [jump] once and wait for sprite | `await sprite.play_once("jump")` | Plays it once and waits, ending on its last costume. |
+| stop animation of sprite | `sprite.stop_animation()` | Stops; animate while moving resumes. |
+| animation of sprite | `sprite.animation` | The name playing now, or `None`. `sprite.animations` lists the names, *frames* first. |
+
+A sprite has up to 8 named animations of 1–64 costumes; names start with a letter and use letters, numbers, spaces, `-` and `_` (up to 24), and *frames* is taken. Deleting a costume removes it from every animation; an animation left empty goes, and animate while moving stops using it. Language version 22.
+
 ## Backdrops and events
 
 The starting-scene Backdrop selector chooses plain color, Meadow, Night, or custom artwork. A backdrop fills the 480 × 320 stage behind sprites. Transparent pixels reveal the stage background color. `scene.background(color)` changes that color without clearing the selected backdrop.
@@ -71,16 +86,16 @@ Reusable modules can use built-in backdrop IDs. Pass project-owned backdrop IDs 
 
 | Category | Contents |
 | --- | --- |
-| Characters | Fox, Cat, Rabbit, Robot, Turtle, Bee, Fish and the explorers Sam and Ruby, each with eight poses: idle 1–2, walk 1–4, jump and happy, facing right. Adding one adds every pose; its frames are the walk cycle, and it starts in idle 1 with left-right rotation and 0.12 s frames, so **next costume** walks and a direction of 180 faces left. |
-| Objects | Coin and Gem with a six-frame spin, Heart, Key, Door, Spikes, Platform, Crate, Tree, Flower and Rocket (two flame frames). |
-| Tiles | Grass, Snow, Cave, Castle, Sand and Metal sets, each with top-left, top, top-right, left, middle, right, platform and block pieces of 32 units, drawn so neighbours join without seams. Adding a set puts all eight in the project for the world editor. |
-| Backdrops | Meadow and Night (built in), Cave, Snow, Castle, Desert, Forest, Coral reef, City park and Space. |
+| Characters | Fox, Cat, Rabbit, Robot, Turtle, Bee, Fish and the explorers Sam and Ruby, each with eight poses: idle 1–2, walk 1–4, jump and happy, facing right. Adding one adds every pose; its frames are the walk cycle, and it starts in idle 1 with left-right rotation and 0.12 s frames, so **next costume** walks and a direction of 180 faces left. A **Chick** (52 × 40) has idle 1–2, flap 1–4, jump and happy, and flaps whenever it is in the air; a **Beetle** (36 × 30) steps through two walk frames as it moves. Their boxes hug their bodies, for flying and stomping games. |
+| Objects | Coin and Gem with a six-frame spin, Heart, Key, Door, Spikes, Platform, Crate, Tree, Flower and Rocket (two flame frames); and the lessons' game pieces at the lessons' sizes: Paddle (80 × 12), Little ball (14 × 14), Brick (44 × 14, in red, orange, yellow, green and blue, one costume each), Pipe pair (26 × 255, a 64-unit gap between the lips) and Flag (40 × 256). |
+| Tiles | Grass, Snow, Cave, Castle, Sand, Metal and Brick sets, each with top-left, top, top-right, left, middle, right, platform and block pieces of 32 units, drawn so neighbours join without seams. Adding a set puts all eight in the project for the world editor. |
+| Backdrops | Meadow and Night (built in), Cave, Snow, Castle, Desert, City sky (Flappy Flight's), Hills (Super Hopper's), Forest, Coral reef, City park and Space. |
 
-Library art goes into a project as a reference such as `cast/fox-walk-1@1` rather than a picture. The app draws it from the same code wherever a picture is needed (the stage at 4× for costumes and 2× for backdrops, pixel and colour sensing at the stage size, thumbnails, the Paint editor, the exported player), so a whole cast costs a project a few hundred bytes and does not use its 24 costumes. Every entry carries an original-art licence field in the catalogue. Bird, Star, Ball, Box, Meadow and Night are drawn by the same code; their ids, sizes, shapes and main colours are those of the earlier shapes, so scripts that sense touching or colours behave as before.
+Library art goes into a project as a reference such as `cast/fox-walk-1@1` rather than a picture. The app draws it from the same code wherever a picture is needed (the stage at 4× for costumes and 2× for backdrops, pixel and colour sensing at the stage size, thumbnails, the Paint editor, the exported player), so a whole cast costs a project a few hundred bytes and does not use its 24 costumes. The three lessons are drawn this way too: Brick Breaker, Flappy Flight and Super Hopper use the library's pieces at their old sizes, so their steps, checks and collisions are unchanged, and Flappy Flight and Super Hopper went from about 170 and 210 KB to 30 and 65 KB. Every entry carries an original-art licence field in the catalogue. Bird, Star, Ball, Box, Meadow and Night are drawn by the same code; their ids, sizes, shapes and main colours are those of the earlier shapes, so scripts that sense touching or colours behave as before.
 
 ## Storage and bounds
 
-Backdrops and frame operations were introduced in language version **10**; current project exports use version **21**, also preserving pen/effects, instance behavior/sensing, game motion, worlds/cameras, game presentation, sound/music, touch controls, watchers, 2× artwork and library art references. Projects from versions 1–20 and pinned modules from versions 5–19 remain readable. Existing scenes without frame metadata use their current costume as a one-frame sequence with a 0.1-second duration; missing backdrop metadata means plain color.
+Backdrops and frame operations were introduced in language version **10**; current project exports use version **22**, also preserving pen/effects, instance behavior/sensing, game motion, worlds/cameras, game presentation, sound/music, touch controls, watchers, 2× artwork and library art references. Projects from versions 1–21 and pinned modules from versions 5–19 remain readable. Existing scenes without frame metadata use their current costume as a one-frame sequence with a 0.1-second duration; missing backdrop metadata means plain color.
 
 - Up to 24 custom costumes, each at most 256 × 256 stage units and 350,000 PNG data-URL characters.
 - Up to 12 custom backdrops, each at most 480 × 320 stage units and 900,000 PNG data-URL characters.

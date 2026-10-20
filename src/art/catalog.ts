@@ -1,6 +1,7 @@
 import type { Ctx } from './draw';
-import { CAST, FRAMES, paintCharacter, type Frame } from './cast';
+import { ANIMATIONS, CAST, FRAMES, paintCharacter, type Frame } from './cast';
 import { PROPS, paintProp } from './props';
+import { CRITTERS, paintCritter } from './critters';
 import { PIECES, PIECE_NAMES, THEMES, THEME_NAMES, paintTile, type Piece, type Theme } from './tiles';
 import { BACKDROPS, paintBackdrop } from './backdrops';
 import { paintLegacyBackdrop } from './legacy';
@@ -15,7 +16,11 @@ export const LICENSE = { license: 'Original artwork made for Python Blocks', aut
 export interface StockAsset { ref: string; id: string; name: string; kind: 'costume' | 'backdrop'; width: number; height: number; license: string; author: string; paint(c: Ctx): void }
 export type StockCategory = 'Characters' | 'Objects' | 'Tiles' | 'Backdrops';
 /** What the library shows: one entry may add several assets (a character's frames, a tile set). */
-export interface StockEntry { id: string; name: string; category: StockCategory; kind: 'costume' | 'backdrop'; width: number; height: number; assets: string[]; costume: string; frames?: string[]; detail: string }
+/** A named animation an entry brings, by references: a character's idle, walk, jump and happy; a coin's spin. */
+export interface StockAnimation { name: string; frames: string[]; seconds?: number }
+/** How a character added from the library animates while it moves (names of its animations; '' for none). */
+export interface StockAutoAnimate { moving: string; air: string; still: string; turn: boolean }
+export interface StockEntry { id: string; name: string; category: StockCategory; kind: 'costume' | 'backdrop'; width: number; height: number; assets: string[]; costume: string; frames?: string[]; animations?: StockAnimation[]; autoAnimate?: StockAutoAnimate; detail: string }
 
 const FRAME_NAMES: Record<Frame, string> = { 'idle-1': 'idle 1', 'idle-2': 'idle 2', 'walk-1': 'walk 1', 'walk-2': 'walk 2', 'walk-3': 'walk 3', 'walk-4': 'walk 4', jump: 'jump', happy: 'happy' };
 const assets: StockAsset[] = [];
@@ -25,13 +30,28 @@ const ref = (path: string) => `${path}@1`;
 
 for (const character of CAST) {
   const refs = FRAMES.map(frame => add(ref(`cast/${character.id}-${frame}`), `stock-${character.id}-${frame}`, `${character.name} ${FRAME_NAMES[frame]}`, 'costume', 64, 64, c => paintCharacter(c, character.id, frame)));
-  entries.push({ id: character.id, name: character.name, category: 'Characters', kind: 'costume', width: 64, height: 64, assets: refs, costume: refs[0], frames: refs.slice(2, 6), detail: 'Idle, walk, jump and happy' });
+  // Idle breathes slowly; walk, jump and happy play at the sprite's frame speed.
+  const animations = Object.entries(ANIMATIONS).map(([name, frames]) => ({ name, frames: frames.map(f => refs[FRAMES.indexOf(f)]), ...(name === 'idle' ? { seconds: 0.4 } : {}) }));
+  entries.push({ id: character.id, name: character.name, category: 'Characters', kind: 'costume', width: 64, height: 64, assets: refs, costume: refs[0], frames: refs.slice(2, 6), animations, autoAnimate: { moving: 'walk', air: 'jump', still: 'idle', turn: true }, detail: 'Idle, walk, jump and happy' });
+}
+for (const critter of CRITTERS) {
+  const refs = critter.frames.map((frame, f) => add(ref(`cast/${critter.id}-${frame}`), `stock-${critter.id}-${frame}`, `${critter.name} ${frame.replace('-', ' ')}`, 'costume', critter.width, critter.height, c => paintCritter(c, critter.id, f)));
+  const at = (frame: string) => refs[critter.frames.indexOf(frame)];
+  const animations = Object.entries(critter.animations).map(([name, frames]) => ({ name, frames: frames.map(at), ...(name === 'idle' ? { seconds: 0.4 } : {}) }));
+  // The chick flaps whenever it is off the ground; the beetle steps while it walks.
+  const autoAnimate = critter.animations.flap ? { moving: 'flap', air: 'flap', still: 'idle', turn: true } : { moving: 'walk', air: '', still: '', turn: true };
+  entries.push({ id: critter.id, name: critter.name, category: 'Characters', kind: 'costume', width: critter.width, height: critter.height, assets: refs, costume: refs[0], frames: (critter.animations.flap ?? critter.animations.walk).map(at), animations, autoAnimate, detail: critter.detail });
 }
 for (const prop of PROPS) {
+  if (prop.variants) {
+    const refs = prop.variants.map((variant, f) => add(ref(`props/${prop.id}-${variant}`), `stock-${prop.id}-${variant}`, `${prop.name} ${variant}`, 'costume', prop.width, prop.height, c => paintProp(c, prop.id, f)));
+    entries.push({ id: prop.id, name: prop.name, category: 'Objects', kind: 'costume', width: prop.width, height: prop.height, assets: refs, costume: refs[0], frames: refs, detail: `${refs.length} colours` });
+    continue;
+  }
   const refs = Array.from({ length: prop.frames }, (_, f) => prop.frames > 1
     ? add(ref(`props/${prop.id}-${f + 1}`), `stock-${prop.id}-${f + 1}`, `${prop.name} ${f + 1}`, 'costume', prop.width, prop.height, c => paintProp(c, prop.id, f))
     : add(ref(`props/${prop.id}`), `stock-${prop.id}`, prop.name, 'costume', prop.width, prop.height, c => paintProp(c, prop.id)));
-  entries.push({ id: prop.id, name: prop.name, category: 'Objects', kind: 'costume', width: prop.width, height: prop.height, assets: refs, costume: refs[0], ...(refs.length > 1 ? { frames: refs } : {}), detail: refs.length > 1 ? (prop.id === 'rocket' ? 'Flame flickers' : 'Spins') : 'Object' });
+  entries.push({ id: prop.id, name: prop.name, category: 'Objects', kind: 'costume', width: prop.width, height: prop.height, assets: refs, costume: refs[0], ...(refs.length > 1 ? { frames: refs, animations: [{ name: prop.id === 'rocket' ? 'flame' : 'spin', frames: refs }] } : {}), detail: refs.length > 1 ? (prop.id === 'rocket' ? 'Flame flickers' : 'Spins') : 'Object' });
 }
 for (const theme of THEMES) {
   const refs = PIECES.map(piece => add(ref(`tiles/${theme}-${piece}`), `stock-${theme}-${piece}`, `${THEME_NAMES[theme]} ${PIECE_NAMES[piece]}`, 'costume', 32, 32, c => paintTile(c, theme, piece)));

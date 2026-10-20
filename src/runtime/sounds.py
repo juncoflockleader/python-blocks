@@ -55,6 +55,11 @@ class Sounds:
         if not isinstance(sound, str) or sound not in self.assets: raise ValueError('This sound is unavailable. Choose another sound in the block’s menu.')
         return self._start({'type': 'play', 'sound': sound}, owner)
 
+    def loop(self, sound, owner=None):
+        """Play a sound again and again until it is stopped (stop, stop_all, or its sprite is destroyed)."""
+        if not isinstance(sound, str) or sound not in self.assets: raise ValueError('This sound is unavailable. Choose another sound in the block’s menu.')
+        return self._start({'type': 'play', 'sound': sound, 'loop': True}, owner)
+
     async def play_wait(self, sound, owner=None):
         return await self._wait(self.play(sound, owner))
 

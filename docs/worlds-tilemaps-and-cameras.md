@@ -89,7 +89,7 @@ Runtime tile changes reset on world re-entry. Saved starting layouts, editor Und
 
 ## Bounds, format and evidence
 
-Language version 14 introduced optional `worlds`, `world` and `camera` scene metadata and optional sprite `world` membership. Current project exports use version 21 (modules 19); earlier projects through version 20 and modules from versions 5–19 remain readable. Maps, profiles, scope and original tile artwork are included in captured source/project exports. Project world references in reusable functions must be parameters; modules cannot embed private references to an importing project's worlds.
+Language version 14 introduced optional `worlds`, `world` and `camera` scene metadata and optional sprite `world` membership. Current project exports use version 22 (modules 19); earlier projects through version 21 and modules from versions 5–19 remain readable. Maps, profiles, scope and original tile artwork are included in captured source/project exports. Project world references in reusable functions must be parameters; modules cannot embed private references to an importing project's worlds.
 
 A scene supports up to eight worlds, each with 1–256 columns and rows and tile sizes of 8, 16, 32 or 64 pixels, at most 4096 pixels a side (so 16 px tiles allow 8 screens wide and 12 tall). The maximum world is 4096 × 4096 pixels. The scene-wide limits of 64 authored sprites, 128 runtime sprites, 24 custom costumes, 12 custom backdrops and 12 MB of scene metadata/assets still apply. A map is one tile layer plus independently layered sprites. There is no scene stack, parallax-layer editor or general rigid-body engine in this module.
 

@@ -272,6 +272,57 @@ class SceneTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(waits, [0.2, 0.2, 0.2]); self.assertEqual(p.costume_id, 'ball')
         self.assertEqual(data['sprites'][0]['costume'], 'bird'); self.assertEqual(clone.frames, ['bird', 'star', 'ball'])
 
+    def animated(self, **extra):
+        data = initial(); data['sprites'][0].update(costumes=['bird', 'star'], frameSeconds=0.1, rotationStyle='left-right',
+            animations=[dict(name='idle', frames=['bird', 'box'], seconds=0.5), dict(name='walk', frames=['star', 'ball', 'box']), dict(name='jump', frames=['ball'])], **extra)
+        self.scene.configure(data); return self.scene.get('Player')
+
+    async def test_named_animations_loop_play_once_stop_and_explain_unknown_names(self):
+        p = self.animated(); running = types.SimpleNamespace(state='running', wait=None)
+        with patch.object(self.module, 'event_session', return_value=running), patch.object(self.scene, 'enable_motion', lambda: None):
+            p.play('walk'); self.assertEqual((p.animation, p.costume_id), ('walk', 'star'))
+            start = p._playing['started']
+            for offset, costume in ((0.05, 'star'), (0.15, 'ball'), (0.25, 'box'), (0.35, 'star')):
+                p._animate_tick(start + offset); self.assertEqual(p.costume_id, costume)
+            p.play('idle'); p._animate_tick(p._playing['started'] + 0.6); self.assertEqual(p.costume_id, 'box')
+            p.stop_animation(); self.assertIsNone(p.animation); p._animate_tick(start + 9); self.assertEqual(p.costume_id, 'box')
+            p.play('frames'); self.assertEqual(p.costume_id, 'bird')
+            p.costume('star'); self.assertIsNone(p.animation)   # setting a costume stops the loop
+            with self.assertRaisesRegex(ValueError, "no animation called 'fly'.*'frames', 'idle', 'walk', 'jump'"): p.play('fly')
+        waits = []
+        async def wait(seconds): waits.append(seconds); self.assertEqual(p.animation, 'walk')
+        with patch.object(self.module, 'event_session', return_value=types.SimpleNamespace(state='running', wait=wait)):
+            await p.play_once('walk')
+        self.assertEqual((waits, p.costume_id), ([0.1, 0.1, 0.1], 'box')); self.assertIsNone(p.animation)
+        self.assertEqual(p.animations, ['frames', 'idle', 'walk', 'jump'])
+
+    def test_animate_while_moving_walks_jumps_idles_and_turns(self):
+        p = self.animated(autoAnimate=dict(moving='walk', air='jump', still='idle', turn=True)); t = 100.0
+        p._animate_tick(t); self.assertEqual((p.animation, p.costume_id), ('idle', 'bird'))
+        p._animate_tick(t + 0.6); self.assertEqual(p.costume_id, 'box')            # idle at its own 0.5 s
+        p.go_to(p.x - 10, p.y); p._animate_tick(t + 0.7)
+        self.assertEqual((p.animation, p.costume_id, p.direction), ('walk', 'star', 180))   # walking left turns it
+        p.go_to(p.x + 10, p.y); p._animate_tick(t + 0.82); self.assertEqual((p.costume_id, p.direction), ('ball', 0))
+        p._animate_tick(t + 0.9); self.assertEqual(p.animation, 'walk')            # keeps walking briefly after moving
+        p._animate_tick(t + 1.2); self.assertEqual(p.animation, 'idle')
+        p._state['motion'].update(body='moving', ay=-500)
+        with patch.object(type(p), 'motion_value', lambda self, key: False):
+            p._animate_tick(t + 1.3); self.assertEqual((p.animation, p.costume_id), ('jump', 'ball'))
+        p._state['motion'].update(body='off', ay=0)
+        with patch.object(self.module, 'event_session', return_value=types.SimpleNamespace(state='running', wait=None)), patch.object(self.scene, 'enable_motion', lambda: None):
+            p.play('walk'); p.go_to(p.x + 10, p.y); p._animate_tick(t + 1.4); self.assertEqual(p.animation, 'walk')   # a script's animation wins
+        q = self.animated(autoAnimate=dict(moving='walk', air='', still='', turn=False)); q._animate_tick(t); q.go_to(q.x - 5, 0); q._animate_tick(t + 0.1)
+        self.assertEqual((q.animation, q.direction), ('walk', 0)); q._animate_tick(t + 1); self.assertIsNone(q.animation)
+
+    def test_animate_while_moving_starts_the_clock_only_while_an_event_session_is_set_up(self):
+        started = []
+        for state, auto, expected in (('setup', True, 1), ('setup', False, 0), ('closed', True, 0), (None, True, 0)):
+            modules = {} if state is None else {'_playground_events': types.SimpleNamespace(events=types.SimpleNamespace(state=state))}
+            with patch.dict(sys.modules, modules), patch.object(self.scene, 'enable_motion', lambda: started.append(state)):
+                if state is None: sys.modules.pop('_playground_events', None)
+                started.clear(); self.animated(**({'autoAnimate': dict(moving='walk', air='', still='idle', turn=True)} if auto else {}))
+                self.assertEqual(len(started), expected, (state, auto))
+
     def test_backdrops_notify_only_real_runtime_changes_in_stable_order(self):
         received = []
         events = types.SimpleNamespace(state='running', emit=lambda name, payload: received.append((name, payload)))
