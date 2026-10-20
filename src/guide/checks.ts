@@ -32,6 +32,9 @@ export type Check =
   | { predicted: true }
   /** Every test of the step's puzzle passed (Check my answer). */
   | { solved: true };
+/** A check about what a run did (ran, finished, a score, a guess, a solved puzzle) rather than the blocks themselves. */
+export const aboutTheRun = (check: Check): boolean => 'ran' in check || 'finished' in check || 'score' in check || 'predicted' in check || 'solved' in check
+  || ('all' in check && check.all.some(aboutTheRun)) || ('any' in check && check.any.some(aboutTheRun));
 export interface RunFacts { ran: boolean; finished: null | 'won' | 'lost'; score?: number; predicted?: boolean; solved?: boolean }
 
 export function handlerKind(event: string): HandlerKind {

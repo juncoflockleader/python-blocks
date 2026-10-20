@@ -354,3 +354,22 @@ dialog .example-list li { padding: 0; }
   :root[data-level=pro] .blocklyToolboxCategory { min-height: 45px; padding: 2px !important; }
   :root[data-level=pro] .blocklyToolboxCategory .blocklyTreeRowContentContainer { min-height: 41px; }
 }
+/* A lesson while the learner builds (lesson-stage.ts): the stage is a small window beside the sprites, its
+   buttons wait until the game runs, and the lesson under them gets the rest of the column. */
+@media (min-width: 900px) {
+  :root[data-lesson-stage=small]:not([data-view=stage]) .right-column { display: grid; grid-template-columns: 56% minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); grid-template-areas: 'stage tray' 'tabs tabs' 'panels panels'; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .stage-panel { grid-area: stage; border-right: 1px solid #dce1d2; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .stage-toolbar { display: none; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .sprite-tray { grid-area: tray; flex-wrap: wrap; align-items: flex-start; align-content: flex-start; gap: 6px; padding: 6px; border-bottom: 0; min-height: 0; overflow-y: auto; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .tray-cards { flex: 0 0 100%; flex-wrap: wrap; overflow: visible; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .sprite-tray .tray-button { width: 44px; min-height: 40px; height: 40px; padding: 0; gap: 0; font-size: 0; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .sprite-tray .tray-button[data-ui-icon]::before { width: 20px; height: 20px; flex-basis: 20px; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .tab-bar { grid-area: tabs; border-top: 1px solid #dce1d2; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .tab-panels { grid-area: panels; }
+}
+.stage-size { position: absolute; right: 6px; bottom: 6px; z-index: 4; width: 32px; height: 32px; padding: 0; display: grid; place-items: center; border: 0; border-radius: 9px; background: #fffef8e8; color: #26382f; box-shadow: 0 1px 3px #26382f40; cursor: pointer; }
+.stage-size:hover { background: #fff; }
+.stage-size[hidden], :root[data-view=stage] .stage-size, .stage-main .stage-size { display: none; }
+@media (max-width: 899px) { .stage-size { display: none; } }
+/* A big world's Map button and map make way for the lesson's stage-size button in the same corner. */
+.stage-wrap:has(> .stage-size:not([hidden])) :is(.stage-map-show, .stage-map) { right: 46px; max-width: calc(100% - 54px); }

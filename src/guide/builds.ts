@@ -7,7 +7,7 @@ import { scrollWithin } from '../ui/scroll';
 import { answerLines, checkProgram, stopChecking, uncheckable, type PuzzleTest, type TestResult } from './checker';
 import { paintPuzzle, type PuzzlePicture } from './puzzle-art';
 import type { Compilation } from '../language/compiler';
-import { passes, type Check, type RunFacts } from './checks';
+import { aboutTheRun, passes, type Check, type RunFacts } from './checks';
 import { recipeById, type Recipe, type RecipePart } from './recipes';
 import { atLeast, levelNames, type Level } from '../ui/levels';
 
@@ -107,6 +107,8 @@ export interface GuideHost {
   play(): void;
   /** The Help tab reads "Lesson" while a lesson is open. */
   tabLabel(text: string): void;
+  /** A lesson is open (or not), and whether its step is a puzzle: the editor makes room for it (lesson-stage.ts). */
+  lessonMode?(on: boolean, puzzle: boolean): void;
   /** The project compiled as Run would run it, for a puzzle's checker. */
   compilation(): Compilation;
 }
@@ -130,21 +132,20 @@ export function installGuide(host: GuideHost) {
     <div id="guide-confirm" class="guide-confirm" hidden><p id="guide-confirm-text"></p><div class="guide-actions"><button id="guide-confirm-start" class="button primary">Replace and start</button><button id="guide-confirm-cancel" class="button secondary">Keep my project</button></div></div>
     <ul id="guide-list" class="guide-list"></ul></section>`;
   activeSlot.insertAdjacentHTML('beforeend', `<div id="guide-active" class="guide-active" hidden><div class="guide-head"><h3 id="guide-build-title"></h3><span id="guide-progress"></span></div><div id="guide-meter" class="guide-meter" aria-hidden="true"><span></span></div><div id="guide-chapters" class="guide-chapters" aria-hidden="true" hidden></div>
-      <div id="guide-card" class="guide-card-body"><div class="guide-title-row"><h4 id="guide-step-title" class="guide-step-title" hidden></h4><button id="guide-read" class="guide-read" type="button" aria-pressed="false" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconMarkup('volume')}</svg><span>Read to me</span></button></div>
+      <div id="guide-card" class="guide-card-body"><div class="guide-title-row"><h4 id="guide-step-title" class="guide-step-title" hidden></h4><span class="guide-tools"><button id="guide-watch" class="guide-tool" type="button" title="Watch it on the stage" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconMarkup('play')}</svg><span class="guide-tool-label">Watch it</span></button><button id="guide-read" class="guide-read guide-tool" type="button" aria-pressed="false" title="Read to me" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconMarkup('volume')}</svg><span class="guide-tool-label">Read to me</span></button><button id="guide-why-toggle" class="guide-why-toggle guide-tool" type="button" aria-expanded="false" aria-controls="guide-why" title="Why does it work?" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconMarkup('help')}</svg><span class="guide-tool-label">Why does it work?</span></button></span></div>
         <p id="guide-step" class="guide-step"></p>
-        <figure id="guide-clip" class="guide-clip" hidden><figcaption>Watch: this is what you are making</figcaption></figure>
+        <div id="guide-why-box" class="guide-why-box" hidden><p id="guide-why" class="guide-why" hidden></p></div>
         <div id="guide-puzzle" class="guide-puzzle" hidden><div id="guide-examples" class="puzzle-examples"></div>
           <div class="puzzle-actions"><button id="guide-try" class="button secondary" type="button"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconMarkup('play')}</svg>Try it</button><button id="guide-check-answer" class="button primary" type="button"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconMarkup('check')}</svg>Check my answer</button></div>
           <div id="guide-try-box" class="puzzle-try" hidden><label class="puzzle-box"><span>Your input</span><textarea id="guide-try-input" rows="3" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea></label><div class="puzzle-box"><span>Your program printed</span><pre id="guide-try-output"></pre></div><p id="guide-try-verdict" class="puzzle-verdict" role="status"></p></div>
           <div id="guide-results" class="puzzle-results" hidden><p id="guide-results-title" class="puzzle-results-title" role="status"></p><ol id="guide-results-list"></ol></div></div>
         <p id="guide-planted" class="guide-planted" hidden></p>
-        <p id="guide-do" class="guide-do" hidden>Do this:</p><ul id="guide-checklist" class="guide-checklist" hidden></ul>
+        <ul id="guide-checklist" class="guide-checklist" hidden></ul>
         <div id="guide-predict" class="guide-predict" hidden><p id="guide-question" class="guide-question"></p><div id="guide-choices" class="guide-choices" role="group" aria-label="Your guess"></div><p id="guide-predict-result" class="guide-predict-result" role="status"></p></div>
-        <div id="guide-goal" class="guide-goal" role="status" hidden><p><span id="guide-goal-count"></span> <span id="guide-goal-label"></span></p><div id="guide-goal-pips" class="guide-goal-pips" aria-hidden="true"></div></div>
-        <div id="guide-why-box" class="guide-why-box" hidden><button id="guide-why-toggle" class="guide-why-toggle" type="button" aria-expanded="false" aria-controls="guide-why"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconMarkup('help')}</svg>Why does it work?</button><p id="guide-why" class="guide-why" hidden></p></div></div>
+        <div id="guide-goal" class="guide-goal" role="status" hidden><p><span id="guide-goal-count"></span> <span id="guide-goal-label"></span></p><div id="guide-goal-pips" class="guide-goal-pips" aria-hidden="true"></div></div></div>
       <p id="guide-check" class="guide-check" role="status"></p>
-      <div id="guide-hints" class="guide-hints" hidden><div class="guide-hints-head"><span>Stuck? Get a hint.</span><span id="guide-rungs" class="guide-rungs" aria-hidden="true"></span></div><p id="guide-hint-text" class="guide-hint-text" role="status"></p><button id="guide-hint" class="button secondary"></button></div>
-      <div class="guide-actions"><button id="guide-back" class="button secondary">Back</button><button id="guide-show" class="button secondary">Show me how</button><button id="guide-next" class="button primary">Next step</button><button id="guide-stop" class="button secondary">Leave build</button></div>
+      <div id="guide-hints" class="guide-hints" hidden><p id="guide-hint-text" class="guide-hint-text" role="status"></p></div>
+      <div class="guide-actions"><button id="guide-back" class="button secondary">Back</button><button id="guide-hint" class="button secondary" hidden></button><button id="guide-show" class="button secondary">Show me how</button><button id="guide-next" class="button primary">Next step</button><button id="guide-stop" class="button secondary">Leave build</button></div>
       <div id="guide-finish" hidden><p id="guide-finish-text"></p><p id="guide-time" class="guide-time"></p><h4>Remix it</h4><ul id="guide-remix"></ul><div class="guide-actions"><button id="guide-next-build" class="button primary"></button><button id="guide-timing" class="button secondary">Download timing</button></div></div></div>`);
   document.body.insertAdjacentHTML('beforeend', `<dialog id="lesson-start" class="lesson-dialog" aria-labelledby="lesson-start-title"><div class="lesson-start">
       <div class="lesson-start-side"><img id="lesson-start-preview" class="lesson-preview" alt=""><h3>Chapters</h3><ol id="lesson-start-chapters" class="lesson-chapters"></ol></div>
@@ -161,7 +162,7 @@ export function installGuide(host: GuideHost) {
   let active: Build | null = null, index = 0, done = false, facts: RunFacts = { ran: false, finished: null }, highlighted: Element[] = [], timer = 0;
   let timing: Timing | null = null, since: number | null = null, record = '', pending: Build | null = null, starting: Build | null = null;
   let planted: Record<string, string[]> = {}, answers: Record<string, number> = {}, early = false;
-  let rendering = false, cheers = 0, coachTimer = 0, looseTimer = 0, clipWatch: IntersectionObserver | undefined, keysTip = false, cheerWaits = false, checking = 0;
+  let rendering = false, cheers = 0, coachTimer = 0, looseTimer = 0, keysTip = false, cheerWaits = false, checking = 0, built = false, blocksFirst = false;
   const looseShown = new Set<string>();
   const hintLevel = new Map<number, number>();
   const lesson = () => active?.kind === 'lesson';
@@ -273,8 +274,9 @@ export function installGuide(host: GuideHost) {
     }));
   }
   function render() {
-    if (!active) { el('guide-active').hidden = true; el('guide-list').hidden = false; clearHighlight(); stagePicture(null); return; }
+    if (!active) { el('guide-active').hidden = true; el('guide-list').hidden = false; clearHighlight(); stagePicture(null); hideClip(); lessonRoom(false); return; }
     const step = active.steps[index], isLesson = lesson();
+    lessonRoom(isLesson, !!step.puzzle);
     facts = { ran: false, finished: null, score: 0, predicted: answers[index] !== undefined }; done = false; early = false;
     el('guide-list').hidden = true; el('guide-active').hidden = false; el('guide-finish').hidden = true;
     el('guide-active').classList.toggle('guide-lesson-active', isLesson);
@@ -291,8 +293,10 @@ export function installGuide(host: GuideHost) {
     setRichText(el('guide-step'), step.text);
     // In a lesson the idea behind a step waits behind "Why does it work?", so the card stays short.
     el('guide-why-box').hidden = !step.why; setRichText(el('guide-why'), step.why ?? '');
-    el('guide-why-toggle').hidden = !isLesson; el('guide-why').hidden = isLesson; el('guide-why-toggle').setAttribute('aria-expanded', 'false');
+    el('guide-why-toggle').hidden = !isLesson || !step.why; el('guide-why').hidden = isLesson; el('guide-why-toggle').setAttribute('aria-expanded', 'false');
+    // A lesson's Leave sits by its progress, so its one row of buttons is Back, a hint and Next.
     el('guide-stop').textContent = isLesson ? 'Leave lesson' : 'Leave build';
+    (isLesson ? document.querySelector('#guide-active .guide-head')! : el('guide-next').parentElement!).append(el('guide-stop'));
     el<HTMLButtonElement>('guide-back').disabled = index === 0;
     // Lessons offer "Show me how" as the last rung of the hint ladder.
     el('guide-show').hidden = isLesson || !step.recipe;
@@ -301,7 +305,7 @@ export function installGuide(host: GuideHost) {
     if (step.plant && !planted[index]) { planted[index] = host.insert(step.plant, `${active.title}: step ${index + 1}`, step.select, step.other); save(); }
     el('guide-planted').hidden = !step.plant || !!step.puzzle;   // a puzzle's plant only empties the Program block
     el('guide-planted').textContent = step.kind === 'fix' ? 'We made these blocks for you, but there is a bug. Can you fix it?' : 'We made these blocks for you. Read them before you run them.';
-    renderPredict(); renderHints(); renderChecklist(); renderClip(); renderPuzzle();
+    renderChecklist(); renderPredict(); renderHints(); renderClip(true); renderPuzzle();
     highlight(step); evaluate(); rendering = false;
     // The coach points at where to look, once the card has settled.
     if (isLesson && step.coach && highlighted[0]) coachTimer = window.setTimeout(() => { if (active?.steps[index] === step && !done && !popOpen() && highlighted[0]?.isConnected) pop(highlighted[0], [step.coach!], { label: 'Tip', className: 'coach-pop', side: 'right', coach: true, timeout: 12000 }); }, 500);
@@ -310,7 +314,7 @@ export function installGuide(host: GuideHost) {
   }
   function renderPredict() {
     const step = active!.steps[index], prediction = step.predict;
-    el('guide-predict').hidden = !prediction;
+    el('guide-predict').hidden = !prediction || guessWaits();
     if (!prediction) return;
     const chosen = answers[index];
     el('guide-question').textContent = `Guess: ${prediction.question}`;
@@ -318,6 +322,8 @@ export function installGuide(host: GuideHost) {
       const button = item('button', 'guide-choice', choice) as HTMLButtonElement;
       button.type = 'button'; button.setAttribute('aria-pressed', String(chosen === number));
       if (facts.ran && number === prediction.answer) button.classList.add('guide-choice-answer');
+      // After the run a lesson keeps only the guess and the answer, so what happened stays in view.
+      button.hidden = lesson() && facts.ran && chosen !== undefined && number !== chosen && number !== prediction.answer;
       button.addEventListener('click', () => {
         if (facts.ran && chosen !== undefined) return;
         answers[index] = number; facts.predicted = true; early = false; save(); renderPredict(); evaluate();
@@ -326,6 +332,8 @@ export function installGuide(host: GuideHost) {
     }));
     const result = el('guide-predict-result');
     result.classList.remove('guide-right', 'guide-wrong');
+    // A lesson's list already says to guess, then run; the line under the guesses waits for what happened.
+    result.hidden = lesson() && !!step.checklist?.some(part => 'predicted' in part.check) && !facts.ran && !early;
     if (chosen === undefined) setRichText(result, early ? 'Pick your guess first, then run it again.' : 'Pick your guess, then press [[Run code]] to see!');
     else if (!facts.ran) setRichText(result, 'Now press [[Run code]] and watch.');
     else {
@@ -335,17 +343,35 @@ export function installGuide(host: GuideHost) {
     }
     renderClip();
   }
+  /** The guess waits until the blocks listed before it are in, so a lesson shows one moment at a time: build, guess, run. */
+  const guessWaits = () => lesson() && !!active!.steps[index].predict && answers[index] === undefined && !early && !facts.ran && blocksFirst;
   function renderChecklist() {
-    const step = active!.steps[index], list = el('guide-checklist');
-    list.hidden = !step.checklist?.length; el('guide-do').hidden = list.hidden || !lesson();
-    list.replaceChildren(...(step.checklist ?? []).map(part => {
-      const li = item('li', ''), ok = passes(part.check, host.workspace, facts);
-      li.classList.toggle('guide-ticked', ok);
+    const step = active!.steps[index], list = el('guide-checklist'), parts = step.checklist ?? [];
+    list.hidden = !parts.length;
+    const ticks = parts.map(part => passes(part.check, host.workspace, facts)), blocks = parts.map(part => !aboutTheRun(part.check));
+    // Once a lesson step's blocks are in, its finished items fold into one line; what is left (the guess, the run) stays in view.
+    const before = built;
+    built = lesson() && blocks.some(Boolean) && blocks.every((isBlock, i) => !isBlock || ticks[i]);
+    const guess = parts.findIndex(part => 'predicted' in part.check);
+    blocksFirst = parts.some((part, i) => i < (guess < 0 ? parts.length : guess) && blocks[i] && !ticks[i]);
+    const rows = parts.map((part, i) => {
+      const li = item('li', ''), ok = ticks[i];
+      li.classList.toggle('guide-ticked', ok); li.classList.toggle('guide-folded', built && ok);
       const label = item('span', ''); setRichText(label, part.text);
       li.append(item('span', 'guide-box'), label);
       li.setAttribute('aria-label', `${plainText(part.text)}: ${ok ? 'done' : 'not yet'}`);
       return li;
-    }));
+    });
+    if (built) {
+      const summary = item('li', 'guide-summary');
+      summary.append(item('span', 'guide-box'), item('span', '', ticks.every(Boolean) ? 'All done!' : step.predict && answers[index] === undefined ? 'Your blocks are in. Now guess!' : 'Your blocks are in.'));
+      rows.unshift(summary);
+    }
+    list.replaceChildren(...rows);
+    if (step.predict) el('guide-predict').hidden = guessWaits();
+    el('guide-hints').hidden = !hintShown();
+    // A new moment (the blocks just went in, or came out) starts at the top of the step.
+    if (built !== before && !rendering && !el('guide-active').closest('[hidden]')) scrollWithin(el('guide-active'), 'start');
     const goal = step.goal; el('guide-goal').hidden = !goal;
     if (goal) {
       const reached = Math.min(facts.score ?? 0, goal.score);
@@ -353,32 +379,41 @@ export function installGuide(host: GuideHost) {
       el('guide-goal-pips').replaceChildren(...Array.from({ length: goal.score }, (_, n) => item('span', n < reached ? 'guide-pip-on' : '')));
     }
   }
-  /** A short recording of what the step makes; on a Guess-first step it waits until the guess has been run. */
-  function renderClip() {
-    const step = active!.steps[index], figure = el('guide-clip');
-    const show = lesson() && !!step.clip && (!step.predict || (facts.ran && answers[index] !== undefined));
-    const key = show ? `${active!.id}-${index}` : '';
-    // After a guess the clip is the answer, so it sits under the result; otherwise it shows the goal under the step's words.
-    if (step.predict) { if (figure.parentElement !== el('guide-predict')) el('guide-predict').append(figure); }
-    else if (figure.previousElementSibling !== el('guide-step')) el('guide-step').after(figure);
-    figure.querySelector('figcaption')!.textContent = step.predict ? 'Watch: this is what happens' : 'Watch: this is what you are making';
-    figure.hidden = !show;
-    if (figure.dataset.clip === key) return;
-    figure.dataset.clip = key; figure.querySelector('video, img')?.remove();
-    if (!show) return;
-    const still = () => { const image = document.createElement('img'); image.alt = ''; image.src = clipUrl(active!, index, 'png'); image.addEventListener('error', () => { figure.hidden = true; }, { once: true }); return image; };
-    // Nothing moves for a reader who asked for reduced motion: the still frame stands in.
-    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { figure.prepend(still()); return; }
+  /** A short recording of what the step makes, played over the stage: a build step plays it once as it opens,
+   * and Watch by the step's title plays it again. On a Guess-first step it waits until the guess has been run. */
+  const clipReady = () => { const step = active!.steps[index]; return lesson() && !!step.clip && (!step.predict || (facts.ran && answers[index] !== undefined)); };
+  function renderClip(opening = false) {
+    el('guide-watch').hidden = !clipReady();
+    if (!clipReady()) hideClip();
+    else if (opening && !active!.steps[index].predict) playClip();
+  }
+  function hideClip() { document.getElementById('guide-clip')?.remove(); }
+  function playClip() {
+    const surface = document.querySelector('.stage-surface'); if (!surface || !active) return;
+    hideClip();
+    const figure = item('figure', 'stage-clip'); figure.id = 'guide-clip';
+    figure.dataset.clip = `${active.id}-${index}`;
+    const caption = item('figcaption', '', active.steps[index].predict ? 'Watch: what really happens' : 'Watch: what you will make');
+    const close = item('button', 'stage-clip-close', '×') as HTMLButtonElement; close.type = 'button'; close.setAttribute('aria-label', 'Close the clip');
+    // Tapping the clip anywhere puts the stage back, so sprites can be picked and dragged again.
+    figure.addEventListener('click', hideClip);
+    const still = () => { const image = document.createElement('img'); image.alt = ''; image.src = clipUrl(active!, index, 'png'); image.addEventListener('error', hideClip, { once: true }); return image; };
+    // Nothing moves for a reader who asked for reduced motion: the still frame stands in for a moment.
+    if (matchMedia('(prefers-reduced-motion: reduce)').matches) { figure.append(still(), caption, close); surface.append(figure); window.setTimeout(() => { if (figure.isConnected) hideClip(); }, 5000); return; }
     const video = document.createElement('video');
-    video.muted = true; video.loop = true; video.autoplay = true; video.playsInline = true; video.poster = clipUrl(active!, index, 'png'); video.setAttribute('aria-hidden', 'true');
-    for (const [type, ext] of [['video/mp4', 'mp4'], ['video/webm', 'webm']]) { const source = document.createElement('source'); source.type = type; source.src = clipUrl(active!, index, ext); video.append(source); }
+    video.muted = true; video.autoplay = true; video.playsInline = true; video.poster = clipUrl(active, index, 'png'); video.setAttribute('aria-hidden', 'true');
+    for (const [type, ext] of [['video/mp4', 'mp4'], ['video/webm', 'webm']]) { const source = document.createElement('source'); source.type = type; source.src = clipUrl(active, index, ext); video.append(source); }
     const fail = () => video.replaceWith(still());
     video.lastElementChild!.addEventListener('error', fail, { once: true }); video.addEventListener('error', fail, { once: true });
-    figure.prepend(video);
-    // It plays while it is on screen (the Lesson tab may be hidden behind Output while a game runs).
-    clipWatch ??= new IntersectionObserver(seen => { for (const entry of seen) { const v = entry.target.querySelector('video'); if (!v) continue; if (entry.isIntersecting) v.play().catch(() => {}); else v.pause(); } });
-    clipWatch.observe(figure);
+    // It plays twice, then the stage comes back.
+    let plays = 0;
+    video.addEventListener('ended', () => { if (++plays < 2) video.play().catch(() => {}); else window.setTimeout(() => { if (figure.isConnected) hideClip(); }, 400); });
+    figure.append(video, caption, close); surface.append(figure);
+    video.play().catch(() => {});
   }
+  el('guide-watch').addEventListener('click', () => { if (active && clipReady()) playClip(); });
+  /** Tell the editor whether a lesson is open, so it can give the lesson room. */
+  const lessonRoom = (on: boolean, puzzle = false) => host.lessonMode?.(on, puzzle);
   // ── Puzzles: examples, Try it, Check my answer, and the picture over the stage ──
   const box = (label: string, text: string, className = '') => { const div = item('div', `puzzle-box ${className}`.trim()); div.append(item('span', '', label), item('pre', '', text)); return div; };
   function stagePicture(step: BuildStep | null, cheering = false) {
@@ -460,18 +495,20 @@ export function installGuide(host: GuideHost) {
   });
   /** Hints, then "Show me how": the step's idea card, or the lesson's own blocks. */
   function rungs(step: BuildStep) { return [...(step.hints ?? []), ...(step.recipe || step.solution ? ['show'] : [])]; }
+  /** A hint shows above the buttons once asked for, until the blocks are in or the step is done. */
+  const hintShown = () => lesson() && !el('guide-hint').hidden && (hintLevel.get(index) ?? 0) > 0 && !built && !done;
   function renderHints() {
-    const step = active!.steps[index], ladder = rungs(step);
-    el('guide-hints').hidden = !lesson() || !ladder.length;
-    if (el('guide-hints').hidden) return;
+    const step = active!.steps[index], ladder = rungs(step), button = el<HTMLButtonElement>('guide-hint');
+    button.hidden = !lesson() || !ladder.length;
     const level = hintLevel.get(index) ?? 0;
-    el('guide-rungs').replaceChildren(...ladder.map((_, n) => item('span', n < level ? 'guide-rung-on' : '')));
+    el('guide-hints').hidden = !hintShown();
+    if (button.hidden) return;
     const shown = level > 0 ? ladder[level - 1] : '';
     setRichText(el('guide-hint-text'), shown === 'show'
       ? (step.recipe ? 'The idea card is open in Ideas. Press its Insert, then check the numbers.'
         : step.solution?.replacesPlant !== undefined ? 'We swapped in blocks that work. See what changed, then run it.' : 'We added the blocks. See how they fit, then run it.')
       : shown);
-    const next = ladder[level], button = el<HTMLButtonElement>('guide-hint');
+    const next = ladder[level];
     // After the last rung an idea card can be opened again; the lesson's own blocks are added once.
     if (next) button.textContent = next === 'show' ? 'Show me how' : level === 0 ? 'Give me a hint' : 'Another hint';
     else button.textContent = step.recipe ? 'Show the idea again' : 'All help shown';
@@ -483,7 +520,7 @@ export function installGuide(host: GuideHost) {
     const rung = ladder[level] ?? (step.recipe ? 'show' : undefined);
     if (rung === undefined) return;
     if (rung === 'show') showHow(step);
-    hintLevel.set(index, Math.min(ladder.length, level + 1)); renderHints();
+    hintLevel.set(index, Math.min(ladder.length, level + 1)); renderHints(); scrollWithin(el('guide-hints'));
   });
   function showHow(step: BuildStep) {
     if (timing) timing.shown[index] = true;
@@ -535,11 +572,11 @@ export function installGuide(host: GuideHost) {
   function finish() {
     if (!active) return;
     const build = active;
-    stopReading(); closePop(); stopChecking(); stagePicture(null);
+    stopReading(); closePop(); stopChecking(); stagePicture(null); hideClip(); lessonRoom(false);
     clearHighlight(); el('guide-meter').querySelector('span')!.style.width = '100%';
     el('guide-progress').textContent = 'Finished';
     el('guide-step').textContent = ''; el('guide-check').textContent = '';
-    for (const id of ['guide-why-box', 'guide-planted', 'guide-predict', 'guide-goal', 'guide-checklist', 'guide-do', 'guide-hints', 'guide-chapters', 'guide-clip', 'guide-step-title', 'guide-read', 'guide-puzzle']) el(id).hidden = true;
+    for (const id of ['guide-why-box', 'guide-planted', 'guide-predict', 'guide-goal', 'guide-checklist', 'guide-hints', 'guide-hint', 'guide-chapters', 'guide-step-title', 'guide-read', 'guide-watch', 'guide-why-toggle', 'guide-puzzle']) el(id).hidden = true;
     el('guide-finish').hidden = false; setRichText(el('guide-finish-text'), build.finish.text);
     el('guide-remix').replaceChildren(...build.finish.remix.map(richItem));
     const next = build.next ? buildById(build.next) : undefined;
@@ -580,6 +617,7 @@ export function installGuide(host: GuideHost) {
   el('guide-show').addEventListener('click', () => { const recipe = active?.steps[index].recipe && recipeById(active.steps[index].recipe!); if (recipe) { if (timing) timing.shown[index] = true; host.showRecipe(recipe); } });
   el('guide-why-toggle').addEventListener('click', () => {
     const open = el('guide-why').hidden; el('guide-why').hidden = !open; el('guide-why-toggle').setAttribute('aria-expanded', String(open));
+    if (open) scrollWithin(el('guide-why'));
   });
   // Read the step aloud: its goal, its text and what to do, in the browser's own voice.
   el('guide-read').addEventListener('click', () => {
@@ -592,7 +630,7 @@ export function installGuide(host: GuideHost) {
     el('guide-read').setAttribute('aria-pressed', 'true'); speech.speak(utterance);
   });
   el('guide-stop').addEventListener('click', () => {
-    stopReading(); closePop(); stopChecking(); stagePicture(null);
+    stopReading(); closePop(); stopChecking(); stagePicture(null); hideClip();
     active = null; timing = null; since = null; planted = {}; answers = {}; save();
     for (const id of ['guide-next', 'guide-back', 'guide-show']) el(id).hidden = false;
     clearConfirm(); host.prefer(undefined); host.tabLabel('Help'); render(); host.reveal(true); showKept(); host.stopped?.();
@@ -621,6 +659,7 @@ export function installGuide(host: GuideHost) {
     begin(id: string) { const build = buildById(id); if (build) begin(build); },
     ran() {
       if (!active) return;
+      hideClip();
       // A prediction counts only when it was made before the run.
       if (active.steps[index].predict && answers[index] === undefined) { early = true; renderPredict(); return; }
       clearTimeout(coachTimer); facts.ran = true;
@@ -643,7 +682,7 @@ export function installGuide(host: GuideHost) {
     /** The running game's score; Play-test goals count the highest reached. */
     score(value: number) { if (active && value > (facts.score ?? 0)) { facts.score = value; evaluate(); } },
     dispose() {
-      save(); clearTimeout(timer); clearTimeout(looseTimer); clearTimeout(coachTimer); stopReading(); closePop(); stopChecking(); stagePicture(null); host.workspace.removeChangeListener(changed); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('pagehide', save);
+      save(); clearTimeout(timer); clearTimeout(looseTimer); clearTimeout(coachTimer); stopReading(); closePop(); stopChecking(); stagePicture(null); hideClip(); lessonRoom(false); host.workspace.removeChangeListener(changed); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('pagehide', save);
       clearHighlight(); slot.replaceChildren(); el('guide-active')?.remove(); el('lesson-start')?.remove(); el('lesson-finish')?.remove();
     },
   };

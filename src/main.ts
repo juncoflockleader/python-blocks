@@ -4,6 +4,7 @@ import { installBlockIcons } from './ui/block-icons';
 import { installBlockSearch } from './ui/block-search';
 import { installCaptionBubbles } from './ui/block-captions';
 import { installPaletteSearch } from './ui/palette-search';
+import { installLessonStage } from './ui/lesson-stage';
 import { renumberBlocks, setBlockNumbers } from './guide/ui-refs';
 import { installDebugger, debugOptions } from './ui/debugger';
 import { installPlayView } from './scene/play-view';
@@ -238,9 +239,12 @@ const nudges = installNudges({
 });
 // Block pictures in lesson text show the block's number in its category's picker, at the current level.
 setBlockNumbers((category, ref) => findBlock(workspace, level, category, ref));
+// In a lesson the stage steps back while the learner builds, so the step has room under it.
+const lessonStage = installLessonStage();
 const guide = installGuide({
   workspace, level: () => level, setLevel: next => levelControl.set(next),
   compilation: () => compile(workspace),
+  lessonMode: (on, puzzle) => lessonStage.lesson(on, puzzle),
   // A guided build works in the blocks, so it starts in Blocks view.
   load(project, title) { if (!installProject(prepareProject(JSON.stringify(project)).project)) return false; setTitle(title); viewSwitch?.show('blocks'); return true; },
   select: id => sceneEditor?.select(id), prefer: id => { preferredTarget = id; }, showRecipe: recipe => ideas.show(recipe), reveal: list => { if (list) showHelp('builds'); else tabs.activate('help'); }, notify: helpDot,
@@ -516,7 +520,7 @@ function startRun(captured: Compilation, focus = false, debug = false) {
     sceneEditor?.touchControls(autoTouch);
     if (autoTouch && !element<HTMLDialogElement>('#play-dialog').open) { element('#play-expand').click(); focus = true; }
   }
-  runningCompilation = captured; replayCompilation = captured; guide.ran();
+  runningCompilation = captured; replayCompilation = captured; lessonStage.running(); guide.ran();
   replayDraftCheckpoint = pythonEditor?.replayCheckpoint() ?? null;
   eventReady = false; element('#event-input-status').textContent = ''; updateEventControls();
   run.disabled = true; stop.disabled = false; status.textContent = 'Starting Python…';
@@ -589,4 +593,4 @@ element<HTMLInputElement>('#project-file').addEventListener('change', async even
     else if (installProject(prepared.project)) { setTitle(file.name.replace(/\.python-blocks\.json$|\.json$/i, '') || 'My project'); offerLevel(); }
   } catch (error) { notice.textContent = `Could not open project: ${error instanceof Error ? error.message : error}. Your current work is unchanged.`; }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeCaptions(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); blockSearch.dispose(); paletteSearch.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeCaptions(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); blockSearch.dispose(); paletteSearch.dispose(); lessonStage.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });

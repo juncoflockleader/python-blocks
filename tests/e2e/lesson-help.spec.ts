@@ -48,20 +48,25 @@ test('a step shows its goal, blocks as pictures, word cards and the coach pointi
   await expect(page.locator('#guide-read')).toBeVisible();
 });
 
-test('a done step cheers and offers Next, a guessed step shows its clip, and a key step says to tap the game first', async ({ page }) => {
+test('a done step cheers and offers Next, a guessed step offers its clip, and a key step says to tap the game first', async ({ page }) => {
   await startFlappy(page);
   // Show me how adds the blocks; then guess and run.
   for (let i = 0; i < 3; i++) await page.locator('#guide-hint').click();
   await page.locator('#guide-choices button', { hasText: 'Fall faster and faster' }).click();
-  await expect(page.locator('#guide-clip')).toBeHidden();   // the clip would give the answer away
+  await expect(page.locator('#guide-watch')).toBeHidden(); await expect(page.locator('#guide-clip')).toHaveCount(0);   // the clip would give the answer away
   await page.locator('#run').click(); await expect(page.locator('#status')).toHaveText(/Event session running/, { timeout: 60_000 });
   await openTab(page, 'help');
   const cheer = page.locator('.cheer-pop');
   await expect(cheer).toBeVisible(); await expect(cheer.locator('strong')).toHaveText(/You did it!|Awesome!|It works!|Nice one!|Super!|Great job!/);
-  await expect(page.locator('#guide-clip video source').first()).toHaveAttribute('src', /lessons\/flappy-flight-1\.mp4$/);
-  await expect(page.locator('#guide-predict #guide-clip figcaption')).toHaveText('Watch: this is what happens');
-  await expect.poll(() => page.locator('#guide-clip video').evaluate((v: HTMLVideoElement) => v.currentTime)).toBeGreaterThan(0.2);
-  await cheer.getByRole('button', { name: 'Next step' }).click();
+  // After the run, Watch plays the clip over the stage; a tap on it brings the stage back.
+  await cheer.locator('.pop-close').click();
+  await page.locator('#guide-watch').click();
+  const clip = page.locator('.stage-surface #guide-clip');
+  await expect(clip.locator('video source').first()).toHaveAttribute('src', /lessons\/flappy-flight-1\.mp4$/);
+  await expect(clip.locator('figcaption')).toHaveText('Watch: what really happens');
+  await expect.poll(() => clip.locator('video').evaluate((v: HTMLVideoElement) => v.currentTime)).toBeGreaterThan(0.2);
+  await clip.click(); await expect(clip).toHaveCount(0);
+  await page.locator('#guide-next').click();
   await page.locator('#stop').click();
   await expect(page.locator('#guide-step-title')).toHaveText('Flap!');
   // A new step scrolls the Lesson panel to its card, never the editor around it.
@@ -69,9 +74,10 @@ test('a done step cheers and offers Next, a guessed step shows its clip, and a k
   const card = (await page.locator('#guide-active').boundingBox())!, panel = (await page.locator('.tab-panels').boundingBox())!;
   expect(card.y).toBeGreaterThanOrEqual(panel.y - 1); expect(card.y).toBeLessThan(panel.y + 40);
   expect((await page.locator('.top-bar').boundingBox())!.y).toBe(0);
-  await expect(page.locator('#guide-clip video')).toHaveCount(1);   // a build step shows its clip from the start
+  await expect(page.locator('.stage-surface #guide-clip video')).toHaveCount(1);   // a build step plays its clip on the stage as it opens
   for (let i = 0; i < 3; i++) await page.locator('#guide-hint').click();
   await page.locator('#run').click();
+  await expect(page.locator('#guide-clip')).toHaveCount(0);   // the learner's own game takes the stage
   const tip = page.locator('.coach-pop', { hasText: 'Tap the game first' });
   await expect(tip).toBeVisible(); await expect(tip.locator('kbd')).toHaveText('space');
   await page.locator('#stage').click(); await expect(tip).toHaveCount(0);

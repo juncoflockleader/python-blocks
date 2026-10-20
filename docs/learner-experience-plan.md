@@ -532,6 +532,19 @@ The owner found blocks hard to find: a hint names a block, and the learner still
 
 Verification: [the step-by-step test](../tests/unit/lesson-steps.test.ts) checks every block picture in every lesson resolves to a number in the category it names at the lesson's level, and somewhere in Pro's palette, and that captions number a category 1 … n with one per block; [browser tests](../tests/e2e/block-picker.spec.ts) read captions and bubbles, match a lesson's numbers with the picker at Builder and after switching to Pro, and search, drag a found block and leave the search at Pro.
 
+### 3.17 Room for the lesson (built 2026-10-20)
+
+The owner found the Lesson panel too small in Blocks view: it sat under the stage, its buttons, the sprites and the tabs, and got 214–328 px on common windows, while one step was about 813 px tall. Design boards W0–W3 measured it and proposed three layouts; the owner chose A, a small stage while building, with a card that shows one moment at a time.
+
+| Part | What | Where |
+| --- | --- | --- |
+| Small stage while building | In a lesson, in Blocks view on a screen at least 900 px wide, the stage is a window (56% of the column) beside the sprites; Sprites, Paint and Sounds become icons, and the stage's buttons wait until the game runs. Run code gives the game the full stage; a press on the blocks or the palette makes it small again. A button on the stage swaps the sizes, and a stage made big that way stays big until made small. A puzzle's stage stays small. Free play, Stage view and narrower screens keep the usual stage. The lesson gets 464–601 px instead of 214–328. | [lesson-stage.ts](../src/ui/lesson-stage.ts), [shell.css](../src/ui/shell.css) |
+| One moment at a time | **Build:** the goal and the list; the guess waits until the blocks listed before it are in. **Guess:** the finished items fold into one line ("Your blocks are in. Now guess!") and the guesses sit two by two. **What happened:** only the guess and the answer stay, with what happened and Next, under "All done!". A step that asks for the guess first (Brick Breaker's How to win) shows it first. A new moment starts at the top of the step. | [builds.ts](../src/guide/builds.ts), [checks.ts](../src/guide/checks.ts) |
+| A shorter card | One frame instead of two; no "Do this:" label; Watch, Read to me and Why are round buttons by the step's title; Leave lesson sits by the progress; Back, the hint button and Next share one row; a hint shows above them until the blocks are in or the step is done; "Do everything on the list" is read by screen readers only. | [builds.ts](../src/guide/builds.ts), [guide.css](../src/guide/guide.css) |
+| Clips on the stage | A step's clip plays over the stage (twice, then the stage comes back; a tap closes it) instead of a 290 px video in the card. A build step plays it as it opens; a Guess-first step offers Watch once the guess has been run. Run code closes it. With reduced motion the still frame shows for five seconds. | [builds.ts](../src/guide/builds.ts) |
+
+Measured with Flappy Flight's first step: the build moment is 281–351 px and the guess 400–416 px on windows from 1024 × 768 to 1440 × 900, so both fit without scrolling; while a game runs the lesson has its old room, and the result and Next fit in it. Verification: [browser tests](../tests/e2e/lesson-room.spec.ts) check the small stage beside the sprites, each moment fitting at 1180 × 820, 1080 × 700, 1366 × 768 and 1024 × 768, Run code and the blocks switching the sizes, the stage button keeping it big, puzzles and Stage view, and leaving the lesson; the lesson walkthroughs and [lesson help](../tests/e2e/lesson-help.spec.ts) cover the clip on the stage.
+
 ## 4. Track C: academy
 
 ### 4.1 Model

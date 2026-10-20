@@ -136,15 +136,10 @@
 .guide-checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; font-size: 13px; line-height: 1.4; }
 .guide-checklist li { display: grid; grid-template-columns: 20px minmax(0, 1fr); gap: 8px; align-items: start; }
 .guide-box { width: 18px; height: 18px; margin-top: 1px; border: 2px solid #b9c4a6; border-radius: 5px; box-sizing: border-box; }
-.guide-ticked .guide-box { border-color: #267c70; background: #267c70 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4'%3E%3Cpath d='m5 12 5 5L20 7'/%3E%3C/svg%3E") center / 12px no-repeat; }
-.guide-hints { margin: 8px 0; padding: 10px; border: 1px dashed #cbd4b4; border-radius: 12px; display: grid; gap: 6px; }
-.guide-hints-head { display: flex; justify-content: space-between; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: #3c5034; }
-.guide-rungs { display: flex; gap: 3px; width: 72px; }
-.guide-rungs span { flex: 1; height: 5px; border-radius: 3px; background: #e4e7dd; }
-.guide-rungs span.guide-rung-on { background: #dd9250; }
-.guide-hint-text { margin: 0; font-size: 13px; line-height: 1.45; }
+.guide-ticked .guide-box, .guide-summary .guide-box { border-color: #267c70; background: #267c70 url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='4'%3E%3Cpath d='m5 12 5 5L20 7'/%3E%3C/svg%3E") center / 12px no-repeat; }
+.guide-hints { margin: 8px 0; padding: 8px 10px; border: 1px dashed #dd9250; border-radius: 12px; background: #fffaf2; display: grid; gap: 6px; }
+.guide-hint-text { margin: 0; font-size: 13.5px; line-height: 1.45; }
 .guide-hint-text:empty { display: none; }
-#guide-hint { justify-self: start; min-height: 40px; }
 .guide-kept { margin: 0 0 8px; padding: 10px 12px; border: 1px solid #c9d8bb; border-radius: 10px; background: #f4faf6; font-size: 13px; }
 .guide-kept p { margin: 0 0 8px; }
 .guide-kept[hidden] { display: none; }
@@ -203,19 +198,45 @@
 .key-ref-wide { min-width: 4.2em; }
 .guide-title-row { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
 .guide-step-title { margin: 0; font: 700 19px/1.2 'Space Grotesk', system-ui, sans-serif; color: #1d2e26; }
-.guide-step-title[hidden], .guide-read[hidden], .guide-clip[hidden], .guide-do[hidden], .guide-why-box[hidden], .guide-why-toggle[hidden] { display: none; }
-.guide-read { flex: 0 0 auto; display: inline-flex; align-items: center; gap: 5px; min-height: 36px; padding: 0 10px; border: 1px solid #c9d8bb; border-radius: 999px; background: #fff; color: #26382f; font: 600 12px 'DM Sans', system-ui, sans-serif; cursor: pointer; }
-.guide-read[aria-pressed="true"] { background: #e5f2e8; border-color: #267c70; }
+.guide-step-title[hidden], .guide-tool[hidden], .guide-why-box[hidden] { display: none; }
 .guide-lesson-active .guide-title-row + .guide-step { font-weight: 500; font-size: 14.5px; line-height: 1.55; }
-.guide-clip { margin: 0; display: grid; gap: 4px; }
-.guide-clip video, .guide-clip img { width: 100%; aspect-ratio: 3 / 2; border-radius: 10px; background: #edf2e8; display: block; object-fit: cover; }
-.guide-clip figcaption { order: -1; font-size: 12px; font-weight: 700; color: #2b5a4b; }
-.guide-do { margin: 2px 0 0; font-size: 13px; font-weight: 700; color: #2b5a4b; }
-.guide-lesson-active .guide-checklist { font-size: 14px; line-height: 1.6; }
+.guide-lesson-active .guide-checklist { font-size: 14px; line-height: 1.55; }
 .guide-why-box { display: grid; gap: 6px; }
-.guide-why-toggle { justify-self: start; display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 0 12px; border: 1px solid #e3c79a; border-radius: 999px; background: #fff8ec; color: #6b4a1e; font: 600 13px 'DM Sans', system-ui, sans-serif; cursor: pointer; }
-.guide-why-toggle[aria-expanded="true"] { background: #ffefd6; }
 .guide-lesson-active .guide-why { padding: 8px 10px; border-radius: 10px; background: #fff8ec; font-size: 13.5px; }
+
+/* A lesson step, one moment at a time (docs/learner-experience-plan.md §3.17): one frame (the panel itself), the
+   chapter and Leave on top, the step's round tools (Watch, Read to me, Why) by its title, the list with finished
+   items folded into one line once the blocks are in, the guesses two by two, and one row of Back, a hint and Next. */
+.guide-active.guide-lesson-active { border: 0; border-radius: 0; padding: 0 0 6px; background: none; }
+.guide-lesson-active .guide-card-body { gap: 8px; padding: 0; border: 0; background: none; }
+.guide-lesson-active .guide-head { display: grid; grid-template-columns: minmax(0, 1fr) auto; column-gap: 8px; align-items: center; }
+.guide-lesson-active .guide-head h3 { grid-column: 1; }
+.guide-lesson-active #guide-progress { grid-column: 1; grid-row: 2; }
+.guide-lesson-active #guide-stop { grid-column: 2; grid-row: 1 / span 2; min-height: 34px; padding: 2px 12px; font-size: 12.5px; }
+.guide-lesson-active .guide-chapters { margin: 6px 0 10px; }
+.guide-tools { flex: none; display: flex; gap: 6px; }
+.guide-tool { flex: none; width: 40px; height: 40px; padding: 0; display: grid; place-items: center; border: 1px solid #c9d8bb; border-radius: 50%; background: #fff; color: #26382f; cursor: pointer; }
+.guide-tool:hover { background: #f0f6e9; }
+.guide-tool[aria-pressed="true"], .guide-tool[aria-expanded="true"] { background: #e5f2e8; border-color: #267c70; }
+#guide-watch { border-color: #267c70; color: #1d5f56; }
+#guide-why-toggle { border-color: #e3c79a; color: #6b4a1e; }
+#guide-why-toggle[aria-expanded="true"] { background: #ffefd6; }
+.guide-tool-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.guide-lesson-active .guide-title-row { align-items: center; }
+.guide-lesson-active .guide-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.guide-choice[hidden] { display: none; }
+.guide-lesson-active .guide-check { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
+.guide-lesson-active .guide-actions { flex-wrap: nowrap; margin-top: 4px; }
+.guide-lesson-active .guide-actions #guide-next { margin-left: auto; }
+.guide-checklist .guide-folded { display: none; }
+.guide-summary { align-items: center !important; padding: 5px 10px; border-radius: 10px; background: #e5f2e8; font-weight: 600; color: #1f4d33; }
+
+/* A step's clip plays over the stage, then the stage comes back; a tap anywhere on it closes it. */
+.stage-clip { position: absolute; inset: 0; z-index: 3; margin: 0; background: #edf2e8; cursor: pointer; }
+.stage-clip video, .stage-clip img { width: 100%; height: 100%; display: block; object-fit: cover; }
+.stage-clip figcaption { position: absolute; left: 8px; top: 8px; max-width: calc(100% - 56px); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; padding: 3px 9px; border-radius: 999px; background: #fffef8e8; color: #1d5f56; font: 700 12px 'DM Sans', system-ui, sans-serif; box-shadow: 0 1px 3px #26382f33; }
+.stage-wrap:has(.stage-clip) #status { visibility: hidden; }
+.stage-clip-close { position: absolute; right: 6px; top: 6px; width: 32px; height: 32px; border: 0; border-radius: 50%; background: #fffef8e8; color: #26382f; font: 600 20px/1 system-ui; cursor: pointer; box-shadow: 0 1px 3px #26382f33; }
 
 .pop { position: fixed; z-index: 1000; display: flex; align-items: flex-start; gap: 8px; max-width: min(320px, calc(100vw - 16px)); padding: 10px 34px 10px 10px; border: 2px solid #267c70; border-radius: 14px; background: #fffef8; color: #1d2e26; font: 500 14px/1.45 'DM Sans', system-ui, sans-serif; box-shadow: 0 6px 22px #1d2e2633; animation: pop-in .18s ease-out; }
 .pop-body { display: grid; gap: 6px; min-width: 0; }
