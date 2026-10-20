@@ -1,8 +1,12 @@
 import * as Blockly from 'blockly/core';
 import { emptyScene, validateScene, type SceneState } from './model';
 const states = new WeakMap<Blockly.Workspace, SceneState>();
-export function sceneState(workspace: Blockly.Workspace): SceneState { return structuredClone(states.get((workspace as Blockly.WorkspaceSvg).targetWorkspace ?? workspace) ?? emptyScene()); }
-function apply(workspace: Blockly.Workspace, state: SceneState) {
+const stored = (workspace: Blockly.Workspace) => states.get((workspace as Blockly.WorkspaceSvg).targetWorkspace ?? workspace);
+/** A copy of the scene, free to change and pass to changeScene. */
+export function sceneState(workspace: Blockly.Workspace): SceneState { return structuredClone(stored(workspace) ?? emptyScene()); }
+/** The scene itself, for reads that run per block, such as menus: sounds can make a copy megabytes. Never change it. */
+export function readScene(workspace: Blockly.Workspace): SceneState { return stored(workspace) ?? emptyScene(); }
+function apply(workspace: Blockly.Workspace, state: unknown) {
   validateScene(state);
   for (const block of workspace.getAllBlocks(false)) for (const key of ['SPRITE_ID', 'COSTUME_ID', 'BACKDROP_ID', 'WORLD_ID', 'SOUND_ID']) {
     const field = block.getField(key); if (field) field.loadState(field.saveState(true));
@@ -36,5 +40,5 @@ export function changeScene(workspace: Blockly.Workspace, next: SceneState) {
 Blockly.serialization.registry.register('pythonScene', {
   priority: 95,
   save(workspace) { const s = sceneState(workspace); return s.watchers?.length || s.controls || s.sounds?.length || s.worlds?.length || s.world || s.camera || s.sprites.length || s.assets.length || s.backdrops?.length || s.backdrop || s.effects || s.background !== emptyScene().background ? s : null; },
-  load(state, workspace) { validateScene(state); apply(workspace, state); }, clear(workspace) { states.delete(workspace); },
+  load(state, workspace) { apply(workspace, state); }, clear(workspace) { states.delete(workspace); },
 });

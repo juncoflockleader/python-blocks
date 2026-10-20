@@ -35,7 +35,8 @@ test('dictionary pair editing preserves removed values and undo restores the pro
   await expect(page.locator('#python')).toContainText('"second": 2');
   await page.locator('g[data-id="editable-dictionary"] .blocklyMutatorIcon').click();
   await page.screenshot({ path: testInfo.outputPath('dictionary-editor.png'), fullPage: true });
-  const container = page.locator('.blocklyBubbleCanvas path[aria-label="Begin stack, dictionary pairs"]').locator('..');
+  // By block type: Blockly ends block labels with a comma except on Apple platforms.
+  const container = page.locator('.blocklyBubbleCanvas g.py_dict_container');
   await container.locator('g.blocklyDraggable').last().click();
   await page.keyboard.press('Delete');
   await expect(page.locator('#python')).not.toContainText('"second": 2');
@@ -56,7 +57,7 @@ test('list item editing preserves removed values and undo restores the program',
   await page.locator('#project-file').setInputFiles({ name: 'list.json', mimeType: 'application/json', buffer: Buffer.from(JSON.stringify(state)) });
   await expect(page.locator('#python')).toContainText('[1, 2]');
   await page.locator('g[data-id="editable-list"] .blocklyMutatorIcon').click();
-  const container = page.locator('.blocklyBubbleCanvas path[aria-label="Begin stack, list"]').locator('..');
+  const container = page.locator('.blocklyBubbleCanvas g.lists_create_with_container');
   await container.locator('g.blocklyDraggable').last().click(); await page.keyboard.press('Delete');
   await expect(page.locator('#python')).toContainText('[1]');
   await page.locator('g[data-id="editable-list"] .blocklyMutatorIcon').click();
