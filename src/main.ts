@@ -2,6 +2,10 @@ import './style.css';
 import { installIcons } from './ui/icons';
 import { installBlockIcons } from './ui/block-icons';
 import { installBlockSearch } from './ui/block-search';
+import { installCaptionBubbles } from './ui/block-captions';
+import { installPaletteSearch } from './ui/palette-search';
+import { installLessonStage } from './ui/lesson-stage';
+import { renumberBlocks, setBlockNumbers } from './guide/ui-refs';
 import { installDebugger, debugOptions } from './ui/debugger';
 import { installPlayView } from './scene/play-view';
 import { Questions } from './scene/questions';
@@ -36,12 +40,14 @@ import { installNudges, type FixKind } from './guide/nudges';
 import { installFixes, type RuntimeFault } from './guide/fixes';
 import { installGallery } from './guide/gallery';
 import { installLessons } from './guide/lessons';
-import { atLeast, installLevels, levelNames, requiredLevel, storedLevel, toolboxFor, LEVEL_KEY, type Level } from './ui/levels';
-import { installHelpSections, installInputHints, installLevelControl, installMenu, installPaletteHint, installPythonPlacement, installTabs, installViewSwitch, shellMarkup, trackKeyboard } from './ui/shell';
+import { atLeast, installLevels, levelNames, findBlock, requiredLevel, storedLevel, toolboxFor, LEVEL_KEY, type Level } from './ui/levels';
+import { installHelpSections, installInputHints, installLevelControl, installMenu, installPaletteHint, installPythonPlacement, installTabs, installViewSwitch, keepShellInPlace, shellMarkup, trackKeyboard } from './ui/shell';
 
 document.querySelector<HTMLDivElement>('#app')!.innerHTML = shellMarkup + `<dialog id="migration-dialog"><h2>Choose startup order</h2><p>This older project has several loose stacks. Choose their order inside Program.</p><ol id="migration-order"></ol><p id="migration-error" role="alert"></p><button id="migration-apply" class="button primary">Use this order</button><button id="migration-cancel" class="button secondary">Cancel</button></dialog>`;
+keepShellInPlace();
 
 const disposeIcons = installIcons();
+const disposeCaptions = installCaptionBubbles();
 const disposeInputHints = installInputHints();
 const disposeKeyboard = trackKeyboard(document.documentElement);
 const menu = installMenu();
@@ -203,6 +209,7 @@ const cards: CardHost = {
   },
   show: recipe => ideas.show(recipe),
 };
+const paletteSearch = installPaletteSearch(workspace, () => level);
 const blockSearch = installBlockSearch(workspace, () => toolboxFor(level), {
   match: query => rankIdeas(query, level).map(recipe => recipeCard(recipe, cards, { compact: true })),
   preferred: () => level === 'starter',
@@ -230,8 +237,14 @@ const nudges = installNudges({
   openGallery: () => gallery.open(), startBuild: id => guide.begin(id), handlerCount: () => handlerSignatures(workspace).length,
   picks: () => [['catch-the-star-game', 'Catch the star'], ['pen-patterns-game', 'Pen patterns'], ['scene-story-example', 'Story']].map(([id, title]) => ({ id, title, open: () => gallery.load(id) })),
 });
+// Block pictures in lesson text show the block's number in its category's picker, at the current level.
+setBlockNumbers((category, ref) => findBlock(workspace, level, category, ref));
+// In a lesson the stage steps back while the learner builds, so the step has room under it.
+const lessonStage = installLessonStage();
 const guide = installGuide({
   workspace, level: () => level, setLevel: next => levelControl.set(next),
+  compilation: () => compile(workspace),
+  lessonMode: (on, puzzle) => lessonStage.lesson(on, puzzle),
   // A guided build works in the blocks, so it starts in Blocks view.
   load(project, title) { if (!installProject(prepareProject(JSON.stringify(project)).project)) return false; setTitle(title); viewSwitch?.show('blocks'); return true; },
   select: id => sceneEditor?.select(id), prefer: id => { preferredTarget = id; }, showRecipe: recipe => ideas.show(recipe), reveal: list => { if (list) showHelp('builds'); else tabs.activate('help'); }, notify: helpDot,
@@ -239,8 +252,8 @@ const guide = installGuide({
   stopped: () => nudges.empty(!workspace.getTopBlocks(false).length),
   download: (name, text) => download(name, text, 'application/json'),
   revision: typeof __APP_REVISION__ === 'string' ? __APP_REVISION__ : 'development (revision unavailable)',
-  insert(parts, title, select, other, replace = []) {
-    const lesson: Recipe = { id: 'lesson', title, group: 'game', phrases: [], level, concepts: ['event'], steps: [], blocks: parts };
+  insert(parts, title, select, other, replace = [], variables) {
+    const lesson: Recipe = { id: 'lesson', title, group: 'game', phrases: [], level, concepts: ['event'], steps: [], blocks: parts, ...(variables?.length ? { variables } : {}) };
     const group = Blockly.Events.getGroup(); Blockly.Events.setGroup(group || true);
     try {
       for (const id of replace) workspace.getBlockById(id)?.dispose(true);
@@ -276,11 +289,12 @@ const fixes = installFixes({
 /** Levels filter the palette, menus and sprite settings; they never hide blocks already in a project. */
 const levelControl = installLevelControl(next => {
   level = next;
-  workspace.updateToolbox(toolboxFor(next)); workspace.getFlyout()?.hide();
+  workspace.updateToolbox(toolboxFor(next)); workspace.getFlyout()?.hide(); paletteSearch.refresh();
   // The palette may change width (Builder and Pro use two columns on tablets): let Blockly re-measure it.
   Blockly.svgResize(workspace); paletteHint.refresh();
   blockSearch.refresh();
   debuggerView?.refresh();
+  renumberBlocks();
 });
 function offerLevel() { try { levelControl.offer(requiredLevel(workspace)); } catch { /* an unusual project still opens; the palette is unchanged */ } }
 let autosaveEnabled = true;
@@ -506,12 +520,14 @@ function startRun(captured: Compilation, focus = false, debug = false) {
     sceneEditor?.touchControls(autoTouch);
     if (autoTouch && !element<HTMLDialogElement>('#play-dialog').open) { element('#play-expand').click(); focus = true; }
   }
-  runningCompilation = captured; replayCompilation = captured; guide.ran();
+  runningCompilation = captured; replayCompilation = captured; lessonStage.running(); guide.ran();
   replayDraftCheckpoint = pythonEditor?.replayCheckpoint() ?? null;
   eventReady = false; element('#event-input-status').textContent = ''; updateEventControls();
   run.disabled = true; stop.disabled = false; status.textContent = 'Starting Python…';
   debuggerView?.start(captured, debug);
-  runner.run(captured.source, captured.executionMode, captured.files, captured.scene, undefined, debug ? debugOptions(captured) : undefined);
+  // Read blocks read the open puzzle's input (its Try it box), or nothing.
+  const stdin = guide.input();
+  runner.run(captured.source, captured.executionMode, captured.files, captured.scene, undefined, debug ? debugOptions(captured) : undefined, stdin === undefined ? {} : { stdin });
   if (focus) element('#stage').focus({ preventScroll: true });
 }
 async function acceptedCompilation() {
@@ -577,4 +593,4 @@ element<HTMLInputElement>('#project-file').addEventListener('change', async even
     else if (installProject(prepared.project)) { setTitle(file.name.replace(/\.python-blocks\.json$|\.json$/i, '') || 'My project'); offerLevel(); }
   } catch (error) { notice.textContent = `Could not open project: ${error instanceof Error ? error.message : error}. Your current work is unchanged.`; }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); blockSearch.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeCaptions(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); blockSearch.dispose(); paletteSearch.dispose(); lessonStage.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });

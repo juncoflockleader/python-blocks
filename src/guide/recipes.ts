@@ -12,7 +12,8 @@ type State = Blockly.serialization.blocks.State;
 export const RECIPE_GROUPS = ['move', 'look', 'touch', 'game', 'sound', 'draw', 'data', 'fix'] as const;
 export type RecipeGroup = typeof RECIPE_GROUPS[number];
 export type SpriteRef = '$sprite' | '$other';
-export interface RecipeHandler { kind: HatKind; key?: string; sprite?: SpriteRef; other?: SpriteRef; message?: string; backdrop?: string }
+/** A handler made through the hat-block path; `program` (lessons only) fills the project's Program block instead. */
+export interface RecipeHandler { kind: HatKind | 'program'; key?: string; sprite?: SpriteRef; other?: SpriteRef; message?: string; backdrop?: string }
 /** One top-level script: a handler made through the hat-block path, holding a stack. */
 export interface RecipePart { handler: RecipeHandler; stack: State[] }
 /** Input played while recording a preview: hold a key, or click a sprite. */
@@ -57,7 +58,7 @@ export function recipeProblems(recipe: Recipe, all: Recipe[] = recipes): string[
   need(Array.isArray(recipe.steps) && recipe.steps.length > 0 && recipe.steps.every(s => typeof s.say === 'string' && s.say.length > 8 && s.say.length < 220), 'needs one or more steps of 9–219 characters');
   need(recipe.group === 'fix' || (Array.isArray(recipe.blocks) && recipe.blocks.length > 0), 'needs blocks unless it is a Fix recipe');
   for (const part of recipe.blocks ?? []) {
-    need(HAT_KINDS.includes(part.handler?.kind), 'each part needs a handler kind');
+    need(HAT_KINDS.includes(part.handler?.kind as HatKind), 'each part needs a handler kind');
     need(Array.isArray(part.stack) && part.stack.length > 0, 'each part needs a stack');
   }
   for (const id of recipe.tryNext ?? []) need(all.some(r => r.id === id && r.id !== recipe.id), `tryNext refers to unknown recipe ${id}`);
@@ -104,7 +105,22 @@ export function appendRecipe(workspace: Blockly.Workspace, recipe: Recipe, place
   if (recipe.variables?.length) refreshSymbols(workspace);
   const ref = (value?: SpriteRef) => value === '$other' ? place.other : value === '$sprite' ? place.sprite : undefined;
   return recipe.blocks.map(part => {
-    const state = handlerState(workspace, { kind: part.handler.kind, key: part.handler.key, sprite: ref(part.handler.sprite ?? '$sprite'), other: ref(part.handler.other), message: part.handler.message, backdrop: part.handler.backdrop });
+    if (part.handler.kind === 'program') {
+      // The Program block gets this stack in place of what it held (a puzzle's "Show me how").
+      const program = workspace.getTopBlocks(true).find(b => b.type === 'py_program');
+      // An empty stack clears the Program block: a new puzzle starts with an empty program.
+      if (!part.stack.length) {
+        if (program) { program.getInputTargetBlock('BODY')?.dispose(false); return program; }
+        return Blockly.serialization.blocks.append({ type: 'py_program' }, workspace, { recordUndo: true });
+      }
+      const body = resolve(chain(part.stack), place);
+      if (!program) return Blockly.serialization.blocks.append({ type: 'py_program', inputs: { BODY: { block: body } } }, workspace, { recordUndo: true });
+      program.getInputTargetBlock('BODY')?.dispose(false);
+      const added = Blockly.serialization.blocks.append(body, workspace, { recordUndo: true });
+      program.getInput('BODY')!.connection!.connect(added.previousConnection!);
+      return program;
+    }
+    const state = handlerState(workspace, { kind: part.handler.kind as HatKind, key: part.handler.key, sprite: ref(part.handler.sprite ?? '$sprite'), other: ref(part.handler.other), message: part.handler.message, backdrop: part.handler.backdrop });
     const body = resolve(chain(part.stack), place);
     // "Overlaps <other>" starts with an if; the recipe's stack goes inside it.
     const check = state.inputs?.BODY?.block;

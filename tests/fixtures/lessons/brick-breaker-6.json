@@ -1,0 +1,698 @@
+{
+ "format": "python-blocks",
+ "formatVersion": 2,
+ "languageVersion": 23,
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "py_handler",
+     "id": "brick-breaker-1",
+     "x": 0,
+     "y": 0,
+     "extraState": {
+      "functionId": "brick-breaker-38",
+      "signature": {
+       "id": "brick-breaker-38",
+       "name": "on_start",
+       "parameters": [
+        {
+         "id": "brick-breaker-39",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "start",
+        "order": 0,
+        "sprite": "paddle"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_control",
+        "id": "brick-breaker-2",
+        "fields": {
+         "SCHEME": "arrows"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "brick-breaker-3",
+           "fields": {
+            "SPRITE_ID": "paddle"
+           }
+          }
+         },
+         "VX": {
+          "shadow": {
+           "type": "py_number",
+           "id": "brick-breaker-4",
+           "fields": {
+            "VALUE": "180"
+           }
+          }
+         },
+         "VY": {
+          "shadow": {
+           "type": "py_number",
+           "id": "brick-breaker-5",
+           "fields": {
+            "VALUE": "180"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_motion_edges",
+          "id": "brick-breaker-6",
+          "fields": {
+           "MODE": "stop"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "id": "brick-breaker-7",
+             "fields": {
+              "SPRITE_ID": "paddle"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "brick-breaker-8",
+     "x": 0,
+     "y": 0,
+     "extraState": {
+      "functionId": "brick-breaker-40",
+      "signature": {
+       "id": "brick-breaker-40",
+       "name": "on_start_2",
+       "parameters": [
+        {
+         "id": "brick-breaker-41",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "start",
+        "order": 1,
+        "sprite": "paddle"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_motion_edges",
+        "id": "brick-breaker-9",
+        "fields": {
+         "MODE": "stop"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "brick-breaker-10",
+           "fields": {
+            "SPRITE_ID": "paddle"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "brick-breaker-11",
+     "x": 0,
+     "y": 0,
+     "extraState": {
+      "functionId": "brick-breaker-42",
+      "signature": {
+       "id": "brick-breaker-42",
+       "name": "on_start_3",
+       "parameters": [
+        {
+         "id": "brick-breaker-43",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "start",
+        "order": 2,
+        "sprite": "ball"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_motion_set",
+        "id": "brick-breaker-12",
+        "fields": {
+         "PROPERTY": "vx"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "brick-breaker-13",
+           "fields": {
+            "SPRITE_ID": "ball"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "id": "brick-breaker-14",
+           "fields": {
+            "VALUE": "150"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_motion_set",
+          "id": "brick-breaker-15",
+          "fields": {
+           "PROPERTY": "vy"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "id": "brick-breaker-16",
+             "fields": {
+              "SPRITE_ID": "ball"
+             }
+            }
+           },
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "id": "brick-breaker-17",
+             "fields": {
+              "VALUE": "200"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "brick-breaker-18",
+     "x": 0,
+     "y": 0,
+     "extraState": {
+      "functionId": "brick-breaker-44",
+      "signature": {
+       "id": "brick-breaker-44",
+       "name": "on_start_4",
+       "parameters": [
+        {
+         "id": "brick-breaker-45",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "start",
+        "order": 3,
+        "sprite": "ball"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_motion_edges",
+        "id": "brick-breaker-19",
+        "fields": {
+         "MODE": "bounce"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "brick-breaker-20",
+           "fields": {
+            "SPRITE_ID": "ball"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "brick-breaker-21",
+     "x": 0,
+     "y": 0,
+     "extraState": {
+      "functionId": "brick-breaker-46",
+      "signature": {
+       "id": "brick-breaker-46",
+       "name": "on_paddle_overlap",
+       "parameters": [
+        {
+         "id": "brick-breaker-47",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "overlap",
+        "order": 4,
+        "sprite": "paddle"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "brick-breaker-22",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "scene_overlaps",
+           "id": "brick-breaker-23",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_self",
+              "id": "brick-breaker-24"
+             }
+            },
+            "OTHER": {
+             "block": {
+              "type": "scene_sprite",
+              "id": "brick-breaker-25",
+              "fields": {
+               "SPRITE_ID": "ball"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "scene_motion_set",
+           "id": "brick-breaker-26",
+           "fields": {
+            "PROPERTY": "vy"
+           },
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_sprite",
+              "id": "brick-breaker-27",
+              "fields": {
+               "SPRITE_ID": "ball"
+              }
+             }
+            },
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "id": "brick-breaker-28",
+              "fields": {
+               "VALUE": "220"
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "brick-breaker-29",
+     "x": 0,
+     "y": 0,
+     "extraState": {
+      "functionId": "brick-breaker-48",
+      "signature": {
+       "id": "brick-breaker-48",
+       "name": "on_start_5",
+       "parameters": [
+        {
+         "id": "brick-breaker-49",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "start",
+        "order": 5,
+        "sprite": "brick"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_repeat_ext",
+        "id": "brick-breaker-30",
+        "inputs": {
+         "TIMES": {
+          "shadow": {
+           "type": "py_number",
+           "id": "brick-breaker-31",
+           "fields": {
+            "VALUE": "8"
+           }
+          }
+         },
+         "DO": {
+          "block": {
+           "type": "scene_visibility",
+           "id": "brick-breaker-32",
+           "fields": {
+            "ACTION": "show"
+           },
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_clone",
+              "id": "brick-breaker-33",
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "id": "brick-breaker-34",
+                 "fields": {
+                  "SPRITE_ID": "brick"
+                 }
+                }
+               }
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "scene_change",
+             "id": "brick-breaker-35",
+             "fields": {
+              "PROPERTY": "x"
+             },
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "id": "brick-breaker-36",
+                "fields": {
+                 "SPRITE_ID": "brick"
+                }
+               }
+              },
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "id": "brick-breaker-37",
+                "fields": {
+                 "VALUE": "50"
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  "variables": [
+   {
+    "name": "brick-breaker-50",
+    "id": "brick-breaker-50"
+   },
+   {
+    "name": "brick-breaker-51",
+    "id": "brick-breaker-51"
+   },
+   {
+    "name": "brick-breaker-52",
+    "id": "brick-breaker-52"
+   },
+   {
+    "name": "brick-breaker-53",
+    "id": "brick-breaker-53"
+   },
+   {
+    "name": "brick-breaker-54",
+    "id": "brick-breaker-54"
+   },
+   {
+    "name": "brick-breaker-55",
+    "id": "brick-breaker-55"
+   },
+   {
+    "name": "brick-breaker-56",
+    "id": "brick-breaker-56"
+   }
+  ],
+  "pythonScene": {
+   "version": 1,
+   "background": "#22394a",
+   "assets": [
+    {
+     "id": "stock-paddle",
+     "name": "Paddle",
+     "width": 80,
+     "height": 12,
+     "stock": "props/paddle@1"
+    },
+    {
+     "id": "stock-little-ball",
+     "name": "Little ball",
+     "width": 14,
+     "height": 14,
+     "stock": "props/little-ball@1"
+    },
+    {
+     "id": "stock-brick-red",
+     "name": "Brick red",
+     "width": 44,
+     "height": 14,
+     "stock": "props/brick-red@1"
+    },
+    {
+     "id": "stock-brick-orange",
+     "name": "Brick orange",
+     "width": 44,
+     "height": 14,
+     "stock": "props/brick-orange@1"
+    },
+    {
+     "id": "stock-brick-yellow",
+     "name": "Brick yellow",
+     "width": 44,
+     "height": 14,
+     "stock": "props/brick-yellow@1"
+    },
+    {
+     "id": "stock-brick-green",
+     "name": "Brick green",
+     "width": 44,
+     "height": 14,
+     "stock": "props/brick-green@1"
+    },
+    {
+     "id": "stock-brick-blue",
+     "name": "Brick blue",
+     "width": 44,
+     "height": 14,
+     "stock": "props/brick-blue@1"
+    }
+   ],
+   "sprites": [
+    {
+     "id": "paddle",
+     "name": "Paddle",
+     "x": 0,
+     "y": -135,
+     "direction": 0,
+     "size": 100,
+     "layer": 1,
+     "visible": true,
+     "costume": "stock-paddle",
+     "rotationStyle": "none"
+    },
+    {
+     "id": "ball",
+     "name": "Ball",
+     "x": 0,
+     "y": -100,
+     "direction": 0,
+     "size": 100,
+     "layer": 2,
+     "visible": true,
+     "costume": "stock-little-ball",
+     "rotationStyle": "none"
+    },
+    {
+     "id": "brick",
+     "name": "Brick",
+     "x": -175,
+     "y": 120,
+     "direction": 0,
+     "size": 100,
+     "layer": 1,
+     "visible": false,
+     "costume": "stock-brick-red",
+     "rotationStyle": "none",
+     "costumes": [
+      "stock-brick-red",
+      "stock-brick-orange",
+      "stock-brick-yellow",
+      "stock-brick-green",
+      "stock-brick-blue"
+     ]
+    }
+   ]
+  },
+  "procedures": [
+   {
+    "id": "brick-breaker-38",
+    "name": "on_start",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 0,
+     "sprite": "paddle"
+    },
+    "parameters": [
+     {
+      "id": "brick-breaker-39",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "brick-breaker-40",
+    "name": "on_start_2",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 1,
+     "sprite": "paddle"
+    },
+    "parameters": [
+     {
+      "id": "brick-breaker-41",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "brick-breaker-42",
+    "name": "on_start_3",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 2,
+     "sprite": "ball"
+    },
+    "parameters": [
+     {
+      "id": "brick-breaker-43",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "brick-breaker-44",
+    "name": "on_start_4",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 3,
+     "sprite": "ball"
+    },
+    "parameters": [
+     {
+      "id": "brick-breaker-45",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "brick-breaker-46",
+    "name": "on_paddle_overlap",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "overlap",
+     "order": 4,
+     "sprite": "paddle"
+    },
+    "parameters": [
+     {
+      "id": "brick-breaker-47",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "brick-breaker-48",
+    "name": "on_start_5",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 5,
+     "sprite": "brick"
+    },
+    "parameters": [
+     {
+      "id": "brick-breaker-49",
+      "name": "payload"
+     }
+    ]
+   }
+  ]
+ }
+}

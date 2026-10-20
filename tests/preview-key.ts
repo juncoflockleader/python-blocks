@@ -27,3 +27,17 @@ export const galleryOutputs = (id: string) => ({ webm: `public/gallery/${id}.web
 export const PREVIEW_MANIFEST = 'public/recipes/manifest.json';
 export const GALLERY_MANIFEST = 'public/gallery/manifest.json';
 export const readManifest = (path: string): Record<string, string> => { try { return JSON.parse(readFileSync(path, 'utf8')); } catch { return {}; } };
+
+/** Lesson clips: a short recording of what a lesson step makes, shown on its card as "Watch". Each is
+ * recorded from the step's project (tests/fixtures/lessons, built by tests/unit/lesson-steps.test.ts). */
+export const LESSON_RENDERER = 1; // 1: the step's project run with its demo keys; the poster is the moment of most change.
+export const LESSON_MANIFEST = 'public/lessons/manifest.json';
+export interface LessonClip { lesson: string; step: number; clip: { demo?: unknown[]; seconds?: number } }
+export const lessonClips = (): LessonClip[] => readdirSync('content/builds').filter(f => f.endsWith('.json') && !f.endsWith('-game.json')).sort()
+  .map(f => JSON.parse(readFileSync(`content/builds/${f}`, 'utf8')) as { id: string; kind?: string; steps: { clip?: LessonClip['clip'] }[] })
+  .filter(build => build.kind === 'lesson')
+  .flatMap(build => build.steps.flatMap((step, index) => step.clip ? [{ lesson: build.id, step: index + 1, clip: step.clip }] : []));
+export const lessonClipId = (clip: LessonClip) => `${clip.lesson}-${clip.step}`;
+export const lessonClipFixture = (clip: LessonClip) => `tests/fixtures/lessons/${lessonClipId(clip)}.json`;
+export const lessonClipKey = (clip: LessonClip) => sha(JSON.stringify({ renderer: LESSON_RENDERER, recording: PREVIEW_RENDERER, clip: clip.clip, project: readFileSync(lessonClipFixture(clip), 'utf8') }));
+export const lessonClipOutputs = (clip: LessonClip) => { const stem = `public/lessons/${lessonClipId(clip)}`; return { webm: `${stem}.webm`, mp4: `${stem}.mp4`, poster: `${stem}.png` }; };

@@ -44,3 +44,9 @@ button.ui-icon-only { font-size: 0; gap: 0; }
   [data-ui-icon]::before { background-color: ButtonText; }
   .ui-flyout-icon { color: ButtonText; }
 }
+
+/* Block picker captions: a number bubble and the block's keyword above each block (block-captions.ts). */
+.block-caption .blocklyFlyoutLabelBackground { fill: transparent; }
+.blocklyFlyout .block-caption .blocklyFlyoutLabelText { font: 700 13px 'DM Sans', system-ui, sans-serif !important; fill: #26382f; }
+.block-caption .block-caption-bubble { fill: #267c70; }
+.block-caption .block-caption-number { font: 700 11px 'DM Sans', system-ui, sans-serif; fill: #fff; }

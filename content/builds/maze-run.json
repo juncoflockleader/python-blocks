@@ -222,5 +222,6 @@
    "Add a countdown to escape the maze.",
    "Make a third world."
   ]
- }
+ },
+ "next": "code-puzzles"
 }

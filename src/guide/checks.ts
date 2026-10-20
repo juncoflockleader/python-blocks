@@ -29,8 +29,13 @@ export type Check =
   /** The highest score reached in a run during this step. */
   | { score: number }
   /** The learner chose an answer to the step's prediction. */
-  | { predicted: true };
-export interface RunFacts { ran: boolean; finished: null | 'won' | 'lost'; score?: number; predicted?: boolean }
+  | { predicted: true }
+  /** Every test of the step's puzzle passed (Check my answer). */
+  | { solved: true };
+/** A check about what a run did (ran, finished, a score, a guess, a solved puzzle) rather than the blocks themselves. */
+export const aboutTheRun = (check: Check): boolean => 'ran' in check || 'finished' in check || 'score' in check || 'predicted' in check || 'solved' in check
+  || ('all' in check && check.all.some(aboutTheRun)) || ('any' in check && check.any.some(aboutTheRun));
+export interface RunFacts { ran: boolean; finished: null | 'won' | 'lost'; score?: number; predicted?: boolean; solved?: boolean }
 
 export function handlerKind(event: string): HandlerKind {
   if (event === 'start') return 'start';
@@ -59,6 +64,7 @@ export function passes(check: Check, workspace: Blockly.Workspace, facts: RunFac
   if ('finished' in check) return check.finished === 'any' ? !!facts.finished : facts.finished === check.finished;
   if ('score' in check) return (facts.score ?? 0) >= check.score;
   if ('predicted' in check) return !!facts.predicted;
+  if ('solved' in check) return !!facts.solved;
   const scene = sceneState(workspace);
   if ('sprites' in check) return scene.sprites.length >= check.sprites;
   if ('costume' in check) {

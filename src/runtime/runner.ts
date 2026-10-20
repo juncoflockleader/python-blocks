@@ -24,7 +24,8 @@ export class PythonRunner {
   private readonly onEvent: (event: RunnerEvent) => void;
   constructor(onEvent: (event: RunnerEvent) => void, audio?: AudioHost, questions?: QuestionHost) { this.onEvent = onEvent; this.audio = audio; this.questions = questions; }
 
-  run(code: string, mode: ExecutionMode = 'sequential', files: Record<string, string> = {}, scene?: SceneState, runtimeURL?: string, debug?: DebugOptions) {
+  /** `io.stdin` is what read blocks read; `io.tests` runs the program once per input and reports each (test-result events). */
+  run(code: string, mode: ExecutionMode = 'sequential', files: Record<string, string> = {}, scene?: SceneState, runtimeURL?: string, debug?: DebugOptions, io: { stdin?: string; tests?: string[] } = {}) {
     this.dispose();
     if (debug && !debugAvailable()) { this.onEvent({ type: 'error', message: 'Debugging needs a browser with shared memory and an isolated editor page. See the debugging guide for hosting headers.' }); return; }
     this.mode = mode;
@@ -90,7 +91,7 @@ export class PythonRunner {
       this.dispose();
       this.onEvent({ type: 'error', message: event.message || 'Python could not start. Please try again.' });
     };
-    worker.postMessage({ type: 'run', code, mode, files, ...(runtimeURL ? { runtimeURL } : {}), ...(scene ? { scene } : {}), ...(debug && this.control ? { debug: { ...debug, control: this.control.buffer as SharedArrayBuffer } } : {}) } satisfies RunnerCommand);
+    worker.postMessage({ type: 'run', code, mode, files, ...(runtimeURL ? { runtimeURL } : {}), ...(scene ? { scene } : {}), ...(debug && this.control ? { debug: { ...debug, control: this.control.buffer as SharedArrayBuffer } } : {}), ...(io.stdin !== undefined ? { stdin: io.stdin } : {}), ...(io.tests ? { tests: io.tests } : {}) } satisfies RunnerCommand);
   }
 
   async debug(action: DebugAction): Promise<boolean> {

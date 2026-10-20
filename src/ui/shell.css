@@ -344,3 +344,32 @@ dialog .example-list li { padding: 0; }
   .phone-message h2 { font: 700 22px 'Space Grotesk', system-ui, sans-serif; margin: 0 0 8px; }
   .phone-message p { color: #4e5f49; }
 }
+/* Pro's search box at the top of the palette (palette-search.ts). */
+.palette-search { margin: 0 0 4px; }
+.palette-search[hidden] { display: none; }
+.palette-search input { display: block; width: 100%; box-sizing: border-box; padding: 0 10px 0 30px; border: 1px solid #cbd4b4; border-radius: 10px; font: 600 13px 'DM Sans', system-ui, sans-serif; color: #26382f; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234e5f49' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cpath d='m16 16 4 4'/%3E%3C/svg%3E") no-repeat 9px center / 15px; }
+.palette-search input:focus { outline: none; border-color: #267c70; box-shadow: 0 0 0 2px #267c7033; }
+/* Short tablets: Pro's rows are a little tighter, so all its categories still fit in two columns below the search box. */
+@media (min-width: 900px) and (max-height: 760px) {
+  :root[data-level=pro] .blocklyToolboxCategory { min-height: 45px; padding: 2px !important; }
+  :root[data-level=pro] .blocklyToolboxCategory .blocklyTreeRowContentContainer { min-height: 41px; }
+}
+/* A lesson while the learner builds (lesson-stage.ts): the stage is a small window beside the sprites, its
+   buttons wait until the game runs, and the lesson under them gets the rest of the column. */
+@media (min-width: 900px) {
+  :root[data-lesson-stage=small]:not([data-view=stage]) .right-column { display: grid; grid-template-columns: 56% minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); grid-template-areas: 'stage tray' 'tabs tabs' 'panels panels'; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .stage-panel { grid-area: stage; border-right: 1px solid #dce1d2; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .stage-toolbar { display: none; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .sprite-tray { grid-area: tray; flex-wrap: wrap; align-items: flex-start; align-content: flex-start; gap: 6px; padding: 6px; border-bottom: 0; min-height: 0; overflow-y: auto; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .tray-cards { flex: 0 0 100%; flex-wrap: wrap; overflow: visible; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .sprite-tray .tray-button { width: 44px; min-height: 40px; height: 40px; padding: 0; gap: 0; font-size: 0; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .sprite-tray .tray-button[data-ui-icon]::before { width: 20px; height: 20px; flex-basis: 20px; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .tab-bar { grid-area: tabs; border-top: 1px solid #dce1d2; }
+  :root[data-lesson-stage=small]:not([data-view=stage]) .tab-panels { grid-area: panels; }
+}
+.stage-size { position: absolute; right: 6px; bottom: 6px; z-index: 4; width: 32px; height: 32px; padding: 0; display: grid; place-items: center; border: 0; border-radius: 9px; background: #fffef8e8; color: #26382f; box-shadow: 0 1px 3px #26382f40; cursor: pointer; }
+.stage-size:hover { background: #fff; }
+.stage-size[hidden], :root[data-view=stage] .stage-size, .stage-main .stage-size { display: none; }
+@media (max-width: 899px) { .stage-size { display: none; } }
+/* A big world's Map button and map make way for the lesson's stage-size button in the same corner. */
+.stage-wrap:has(> .stage-size:not([hidden])) :is(.stage-map-show, .stage-map) { right: 46px; max-width: calc(100% - 54px); }

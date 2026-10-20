@@ -21,11 +21,13 @@ export function installLessons(host: LessonsHost) {
     const game = entries.find(entry => entry.build === build.id);
     const item = document.createElement('li'), article = document.createElement('article');
     article.className = `example-card lesson-card${build.kind === 'lesson' ? ' lesson-card-main' : ''}`; article.dataset.lesson = build.id;
-    const image = loopThumb(`${build.id}-game`, article);
+    // A lesson that ends in a game shows that game's loop; one that does not (Code Puzzles) shows its own picture.
+    const image = game ? loopThumb(`${build.id}-game`, article) : Object.assign(document.createElement('img'), { className: 'example-thumb', alt: '', loading: 'lazy', src: `${import.meta.env.BASE_URL}lessons/${build.id}.png` });
     const kind = text('p', 'lesson-kind', build.kind === 'lesson' ? 'Lesson' : 'Guided build');
     const title = text('strong', '', build.title), summary = text('span', '', build.summary);
     const tags = text('p', 'recipe-tags');
-    const length = build.kind === 'lesson' ? `${build.chapters?.length ?? 0} chapters · ${build.steps.length} steps` : `${build.steps.length} steps`;
+    const puzzles = build.steps.every(step => step.puzzle);
+    const length = build.kind === 'lesson' ? `${build.chapters?.length ?? 0} chapters · ${build.steps.length} ${puzzles ? 'puzzles' : 'steps'}` : `${build.steps.length} steps`;
     for (const label of [`${build.minutes} min`, length]) tags.append(text('span', '', label));
     tags.append(text('span', 'recipe-level', levelNames[build.level]));
     const actions = text('div', 'example-actions');

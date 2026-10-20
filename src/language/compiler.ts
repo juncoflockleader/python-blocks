@@ -9,7 +9,7 @@ import type { ExecutionMode } from '../runtime/protocol';
 import { canonical, moduleKey, moduleState, reachableModules, resolveModuleCall, validateModuleState, type ModuleCallBlock, type ModuleDefinition, type ModulePin, type ModuleState } from './modules';
 import { installPythonVariables } from './variables';
 
-export const LANGUAGE_VERSION = 22;
+export const LANGUAGE_VERSION = 23;
 const inputBlocks = new Set(['input_timer', 'input_timer_reset', 'input_ask', 'input_ask_value', 'input_answer', 'input_cancel_questions']);
 const soundBlocks = new Set(['sound_asset', 'sound_play', 'sound_loop', 'sound_wait', 'sound_stop', 'sound_stop_all', 'sound_set', 'sound_change', 'sound_get', 'sound_clear', 'sound_tempo', 'sound_tempo_get', 'sound_note', 'sound_rest']);
 const gameBlocks = new Set(['game_set', 'game_change', 'game_get', 'game_show', 'game_message', 'game_lives_rule', 'game_countdown', 'game_countdown_stop', 'game_finish', 'game_effect', 'game_effect_clear']);
@@ -34,7 +34,7 @@ export const supportedBlocks = new Set([
   'py_program', 'py_number', 'py_binary', 'py_unary', 'py_logic', 'py_not', 'py_none', 'py_convert', 'py_range', 'py_flow',
   'pen_move', 'pen_turn', 'pen_color', 'pen_lift', 'controls_repeat_ext', 'controls_whileUntil', 'controls_if', 'controls_forEach',
   'logic_compare', 'logic_operation', 'logic_boolean', 'logic_negate', 'logic_null', 'math_number', 'math_arithmetic', 'math_random_int',
-  'text', 'text_print', 'text_join', 'variables_get', 'variables_set',
+  'text', 'text_print', 'text_join', 'py_read_number', 'py_read_line', 'variables_get', 'variables_set',
   'procedures_defnoreturn', 'procedures_defreturn', 'procedures_callnoreturn', 'procedures_callreturn', 'procedures_ifreturn',
 ]);
 export interface Diagnostic { code: string; severity: 'error' | 'warning'; message: string; blockId?: string; input?: string; module?: ModulePin & { name: string } }
@@ -300,6 +300,8 @@ function generator() {
   g.forBlock['py_number'] = b => [b.getFieldValue('VALUE'), /^[+-]/.test(b.getFieldValue('VALUE')) ? Order.UNARY_SIGN : Order.ATOMIC];
   g.forBlock['py_unary'] = (b, gen) => [`${b.getFieldValue('OP')}(${gen.valueToCode(b, 'VALUE', Order.NONE)})`, Order.UNARY_SIGN];
   g.forBlock['py_none'] = () => ['None', Order.ATOMIC];
+  g.forBlock['py_read_number'] = () => ['int(input())', Order.FUNCTION_CALL];
+  g.forBlock['py_read_line'] = () => ['input()', Order.FUNCTION_CALL];
   g.forBlock['py_convert'] = (b, gen) => [`${b.getFieldValue('TYPE')}(${gen.valueToCode(b, 'VALUE', Order.NONE)})`, Order.FUNCTION_CALL];
   // Parenthesizing each operand preserves grouping, including exponentiation
   // and non-associative subtraction, without evaluating an operand twice.

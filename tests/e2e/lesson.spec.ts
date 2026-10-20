@@ -31,7 +31,7 @@ async function insertIdea(page: Page, recipe: string) {
   await expect(page.locator(`#ideas-results [data-recipe="${recipe}"] .recipe-status`)).toContainText('Added');
 }
 async function next(page: Page, chapter?: string) {
-  await openTab(page, 'help'); await expect(page.locator('#guide-check')).toHaveText(/Done/, { timeout: 60_000 }); await page.locator('#guide-next').click();
+  await openTab(page, 'help'); await expect(page.locator('#guide-check')).toHaveText(/You did it|Done/, { timeout: 60_000 }); await page.locator('#guide-next').click();
   if (chapter) await expect(page.locator('#guide-build-title')).toHaveText(chapter);
 }
 async function run(page: Page) { await page.locator('#run').click(); await expect(page.locator('#status')).toHaveText('Event session running', { timeout: 60_000 }); }
@@ -71,13 +71,13 @@ test('Brick Breaker: the start sheet keeps the project, and the lesson can be bu
   await next(page, '2 · Ball');
 
   // 3. Predict: a run before choosing does not count.
-  await expect(page.locator('#guide-progress')).toHaveText('Step 1 of 2 · Predict');
+  await expect(page.locator('#guide-progress')).toHaveText('Step 1 of 2 · Guess first');
   await showMeHow(page); await expect(page.locator('#guide-hint-text')).toContainText('added the blocks');
   await run(page); await page.locator('#stop').click();
-  await openTab(page, 'help'); await expect(page.locator('#guide-predict-result')).toContainText('Choose what you think will happen first');
+  await openTab(page, 'help'); await expect(page.locator('#guide-predict-result')).toContainText('Pick your guess first');
   await page.locator('#guide-choices button', { hasText: 'Up and to the right' }).click();
   await run(page); await openTab(page, 'help');
-  await expect(page.locator('#guide-predict-result')).toContainText('You predicted it.'); await shot('3-predict');
+  await expect(page.locator('#guide-predict-result')).toContainText('You guessed it!'); await shot('3-predict');
   await page.locator('#stop').click();
   await next(page);
   // 4. Bounce off the walls.
@@ -93,7 +93,7 @@ test('Brick Breaker: the start sheet keeps the project, and the lesson can be bu
   await page.reload(); await expect(page.locator('#run')).toBeEnabled();
   await openTab(page, 'help'); await expect(page.locator('#guide-build-title')).toHaveText('4 · Brick wall');
   await expect.poll(() => handlers(page)).toBe(5);
-  await showMeHow(page); await expect(page.locator('#guide-hint-text')).toContainText('swapped in a working script');
+  await showMeHow(page); await expect(page.locator('#guide-hint-text')).toContainText('swapped in blocks that work');
   await expect.poll(() => handlers(page)).toBe(5);
   await run(page); await page.locator('#stop').click();
   await next(page);
@@ -108,7 +108,7 @@ test('Brick Breaker: the start sheet keeps the project, and the lesson can be bu
   await expect(page.locator('#guide-checklist li.guide-ticked')).toHaveCount(4);
   await next(page);
   // 9. Play-test: the bottom still bounces, so the ball keeps breaking bricks.
-  await expect(page.locator('#guide-progress')).toHaveText('Step 2 of 2 · Play-test');
+  await expect(page.locator('#guide-progress')).toHaveText('Step 2 of 2 · Play it');
   await expect(page.locator('#guide-goal-count')).toHaveText('0 of 5');
   await run(page); await openTab(page, 'help');
   await expect(page.locator('#guide-goal-count')).toHaveText('5 of 5', { timeout: 60_000 }); await shot('5-play');
@@ -169,7 +169,7 @@ async function openLesson(page: Page, id: string, title: string, chapters: numbe
 async function predict(page: Page, answer: string) {
   await openTab(page, 'help'); await page.locator('#guide-choices button', { hasText: answer }).click();
   await run(page); await openTab(page, 'help');
-  await expect(page.locator('#guide-predict-result')).toContainText('You predicted it.');
+  await expect(page.locator('#guide-predict-result')).toContainText('You guessed it!');
   await page.locator('#stop').click();
 }
 async function finishLesson(page: Page, title: string, nextTitle: string, chapters: number) {
@@ -212,7 +212,7 @@ function flap(page: Page, pipes: number) {
 test('Flappy Flight: gravity, a planted loop to fix, a score to predict, clone data, and flying through the pipes', async ({ page }) => {
   test.setTimeout(300_000);
   await openLesson(page, 'flappy-flight', 'Flappy Flight', 4, '1 · Fall and flap');
-  await expect(page.locator('#guide-progress')).toHaveText('Step 1 of 2 · Predict');
+  await expect(page.locator('#guide-progress')).toHaveText('Step 1 of 2 · Guess first');
   // 1. Predict the fall, then the lesson adds gravity.
   await showMeHow(page); await predict(page, 'Fall faster and faster');
   await next(page);
@@ -220,15 +220,15 @@ test('Flappy Flight: gravity, a planted loop to fix, a score to predict, clone d
   await showMeHow(page); await run(page); await page.locator('#stop').click();
   await next(page, '2 · Pipes');
   // 3. Fix it: every gap is at the same height until Pipe moves first.
-  await expect(page.locator('#guide-planted')).toContainText('One thing is missing');
-  await showMeHow(page); await expect(page.locator('#guide-hint-text')).toContainText('swapped in a working script');
+  await expect(page.locator('#guide-planted')).toContainText('there is a bug');
+  await showMeHow(page); await expect(page.locator('#guide-hint-text')).toContainText('swapped in blocks that work');
   await run(page); await page.locator('#stop').click();
   await next(page);
   // 4. Crash into a pipe or the ground.
   await showMeHow(page); await expect(page.locator('#guide-checklist li.guide-ticked')).toHaveCount(2);
   await next(page, '3 · Score');
   // 5. The lesson writes a score script; predict it before running.
-  await expect(page.locator('#guide-planted')).toContainText('Read it before you run it');
+  await expect(page.locator('#guide-planted')).toContainText('Read them before you run them');
   await predict(page, 'Go up again and again');
   await next(page);
   // 6. Each pipe remembers that it scored.

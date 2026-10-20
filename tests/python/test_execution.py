@@ -28,6 +28,27 @@ class ExecutionTests(unittest.TestCase):
         self.assertIn('return 1 / 0', result['details'])
         self.assertNotIn('_pb_module_0', sys.modules)
 
+    def test_check_program_runs_each_input_with_its_own_input_and_printed_output(self):
+        reports = []
+        source = 'n = int(input())\nfor i in range(n):\n    print(i + 1)\nprint("done")\n'
+        result = execution.check_program(source, {}, ['3', '0', 'abc', ''], lambda text: reports.append(json.loads(text)))
+        self.assertEqual(json.loads(result)['type'], 'done')
+        self.assertEqual([r['index'] for r in reports], [0, 1, 2, 3])
+        self.assertEqual(reports[0], {'index': 0, 'output': '1\n2\n3\ndone\n'})
+        self.assertEqual(reports[1]['output'], 'done\n')
+        # Read blocks explain themselves: text for a number, and reading past the end of the input.
+        self.assertEqual(reports[2]['error']['message'], "A read a number block got 'abc', which is not a whole number.")
+        self.assertEqual(reports[2]['error']['frames'][-1]['line'], 1)
+        self.assertEqual(reports[3]['error']['message'], 'Your program read more lines than its input has. Each read block reads the next line.')
+        self.assertEqual(reports[3]['error']['exceptionType'], 'EOFError')
+        # Only a read block's int(input()) is explained that way; other int() calls keep Python's words.
+        reports.clear(); execution.check_program('x = int("value")\n', {}, [''], lambda text: reports.append(json.loads(text)))
+        self.assertEqual(reports[0]['error']['message'], "invalid literal for int() with base 10: 'value'")
+        # Printing is bounded per test, and the host's stdout is back afterwards.
+        reports.clear(); execution.check_program('while True:\n    print("x" * 100)\n', {}, ['', ''], lambda text: reports.append(json.loads(text)))
+        self.assertIn('Too much printed output', reports[0]['error']['message'])
+        self.assertIs(sys.stdout, sys.__stdout__)
+
     def test_invalid_module_files_are_structured_failures_before_execution(self):
         for files in ({'../bad.py': ''}, {'program.py': ''}, {'_pb_module_0.py': 42}, []):
             self.assertEqual(json.loads(execution.run_program('raise RuntimeError("must not run")', files))['exceptionType'], 'ValueError')

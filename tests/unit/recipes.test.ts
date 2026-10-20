@@ -12,7 +12,7 @@ import { levelTypes } from '../../src/ui/levels';
 import { paletteWorkspace } from './palette-workspace';
 import { heldOut } from './recipe-heldout';
 import wishSets from './recipe-wishes.json';
-import { GALLERY_MANIFEST, PREVIEW_MANIFEST, galleryKey, galleryOutputs, readManifest, recipeFiles, recipeKey, type GalleryFile } from '../preview-key';
+import { GALLERY_MANIFEST, LESSON_MANIFEST, PREVIEW_MANIFEST, galleryKey, galleryOutputs, lessonClipId, lessonClipKey, lessonClipOutputs, lessonClips, readManifest, recipeFiles, recipeKey, type GalleryFile } from '../preview-key';
 
 const spaces: Blockly.Workspace[] = [];
 afterEach(() => spaces.splice(0).forEach(w => w.dispose()));
@@ -116,6 +116,7 @@ describe('previews', () => {
     const stale = [
       ...recipeFiles().filter(r => r.blocks && (previews[r.id] !== recipeKey(r) || !existsSync(`public/recipes/${r.preview}`))).map(r => `recipe ${r.id}`),
       ...JSON.parse(readFileSync('content/gallery.json', 'utf8')).filter((e: GalleryFile) => thumbnails[e.id] !== galleryKey(e) || !Object.values(galleryOutputs(e.id)).every(file => existsSync(file))).map((e: { id: string }) => `gallery ${e.id}`),
+      ...lessonClips().filter(clip => readManifest(LESSON_MANIFEST)[lessonClipId(clip)] !== lessonClipKey(clip) || !Object.values(lessonClipOutputs(clip)).every(file => existsSync(file))).map(clip => `lesson clip ${lessonClipId(clip)}`),
     ];
     expect(stale, 'run tests/e2e/previews.spec.ts locally to re-render').toEqual([]);
   });

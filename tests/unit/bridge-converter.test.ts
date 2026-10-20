@@ -205,8 +205,8 @@ describe('isolated conversion and semantic acceptance', () => {
   });
   it('loads language-18 projects and saves the unary block at the current language version', async () => {
     const base = empty(); base.languageVersion = 18;
-    expect(prepareProject(JSON.stringify(base)).project.languageVersion).toBe(22);
+    expect(prepareProject(JSON.stringify(base)).project.languageVersion).toBe(23);
     const result = await converted('x = 2\nprint(-x)', base);
-    expect(result.project.languageVersion).toBe(22);
+    expect(result.project.languageVersion).toBe(23);
   });
 });

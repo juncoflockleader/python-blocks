@@ -1,0 +1,259 @@
+{
+ "format": "python-blocks",
+ "formatVersion": 2,
+ "languageVersion": 23,
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "py_handler",
+     "id": "flappy-flight-1",
+     "x": 0,
+     "y": 0,
+     "extraState": {
+      "functionId": "flappy-flight-7",
+      "signature": {
+       "id": "flappy-flight-7",
+       "name": "on_start",
+       "parameters": [
+        {
+         "id": "flappy-flight-8",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "start",
+        "order": 0,
+        "sprite": "bird"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_motion_set",
+        "id": "flappy-flight-2",
+        "fields": {
+         "PROPERTY": "ay"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "flappy-flight-3",
+           "fields": {
+            "SPRITE_ID": "bird"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "id": "flappy-flight-4",
+           "fields": {
+            "VALUE": "-900"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_motion_edges",
+          "id": "flappy-flight-5",
+          "fields": {
+           "MODE": "stop"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "id": "flappy-flight-6",
+             "fields": {
+              "SPRITE_ID": "bird"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  "variables": [
+   {
+    "name": "flappy-flight-9",
+    "id": "flappy-flight-9"
+   }
+  ],
+  "pythonScene": {
+   "version": 1,
+   "background": "#7ccbef",
+   "assets": [
+    {
+     "id": "stock-chick-idle-1",
+     "name": "Chick idle 1",
+     "width": 52,
+     "height": 40,
+     "stock": "cast/chick-idle-1@1"
+    },
+    {
+     "id": "stock-chick-idle-2",
+     "name": "Chick idle 2",
+     "width": 52,
+     "height": 40,
+     "stock": "cast/chick-idle-2@1"
+    },
+    {
+     "id": "stock-chick-flap-1",
+     "name": "Chick flap 1",
+     "width": 52,
+     "height": 40,
+     "stock": "cast/chick-flap-1@1"
+    },
+    {
+     "id": "stock-chick-flap-2",
+     "name": "Chick flap 2",
+     "width": 52,
+     "height": 40,
+     "stock": "cast/chick-flap-2@1"
+    },
+    {
+     "id": "stock-chick-flap-3",
+     "name": "Chick flap 3",
+     "width": 52,
+     "height": 40,
+     "stock": "cast/chick-flap-3@1"
+    },
+    {
+     "id": "stock-chick-flap-4",
+     "name": "Chick flap 4",
+     "width": 52,
+     "height": 40,
+     "stock": "cast/chick-flap-4@1"
+    },
+    {
+     "id": "stock-chick-jump",
+     "name": "Chick jump",
+     "width": 52,
+     "height": 40,
+     "stock": "cast/chick-jump@1"
+    },
+    {
+     "id": "stock-chick-happy",
+     "name": "Chick happy",
+     "width": 52,
+     "height": 40,
+     "stock": "cast/chick-happy@1"
+    },
+    {
+     "id": "stock-pipes",
+     "name": "Pipe pair",
+     "width": 26,
+     "height": 255,
+     "stock": "props/pipes@1"
+    }
+   ],
+   "backdrops": [
+    {
+     "id": "stock-city-sky",
+     "name": "City sky",
+     "width": 480,
+     "height": 320,
+     "stock": "backdrops/city-sky@1"
+    }
+   ],
+   "backdrop": "stock-city-sky",
+   "sprites": [
+    {
+     "id": "bird",
+     "name": "Bird",
+     "x": -150,
+     "y": 30,
+     "direction": 0,
+     "size": 77,
+     "layer": 3,
+     "visible": true,
+     "costume": "stock-chick-idle-1",
+     "rotationStyle": "all",
+     "costumes": [
+      "stock-chick-flap-1",
+      "stock-chick-flap-2",
+      "stock-chick-flap-3",
+      "stock-chick-flap-4"
+     ],
+     "frameSeconds": 0.06,
+     "animations": [
+      {
+       "name": "idle",
+       "frames": [
+        "stock-chick-idle-1",
+        "stock-chick-idle-2"
+       ],
+       "seconds": 0.4
+      },
+      {
+       "name": "flap",
+       "frames": [
+        "stock-chick-flap-1",
+        "stock-chick-flap-2",
+        "stock-chick-flap-3",
+        "stock-chick-flap-4"
+       ]
+      },
+      {
+       "name": "jump",
+       "frames": [
+        "stock-chick-jump"
+       ]
+      },
+      {
+       "name": "happy",
+       "frames": [
+        "stock-chick-happy"
+       ]
+      }
+     ]
+    },
+    {
+     "id": "pipe",
+     "name": "Pipe",
+     "x": 300,
+     "y": 20,
+     "direction": 0,
+     "size": 200,
+     "layer": 1,
+     "visible": true,
+     "costume": "stock-pipes",
+     "rotationStyle": "none",
+     "data": {
+      "passed": false
+     }
+    }
+   ]
+  },
+  "procedures": [
+   {
+    "id": "flappy-flight-7",
+    "name": "on_start",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 0,
+     "sprite": "bird"
+    },
+    "parameters": [
+     {
+      "id": "flappy-flight-8",
+      "name": "payload"
+     }
+    ]
+   }
+  ]
+ }
+}

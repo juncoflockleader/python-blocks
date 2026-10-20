@@ -53,6 +53,8 @@ Source exports contain the accepted generated program and its required module/sc
 
 The bridge covers the existing block language: exact literals, arithmetic and logic, lists/dictionaries, variables, conditionals, loops, named functions, positional parameters, recursion, supported function values/lambdas, async handlers/waits, pinned module calls and all current creative-library blocks.
 
+Reading input is supported too: `input()` becomes **read a line** and `int(input())` becomes **read a number** (language version 23). They read the run's input one line at a time: a puzzle's Try it box when one is open, and nothing otherwise, so reading then says the input has no more lines.
+
 Unsupported Python remains in your draft with an explanation. Examples include arbitrary imports, classes, exception handling, decorators, closures, variadic/default/keyword-only signatures, chained comparisons, augmented assignment and general comprehensions. Blockly's exact generated multi-item text join is a supported special case. There is no raw-code block or separate unrestricted execution path.
 
 Projects now use envelope format version 2 to preserve Python drafts. Older version-1 projects still open and migrate; older app versions should reject version 2 instead of silently dropping text. The block language version remains 19. See the [bridge plan](blocks-python-bridge-plan.md) for current verification and remaining audit work.

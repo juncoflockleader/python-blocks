@@ -25,7 +25,7 @@ describe('game state, presentation and compiler integration', () => {
     expect(w.getBlockById(blockForLine(result, 'program.py', line)!)!.type).toBe('game_change');
     const file = unzipSync(pythonExport(result).content as Uint8Array); expect(strFromU8(file['program.py'])).toBe(result.source); expect(JSON.parse(strFromU8(file['scene.json'])).sprites).toHaveLength(6);
     const roundtrip = ws(); restore(roundtrip, snapshot(w)); expect(compile(roundtrip).source).toBe(result.source);
-    expect(prepareProject(JSON.stringify({ ...JSON.parse(text), languageVersion: 14 })).project.languageVersion).toBe(22);
+    expect(prepareProject(JSON.stringify({ ...JSON.parse(text), languageVersion: 14 })).project.languageVersion).toBe(23);
   });
   it('enables a game session for reusable game helpers before validating input in the caller', () => {
     const m = ws(); const fn = defineFunction(m, { id: 'clock', name: 'start_clock', parameters: [] });

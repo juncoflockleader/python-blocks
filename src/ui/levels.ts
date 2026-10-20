@@ -3,6 +3,8 @@ import { numberInput } from '../blocks/core';
 import { soundsToolbox } from '../blocks/sounds';
 import { gameToolbox } from '../blocks/game';
 import { HAT_KINDS, HAT_TYPE, STARTER_HATS, hatItem, needsSprite, type HatKind } from '../language/hats';
+import { blockNumber, captioned } from './block-captions';
+import { allSymbols } from '../language/functions';
 import { moduleState } from '../language/modules';
 import { handlerSignatures, type FunctionBlock } from '../language/functions';
 import { sceneState } from '../scene/state';
@@ -47,7 +49,7 @@ const control = (builder: boolean): Item[] => [
 ];
 const logic = types('controls_if', 'logic_compare', 'py_logic', 'py_not', 'logic_boolean', 'py_none');
 const numbers = types('py_number', 'py_binary', 'py_unary', 'py_convert', 'math_random_int');
-const text = types('text', 'text_print', 'text_join');
+const text = types('text', 'text_print', 'text_join', 'py_read_number', 'py_read_line');
 const collections = types('lists_create_with', 'py_dict', 'py_length', 'py_item_get', 'py_item_set', 'py_item_delete', 'py_list_append', 'py_contains', 'py_dict_get', 'py_dict_keys', 'py_shallow_copy');
 const colour = {
   program: '#47776c', events: '#ba7b4e', motion: '#477c9a', looks: '#8c67a2', sounds: '#9470a8', control: '#a57938', draw: '#47776c', pen: '#47776c',
@@ -123,12 +125,26 @@ const implied: Record<Level, [string, string][]> = {
 const callbackKey = (level: Level, spec: CategorySpec) => `PB_${level.toUpperCase()}_${spec.id.toUpperCase()}`;
 const single = (spec: CategorySpec) => spec.parts.length === 1 ? spec.parts[0] : undefined;
 export function toolboxFor(level: Level): Blockly.utils.toolbox.ToolboxInfo {
-  return { kind: 'categoryToolbox', contents: palette[level].map(spec => {
-    const part = single(spec), base = { kind: 'category', name: spec.name, colour: spec.colour, toolboxitemid: `category-${spec.id}` };
-    if (part && 'items' in part) return { ...base, contents: part.items };
-    if (part && !part.types) return { ...base, custom: part.callback };
-    return { ...base, custom: callbackKey(level, spec) };
-  }) } as Blockly.utils.toolbox.ToolboxInfo;
+  // Every category is built by one callback, so each flyout gets its block captions (block-captions.ts).
+  return { kind: 'categoryToolbox', contents: palette[level].map(spec => ({ kind: 'category', name: spec.name, colour: spec.colour, toolboxitemid: `category-${spec.id}`, custom: callbackKey(level, spec) })) } as Blockly.utils.toolbox.ToolboxInfo;
+}
+/** A category's flyout items at a level, before captions: the list block numbers count. */
+export function categoryItems(workspace: Blockly.WorkspaceSvg, level: Level, name: string): Item[] {
+  const spec = palette[level].find(c => c.name === name);
+  return spec ? spec.parts.flatMap(p => partItems(workspace, p)) : [];
+}
+/** A block's number in a category's flyout at a level, as its caption shows it. */
+export const numberOf = (workspace: Blockly.WorkspaceSvg, level: Level, category: string, ref: string) => blockNumber(categoryItems(workspace, level, category), ref);
+/** Where a block is at a level: in `category` when that category has it there, or else in the first one
+ * that does (a lesson written for Builder names Motion for a block that Pro keeps in Physics). A variant
+ * the level does not offer, such as Builder's if … else, is found as its plain block (Pro's if, with its gear). */
+export function findBlock(workspace: Blockly.WorkspaceSvg, level: Level, category: string, ref: string) {
+  const names = [category, ...palette[level].map(spec => spec.name).filter(name => name !== category)];
+  for (const wanted of new Set([ref, ref.split(':')[0]])) for (const name of names) {
+    const number = numberOf(workspace, level, name, wanted);
+    if (number !== undefined) return { category: name, number };
+  }
+  return undefined;
 }
 
 function partItems(workspace: Blockly.WorkspaceSvg, part: Part): Item[] {
@@ -141,6 +157,12 @@ function partItems(workspace: Blockly.WorkspaceSvg, part: Part): Item[] {
 
 /** Register the hat categories and every composite category, for all levels. */
 export function installLevels(workspace: Blockly.WorkspaceSvg, selected: () => string) {
+  // A variable's blocks are captioned with its name: "score", "set score".
+  const variableName = (item: Blockly.utils.toolbox.BlockInfo) => {
+    if (item.type !== 'py_get' && item.type !== 'py_set') return undefined;
+    const symbol = allSymbols(workspace).find(s => s.id === item.fields?.SYMBOL);
+    return symbol ? (item.type === 'py_set' ? `set ${symbol.name}` : symbol.name) : undefined;
+  };
   const hats = (kinds: readonly HatKind[]) => (): Item[] => {
     const scene = sceneState(workspace), primary = scene.sprites.find(s => s.id === selected()) ?? scene.sprites[0];
     const other = scene.sprites.find(s => s.id !== primary?.id);
@@ -158,11 +180,8 @@ export function installLevels(workspace: Blockly.WorkspaceSvg, selected: () => s
   };
   workspace.registerToolboxCategoryCallback('PB_HATS_STARTER', hats(STARTER_HATS));
   workspace.registerToolboxCategoryCallback('PB_HATS_ALL', hats(HAT_KINDS));
-  for (const level of LEVELS) for (const spec of palette[level]) {
-    const part = single(spec);
-    if (part && ('items' in part || !part.types)) continue;
-    workspace.registerToolboxCategoryCallback(callbackKey(level, spec), () => spec.parts.flatMap(p => partItems(workspace, p)));
-  }
+  for (const level of LEVELS) for (const spec of palette[level])
+    workspace.registerToolboxCategoryCallback(callbackKey(level, spec), () => captioned(spec.parts.flatMap(p => partItems(workspace, p)), variableName));
 }
 
 function collect(state: Blockly.serialization.blocks.State | undefined, into: (type: string) => void) {

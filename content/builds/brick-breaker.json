@@ -5,7 +5,7 @@
  "level": "builder",
  "minutes": 30,
  "order": 5,
- "summary": "Bounce a ball off your paddle and clear a wall of bricks. You build the whole game yourself, one checked step at a time.",
+ "summary": "Bounce a ball with your paddle and break a whole wall of bricks!",
  "ideas": [
   "velocity",
   "bounce",
@@ -15,40 +15,40 @@
   "win condition"
  ],
  "learn": [
-  "give a sprite velocity, a speed with a direction, and make it bounce off the walls",
-  "build a wall with loops: one repeat for a row, and a repeat around it for the rows",
-  "write one script that every brick runs for itself, because clones share their sprite’s scripts",
-  "decide who wins: 3 rows of 8 make 24 bricks to break"
+  "make a paddle slide with the arrow keys",
+  "make a ball fly and bounce off the walls",
+  "build a wall of bricks with a repeat inside a repeat",
+  "make bricks break, count points, and win"
  ],
  "chapters": [
   {
    "title": "Paddle",
-   "idea": "A controller moves a sprite while a key is held.",
+   "idea": "Hold a key, and the paddle moves.",
    "steps": 2
   },
   {
    "title": "Ball",
-   "idea": "Velocity is a speed with a direction.",
+   "idea": "Speed has a way to go: up, down, left or right.",
    "steps": 2
   },
   {
    "title": "Bounce back",
-   "idea": "An event runs when two sprites touch.",
+   "idea": "Blocks can run when two sprites touch.",
    "steps": 1
   },
   {
    "title": "Brick wall",
-   "idea": "A loop inside a loop builds rows.",
+   "idea": "A repeat inside a repeat makes rows.",
    "steps": 2
   },
   {
    "title": "Breaking bricks",
-   "idea": "Every clone runs its sprite’s scripts.",
+   "idea": "Every copy runs its sprite’s blocks.",
    "steps": 2
   },
   {
    "title": "Win or lose",
-   "idea": "The game ends when you decide it does.",
+   "idea": "You make the rules for winning.",
    "steps": 3
   }
  ],
@@ -165,7 +165,8 @@
  },
  "steps": [
   {
-   "text": "Slide the paddle with the arrow keys, but never up or down.",
+   "title": "Slide the paddle",
+   "text": "Make the paddle slide with [←] and [→]. It should never go up or down.",
    "check": {
     "all": [
      {
@@ -186,16 +187,16 @@
      }
     ]
    },
-   "why": "A controller moves a sprite while you hold a key. Vertical speed 0 keeps the paddle on its line.",
+   "why": "This block moves a <<sprite>> while you hold a key. Vertical speed 0 means no up and down, so the paddle stays on its line.",
    "checklist": [
     {
-     "text": "A “when game starts” script",
+     "text": "Drag ((Events#hat:start|when game starts)) into the blocks area",
      "check": {
       "handler": "start"
      }
     },
     {
-     "text": "It controls the Paddle with the arrow keys",
+     "text": "Snap ((Motion#scene_control|control sprite Paddle with arrow keys)) under it",
      "check": {
       "handler": "start",
       "contains": [
@@ -204,7 +205,7 @@
      }
     },
     {
-     "text": "Vertical speed is 0",
+     "text": "Make its vertical speed 0, so it only slides sideways",
      "check": {
       "number": [
        "scene_control",
@@ -215,17 +216,32 @@
     }
    ],
    "hints": [
-    "Look in Motion for a block that starts with “control sprite”, and put it under “when game starts” from Events.",
-    "Choose Paddle in its sprite menu, then change the vertical speed to 0."
+    "In {{Motion}}, find a block that starts with ((Motion#scene_control|control sprite)). Snap it under ((Events#hat:start|when game starts)).",
+    "Pick Paddle in its menu. Then change the vertical speed to 0."
    ],
    "recipe": "arrow-keys",
    "select": "paddle",
    "highlight": {
     "category": "motion"
+   },
+   "coach": "The paddle’s block is in Motion. Tap it!",
+   "clip": {
+    "demo": [
+     {
+      "key": "ArrowLeft",
+      "ms": 700
+     },
+     {
+      "key": "ArrowRight",
+      "ms": 1500
+     }
+    ],
+    "seconds": 3
    }
   },
   {
-   "text": "Keep the paddle on the stage, then run it and slide from edge to edge.",
+   "title": "Stay on the screen",
+   "text": "Keep the paddle on the <<stage>>. Then slide it from side to side.",
    "check": {
     "all": [
      {
@@ -240,10 +256,10 @@
      }
     ]
    },
-   "why": "“At stage edge: stop” holds a sprite inside the stage. Click the stage before pressing keys.",
+   "why": "“At stage edge stop” works like a wall at the side of the stage. The paddle stops there.",
    "checklist": [
     {
-     "text": "The Paddle stops at the stage edge",
+     "text": "Add ((Motion#scene_motion_edges|sprite Paddle at stage edge stop))",
      "check": {
       "field": [
        "scene_motion_edges",
@@ -253,15 +269,15 @@
      }
     },
     {
-     "text": "You ran it",
+     "text": "Run it. Tap the game, then hold [←] or [→]",
      "check": {
       "ran": true
      }
     }
    ],
    "hints": [
-    "In Motion, “sprite … at stage edge …” decides what happens at the edge.",
-    "Add it for the Paddle with “stop”, press [[Run code]], click the stage and hold the arrow keys."
+    "In {{Motion}}, ((Motion#scene_motion_edges|sprite … at stage edge …)) says what happens at the edge.",
+    "Pick Paddle and stop. Press [[Run code]], tap the game, and hold [←] or [→]."
    ],
    "select": "paddle",
    "highlight": {
@@ -293,10 +309,22 @@
       ]
      }
     ]
+   },
+   "coach": "Look in Motion again.",
+   "keys": "arrows",
+   "clip": {
+    "demo": [
+     {
+      "key": "ArrowRight",
+      "ms": 2400
+     }
+    ],
+    "seconds": 3
    }
   },
   {
-   "text": "When the game starts, set the Ball’s vx to 150 and its vy to 200. Before you run it: which way will the ball fly first?",
+   "title": "Launch the ball",
+   "text": "Give the ball some speed: <<vx>> 150 and <<vy>> 200. Which way will it fly?",
    "check": {
     "all": [
      {
@@ -322,10 +350,10 @@
     ]
    },
    "kind": "predict",
-   "why": "Velocity is a speed with a direction. vx moves sideways and vy moves up or down; a minus sign flips the direction.",
+   "why": "<<vx>> is speed sideways: a plus number goes right. <<vy>> is speed up and down: a plus number goes up. A minus sign flips the way.",
    "checklist": [
     {
-     "text": "The Ball gets vx",
+     "text": "Set the Ball’s vx: ((Physics#scene_motion_set|set sprite Ball vx to 150))",
      "check": {
       "field": [
        "scene_motion_set",
@@ -335,7 +363,7 @@
      }
     },
     {
-     "text": "The Ball gets vy",
+     "text": "Set the Ball’s vy with a second one: ((Physics#scene_motion_set|set sprite Ball vy to 200))",
      "check": {
       "field": [
        "scene_motion_set",
@@ -345,21 +373,21 @@
      }
     },
     {
-     "text": "You chose what will happen",
+     "text": "Make your guess",
      "check": {
       "predicted": true
      }
     },
     {
-     "text": "You ran it after choosing",
+     "text": "Press [[Run code]] to see",
      "check": {
       "ran": true
      }
     }
    ],
    "hints": [
-    "In Physics, “set sprite … vx to …” gives a sprite a speed. You need two of these blocks.",
-    "Under “when game starts”, set the Ball’s vx to 150 and the Ball’s vy to 200."
+    "In {{Physics}}, ((Physics#scene_motion_set|set sprite … vx to …)) gives a sprite speed. You need two of them.",
+    "Under ((Events#hat:start|when game starts)): Ball vx 150, and Ball vy 200. Pick vy in the second block’s menu."
    ],
    "select": "ball",
    "highlight": {
@@ -374,7 +402,7 @@
      "Straight up"
     ],
     "answer": 0,
-    "explain": "Positive vx moves right and positive vy moves up, so it flies up and to the right, and right off the stage. The next step fixes that."
+    "explain": "Plus vx goes right and plus vy goes up. So it flies up and to the right… right off the screen! The next step fixes that."
    },
    "solution": {
     "parts": [
@@ -434,10 +462,15 @@
       ]
      }
     ]
+   },
+   "coach": "Speed blocks are in Physics.",
+   "clip": {
+    "seconds": 2.5
    }
   },
   {
-   "text": "Make the ball bounce off the walls instead of leaving the stage.",
+   "title": "Bounce!",
+   "text": "The ball flew away! Make it bounce off the edges instead.",
    "check": {
     "all": [
      {
@@ -452,10 +485,10 @@
      }
     ]
    },
-   "why": "“At stage edge: bounce” flips the ball’s velocity when it reaches an edge, so it stays in play.",
+   "why": "<<Bounce|bounce>> makes the ball turn back when it hits an edge. So it stays in the game.",
    "checklist": [
     {
-     "text": "The Ball bounces at the stage edge",
+     "text": "Add ((Motion#scene_motion_edges|sprite Ball at stage edge bounce))",
      "check": {
       "field": [
        "scene_motion_edges",
@@ -465,15 +498,15 @@
      }
     },
     {
-     "text": "You ran it",
+     "text": "Run it and watch it bounce",
      "check": {
       "ran": true
      }
     }
    ],
    "hints": [
-    "You used “sprite … at stage edge …” for the paddle. The ball needs one too.",
-    "Add it for the Ball with “bounce”, then run it."
+    "You used ((Motion#scene_motion_edges|sprite … at stage edge …)) for the paddle. The ball needs one too.",
+    "Pick Ball and bounce. Then run it."
    ],
    "select": "ball",
    "highlight": {
@@ -505,10 +538,15 @@
       ]
      }
     ]
+   },
+   "coach": "It’s the same Motion block as before.",
+   "clip": {
+    "seconds": 3
    }
   },
   {
-   "text": "When the paddle touches the ball, send the ball up: set its vy to 220.",
+   "title": "Hit it back",
+   "text": "When the paddle touches the ball, send the ball back up.",
    "check": {
     "all": [
      {
@@ -525,16 +563,16 @@
      }
     ]
    },
-   "why": "An event runs when two sprites start to touch. A positive vy always means up, so the ball leaves the paddle upward.",
+   "why": "((Events#hat:overlap|when … overlaps …)) blocks run when two sprites <<touch|overlaps>>. A plus <<vy>> always means up, so the ball goes up.",
    "checklist": [
     {
-     "text": "A script runs when the Paddle and the Ball touch",
+     "text": "Drag ((Events#hat:overlap|when Paddle overlaps Ball))",
      "check": {
       "handler": "overlap"
      }
     },
     {
-     "text": "It sets the Ball’s vy",
+     "text": "Inside it, ((Physics#scene_motion_set|set sprite Ball vy to 220))",
      "check": {
       "handler": "overlap",
       "contains": [
@@ -543,15 +581,15 @@
      }
     },
     {
-     "text": "You ran it",
+     "text": "Run it, tap the game, and catch the ball with [←] [→]",
      "check": {
       "ran": true
      }
     }
    ],
    "hints": [
-    "From {{Events}}, drag “when … overlaps …” and choose Paddle and Ball.",
-    "Inside it, set the Ball’s vy to 220, then run it and catch the ball."
+    "From {{Events}}, drag ((Events#hat:overlap|when … overlaps …)). Pick Paddle and Ball.",
+    "Inside it, set the Ball’s vy to 220. Run it and catch the ball!"
    ],
    "select": "paddle",
    "other": "ball",
@@ -594,10 +632,13 @@
       ]
      }
     ]
-   }
+   },
+   "coach": "“When … overlaps” is in Events.",
+   "keys": "arrows"
   },
   {
-   "text": "This loop makes 8 bricks, but you can see only one. Why? Fix it so each copy appears further right.",
+   "title": "Where are the bricks?",
+   "text": "We made a <<repeat>> that makes 8 bricks. But you can only see one! Make each brick go further right.",
    "check": {
     "all": [
      {
@@ -612,10 +653,10 @@
     ]
    },
    "kind": "fix",
-   "why": "A copy starts where the hidden Brick is. Brick never moves, so all 8 copies land in the same place.",
+   "why": "Each brick is a <<clone>> of Brick. A copy starts where Brick is. Brick never moved, so all 8 copies sat in one spot!",
    "checklist": [
     {
-     "text": "Brick moves inside the loop",
+     "text": "Inside the repeat, add ((Motion#scene_change|change sprite Brick x by 50))",
      "check": {
       "nested": [
        "controls_repeat_ext",
@@ -624,15 +665,15 @@
      }
     },
     {
-     "text": "You ran it",
+     "text": "Run it and count the bricks",
      "check": {
       "ran": true
      }
     }
    ],
    "hints": [
-    "Run it and look closely: the 8 copies are all in one place.",
-    "Inside the loop, under “show sprite”, add “change sprite Brick x by 50” from Motion."
+    "Run it and look closely. All 8 bricks are on top of each other.",
+    "Inside the repeat, under ((Looks#scene_visibility|show sprite)), add ((Motion#scene_change|change sprite Brick x by 50))."
    ],
    "select": "brick",
    "highlight": {
@@ -760,10 +801,15 @@
      }
     ],
     "replacesPlant": 5
+   },
+   "coach": "The block that moves Brick is in Motion.",
+   "clip": {
+    "seconds": 2
    }
   },
   {
-   "text": "Three rows: put your row loop inside “repeat 3”. After each row, set Brick’s x back to −175 and change its y by −24.",
+   "title": "Three rows",
+   "text": "One row is good. Three rows is better! Put your row inside ((Control#controls_repeat_ext|repeat 3 times)).",
    "check": {
     "all": [
      {
@@ -790,10 +836,10 @@
      }
     ]
    },
-   "why": "The inner loop makes one row. The outer loop runs it 3 times and moves down in between: 3 rows of 8.",
+   "why": "The inside repeat makes one row. The outside repeat does that 3 times, and moves down in between. 3 rows of 8!",
    "checklist": [
     {
-     "text": "A repeat inside a repeat",
+     "text": "Put your row’s repeat inside a new ((Control#controls_repeat_ext|repeat 3 times))",
      "check": {
       "nested": [
        "controls_repeat_ext",
@@ -802,7 +848,7 @@
      }
     },
     {
-     "text": "After a row, Brick goes back left",
+     "text": "After each row, move Brick back left: ((Motion#scene_set|set sprite Brick x to −175))",
      "check": {
       "nested": [
        "controls_repeat_ext",
@@ -811,7 +857,7 @@
      }
     },
     {
-     "text": "…and moves down",
+     "text": "…and down a row: ((Motion#scene_change|change sprite Brick y by −24))",
      "check": {
       "field": [
        "scene_change",
@@ -821,15 +867,15 @@
      }
     },
     {
-     "text": "You ran it",
+     "text": "Run it",
      "check": {
       "ran": true
      }
     }
    ],
    "hints": [
-    "From Control, drag a new “repeat” and put your whole row loop inside it. Make it repeat 3 times.",
-    "Under the row loop, but still inside the new one: set sprite Brick x to −175, then change sprite Brick y by −24."
+    "From {{Control}}, drag a new ((Control#controls_repeat_ext|repeat 3 times)). Put your whole row repeat inside it.",
+    "Under the row repeat, but still inside the new one: ((Motion#scene_set|set sprite Brick x to −175)), then ((Motion#scene_change|change sprite Brick y by −24))."
    ],
    "select": "brick",
    "highlight": {
@@ -977,10 +1023,15 @@
      }
     ],
     "replacesPlant": 5
+   },
+   "coach": "Repeat is in Control.",
+   "clip": {
+    "seconds": 2.5
    }
   },
   {
-   "text": "When a brick touches the ball: add 1 to the score, send the ball down (vy −220), then destroy this sprite.",
+   "title": "Break the bricks",
+   "text": "When a brick touches the ball: add a point, send the ball down, and make the brick disappear.",
    "check": {
     "all": [
      {
@@ -1008,17 +1059,17 @@
      }
     ]
    },
-   "why": "The script belongs to Brick, so every copy runs it for itself, and “this sprite” means the copy that was hit. Destroy goes last: after it, the script stops.",
+   "why": "These blocks belong to Brick, so every brick copy runs them. <<this sprite>> means the brick that got hit. <<Destroy|destroy>> goes last, because the blocks stop after it.",
    "checklist": [
     {
-     "text": "A script runs when a Brick touches the Ball",
+     "text": "Pick Brick and drag ((Events#hat:overlap|when Brick overlaps Ball))",
      "check": {
       "handler": "overlap",
       "sprite": "brick"
      }
     },
     {
-     "text": "It adds 1 to the score",
+     "text": "Add ((Game#game_change|change score by 1))",
      "check": {
       "handler": "overlap",
       "sprite": "brick",
@@ -1028,7 +1079,7 @@
      }
     },
     {
-     "text": "It sends the Ball down",
+     "text": "Send the ball down: ((Physics#scene_motion_set|set sprite Ball vy to −220))",
      "check": {
       "handler": "overlap",
       "sprite": "brick",
@@ -1038,7 +1089,7 @@
      }
     },
     {
-     "text": "Destroy this sprite comes last",
+     "text": "Last of all: ((Game#scene_destroy|destroy sprite this sprite))",
      "check": {
       "handler": "overlap",
       "sprite": "brick",
@@ -1047,8 +1098,8 @@
     }
    ],
    "hints": [
-    "Select Brick, then from {{Events}} drag “when Brick overlaps …” and choose Ball.",
-    "Inside: change score by 1 (Game), set the Ball’s vy to −220 (Physics), and last, destroy sprite “this sprite” (Game)."
+    "Pick Brick. From {{Events}}, drag ((Events#hat:overlap|when Brick overlaps …)) and choose Ball.",
+    "Inside: ((Game#game_change|change score by 1)), then ((Physics#scene_motion_set|set sprite Ball vy to −220)), then last ((Game#scene_destroy|destroy sprite this sprite))."
    ],
    "select": "brick",
    "other": "ball",
@@ -1117,22 +1168,29 @@
       ]
      }
     ]
+   },
+   "coach": "Score and destroy are in Game.",
+   "clip": {
+    "seconds": 3
    }
   },
   {
-   "text": "Play-test: break five bricks.",
+   "title": "Play it: 5 bricks",
+   "text": "Break five bricks!",
    "check": {
     "score": 5
    },
    "kind": "play",
-   "why": "For now the ball also bounces off the bottom. In the next chapter, missing it costs a life.",
+   "why": "Tap the game, then use [←] and [→]. For now, the ball also bounces off the bottom.",
    "goal": {
     "score": 5,
     "label": "bricks broken"
-   }
+   },
+   "keys": "arrows"
   },
   {
-   "text": "Start with 3 lives. When the ball drops below the paddle (y under −145), lose a life and serve it again from the middle.",
+   "title": "Three lives",
+   "text": "Missing the ball should cost a life. Start with 3 lives.",
    "check": {
     "all": [
      {
@@ -1160,10 +1218,10 @@
      }
     ]
    },
-   "why": "“When Ball updates” runs many times a second, so it notices a miss at once. At 0 lives the game ends by itself.",
+   "why": "((Events#hat:update|when Ball updates)) runs over and over, about 30 times a second (<<see why|updates>>). So it sees a miss right away. At 0 lives, the game ends by itself.",
    "checklist": [
     {
-     "text": "Lives start at 3",
+     "text": "When the game starts, ((Game#game_set:FIELD=lives|set lives to 3))",
      "check": {
       "field": [
        "game_set",
@@ -1173,7 +1231,7 @@
      }
     },
     {
-     "text": "Each update, the Ball checks how low it is",
+     "text": "In ((Events#hat:update|when Ball updates)), check if the Ball’s <<y>> is below −145",
      "check": {
       "handler": "update",
       "sprite": "ball",
@@ -1184,7 +1242,7 @@
      }
     },
     {
-     "text": "A miss loses a life and serves again",
+     "text": "If it is: ((Game#game_change|change lives by −1)), then move the Ball back up to serve again",
      "check": {
       "handler": "update",
       "sprite": "ball",
@@ -1196,8 +1254,8 @@
     }
    ],
    "hints": [
-    "Set lives to 3 and show them when the game starts (Game). Then select Ball and drag “when Ball updates” from Events.",
-    "Inside it: if Ball’s y < −145, change lives by −1, move the Ball to x 0 y −60 and set its vy to 220."
+    "From {{Game}}, set lives to 3 and show them when the game starts. Then pick Ball and drag ((Events#hat:update|when Ball updates)).",
+    "Inside: if Ball’s y < −145, then ((Game#game_change|change lives by −1)), ((Motion#scene_go|move sprite Ball to x 0 y −60)) and set its vy to 220."
    ],
    "select": "ball",
    "highlight": {
@@ -1351,10 +1409,12 @@
       ]
      }
     ]
-   }
+   },
+   "coach": "Lives are in Game."
   },
   {
-   "text": "How many bricks did your loops make? Use that number: when the game starts, wait until the score reaches it, then finish the game as a win.",
+   "title": "How to win",
+   "text": "How many bricks did your repeats make? When the score gets that high, you win!",
    "check": {
     "all": [
      {
@@ -1377,10 +1437,10 @@
     ]
    },
    "kind": "predict",
-   "why": "Your loops decide how many bricks there are. When the score equals that number, every brick is gone.",
+   "why": "Your repeats decide how many bricks there are. When the score is that big, every brick is gone.",
    "checklist": [
     {
-     "text": "You chose an answer",
+     "text": "Guess how many bricks there are",
      "check": {
       "predicted": true
      }
@@ -1396,7 +1456,7 @@
      }
     },
     {
-     "text": "Then finish the game as a win",
+     "text": "Then ((Game#game_finish|finish game win))",
      "check": {
       "field": [
        "game_finish",
@@ -1407,7 +1467,7 @@
     }
    ],
    "hints": [
-    "Count it from your loops: how many rows, and how many bricks in each row?",
+    "Count from your repeats: how many rows? How many bricks in each row?",
     "The idea card “Win screen” waits until the score is 5. Change the 5 to your answer."
    ],
    "recipe": "win-screen",
@@ -1415,7 +1475,7 @@
     "category": "game"
    },
    "predict": {
-    "question": "How many bricks did your loops make?",
+    "question": "How many bricks did your repeats make?",
     "choices": [
      "8",
      "11",
@@ -1423,24 +1483,27 @@
      "32"
     ],
     "answer": 2,
-    "explain": "3 rows of 8 bricks is 24. When the score reaches 24, the wall is gone."
-   }
+    "explain": "3 rows of 8 bricks is 24. When the score is 24, the wall is gone!"
+   },
+   "coach": "Winning is in Game."
   },
   {
-   "text": "Play until the game ends, win or lose.",
+   "title": "Play to the end",
+   "text": "Win or lose, play until the game ends!",
    "check": {
     "finished": "any"
    },
    "kind": "play",
-   "why": "Click the stage, then use the arrow keys. Three misses end the game; 24 bricks win it."
+   "why": "Tap the game, then use [←] and [→]. Miss three times and it’s over. Break all 24 bricks to win!",
+   "keys": "arrows"
   }
  ],
  "finish": {
-  "text": "A paddle, a bouncing ball and a wall of 24 bricks, all made from your own blocks.",
+  "text": "A paddle, a bouncing ball and a wall of 24 bricks, all made from your own blocks. Well done!",
   "remix": [
-   "Faster and faster: each broken brick makes the ball a little quicker.",
+   "Faster and faster: make the ball a little quicker each time a brick breaks.",
    "Tough top row: the top bricks change costume on the first hit and break on the second.",
-   "Falling star: sometimes a brick drops a star; catch it for an extra life."
+   "Falling star: sometimes a brick drops a star. Catch it for an extra life!"
   ]
  },
  "next": "flappy-flight"

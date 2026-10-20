@@ -80,11 +80,13 @@ test('Lessons lists the lessons first, then the guided builds, each to start or 
   await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
   await page.locator('#lessons-open').click();
   const cards = page.locator('#lessons-dialog .lesson-card');
-  await expect(cards).toHaveCount(9);
+  await expect(cards).toHaveCount(10);
   await expect(cards.first()).toHaveAttribute('data-lesson', 'brick-breaker');
   await expect(cards.nth(1)).toHaveAttribute('data-lesson', 'flappy-flight'); await expect(cards.nth(2)).toHaveAttribute('data-lesson', 'super-hopper');
   await expect(cards.nth(2).locator('.lesson-kind')).toHaveText('Lesson');
-  await expect(cards.nth(3).locator('.lesson-kind')).toHaveText('Guided build');
+  await expect(cards.nth(3)).toHaveAttribute('data-lesson', 'code-puzzles'); await expect(cards.nth(3).locator('.lesson-kind')).toHaveText('Lesson');
+  await expect(cards.nth(3).locator('#lessons-play-code-puzzles')).toHaveCount(0);   // puzzles end in eight programs, not a game to play
+  await expect(cards.nth(4).locator('.lesson-kind')).toHaveText('Guided build');
   await expect(cards.first().locator('img')).toHaveJSProperty('complete', true);
   // Play the finished game first…
   await page.locator('#lessons-play-pen-patterns').click();

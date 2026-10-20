@@ -93,7 +93,7 @@ Run and the Sound editor enable Web Audio from a user gesture. **Enable audio** 
 
 ## Persistence and bounds
 
-Language version **16** introduced sound blocks and optional `sounds` scene assets. Current project exports use version 22 (modules 19); earlier project versions 1–21 and pinned module versions 5–19 remain readable. The scene serializer preserves sound-only projects. Project JSON and source ZIP exports include the captured WAV data and editable scores. **Export playable** also includes the browser host and runtime, retaining actual audio playback and completion; see [portable playback](portable-playback.md).
+Language version **16** introduced sound blocks and optional `sounds` scene assets. Current project exports use version 23 (modules 19); earlier project versions 1–22 and pinned module versions 5–19 remain readable. The scene serializer preserves sound-only projects. Project JSON and source ZIP exports include the captured WAV data and editable scores. **Export playable** also includes the browser host and runtime, retaining actual audio playback and completion; see [portable playback](portable-playback.md).
 
 There are at most 24 sound/song assets (+ New is disabled at 24 with a note to delete one), 32 concurrent playback instances and 20,000 learner sound commands per run. Browser buffers cache at most eight assets. Scenes fit within 12 MB UTF-8 and complete projects within 16 MB; module bundles retain their 2 MB limit. Browser storage may offer less space: a visible save warning directs the learner to Save project when autosave cannot fit. A Done or import that would break these limits keeps the previous saved scene and says why.
 

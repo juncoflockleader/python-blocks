@@ -91,6 +91,12 @@ export const shellMarkup = `
     <section class="phone-message" aria-labelledby="phone-title"><h2 id="phone-title">Turn your tablet sideways</h2><p>Editing needs a larger screen. You can still play this project.</p><button id="phone-play" class="button primary">Play project</button></section>
   </div>`;
 
+/** The shell fills the window and never scrolls; something that scrolls it anyway (a scrollIntoView or a
+ * focus inside a panel) would slide the whole editor up and leave a gap below, so it is put back at once. */
+export function keepShellInPlace() {
+  const shell = document.getElementById('shell'); if (!shell) return;
+  shell.addEventListener('scroll', () => { if (shell.scrollTop || shell.scrollLeft) shell.scrollTo(0, 0); });
+}
 export function installTabs(onChange: (tab: Tab) => void = () => {}) {
   const tabs = TABS.map(tab => document.getElementById(`tab-${tab}`) as HTMLButtonElement);
   let current: Tab = 'sprite';
