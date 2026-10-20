@@ -344,3 +344,13 @@ dialog .example-list li { padding: 0; }
   .phone-message h2 { font: 700 22px 'Space Grotesk', system-ui, sans-serif; margin: 0 0 8px; }
   .phone-message p { color: #4e5f49; }
 }
+/* Pro's search box at the top of the palette (palette-search.ts). */
+.palette-search { margin: 0 0 4px; }
+.palette-search[hidden] { display: none; }
+.palette-search input { display: block; width: 100%; box-sizing: border-box; padding: 0 10px 0 30px; border: 1px solid #cbd4b4; border-radius: 10px; font: 600 13px 'DM Sans', system-ui, sans-serif; color: #26382f; background: #fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%234e5f49' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='6.5'/%3E%3Cpath d='m16 16 4 4'/%3E%3C/svg%3E") no-repeat 9px center / 15px; }
+.palette-search input:focus { outline: none; border-color: #267c70; box-shadow: 0 0 0 2px #267c7033; }
+/* Short tablets: Pro's rows are a little tighter, so all its categories still fit in two columns below the search box. */
+@media (min-width: 900px) and (max-height: 760px) {
+  :root[data-level=pro] .blocklyToolboxCategory { min-height: 45px; padding: 2px !important; }
+  :root[data-level=pro] .blocklyToolboxCategory .blocklyTreeRowContentContainer { min-height: 41px; }
+}

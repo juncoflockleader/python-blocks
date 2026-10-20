@@ -7,7 +7,8 @@ import eventLimits from './event-limits.json';
 export { eventLimits };
 export type ExecutionMode = 'sequential' | 'events';
 export type RunnerCommand =
-  | { type: 'run'; code: string; mode: ExecutionMode; runtimeURL?: string; files?: Record<string, string>; scene?: SceneState; debug?: DebugOptions & { control: SharedArrayBuffer } }
+  /** `stdin` is what read blocks (input()) read, line by line; with `tests`, the program runs once per input and reports each one. */
+  | { type: 'run'; code: string; mode: ExecutionMode; runtimeURL?: string; files?: Record<string, string>; scene?: SceneState; debug?: DebugOptions & { control: SharedArrayBuffer }; stdin?: string; tests?: string[] }
   | { type: 'debug-pause' }
   | { type: 'input'; id: number; input: SceneInput }
   | { type: 'answer'; reply: QuestionReply }
@@ -29,6 +30,8 @@ export type RunnerEvent =
   | { type: 'draw'; command: DrawCommand }
   | { type: 'scene'; command: SceneCommand }
   | { type: 'stdout'; text: string }
+  /** One test of a check run: what the program printed for that input, and its error if it stopped with one. */
+  | { type: 'test-result'; index: number; output: string; error?: { message: string; exceptionType?: string; frames?: { file: string; line: number; name: string }[] } }
   | { type: 'started' }
   | { type: 'ready' }
   | { type: 'pong'; id: number }

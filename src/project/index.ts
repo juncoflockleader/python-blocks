@@ -34,7 +34,7 @@ export function prepareProject(text: string): PreparedProject {
   if (!data || typeof data !== 'object' || Array.isArray(data)) throw new Error('Choose a Python Blocks project JSON file.');
   const value = data as Record<string, unknown>;
   const legacy = value.format === undefined && value.blocks !== undefined;
-  if (!legacy && (value.format !== 'python-blocks' || ![1, 2].includes(value.formatVersion as number) || ![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, LANGUAGE_VERSION].includes(value.languageVersion as number))) throw new Error('This project uses an unsupported format or language version. The original file has been preserved.');
+  if (!legacy && (value.format !== 'python-blocks' || ![1, 2].includes(value.formatVersion as number) || ![1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, LANGUAGE_VERSION].includes(value.languageVersion as number))) throw new Error('This project uses an unsupported format or language version. The original file has been preserved.');
   const state = legacy ? data : value.workspace;
   checkWorkspace(state);
   const candidate = createWorkspace();

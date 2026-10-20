@@ -49,6 +49,6 @@ describe('editor workflow state', () => {
     s.sprites[0].name = 'Renamed'; changeScene(w,s); expect(sceneState(w).watchers).toEqual(s.watchers);
     s.sprites = s.sprites.filter(s => s.id !== 'player'); changeScene(w,s); expect(sceneState(w).watchers![0].sprite).toBe('player');
     const zip = unzipSync(pythonExport(captured).content as Uint8Array); expect(JSON.parse(strFromU8(zip['scene.json'])).watchers).toEqual(s.watchers);
-    const copy = ws(); restore(copy,prepareProject(JSON.stringify({...snapshot(w),languageVersion:17})).project); expect(snapshot(copy).languageVersion).toBe(22); expect(sceneState(copy).watchers).toEqual(s.watchers);
+    const copy = ws(); restore(copy,prepareProject(JSON.stringify({...snapshot(w),languageVersion:17})).project); expect(snapshot(copy).languageVersion).toBe(23); expect(sceneState(copy).watchers).toEqual(s.watchers);
   });
 });

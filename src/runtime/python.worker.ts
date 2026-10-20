@@ -96,6 +96,10 @@ self.onmessage = async (event: MessageEvent<RunnerCommand>) => {
       question_emit: (json: string) => { const command: unknown = JSON.parse(json); if (!validQuestionCommand(command)) throw new Error('Invalid question request.'); send({ type: 'question', command }); },
       scene_sense: sceneSense.query,
       session_ready: () => { ready = true; send({ type: 'ready' }); },
+      test_result: (json: string) => {
+        const result = JSON.parse(json) as { index: number; output: string; error?: { message: string; exceptionType?: string; frames?: { file: string; line: number; name: string }[] } };
+        send({ type: 'test-result', index: result.index, output: String(result.output).slice(0, 20_000), ...(result.error ? { error: result.error } : {}) });
+      },
     });
     if (command.scene) { validateScene(command.scene); python.FS.writeFile('/home/pyodide/scene.json', JSON.stringify(command.scene)); }
     python.FS.writeFile('/home/pyodide/_playground_scene.py', sceneSource);
@@ -129,6 +133,9 @@ self.onmessage = async (event: MessageEvent<RunnerCommand>) => {
       python.globals.set('_debug_lines_json', JSON.stringify(command.debug.lines));
       python.runPython('from _playground_debugger import Debugger\nfrom _playground_debug_host import requested, suspend\n_pb_debugger = Debugger(json.loads(_debug_lines_json), requested, suspend)\n_pb_debugger.install()');
     }
+    // Read blocks (input()) read the run's input line by line; with none, reading says so instead of waiting.
+    python.globals.set('_program_stdin', command.stdin ?? '');
+    python.runPython('import io as _pb_io\nsys.stdin = _pb_io.StringIO(_program_stdin)');
     python.globals.set('_program_source', command.code);
     python.globals.set('_generated_modules_json', JSON.stringify(command.files ?? {}));
     let previousWatch = '';
@@ -144,7 +151,10 @@ self.onmessage = async (event: MessageEvent<RunnerCommand>) => {
       python.runPython('from _playground_watchers import watch_json as _pb_watch_json\n_pb_watch_list = json.loads(_watch_definitions)');
       watchTimer = setInterval(() => { if (ready) publishWatches(); }, 100);
     }
-    const result = await python.runPythonAsync(command.mode === 'events'
+    if (command.tests) python.globals.set('_program_tests_json', JSON.stringify(command.tests.slice(0, 32)));
+    const result = await python.runPythonAsync(command.tests
+      ? 'from _playground_host import test_result\ncheck_program(_program_source, json.loads(_generated_modules_json), json.loads(_program_tests_json), test_result)'
+      : command.mode === 'events'
       ? 'from _playground_host import session_ready\nawait run_event_program(_program_source, session_ready, json.loads(_generated_modules_json))'
       : 'run_program(_program_source, json.loads(_generated_modules_json))') as string;
     ready = false;

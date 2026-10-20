@@ -122,6 +122,13 @@ export class CoreConverter {
       if (statement && name === 'print') {
         const [arg] = this.args(value, [1]); return this.block('text_print', value, undefined, { TEXT: this.expression(arg) });
       }
+      // Read blocks: input() and int(input()), with nothing else in the call.
+      const bare = (call: typeof value) => !children(call, 'args').length && !children(call, 'keywords').length;
+      if (!statement && name === 'input' && bare(value)) return this.block('py_read_line', value);
+      if (!statement && name === 'int' && children(value, 'args').length === 1 && !children(value, 'keywords').length) {
+        const inner = children(value, 'args')[0];
+        if (inner.type === 'Call' && child(inner, 'func').type === 'Name' && identifier(child(inner, 'func')) === 'input' && bare(inner)) return this.block('py_read_number', value);
+      }
       if (!statement && ['int', 'float', 'str', 'bool', 'len'].includes(name)) {
         const [arg] = this.args(value, [1]);
         return this.block(name === 'len' ? 'py_length' : 'py_convert', value, name === 'len' ? undefined : { TYPE: name }, { VALUE: this.expression(arg) });

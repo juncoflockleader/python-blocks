@@ -22,13 +22,14 @@ function loaded(project: unknown) {
   return w;
 }
 const game = (build: Build) => JSON.parse(readFileSync(`content/builds/${build.id}-game.json`, 'utf8'));
-const dynamic = (check: Check): boolean => 'ran' in check || 'finished' in check || 'score' in check || 'predicted' in check || ('all' in check && check.all.some(dynamic)) || ('any' in check && check.any.every(dynamic));
+const dynamic = (check: Check): boolean => 'ran' in check || 'finished' in check || 'score' in check || 'predicted' in check || 'solved' in check || ('all' in check && check.all.some(dynamic)) || ('any' in check && check.any.every(dynamic));
 const finished = { ran: true, finished: 'won' as const };
+const puzzles = (build: Build) => build.steps.every(step => step.puzzle);
 
 describe('guided builds', () => {
-  it('are the six planned games and three lessons, each with a minute budget and a next step', () => {
+  it('are the six planned games and four lessons, each with a minute budget and a next step', () => {
     // Lessons are listed first.
-    expect(builds.map(b => b.title)).toEqual(['Brick Breaker', 'Flappy Flight', 'Super Hopper', 'Catch the star', 'Dodge the balls', 'Pen patterns', 'Talking story', 'Jump quest', 'Maze run']);
+    expect(builds.map(b => b.title)).toEqual(['Brick Breaker', 'Flappy Flight', 'Super Hopper', 'Code Puzzles', 'Catch the star', 'Dodge the balls', 'Pen patterns', 'Talking story', 'Jump quest', 'Maze run']);
     for (const build of builds) {
       expect(build.minutes, build.id).toBeGreaterThan(0);
       expect(build.finish.remix, build.id).toHaveLength(3);
@@ -58,7 +59,7 @@ describe('guided builds', () => {
 
   it('speak to young readers in lessons: a goal per step, short sentences, block pictures, and no programmer words', () => {
     // Words a lesson leaves out of its own sentences (a block picture or a word card may still show them).
-    const jargon = /\b(script|scripts|handler|acceleration|velocity|loop|loops|event|variable|boolean|integer|execute|instance|function|parameter|predict)\b/i;
+    const jargon = /\b(script|scripts|handler|acceleration|velocity|loop|loops|event|boolean|integer|execute|instance|function|parameter|predict)\b/i;
     for (const lesson of builds.filter(b => b.kind === 'lesson')) {
       const texts = [lesson.summary, ...lesson.learn!, ...lesson.chapters!.flatMap(c => [c.title, c.idea]), lesson.finish.text, ...lesson.finish.remix];
       for (const [index, step] of lesson.steps.entries()) {
@@ -90,7 +91,8 @@ describe('guided builds', () => {
   });
 
   it('start incomplete and end as a finished game that compiles and passes every step', () => {
-    for (const build of builds) {
+    // A puzzle lesson ends in eight programs, not one game; tests/unit/lesson-steps.test.ts runs each.
+    for (const build of builds.filter(b => !puzzles(b))) {
       const starter = loaded(build.starter);
       expect(build.steps.every(step => passes(step.check, starter, finished)), `${build.id} starter already passes`).toBe(false);
       const w = loaded(game(build));
@@ -104,11 +106,11 @@ describe('guided builds', () => {
 
   it('lessons have chapters, live checklists, hints, sound predictions and repairable plants', () => {
     const lessons = builds.filter(b => b.kind === 'lesson');
-    expect(lessons.map(b => b.id)).toEqual(['brick-breaker', 'flappy-flight', 'super-hopper']);
+    expect(lessons.map(b => b.id)).toEqual(['brick-breaker', 'flappy-flight', 'super-hopper', 'code-puzzles']);
     for (const lesson of lessons) {
       expect(lesson.chapters!.reduce((sum, c) => sum + c.steps, 0), lesson.id).toBe(lesson.steps.length);
       expect(lesson.learn!.length, lesson.id).toBeGreaterThanOrEqual(3);
-      const w = loaded(game(lesson));
+      const w = puzzles(lesson) ? null : loaded(game(lesson));
       for (const [index, step] of lesson.steps.entries()) {
         const where = `${lesson.id} step ${index + 1}`;
         expect(chapterOf(lesson, index), where).not.toBeNull();
@@ -118,7 +120,7 @@ describe('guided builds', () => {
           expect(step.hints, where).toHaveLength(2);
           expect(step.recipe || step.solution || step.plant, `${where} needs a last rung or a planted puzzle`).toBeTruthy();
           // The finished game ticks every part that does not depend on a run.
-          for (const part of step.checklist!) if (!dynamic(part.check)) expect(passes(part.check, w, finished), `${where}: ${part.text}`).toBe(true);
+          if (w) for (const part of step.checklist!) if (!dynamic(part.check)) expect(passes(part.check, w, finished), `${where}: ${part.text}`).toBe(true);
         }
         if (step.predict) {
           expect(step.predict.choices.length, where).toBeGreaterThanOrEqual(3);
@@ -136,7 +138,7 @@ describe('guided builds', () => {
       for (const parts of [step.plant, step.solution?.parts]) {
         if (!parts) continue;
         const w = loaded(lesson.starter);
-        const recipe = { id: 'lesson', title: 'Lesson', group: 'game', phrases: [], level: 'pro', concepts: ['event'], steps: [], blocks: parts } as Recipe;
+        const recipe = { id: 'lesson', title: 'Lesson', group: 'game', phrases: [], level: 'pro', concepts: ['event'], steps: [], blocks: parts, ...(parts === step.solution?.parts && step.solution.variables ? { variables: step.solution.variables } : {}) } as Recipe;
         appendRecipe(w, recipe, placement(w, recipe, step.select ?? '', step.other));
         const where = `${lesson.id} step ${index + 1}`;
         expect(compile(w).diagnostics.filter(d => d.severity === 'error'), where).toEqual([]);

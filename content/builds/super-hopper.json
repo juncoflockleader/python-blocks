@@ -1956,7 +1956,7 @@
    "why": "<<ay>> is gravity: it pulls down. The grass is <<solid>>, like a floor.",
    "checklist": [
     {
-     "text": "Snap ((Physics|set sprite Hero ay to −1200)) under ((Events|when game starts))",
+     "text": "Snap ((Physics#scene_motion_set|set sprite Hero ay to −1200)) under ((Events#hat:start|when game starts))",
      "check": {
       "all": [
        {
@@ -1990,7 +1990,7 @@
     }
    ],
    "hints": [
-    "In {{Physics}}, use ((Physics|set sprite … vx to …)) and pick ay in its menu. Snap it under ((Events|when game starts)).",
+    "In {{Physics}}, use ((Physics#scene_motion_set|set sprite … vx to …)) and pick ay in its menu. Snap it under ((Events#hat:start|when game starts)).",
     "Pick Hero and type −1200."
    ],
    "select": "hero",
@@ -2074,7 +2074,7 @@
    "why": "Vertical speed 0 leaves up and down to gravity. The camera follows the Hero, so the level slides along as you walk.",
    "checklist": [
     {
-     "text": "Snap ((Motion|control sprite Hero with arrow keys)) under ((Events|when game starts))",
+     "text": "Snap ((Motion#scene_control|control sprite Hero with arrow keys)) under ((Events#hat:start|when game starts))",
      "check": {
       "handler": "start",
       "contains": [
@@ -2100,7 +2100,7 @@
     }
    ],
    "hints": [
-    "In {{Motion}}, find ((Motion|control sprite … with arrow keys …)). Snap it under ((Events|when game starts)).",
+    "In {{Motion}}, find ((Motion#scene_control|control sprite … with arrow keys …)). Snap it under ((Events#hat:start|when game starts)).",
     "Pick Hero. Horizontal speed 180, vertical speed 0. Tap the game before you press keys."
    ],
    "select": "hero",
@@ -2203,7 +2203,7 @@
    "why": "Direction 180 means facing left. The Hero flips like a mirror. It doesn’t turn upside down.",
    "checklist": [
     {
-     "text": "When [←] is pressed, ((Motion|set sprite Hero direction to 180))",
+     "text": "When [←] is pressed, ((Motion#scene_set|set sprite Hero direction to 180))",
      "check": {
       "number": [
        "scene_set",
@@ -2241,7 +2241,7 @@
     }
    ],
    "hints": [
-    "From {{Events}}, drag ((Events|when space key pressed)) and change space to left arrow. In {{Motion}}, ((Motion|set sprite … x to …)) has a menu: pick direction.",
+    "From {{Events}}, drag ((Events#hat:key|when space key pressed)) and change space to left arrow. In {{Motion}}, ((Motion#scene_set|set sprite … x to …)) has a menu: pick direction.",
     "Make two of them: [←] sets direction to 180, and [→] sets it to 0."
    ],
    "select": "hero",
@@ -2355,7 +2355,7 @@
    "why": "A jump is a quick push up, and gravity brings the Hero back down. “If <<grounded>>” means: only when standing on something.",
    "checklist": [
     {
-     "text": "Under ((Events|when space key pressed)), add ((Physics|sprite Hero jump if grounded at speed 520))",
+     "text": "Under ((Events#hat:key|when space key pressed)), add ((Physics#scene_jump|sprite Hero jump if grounded at speed 520))",
      "check": {
       "handler": "key",
       "contains": [
@@ -2377,8 +2377,8 @@
     }
    ],
    "hints": [
-    "In {{Physics}}, find ((Physics|sprite … jump if grounded at speed …)).",
-    "Snap it under ((Events|when space key pressed)). Pick Hero and type 520."
+    "In {{Physics}}, find ((Physics#scene_jump|sprite … jump if grounded at speed …)).",
+    "Snap it under ((Events#hat:key|when space key pressed)). Pick Hero and type 520."
    ],
    "select": "hero",
    "highlight": {
@@ -2477,14 +2477,14 @@
    "why": "The coins are <<clones|clone>> of one hidden Coin. Blocks on Coin work for every coin. <<this sprite>> means the coin you touched.",
    "checklist": [
     {
-     "text": "Pick Coin and drag ((Events|when Coin overlaps Hero))",
+     "text": "Pick Coin and drag ((Events#hat:overlap|when Coin overlaps Hero))",
      "check": {
       "handler": "overlap",
       "sprite": "coin"
      }
     },
     {
-     "text": "Add ((Game|change score by 1))",
+     "text": "Add ((Game#game_change|change score by 1))",
      "check": {
       "handler": "overlap",
       "sprite": "coin",
@@ -2494,7 +2494,7 @@
      }
     },
     {
-     "text": "Last of all: ((Game|destroy sprite this sprite))",
+     "text": "Last of all: ((Game#scene_destroy|destroy sprite this sprite))",
      "check": {
       "handler": "overlap",
       "sprite": "coin",
@@ -2503,8 +2503,8 @@
     }
    ],
    "hints": [
-    "Pick Coin. From {{Events}}, drag ((Events|when Coin overlaps …)) and choose Hero.",
-    "Inside: ((Game|change score by 1)), then ((Game|destroy sprite this sprite)). <<Destroy|destroy>> goes last."
+    "Pick Coin. From {{Events}}, drag ((Events#hat:overlap|when Coin overlaps …)) and choose Hero.",
+    "Inside: ((Game#game_change|change score by 1)), then ((Game#scene_destroy|destroy sprite this sprite)). <<Destroy|destroy>> goes last."
    ],
    "select": "coin",
    "other": "hero",
@@ -2909,10 +2909,10 @@
      }
     ]
    },
-   "why": "Pits have no ground, so the Hero keeps falling. ((Events|when Hero updates)) runs about 30 times a second (<<see why|updates>>), so it notices right away. At 0 lives, the game ends.",
+   "why": "Pits have no ground, so the Hero keeps falling. ((Events#hat:update|when Hero updates)) runs about 30 times a second (<<see why|updates>>), so it notices right away. At 0 lives, the game ends.",
    "checklist": [
     {
-     "text": "When the game starts, ((Game|set lives to 3))",
+     "text": "When the game starts, ((Game#game_set:FIELD=lives|set lives to 3))",
      "check": {
       "field": [
        "game_set",
@@ -2922,7 +2922,7 @@
      }
     },
     {
-     "text": "In ((Events|when Hero updates)), check if the Hero’s <<y>> is below −200",
+     "text": "In ((Events#hat:update|when Hero updates)), check if the Hero’s <<y>> is below −200",
      "check": {
       "handler": "update",
       "sprite": "hero",
@@ -2933,7 +2933,7 @@
      }
     },
     {
-     "text": "If it is: ((Game|change lives by −1)) and ((Motion|move sprite Hero to x −128 y 40))",
+     "text": "If it is: ((Game#game_change|change lives by −1)) and ((Motion#scene_go|move sprite Hero to x −128 y 40))",
      "check": {
       "handler": "update",
       "sprite": "hero",
@@ -2945,8 +2945,8 @@
     }
    ],
    "hints": [
-    "From {{Game}}, set lives to 3 when the game starts. Then pick Hero and drag ((Events|when Hero updates)) from {{Events}}.",
-    "Inside: if Hero’s y < −200, then ((Game|change lives by −1)) and ((Motion|move sprite Hero to x −128 y 40))."
+    "From {{Game}}, set lives to 3 when the game starts. Then pick Hero and drag ((Events#hat:update|when Hero updates)) from {{Events}}.",
+    "Inside: if Hero’s y < −200, then ((Game#game_change|change lives by −1)) and ((Motion#scene_go|move sprite Hero to x −128 y 40))."
    ],
    "select": "hero",
    "highlight": {
@@ -3116,7 +3116,7 @@
    "why": "Grey blocks are <<solid>>. A <<clone>> copies its sprite’s speed, so the second beetle walks too.",
    "checklist": [
     {
-     "text": "Under ((Events|when game starts)): ((Physics|set sprite Beetle vx to −60)) and ((Physics|sprite Beetle on wall collision bounce))",
+     "text": "Under ((Events#hat:start|when game starts)): ((Physics#scene_motion_set|set sprite Beetle vx to −60)) and ((Physics#scene_motion_response|sprite Beetle on wall collision bounce))",
      "check": {
       "field": [
        "scene_motion_response",
@@ -3126,7 +3126,7 @@
      }
     },
     {
-     "text": "Send a copy further on: ((Motion|move sprite clone sprite Beetle to x 1600 y −80))",
+     "text": "Send a copy further on: ((Motion#scene_go|move sprite clone sprite Beetle to x 1600 y −80))",
      "check": {
       "nested": [
        "scene_go",
@@ -3148,8 +3148,8 @@
     }
    ],
    "hints": [
-    "In {{Physics}}: ((Physics|set sprite Beetle vx to −60)) and ((Physics|sprite Beetle on wall collision bounce)), under ((Events|when game starts)).",
-    "Then add ((Motion|move sprite … to x … y …)) and put ((Game|clone sprite Beetle)) in its sprite hole. Use x 1600 and y −80."
+    "In {{Physics}}: ((Physics#scene_motion_set|set sprite Beetle vx to −60)) and ((Physics#scene_motion_response|sprite Beetle on wall collision bounce)), under ((Events#hat:start|when game starts)).",
+    "Then add ((Motion#scene_go|move sprite … to x … y …)) and put ((Game#scene_clone|clone sprite Beetle)) in its sprite hole. Use x 1600 and y −80."
    ],
    "select": "beetle",
    "highlight": {
@@ -3292,14 +3292,14 @@
    "why": "vy below 0 means falling down, so the Hero is landing on top: stomp! Walking in has vy 0: ouch! (<<What is if … else?|if>>)",
    "checklist": [
     {
-     "text": "Pick Beetle and drag ((Events|when Beetle overlaps Hero))",
+     "text": "Pick Beetle and drag ((Events#hat:overlap|when Beetle overlaps Hero))",
      "check": {
       "handler": "overlap",
       "sprite": "beetle"
      }
     },
     {
-     "text": "Use ((Control|if … else)) to check the Hero’s <<vy>>",
+     "text": "Use ((Control#controls_if:else|if … else)) to check the Hero’s <<vy>>",
      "check": {
       "handler": "overlap",
       "sprite": "beetle",
@@ -3332,8 +3332,8 @@
     }
    ],
    "hints": [
-    "Pick Beetle and drag ((Events|when Beetle overlaps …)), choosing Hero. Inside, use ((Control|if … else)) from {{Control}}.",
-    "Check ((Physics|sprite Hero motion vy)) < 0. If: set Hero vy to 380, change score by 5, destroy this sprite. Else: change lives by −1 and move Hero to x −128 y 40."
+    "Pick Beetle and drag ((Events#hat:overlap|when Beetle overlaps …)), choosing Hero. Inside, use ((Control#controls_if:else|if … else)) from {{Control}}.",
+    "Check ((Physics#scene_motion_get|sprite Hero motion vy)) < 0. If: set Hero vy to 380, change score by 5, destroy this sprite. Else: change lives by −1 and move Hero to x −128 y 40."
    ],
    "select": "beetle",
    "other": "hero",
@@ -3527,7 +3527,7 @@
    "why": "The flag is at the end of screen five, up the grey stairs. Reaching it is the goal of the whole level.",
    "checklist": [
     {
-     "text": "Pick Hero and drag ((Events|when Hero overlaps Flag))",
+     "text": "Pick Hero and drag ((Events#hat:overlap|when Hero overlaps Flag))",
      "check": {
       "handler": "overlap",
       "contains": [
@@ -3536,7 +3536,7 @@
      }
     },
     {
-     "text": "Inside, ((Game|finish game win))",
+     "text": "Inside, ((Game#game_finish|finish game win))",
      "check": {
       "field": [
        "game_finish",
@@ -3547,8 +3547,8 @@
     }
    ],
    "hints": [
-    "Pick Hero. From {{Events}}, drag ((Events|when Hero overlaps …)) and choose Flag.",
-    "Inside, put ((Game|finish game win)) with your own message."
+    "Pick Hero. From {{Events}}, drag ((Events#hat:overlap|when Hero overlaps …)) and choose Flag.",
+    "Inside, put ((Game#game_finish|finish game win)) with your own message."
    ],
    "recipe": "reach-goal",
    "select": "hero",

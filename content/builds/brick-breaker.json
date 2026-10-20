@@ -190,13 +190,13 @@
    "why": "This block moves a <<sprite>> while you hold a key. Vertical speed 0 means no up and down, so the paddle stays on its line.",
    "checklist": [
     {
-     "text": "Drag ((Events|when game starts)) into the blocks area",
+     "text": "Drag ((Events#hat:start|when game starts)) into the blocks area",
      "check": {
       "handler": "start"
      }
     },
     {
-     "text": "Snap ((Motion|control sprite Paddle with arrow keys)) under it",
+     "text": "Snap ((Motion#scene_control|control sprite Paddle with arrow keys)) under it",
      "check": {
       "handler": "start",
       "contains": [
@@ -216,7 +216,7 @@
     }
    ],
    "hints": [
-    "In {{Motion}}, find a block that starts with ((Motion|control sprite)). Snap it under ((Events|when game starts)).",
+    "In {{Motion}}, find a block that starts with ((Motion#scene_control|control sprite)). Snap it under ((Events#hat:start|when game starts)).",
     "Pick Paddle in its menu. Then change the vertical speed to 0."
    ],
    "recipe": "arrow-keys",
@@ -259,7 +259,7 @@
    "why": "“At stage edge stop” works like a wall at the side of the stage. The paddle stops there.",
    "checklist": [
     {
-     "text": "Add ((Motion|sprite Paddle at stage edge stop))",
+     "text": "Add ((Motion#scene_motion_edges|sprite Paddle at stage edge stop))",
      "check": {
       "field": [
        "scene_motion_edges",
@@ -276,7 +276,7 @@
     }
    ],
    "hints": [
-    "In {{Motion}}, ((Motion|sprite … at stage edge …)) says what happens at the edge.",
+    "In {{Motion}}, ((Motion#scene_motion_edges|sprite … at stage edge …)) says what happens at the edge.",
     "Pick Paddle and stop. Press [[Run code]], tap the game, and hold [←] or [→]."
    ],
    "select": "paddle",
@@ -353,7 +353,7 @@
    "why": "<<vx>> is speed sideways: a plus number goes right. <<vy>> is speed up and down: a plus number goes up. A minus sign flips the way.",
    "checklist": [
     {
-     "text": "Set the Ball’s vx: ((Physics|set sprite Ball vx to 150))",
+     "text": "Set the Ball’s vx: ((Physics#scene_motion_set|set sprite Ball vx to 150))",
      "check": {
       "field": [
        "scene_motion_set",
@@ -363,7 +363,7 @@
      }
     },
     {
-     "text": "Set the Ball’s vy with a second one: ((Physics|set sprite Ball vy to 200))",
+     "text": "Set the Ball’s vy with a second one: ((Physics#scene_motion_set|set sprite Ball vy to 200))",
      "check": {
       "field": [
        "scene_motion_set",
@@ -386,8 +386,8 @@
     }
    ],
    "hints": [
-    "In {{Physics}}, ((Physics|set sprite … vx to …)) gives a sprite speed. You need two of them.",
-    "Under ((Events|when game starts)): Ball vx 150, and Ball vy 200. Pick vy in the second block’s menu."
+    "In {{Physics}}, ((Physics#scene_motion_set|set sprite … vx to …)) gives a sprite speed. You need two of them.",
+    "Under ((Events#hat:start|when game starts)): Ball vx 150, and Ball vy 200. Pick vy in the second block’s menu."
    ],
    "select": "ball",
    "highlight": {
@@ -488,7 +488,7 @@
    "why": "<<Bounce|bounce>> makes the ball turn back when it hits an edge. So it stays in the game.",
    "checklist": [
     {
-     "text": "Add ((Motion|sprite Ball at stage edge bounce))",
+     "text": "Add ((Motion#scene_motion_edges|sprite Ball at stage edge bounce))",
      "check": {
       "field": [
        "scene_motion_edges",
@@ -505,7 +505,7 @@
     }
    ],
    "hints": [
-    "You used ((Motion|sprite … at stage edge …)) for the paddle. The ball needs one too.",
+    "You used ((Motion#scene_motion_edges|sprite … at stage edge …)) for the paddle. The ball needs one too.",
     "Pick Ball and bounce. Then run it."
    ],
    "select": "ball",
@@ -563,16 +563,16 @@
      }
     ]
    },
-   "why": "((Events|when … overlaps …)) blocks run when two sprites <<touch|overlaps>>. A plus <<vy>> always means up, so the ball goes up.",
+   "why": "((Events#hat:overlap|when … overlaps …)) blocks run when two sprites <<touch|overlaps>>. A plus <<vy>> always means up, so the ball goes up.",
    "checklist": [
     {
-     "text": "Drag ((Events|when Paddle overlaps Ball))",
+     "text": "Drag ((Events#hat:overlap|when Paddle overlaps Ball))",
      "check": {
       "handler": "overlap"
      }
     },
     {
-     "text": "Inside it, ((Physics|set sprite Ball vy to 220))",
+     "text": "Inside it, ((Physics#scene_motion_set|set sprite Ball vy to 220))",
      "check": {
       "handler": "overlap",
       "contains": [
@@ -588,7 +588,7 @@
     }
    ],
    "hints": [
-    "From {{Events}}, drag ((Events|when … overlaps …)). Pick Paddle and Ball.",
+    "From {{Events}}, drag ((Events#hat:overlap|when … overlaps …)). Pick Paddle and Ball.",
     "Inside it, set the Ball’s vy to 220. Run it and catch the ball!"
    ],
    "select": "paddle",
@@ -656,7 +656,7 @@
    "why": "Each brick is a <<clone>> of Brick. A copy starts where Brick is. Brick never moved, so all 8 copies sat in one spot!",
    "checklist": [
     {
-     "text": "Inside the repeat, add ((Motion|change sprite Brick x by 50))",
+     "text": "Inside the repeat, add ((Motion#scene_change|change sprite Brick x by 50))",
      "check": {
       "nested": [
        "controls_repeat_ext",
@@ -673,7 +673,7 @@
    ],
    "hints": [
     "Run it and look closely. All 8 bricks are on top of each other.",
-    "Inside the repeat, under ((Looks|show sprite)), add ((Motion|change sprite Brick x by 50))."
+    "Inside the repeat, under ((Looks#scene_visibility|show sprite)), add ((Motion#scene_change|change sprite Brick x by 50))."
    ],
    "select": "brick",
    "highlight": {
@@ -809,7 +809,7 @@
   },
   {
    "title": "Three rows",
-   "text": "One row is good. Three rows is better! Put your row inside ((Control|repeat 3 times)).",
+   "text": "One row is good. Three rows is better! Put your row inside ((Control#controls_repeat_ext|repeat 3 times)).",
    "check": {
     "all": [
      {
@@ -839,7 +839,7 @@
    "why": "The inside repeat makes one row. The outside repeat does that 3 times, and moves down in between. 3 rows of 8!",
    "checklist": [
     {
-     "text": "Put your row’s repeat inside a new ((Control|repeat 3 times))",
+     "text": "Put your row’s repeat inside a new ((Control#controls_repeat_ext|repeat 3 times))",
      "check": {
       "nested": [
        "controls_repeat_ext",
@@ -848,7 +848,7 @@
      }
     },
     {
-     "text": "After each row, move Brick back left: ((Motion|set sprite Brick x to −175))",
+     "text": "After each row, move Brick back left: ((Motion#scene_set|set sprite Brick x to −175))",
      "check": {
       "nested": [
        "controls_repeat_ext",
@@ -857,7 +857,7 @@
      }
     },
     {
-     "text": "…and down a row: ((Motion|change sprite Brick y by −24))",
+     "text": "…and down a row: ((Motion#scene_change|change sprite Brick y by −24))",
      "check": {
       "field": [
        "scene_change",
@@ -874,8 +874,8 @@
     }
    ],
    "hints": [
-    "From {{Control}}, drag a new ((Control|repeat 3 times)). Put your whole row repeat inside it.",
-    "Under the row repeat, but still inside the new one: ((Motion|set sprite Brick x to −175)), then ((Motion|change sprite Brick y by −24))."
+    "From {{Control}}, drag a new ((Control#controls_repeat_ext|repeat 3 times)). Put your whole row repeat inside it.",
+    "Under the row repeat, but still inside the new one: ((Motion#scene_set|set sprite Brick x to −175)), then ((Motion#scene_change|change sprite Brick y by −24))."
    ],
    "select": "brick",
    "highlight": {
@@ -1062,14 +1062,14 @@
    "why": "These blocks belong to Brick, so every brick copy runs them. <<this sprite>> means the brick that got hit. <<Destroy|destroy>> goes last, because the blocks stop after it.",
    "checklist": [
     {
-     "text": "Pick Brick and drag ((Events|when Brick overlaps Ball))",
+     "text": "Pick Brick and drag ((Events#hat:overlap|when Brick overlaps Ball))",
      "check": {
       "handler": "overlap",
       "sprite": "brick"
      }
     },
     {
-     "text": "Add ((Game|change score by 1))",
+     "text": "Add ((Game#game_change|change score by 1))",
      "check": {
       "handler": "overlap",
       "sprite": "brick",
@@ -1079,7 +1079,7 @@
      }
     },
     {
-     "text": "Send the ball down: ((Physics|set sprite Ball vy to −220))",
+     "text": "Send the ball down: ((Physics#scene_motion_set|set sprite Ball vy to −220))",
      "check": {
       "handler": "overlap",
       "sprite": "brick",
@@ -1089,7 +1089,7 @@
      }
     },
     {
-     "text": "Last of all: ((Game|destroy sprite this sprite))",
+     "text": "Last of all: ((Game#scene_destroy|destroy sprite this sprite))",
      "check": {
       "handler": "overlap",
       "sprite": "brick",
@@ -1098,8 +1098,8 @@
     }
    ],
    "hints": [
-    "Pick Brick. From {{Events}}, drag ((Events|when Brick overlaps …)) and choose Ball.",
-    "Inside: ((Game|change score by 1)), then ((Physics|set sprite Ball vy to −220)), then last ((Game|destroy sprite this sprite))."
+    "Pick Brick. From {{Events}}, drag ((Events#hat:overlap|when Brick overlaps …)) and choose Ball.",
+    "Inside: ((Game#game_change|change score by 1)), then ((Physics#scene_motion_set|set sprite Ball vy to −220)), then last ((Game#scene_destroy|destroy sprite this sprite))."
    ],
    "select": "brick",
    "other": "ball",
@@ -1218,10 +1218,10 @@
      }
     ]
    },
-   "why": "((Events|when Ball updates)) runs over and over, about 30 times a second (<<see why|updates>>). So it sees a miss right away. At 0 lives, the game ends by itself.",
+   "why": "((Events#hat:update|when Ball updates)) runs over and over, about 30 times a second (<<see why|updates>>). So it sees a miss right away. At 0 lives, the game ends by itself.",
    "checklist": [
     {
-     "text": "When the game starts, ((Game|set lives to 3))",
+     "text": "When the game starts, ((Game#game_set:FIELD=lives|set lives to 3))",
      "check": {
       "field": [
        "game_set",
@@ -1231,7 +1231,7 @@
      }
     },
     {
-     "text": "In ((Events|when Ball updates)), check if the Ball’s <<y>> is below −145",
+     "text": "In ((Events#hat:update|when Ball updates)), check if the Ball’s <<y>> is below −145",
      "check": {
       "handler": "update",
       "sprite": "ball",
@@ -1242,7 +1242,7 @@
      }
     },
     {
-     "text": "If it is: ((Game|change lives by −1)), then move the Ball back up to serve again",
+     "text": "If it is: ((Game#game_change|change lives by −1)), then move the Ball back up to serve again",
      "check": {
       "handler": "update",
       "sprite": "ball",
@@ -1254,8 +1254,8 @@
     }
    ],
    "hints": [
-    "From {{Game}}, set lives to 3 and show them when the game starts. Then pick Ball and drag ((Events|when Ball updates)).",
-    "Inside: if Ball’s y < −145, then ((Game|change lives by −1)), ((Motion|move sprite Ball to x 0 y −60)) and set its vy to 220."
+    "From {{Game}}, set lives to 3 and show them when the game starts. Then pick Ball and drag ((Events#hat:update|when Ball updates)).",
+    "Inside: if Ball’s y < −145, then ((Game#game_change|change lives by −1)), ((Motion#scene_go|move sprite Ball to x 0 y −60)) and set its vy to 220."
    ],
    "select": "ball",
    "highlight": {
@@ -1456,7 +1456,7 @@
      }
     },
     {
-     "text": "Then ((Game|finish game win))",
+     "text": "Then ((Game#game_finish|finish game win))",
      "check": {
       "field": [
        "game_finish",

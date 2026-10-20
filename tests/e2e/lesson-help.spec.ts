@@ -28,9 +28,10 @@ test('a step shows its goal, blocks as pictures, word cards and the coach pointi
   // Blocks to find are drawn in their category's colour, with its symbol.
   const blocks = page.locator('#guide-checklist .block-ref');
   await expect(blocks).toHaveCount(3);
-  await expect(blocks.first()).toHaveText('set sprite Bird ay to −900');
+  // Each shows its number in the picker first (block-picker.spec checks the numbers).
+  await expect(blocks.first()).toHaveText(/^\d+set sprite Bird ay to −900$/);
   expect(await blocks.first().evaluate(b => getComputedStyle(b).backgroundColor)).not.toBe('rgba(0, 0, 0, 0)');
-  await expect(page.locator('#guide-checklist .block-ref-hat')).toHaveText('when game starts');
+  await expect(page.locator('#guide-checklist .block-ref-hat')).toHaveText(/^\d+when game starts$/);
   // The guess comes after what to do, with its question.
   await expect(page.locator('#guide-question')).toHaveText('Guess: What will the bird do?');
   expect(await page.locator('#guide-checklist').evaluate((list, guess) => !!(list.compareDocumentPosition(guess!) & Node.DOCUMENT_POSITION_FOLLOWING), await page.locator('#guide-predict').elementHandle())).toBe(true);
@@ -63,6 +64,11 @@ test('a done step cheers and offers Next, a guessed step shows its clip, and a k
   await cheer.getByRole('button', { name: 'Next step' }).click();
   await page.locator('#stop').click();
   await expect(page.locator('#guide-step-title')).toHaveText('Flap!');
+  // A new step scrolls the Lesson panel to its card, never the editor around it.
+  expect(await page.locator('#shell').evaluate(e => e.scrollTop)).toBe(0);
+  const card = (await page.locator('#guide-active').boundingBox())!, panel = (await page.locator('.tab-panels').boundingBox())!;
+  expect(card.y).toBeGreaterThanOrEqual(panel.y - 1); expect(card.y).toBeLessThan(panel.y + 40);
+  expect((await page.locator('.top-bar').boundingBox())!.y).toBe(0);
   await expect(page.locator('#guide-clip video')).toHaveCount(1);   // a build step shows its clip from the start
   for (let i = 0; i < 3; i++) await page.locator('#guide-hint').click();
   await page.locator('#run').click();

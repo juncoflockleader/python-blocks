@@ -40,7 +40,7 @@ describe('sound assets and generated Python', () => {
     const line = result.source!.split('\n').findIndex(s => s.includes('await _pb_sounds.note')) + 1; expect(w.getBlockById(blockForLine(result,'program.py',line)!)!.type).toBe('sound_note');
     const archive = unzipSync(pythonExport(result).content as Uint8Array); expect(JSON.parse(strFromU8(archive['scene.json'])).sounds).toEqual(result.scene!.sounds);
     const restored = ws(); restore(restored, snapshot(w)); expect(compile(restored).source).toBe(result.source);
-    expect(prepareProject(JSON.stringify({...snapshot(w),languageVersion:15})).project.languageVersion).toBe(22);
+    expect(prepareProject(JSON.stringify({...snapshot(w),languageVersion:15})).project.languageVersion).toBe(23);
   });
   it('preserves sound-only projects, stable references, undo and invalid-import recovery', () => {
     const w = ws(); changeScene(w, {...emptyScene(),sounds:[song]});

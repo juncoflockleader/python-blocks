@@ -242,7 +242,7 @@
    "why": "<<ay>> is gravity. It pulls the bird down a little more every moment, so it falls faster and faster.",
    "checklist": [
     {
-     "text": "Snap ((Physics|set sprite Bird ay to −900)) under ((Events|when game starts))",
+     "text": "Snap ((Physics#scene_motion_set|set sprite Bird ay to −900)) under ((Events#hat:start|when game starts))",
      "check": {
       "all": [
        {
@@ -263,7 +263,7 @@
      }
     },
     {
-     "text": "Add ((Motion|sprite Bird at stage edge stop)) so it stays on the <<stage>>",
+     "text": "Add ((Motion#scene_motion_edges|sprite Bird at stage edge stop)) so it stays on the <<stage>>",
      "check": {
       "field": [
        "scene_motion_edges",
@@ -286,8 +286,8 @@
     }
    ],
    "hints": [
-    "The ((Physics|set sprite … vx to …)) block has a menu. Pick ay in it. Snap it under ((Events|when game starts)).",
-    "Pick Bird, pick ay, and type −900. The minus means down. Then add ((Motion|sprite Bird at stage edge stop)) from {{Motion}}."
+    "The ((Physics#scene_motion_set|set sprite … vx to …)) block has a menu. Pick ay in it. Snap it under ((Events#hat:start|when game starts)).",
+    "Pick Bird, pick ay, and type −900. The minus means down. Then add ((Motion#scene_motion_edges|sprite Bird at stage edge stop)) from {{Motion}}."
    ],
    "select": "bird",
    "highlight": {
@@ -385,7 +385,7 @@
    "why": "<<vy>> is speed up and down. 300 is a fast push up. Then gravity pulls the bird back down. Push, fall, push, fall: that’s the whole game!",
    "checklist": [
     {
-     "text": "Under ((Events|when space key pressed)), set the Bird’s <<vy>> to 300",
+     "text": "Under ((Events#hat:key|when space key pressed)), set the Bird’s <<vy>> to 300",
      "check": {
       "handler": "key",
       "contains": [
@@ -394,7 +394,7 @@
      }
     },
     {
-     "text": "Add ((Looks|play sprite Bird animation once and wait)) to flap its wings",
+     "text": "Add ((Looks#scene_play_animation|play sprite Bird animation once and wait)) to flap its wings",
      "check": {
       "handler": "key",
       "contains": [
@@ -410,8 +410,8 @@
     }
    ],
    "hints": [
-    "In {{Events}}, find ((Events|when space key pressed)). In {{Physics}}, use ((Physics|set sprite Bird vy to 300)).",
-    "Then add ((Looks|play sprite Bird animation once and wait)) from {{Looks}}. The Bird’s four <<costumes|costume>> beat its wings once."
+    "In {{Events}}, find ((Events#hat:key|when space key pressed)). In {{Physics}}, use ((Physics#scene_motion_set|set sprite Bird vy to 300)).",
+    "Then add ((Looks#scene_play_animation|play sprite Bird animation once and wait)) from {{Looks}}. The Bird’s four <<costumes|costume>> beat its wings once."
    ],
    "select": "bird",
    "highlight": {
@@ -536,7 +536,7 @@
    "why": "Each new pipe is a <<clone>>, a copy of Pipe. A copy starts where Pipe is. So move Pipe first, then copy it!",
    "checklist": [
     {
-     "text": "At the top of the ((Control|repeat while true)), move Pipe to a <<random>> height: ((Control|random integer from −40 to 90))",
+     "text": "At the top of the ((Control#controls_whileUntil|repeat while true)), move Pipe to a <<random>> height: ((Control#math_random_int|random integer from −40 to 90))",
      "check": {
       "nested": [
        "controls_whileUntil",
@@ -545,7 +545,7 @@
      }
     },
     {
-     "text": "…using ((Motion|set sprite Pipe y to))",
+     "text": "…using ((Motion#scene_set|set sprite Pipe y to))",
      "check": {
       "field": [
        "scene_set",
@@ -563,7 +563,7 @@
    ],
    "hints": [
     "Run it. All the gaps line up! What decides where each copy starts?",
-    "At the top of the repeat, add ((Motion|set sprite Pipe y to)). Put ((Control|random integer from −40 to 90)) in its hole."
+    "At the top of the repeat, add ((Motion#scene_set|set sprite Pipe y to)). Put ((Control#math_random_int|random integer from −40 to 90)) in its hole."
    ],
    "select": "pipe",
    "highlight": {
@@ -786,10 +786,10 @@
      }
     ]
    },
-   "why": "These blocks belong to Pipe, so every pipe copy checks for the bird. ((Events|when Bird updates)) runs about 30 times a second (<<see why|updates>>), so a crash is noticed right away.",
+   "why": "These blocks belong to Pipe, so every pipe copy checks for the bird. ((Events#hat:update|when Bird updates)) runs about 30 times a second (<<see why|updates>>), so a crash is noticed right away.",
    "checklist": [
     {
-     "text": "In ((Events|when Pipe overlaps Bird)), put ((Game|finish game lose))",
+     "text": "In ((Events#hat:overlap|when Pipe overlaps Bird)), put ((Game#game_finish|finish game lose))",
      "check": {
       "handler": "overlap",
       "sprite": "pipe",
@@ -799,7 +799,7 @@
      }
     },
     {
-     "text": "In ((Events|when Bird updates)), if the Bird’s <<y>> is below −115, finish the game too",
+     "text": "In ((Events#hat:update|when Bird updates)), if the Bird’s <<y>> is below −115, finish the game too",
      "check": {
       "handler": "update",
       "sprite": "bird",
@@ -811,8 +811,8 @@
     }
    ],
    "hints": [
-    "Pick Pipe. From {{Events}}, drag ((Events|when Pipe overlaps …)) and choose Bird. Put ((Game|finish game lose)) inside.",
-    "Pick Bird. Drag ((Events|when Bird updates)). Inside: if Bird’s y < −115, finish game lose."
+    "Pick Pipe. From {{Events}}, drag ((Events#hat:overlap|when Pipe overlaps …)) and choose Bird. Put ((Game#game_finish|finish game lose)) inside.",
+    "Pick Bird. Drag ((Events#hat:update|when Bird updates)). Inside: if Bird’s y < −115, finish game lose."
    ],
    "select": "pipe",
    "other": "bird",
@@ -931,7 +931,7 @@
     ]
    },
    "kind": "predict",
-   "why": "Every pipe copy runs ((Events|when Pipe updates)) by itself, about 30 times a second.",
+   "why": "Every pipe copy runs ((Events#hat:update|when Pipe updates)) by itself, about 30 times a second.",
    "checklist": [
     {
      "text": "Make your guess",
@@ -948,7 +948,7 @@
    ],
    "hints": [
     "Watch the score in the corner while a pipe slides past the bird.",
-    "After a pipe goes past, how many times does ((Events|when Pipe updates)) run before the pipe leaves?"
+    "After a pipe goes past, how many times does ((Events#hat:update|when Pipe updates)) run before the pipe leaves?"
    ],
    "select": "pipe",
    "highlight": {
@@ -1111,7 +1111,7 @@
    "why": "Every copy gets its own <<note|data>>. So each pipe remembers by itself if it already scored.",
    "checklist": [
     {
-     "text": "Check the note: ((Game|sprite this sprite data named passed))",
+     "text": "Check the note: ((Game#scene_data_get|sprite this sprite data named passed))",
      "check": {
       "handler": "update",
       "sprite": "pipe",
@@ -1121,7 +1121,7 @@
      }
     },
     {
-     "text": "After scoring, ((Game|set sprite this sprite data named passed to True))",
+     "text": "After scoring, ((Game#scene_data_set|set sprite this sprite data named passed to True))",
      "check": {
       "handler": "update",
       "sprite": "pipe",
@@ -1138,8 +1138,8 @@
     }
    ],
    "hints": [
-    "Pick Pipe, press [[More settings]] and open [[Sprite data & behavior]]: there’s passed: false. In {{Game}}, ((Game|sprite … data named …)) reads it.",
-    "Use ((Logic|… and …)) in the if: the x check on one side, ((Logic|not …)) with the note on the other. After ((Game|change score by 1)), set the note to True."
+    "Pick Pipe, press [[More settings]] and open [[Sprite data & behavior]]: there’s passed: false. In {{Game}}, ((Game#scene_data_get|sprite … data named …)) reads it.",
+    "Use ((Logic#py_logic|… and …)) in the if: the x check on one side, ((Logic#py_not|not …)) with the note on the other. After ((Game#game_change|change score by 1)), set the note to True."
    ],
    "select": "pipe",
    "highlight": {
@@ -1379,7 +1379,7 @@
      }
     },
     {
-     "text": "Then ((Game|finish game win))",
+     "text": "Then ((Game#game_finish|finish game win))",
      "check": {
       "field": [
        "game_finish",

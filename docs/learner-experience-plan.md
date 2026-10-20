@@ -480,6 +480,58 @@ The owner asked for a pass on the lessons for children: fewer programming words,
 
 Guided builds get the same card, tips and word buttons; their text, already Starter-level and short, was not rewritten in this pass. Verification: [unit tests](../tests/unit/guidance.test.ts) for markup, word cards and reading level; [the step-by-step test](../tests/unit/lesson-steps.test.ts); [browser tests](../tests/e2e/lesson-help.spec.ts) for the coach, block pictures, word cards and focus, the Why toggle, the cheer and its Next step, the clip after a guess, the key tip and the loose-block tip; and the three [lesson walkthroughs](../tests/e2e/lesson.spec.ts) with the new wording. Not measured yet: whether children read the cards, open the words, or finish faster.
 
+### 3.15 Code Puzzles: a lesson of small programming problems (built 2026-10-20)
+
+The owner asked for a lesson on light competitive programming before Track C. It is also a pilot for Track C's practice problems and the dynamic checking of §4.4: a program is given an input, prints an answer, and a checker runs it on several tests.
+
+**What a learner does.** Eight short puzzles, each a little story with an input and an answer. The learner builds a program in a **Program** block that reads the input, works out the answer and prints it; **Try it** runs it on an example and shows what it printed beside the answer wanted; **Check my answer** runs it on every test and ticks each one. All tests passing finishes the puzzle. Hints, then Show me how, as in the other lessons.
+
+| # | Puzzle | Idea | Example input → answer |
+| --- | --- | --- | --- |
+| 1 | Say hello: greet a visitor by name | read a line, join text | Ana → Hello, Ana! |
+| 2 | Coin bags: coins in two bags altogether | read numbers, add | 3, 5 → 8 |
+| 3 | Taller tower: the taller of two crate towers | if … else | 7, 4 → 7 |
+| 4 | Staircase: bricks for a staircase of n steps (1 + 2 + … + n) | a counting loop that adds up | 4 → 10 |
+| 5 | Countdown: the rocket counts n down to 1, then Liftoff! | a loop that counts down, many lines | 3 → 3, 2, 1, Liftoff! |
+| 6 | Buzzing bees: 1 to n, Buzz for multiples of 3 | remainder, if … else | 6 → 1, 2, Buzz, 4, 5, Buzz |
+| 7 | High score: the highest of n scores | read in a loop, keep the best | 3; 4, 9, 2 → 9 |
+| 8 | Gem pairs: how many of n gem piles split into pairs (are even) | count with if and remainder | 4; 1, 2, 3, 4 → 2 |
+
+**What it needs.**
+- Input blocks (Builder, in Text): **read a number** (`int(input())`) and **read a line** (`input()`), one value per line, so no list blocks are needed. The Python bridge reads them back.
+- Programs that run with input: the worker gives `input()` the lines of the input; reading past the end says "Your program read more lines than the input has" with the block that did it.
+- A checker module: runs the compiled program once per test in the ordinary worker, with a time limit, collects what it printed, and compares line by line (spaces at the ends ignored). Track C reuses it.
+- A puzzle step kind in lessons: story, examples, tests, a checker-backed check, results in the lesson card (Input, What you printed, Answer wanted), the cheer when all pass.
+- Content: the eight puzzles with 4–6 tests each (including small and edge cases), hints, a reference program per puzzle that a test runs against every test.
+
+**Decisions (proposed).** (1) Input is read line by line with read blocks, as in competitive programming, rather than writing a function that returns the answer. (2) Every test shows its input and answer when it fails, so children learn from it; no hidden tests in this lesson. (3) Run code uses the first example as input, so the ordinary Run still works; Try it lets the learner type their own. (4) Builder level, about 35 minutes, listed in Lessons after Super Hopper. (5) The stage shows the puzzle's picture from the library art with the Chick as the judge, cheering when tests pass.
+
+**As built.** The owner accepted every proposed decision. What shipped:
+
+| Part | What | Where |
+| --- | --- | --- |
+| Read blocks | **read a number** and **read a line** in Text (Builder and Pro), in the Text category's colour; Python `int(input())` and `input()`, read back by the bridge. Language version 23 (1–22 still open). Reading past the end says "Your program read more lines than its input has"; text where a number was wanted says "A read a number block got 'abc', which is not a whole number" (only for a read block's own `int(input())`; other `int()` calls keep Python's words). | [core blocks](../src/blocks/core/index.ts), [compiler.ts](../src/language/compiler.ts), [core-converter.ts](../src/bridge/core-converter.ts), [execution.py](../src/runtime/execution.py) |
+| Input for runs | A run can be given input (`stdin`); Run code in a puzzle reads the Try it box, which starts with the first example. | [runner.ts](../src/runtime/runner.ts), [python.worker.ts](../src/runtime/python.worker.ts), [main.ts](../src/main.ts) |
+| Checker | `checkProgram` runs a compiled program once per test in one worker of its own (Python starts once; all tests take about a second), each with its own input and printed output, bounded like the page's output, and streams each test's result; a test that never ends is caught by the run's time limit and named. Answers are compared line by line, ignoring spaces at line ends and blank lines at the end. A project that cannot be checked (blocks with errors, no Program, or blocks in "when …" handlers) says why. | [checker.ts](../src/guide/checker.ts), `check_program` in [execution.py](../src/runtime/execution.py) |
+| Puzzle steps | A lesson step may be a puzzle: its examples (input and answer wanted), **Try it** (your input, what your program printed, and whether it is the answer wanted), **Check my answer** (each test ✓ or ✗; the first failing one open with its input, what was printed or the error, the answer wanted, and a tip: the test's own, or one from what was printed), a `solved` check, and the cheer. The progress line reads "Puzzle 2 of 8". Each puzzle after the first starts with an empty Program block (one Undo step), and Show me how fills the Program block. Lesson solutions may now make the variables they use. | [builds.ts](../src/guide/builds.ts), [recipes.ts](../src/guide/recipes.ts), [checks.ts](../src/guide/checks.ts) |
+| Pictures | Each puzzle's picture, drawn from the library art, lies over the stage while its step is open, with the Chick as the judge, who turns happy when every test passes. The Lessons card and start sheet show a picture of all eight. | [puzzle-art.ts](../src/guide/puzzle-art.ts), [lessons.ts](../src/guide/lessons.ts) |
+| Words | Word cards for input, print, variable and remainder. | [words.ts](../src/guide/words.ts) |
+| Content | Code Puzzles, Builder, about 35 minutes, three chapters (Read and print, Repeat, Keep track), 38 tests in all; Maze run's Next now leads to it. | [code-puzzles.json](../content/builds/code-puzzles.json) |
+
+Verification: [the step-by-step test](../tests/unit/lesson-steps.test.ts) builds each puzzle's answer the way Show me how does and runs the generated Python with real Python on every test; [native tests](../tests/python/test_execution.py) cover the check mode, per-test input and output, the friendly read errors and the output bound; [browser tests](../tests/e2e/puzzles.spec.ts) solve all eight puzzles through the checker, show a failing check with its tip, and run Try it and Run code with typed input, including reading past its end. Not measured yet: how long children take, or which puzzles they get stuck on.
+
+### 3.16 Finding a block in the picker (built 2026-10-20)
+
+The owner found blocks hard to find: a hint names a block, and the learner still reads every block in the category to find it. Three changes, with the owner's choices (a caption above each block; a search box at the top of the palette, at Pro):
+
+| Part | What | Where |
+| --- | --- | --- |
+| Captions | Above every block in a category's picker, a bold caption: a green number bubble at its left (1, 2, 3 … in that category at that level) and the block's keyword, such as "9 jump if grounded at speed". Keywords are chosen by hand where the block's own words do not say what it is for ("set speed or gravity", "repeat forever", "Program: runs top to bottom"); other blocks use their own words without "sprite" and inputs. A variable's blocks are captioned with its name. Group headings (Repeat, Decide) stay. | [block-captions.ts](../src/ui/block-captions.ts), [levels.ts](../src/ui/levels.ts) |
+| Numbers in hints | A block picture in lesson text shows the same number before its icon: `((Physics#scene_motion_set\|set sprite Bird ay to −900))` names the block (its type, `hat:start` for a "when …" block, `controls_if:else`, or `game_set:FIELD=lives` for one choice of a menu). At a level where the block is in another category (Pro keeps "at stage edge" in Physics, not Motion), the picture shows that category's colour, icon and number, and it changes when the level does; a variant that level does not offer is found as its plain block. | [ui-refs.ts](../src/guide/ui-refs.ts), the lesson files |
+| Search (Pro) | A **Find a block** box at the top of the palette. Typing shows the matching blocks of every category in the picker, ready to drag, each captioned with its category, its number there and its keyword ("9 Physics · jump if grounded at speed"); blocks whose keyword matches come first. Words match a block's keyword, its own words, every menu choice, its tooltip and its category. Escape or choosing a category leaves the search. Starter and Builder keep the plain palette; the magnifier's search on the editor is unchanged. On short tablets (up to 760 px high) Pro's category rows are a little tighter, so all of them still fit in two columns below the box. | [palette-search.ts](../src/ui/palette-search.ts), [shell.css](../src/ui/shell.css) |
+
+Verification: [the step-by-step test](../tests/unit/lesson-steps.test.ts) checks every block picture in every lesson resolves to a number in the category it names at the lesson's level, and somewhere in Pro's palette, and that captions number a category 1 … n with one per block; [browser tests](../tests/e2e/block-picker.spec.ts) read captions and bubbles, match a lesson's numbers with the picker at Builder and after switching to Pro, and search, drag a found block and leave the search at Pro.
+
 ## 4. Track C: academy
 
 ### 4.1 Model

@@ -87,7 +87,7 @@ describe('scene integration', () => {
     changeScene(w, emptyScene()); await flush(); expect(compile(w).diagnostics.some(d => d.code === 'missing-sprite')).toBe(true);
     w.undo(false); await flush(); expect(compile(w).source).not.toBeNull(); expect(sceneState(w).sprites[0].data).toEqual({ score: 0 });
     const saved = snapshot(w); saved.languageVersion = 11; const restored = ws(); restore(restored, prepareProject(JSON.stringify(saved)).project);
-    expect(snapshot(restored).languageVersion).toBe(22); expect(handlerSignatures(restored)[0].handler!.sprite).toBe('player');
+    expect(snapshot(restored).languageVersion).toBe(23); expect(handlerSignatures(restored)[0].handler!.sprite).toBe('player');
     const archive = unzipSync(pythonExport(compile(restored)).content as Uint8Array); expect(JSON.parse(strFromU8(archive['scene.json'])).sprites[0].data).toEqual({ score: 0 });
   });
 
@@ -240,7 +240,7 @@ describe('scene integration', () => {
   it('persists rotation style, migrates version 8, and rejects malformed new state', () => {
     const w = ws(); const state = scene(); state.sprites[0].rotationStyle = 'left-right'; state.sprites[0].direction = 90;
     changeScene(w, state); const restored = ws(); restore(restored, { ...snapshot(w), languageVersion: 8 });
-    expect(snapshot(restored).languageVersion).toBe(22); expect(sceneState(restored).sprites[0].rotationStyle).toBe('left-right');
+    expect(snapshot(restored).languageVersion).toBe(23); expect(sceneState(restored).sprites[0].rotationStyle).toBe('left-right');
     expect(bounds(state.sprites[0], state)).toEqual({ width: 48, height: 40 });
     for (const rotationStyle of ['diagonal', null, 1]) expect(() => validateScene({ ...state, sprites: [{ ...state.sprites[0], rotationStyle }] })).toThrow();
     for (const input of [{ kind: 'pointer', x: 1000001, y: 0, down: false, inside: true }, { kind: 'pointer', x: 0, y: 0, down: 'yes', inside: true }]) expect(() => validateInput(input as never)).toThrow();

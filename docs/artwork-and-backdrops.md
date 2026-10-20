@@ -95,7 +95,7 @@ Library art goes into a project as a reference such as `cast/fox-walk-1@1` rathe
 
 ## Storage and bounds
 
-Backdrops and frame operations were introduced in language version **10**; current project exports use version **22**, also preserving pen/effects, instance behavior/sensing, game motion, worlds/cameras, game presentation, sound/music, touch controls, watchers, 2× artwork and library art references. Projects from versions 1–21 and pinned modules from versions 5–19 remain readable. Existing scenes without frame metadata use their current costume as a one-frame sequence with a 0.1-second duration; missing backdrop metadata means plain color.
+Backdrops and frame operations were introduced in language version **10**; current project exports use version **23**, also preserving pen/effects, instance behavior/sensing, game motion, worlds/cameras, game presentation, sound/music, touch controls, watchers, 2× artwork and library art references. Projects from versions 1–22 and pinned modules from versions 5–19 remain readable. Existing scenes without frame metadata use their current costume as a one-frame sequence with a 0.1-second duration; missing backdrop metadata means plain color.
 
 - Up to 24 custom costumes, each at most 256 × 256 stage units and 350,000 PNG data-URL characters.
 - Up to 12 custom backdrops, each at most 480 × 320 stage units and 900,000 PNG data-URL characters.

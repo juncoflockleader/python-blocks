@@ -3,6 +3,10 @@ import { plainText, setRichText } from './ui-refs';
 import { closePop, pop, popOpen } from './pop';
 import { installWords } from './words';
 import { iconMarkup } from '../ui/icon-art';
+import { scrollWithin } from '../ui/scroll';
+import { answerLines, checkProgram, stopChecking, uncheckable, type PuzzleTest, type TestResult } from './checker';
+import { paintPuzzle, type PuzzlePicture } from './puzzle-art';
+import type { Compilation } from '../language/compiler';
 import { passes, type Check, type RunFacts } from './checks';
 import { recipeById, type Recipe, type RecipePart } from './recipes';
 import { atLeast, levelNames, type Level } from '../ui/levels';
@@ -28,6 +32,9 @@ export interface BuildStep {
   keys?: 'arrows' | 'space' | 'both';
   /** The step has a short recording of what it makes (public/lessons), shown as "Watch"; after a guess on a Guess-first step. */
   clip?: { demo?: unknown[]; seconds?: number };
+  /** A puzzle: the program reads each test's input and prints its answer, and Check my answer runs every
+   * test (checker.ts). The first `examples` tests (one by default) are shown up front; `picture` is laid over the stage. */
+  puzzle?: { tests: PuzzleTest[]; examples?: number; picture?: PuzzlePicture };
   /** The idea behind the step, in one or two sentences. */
   why?: string;
   /** Parts of the step, each ticked live; the step's own check decides when it is done. */
@@ -39,7 +46,7 @@ export interface BuildStep {
   plant?: RecipePart[];
   /** What "Show me how" adds when the step has no idea card; `replacesPlant`
    * first removes the script the lesson planted in that step. */
-  solution?: { parts: RecipePart[]; replacesPlant?: number };
+  solution?: { parts: RecipePart[]; replacesPlant?: number; variables?: string[] };
   /** A Play-test goal counted from the score while the game runs. */
   goal?: { score: number; label: string };
 }
@@ -90,8 +97,8 @@ export interface GuideHost {
   /** Save a facilitator's timing record. */
   download(name: string, text: string): void;
   revision: string;
-  /** Add scripts as one Undo step, first removing `replace` (block ids); returns the new scripts' ids. */
-  insert(parts: RecipePart[], title: string, select?: string, other?: string, replace?: string[]): string[];
+  /** Add scripts as one Undo step, first removing `replace` (block ids), making `variables` they use; returns the new scripts' ids. */
+  insert(parts: RecipePart[], title: string, select?: string, other?: string, replace?: string[], variables?: string[]): string[];
   /** Keep the current project before a lesson replaces it; false when it cannot be kept. */
   keep(): boolean;
   /** Reopen the kept project; false when a Python draft must be saved first. */
@@ -100,6 +107,8 @@ export interface GuideHost {
   play(): void;
   /** The Help tab reads "Lesson" while a lesson is open. */
   tabLabel(text: string): void;
+  /** The project compiled as Run would run it, for a puzzle's checker. */
+  compilation(): Compilation;
 }
 /** Active time per step (the tab hidden does not count) and whether "Show me
  * how" was used, so tester sessions can be compared with each build's minutes. */
@@ -124,6 +133,10 @@ export function installGuide(host: GuideHost) {
       <div id="guide-card" class="guide-card-body"><div class="guide-title-row"><h4 id="guide-step-title" class="guide-step-title" hidden></h4><button id="guide-read" class="guide-read" type="button" aria-pressed="false" hidden><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconMarkup('volume')}</svg><span>Read to me</span></button></div>
         <p id="guide-step" class="guide-step"></p>
         <figure id="guide-clip" class="guide-clip" hidden><figcaption>Watch: this is what you are making</figcaption></figure>
+        <div id="guide-puzzle" class="guide-puzzle" hidden><div id="guide-examples" class="puzzle-examples"></div>
+          <div class="puzzle-actions"><button id="guide-try" class="button secondary" type="button"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconMarkup('play')}</svg>Try it</button><button id="guide-check-answer" class="button primary" type="button"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconMarkup('check')}</svg>Check my answer</button></div>
+          <div id="guide-try-box" class="puzzle-try" hidden><label class="puzzle-box"><span>Your input</span><textarea id="guide-try-input" rows="3" spellcheck="false" autocapitalize="off" autocomplete="off"></textarea></label><div class="puzzle-box"><span>Your program printed</span><pre id="guide-try-output"></pre></div><p id="guide-try-verdict" class="puzzle-verdict" role="status"></p></div>
+          <div id="guide-results" class="puzzle-results" hidden><p id="guide-results-title" class="puzzle-results-title" role="status"></p><ol id="guide-results-list"></ol></div></div>
         <p id="guide-planted" class="guide-planted" hidden></p>
         <p id="guide-do" class="guide-do" hidden>Do this:</p><ul id="guide-checklist" class="guide-checklist" hidden></ul>
         <div id="guide-predict" class="guide-predict" hidden><p id="guide-question" class="guide-question"></p><div id="guide-choices" class="guide-choices" role="group" aria-label="Your guess"></div><p id="guide-predict-result" class="guide-predict-result" role="status"></p></div>
@@ -148,7 +161,7 @@ export function installGuide(host: GuideHost) {
   let active: Build | null = null, index = 0, done = false, facts: RunFacts = { ran: false, finished: null }, highlighted: Element[] = [], timer = 0;
   let timing: Timing | null = null, since: number | null = null, record = '', pending: Build | null = null, starting: Build | null = null;
   let planted: Record<string, string[]> = {}, answers: Record<string, number> = {}, early = false;
-  let rendering = false, cheers = 0, coachTimer = 0, looseTimer = 0, clipWatch: IntersectionObserver | undefined, keysTip = false, cheerWaits = false;
+  let rendering = false, cheers = 0, coachTimer = 0, looseTimer = 0, clipWatch: IntersectionObserver | undefined, keysTip = false, cheerWaits = false, checking = 0;
   const looseShown = new Set<string>();
   const hintLevel = new Map<number, number>();
   const lesson = () => active?.kind === 'lesson';
@@ -191,11 +204,13 @@ export function installGuide(host: GuideHost) {
     starting = build;
     const preview = el<HTMLImageElement>('lesson-start-preview');
     preview.classList.remove('lesson-preview-missing'); preview.onerror = () => preview.classList.add('lesson-preview-missing');
-    preview.src = `${import.meta.env.BASE_URL}gallery/${build.id}-game.png`;
+    // A puzzle lesson has no finished game to show; its own picture stands in.
+    preview.src = build.steps.every(step => step.puzzle) ? `${import.meta.env.BASE_URL}lessons/${build.id}.png` : `${import.meta.env.BASE_URL}gallery/${build.id}-game.png`;
     el('lesson-start-eyebrow').textContent = `Guided lesson · ${levelNames[build.level]} level`;
     el('lesson-start-title').textContent = build.title;
     el('lesson-start-summary').textContent = build.summary;
-    el('lesson-start-chips').replaceChildren(...[`About ${build.minutes} minutes`, `${build.chapters?.length ?? 0} chapters · ${build.steps.length} steps`, 'Saves as you go'].map(text => item('span', 'lesson-chip', text)));
+    const puzzles = build.steps.every(step => step.puzzle);
+    el('lesson-start-chips').replaceChildren(...[`About ${build.minutes} minutes`, `${build.chapters?.length ?? 0} chapters · ${build.steps.length} ${puzzles ? 'puzzles' : 'steps'}`, 'Saves as you go'].map(text => item('span', 'lesson-chip', text)));
     el('lesson-start-learn').replaceChildren(...(build.learn ?? []).map(text => item('li', '', text)));
     el('lesson-start-chapters').replaceChildren(...(build.chapters ?? []).map(chapter => {
       const li = item('li', ''); li.append(item('span', '', chapter.title), item('span', 'lesson-chapter-steps', chapter.steps === 1 ? '1 step' : `${chapter.steps} steps`)); return li;
@@ -226,7 +241,7 @@ export function installGuide(host: GuideHost) {
       if (host.workspace.getTopBlocks(false).length && !confirmed && pending?.id !== build.id) {
         pending = build; el('guide-confirm').hidden = false;
         el('guide-confirm-text').textContent = `Starting “${build.title}” replaces the project in the editor. To keep your project, save it first (⋯ menu → Save project).`;
-        host.reveal(true); el('guide-confirm').scrollIntoView({ block: 'nearest' });
+        host.reveal(true); scrollWithin(el('guide-confirm'));
         return;
       }
       clearConfirm();
@@ -249,8 +264,8 @@ export function installGuide(host: GuideHost) {
   function renderChapters(build: Build) {
     const where = chapterOf(build, index)!;
     el('guide-build-title').textContent = `${where.number + 1} · ${where.chapter.title}`;
-    const kind = active!.steps[index].kind;
-    el('guide-progress').textContent = `Step ${where.step + 1} of ${where.chapter.steps}${kind && kind !== 'build' ? ` · ${stepKinds[kind]}` : ''}`;
+    const step = active!.steps[index], kind = step.kind;
+    el('guide-progress').textContent = step.puzzle ? `Puzzle ${index + 1} of ${build.steps.length}` : `Step ${where.step + 1} of ${where.chapter.steps}${kind && kind !== 'build' ? ` · ${stepKinds[kind]}` : ''}`;
     el('guide-chapters').replaceChildren(...build.chapters!.map((chapter, number) => {
       const segment = item('span', ''); segment.style.flexGrow = String(chapter.steps);
       const filled = number < where.number ? 100 : number > where.number ? 0 : (where.step / chapter.steps) * 100;
@@ -258,7 +273,7 @@ export function installGuide(host: GuideHost) {
     }));
   }
   function render() {
-    if (!active) { el('guide-active').hidden = true; el('guide-list').hidden = false; clearHighlight(); return; }
+    if (!active) { el('guide-active').hidden = true; el('guide-list').hidden = false; clearHighlight(); stagePicture(null); return; }
     const step = active.steps[index], isLesson = lesson();
     facts = { ran: false, finished: null, score: 0, predicted: answers[index] !== undefined }; done = false; early = false;
     el('guide-list').hidden = true; el('guide-active').hidden = false; el('guide-finish').hidden = true;
@@ -284,14 +299,14 @@ export function installGuide(host: GuideHost) {
     if (step.select) host.select(step.select);
     host.prefer(step.other);
     if (step.plant && !planted[index]) { planted[index] = host.insert(step.plant, `${active.title}: step ${index + 1}`, step.select, step.other); save(); }
-    el('guide-planted').hidden = !step.plant;
+    el('guide-planted').hidden = !step.plant || !!step.puzzle;   // a puzzle's plant only empties the Program block
     el('guide-planted').textContent = step.kind === 'fix' ? 'We made these blocks for you, but there is a bug. Can you fix it?' : 'We made these blocks for you. Read them before you run them.';
-    renderPredict(); renderHints(); renderChecklist(); renderClip();
+    renderPredict(); renderHints(); renderChecklist(); renderClip(); renderPuzzle();
     highlight(step); evaluate(); rendering = false;
     // The coach points at where to look, once the card has settled.
     if (isLesson && step.coach && highlighted[0]) coachTimer = window.setTimeout(() => { if (active?.steps[index] === step && !done && !popOpen() && highlighted[0]?.isConnected) pop(highlighted[0], [step.coach!], { label: 'Tip', className: 'coach-pop', side: 'right', coach: true, timeout: 12000 }); }, 500);
     // A new step starts at the top of its card, wherever the last one was scrolled to.
-    if (isLesson && !el('guide-active').closest('[hidden]')) el('guide-active').scrollIntoView({ block: 'start' });
+    if (isLesson && !el('guide-active').closest('[hidden]')) scrollWithin(el('guide-active'), 'start');
   }
   function renderPredict() {
     const step = active!.steps[index], prediction = step.predict;
@@ -364,6 +379,85 @@ export function installGuide(host: GuideHost) {
     clipWatch ??= new IntersectionObserver(seen => { for (const entry of seen) { const v = entry.target.querySelector('video'); if (!v) continue; if (entry.isIntersecting) v.play().catch(() => {}); else v.pause(); } });
     clipWatch.observe(figure);
   }
+  // ── Puzzles: examples, Try it, Check my answer, and the picture over the stage ──
+  const box = (label: string, text: string, className = '') => { const div = item('div', `puzzle-box ${className}`.trim()); div.append(item('span', '', label), item('pre', '', text)); return div; };
+  function stagePicture(step: BuildStep | null, cheering = false) {
+    const surface = document.querySelector('.stage-surface'); let canvas = document.getElementById('puzzle-picture') as HTMLCanvasElement | null;
+    if (!step?.puzzle?.picture || !surface) { canvas?.remove(); return; }
+    if (!canvas) { canvas = Object.assign(document.createElement('canvas'), { id: 'puzzle-picture', className: 'puzzle-picture', width: 960, height: 640 }); canvas.setAttribute('aria-hidden', 'true'); surface.append(canvas); }
+    paintPuzzle(canvas, step.puzzle.picture, cheering);
+  }
+  function renderPuzzle() {
+    const step = active!.steps[index], puzzle = lesson() ? step.puzzle : undefined;
+    checking++; stopChecking();
+    el('guide-puzzle').hidden = !puzzle; stagePicture(puzzle ? step : null);
+    if (!puzzle) return;
+    el('guide-examples').replaceChildren(...puzzle.tests.slice(0, puzzle.examples ?? 1).map(test => { const pair = item('div', 'puzzle-example'); pair.append(box('Example input', test.input), box('Answer wanted', test.output)); return pair; }));
+    el<HTMLTextAreaElement>('guide-try-input').value = puzzle.tests[0].input;
+    el('guide-try-box').hidden = true; el('guide-results').hidden = true; el('guide-results-list').replaceChildren();
+  }
+  function compiled() {
+    const compilation = host.compilation(), problem = uncheckable(compilation);
+    return { compilation, problem };
+  }
+  el('guide-try').addEventListener('click', async () => {
+    const step = active?.steps[index]; if (!step?.puzzle) return;
+    const run = ++checking, input = el<HTMLTextAreaElement>('guide-try-input').value, verdict = el('guide-try-verdict');
+    el('guide-try-box').hidden = false; el('guide-try-output').textContent = 'Running…'; verdict.textContent = ''; verdict.className = 'puzzle-verdict';
+    const { compilation, problem } = compiled();
+    if (problem) { el('guide-try-output').textContent = ''; setRichText(verdict, problem); verdict.classList.add('puzzle-bad'); return; }
+    const same = (a: string, b: string) => answerLines(a).join('\n') === answerLines(b).join('\n');
+    const example = step.puzzle.tests.find(test => same(test.input, input));
+    const [result] = await checkProgram(compilation, [{ input, output: example?.output ?? '' }]);
+    if (run !== checking) return;
+    el('guide-try-output').textContent = result.output || '(nothing printed)';
+    if (result.error) { verdict.textContent = result.error; verdict.classList.add('puzzle-bad'); }
+    else if (example) { verdict.textContent = result.ok ? '✓ That is the answer wanted.' : `✗ The answer wanted is: ${answerLines(example.output).join(' / ')}`; verdict.classList.add(result.ok ? 'puzzle-good' : 'puzzle-bad'); }
+    else verdict.textContent = 'That is what your program printed for your input.';
+    scrollWithin(el('guide-try-box'));
+  });
+  /** What to look at when a test fails: the test's own tip, or what the printed lines show. */
+  function tipFor(test: PuzzleTest, result: TestResult) {
+    if (result.error) return '';
+    if (!result.output.trim()) return 'Your program did not print anything. Is there a ((Text#text_print|print)) block?';
+    const got = answerLines(result.output), want = answerLines(test.output);
+    if (got.length > want.length) return test.tip ?? 'Your program printed more lines than the answer has.';
+    if (got.length < want.length) return test.tip ?? 'The answer has more lines than your program printed. Does your repeat run enough times?';
+    return test.tip ?? 'Work out the answer for this input by hand, then follow your blocks one at a time.';
+  }
+  function resultItem(test: PuzzleTest, result: TestResult, number: number, open: boolean) {
+    const li = item('li', result.ok ? 'puzzle-pass' : 'puzzle-fail'), name = `Test ${number}${test.name ? ` · ${test.name}` : ''}`;
+    if (result.ok) { li.append(item('span', 'puzzle-mark', '✓'), item('span', '', name)); return li; }
+    const details = document.createElement('details'); details.open = open;
+    const summary = document.createElement('summary'); summary.append(item('span', 'puzzle-mark', '✗'), item('span', '', name));
+    const boxes = item('div', 'puzzle-example');
+    boxes.append(box('Input', test.input), box(result.error ? 'Your program stopped' : 'You printed', result.error ?? (result.output || '(nothing)'), 'puzzle-got'), box('Answer wanted', test.output));
+    details.append(summary, boxes);
+    const tip = tipFor(test, result); if (tip) { const p = item('p', 'puzzle-tip'); setRichText(p, `Tip: ${tip}`); details.append(p); }
+    li.append(details); return li;
+  }
+  el('guide-check-answer').addEventListener('click', async () => {
+    const step = active?.steps[index]; if (!step?.puzzle) return;
+    const run = ++checking, tests = step.puzzle.tests, title = el('guide-results-title'), list = el('guide-results-list');
+    el('guide-results').hidden = false; list.replaceChildren(); title.className = 'puzzle-results-title';
+    const { compilation, problem } = compiled();
+    if (problem) { setRichText(title, problem); title.classList.add('puzzle-bad'); return; }
+    title.textContent = `Checking… 0 of ${tests.length}`; (el('guide-check-answer') as HTMLButtonElement).disabled = true;
+    let firstFailure = true;
+    const results = await checkProgram(compilation, tests, result => {
+      if (run !== checking) return;
+      list.append(resultItem(tests[result.index], result, result.index + 1, !result.ok && firstFailure));
+      if (!result.ok) firstFailure = false;
+      title.textContent = `Checking… ${result.index + 1} of ${tests.length}`;
+    });
+    if (run !== checking) return;
+    (el('guide-check-answer') as HTMLButtonElement).disabled = false;
+    const passed = results.filter(r => r.ok).length, all = passed === tests.length;
+    title.textContent = all ? `All ${tests.length} tests pass!` : `${passed} of ${tests.length} tests pass`;
+    title.classList.add(all ? 'puzzle-good' : 'puzzle-bad');
+    scrollWithin(el('guide-results'));
+    if (all) { facts.solved = true; stagePicture(step, true); evaluate(); }
+  });
   /** Hints, then "Show me how": the step's idea card, or the lesson's own blocks. */
   function rungs(step: BuildStep) { return [...(step.hints ?? []), ...(step.recipe || step.solution ? ['show'] : [])]; }
   function renderHints() {
@@ -397,7 +491,7 @@ export function installGuide(host: GuideHost) {
     if (recipe) { host.showRecipe(recipe); return; }
     if (!step.solution) return;
     const replace = step.solution.replacesPlant === undefined ? [] : planted[step.solution.replacesPlant] ?? [];
-    const ids = host.insert(step.solution.parts, `${active!.title}: step ${index + 1}`, step.select, step.other, replace);
+    const ids = host.insert(step.solution.parts, `${active!.title}: step ${index + 1}`, step.select, step.other, replace, step.solution.variables);
     if (step.solution.replacesPlant !== undefined) planted[step.solution.replacesPlant] = ids;
     save();
   }
@@ -418,7 +512,7 @@ export function installGuide(host: GuideHost) {
     // The tip about tapping the game comes first; the cheer follows once it is closed.
     if (keysTip) { cheerWaits = true; return; }
     const next = el<HTMLButtonElement>('guide-next'); if (next.closest('[hidden]')) return;
-    next.scrollIntoView({ block: 'nearest' });
+    scrollWithin(next);
     const stars = document.createElement('span'); stars.className = 'cheer-stars'; stars.setAttribute('aria-hidden', 'true');
     for (let i = 0; i < 5; i++) stars.append(Object.assign(document.createElement('i'), { style: `--i:${i}` }));
     const words = document.createElement('strong'); words.textContent = CHEERS[cheers++ % CHEERS.length];
@@ -441,11 +535,11 @@ export function installGuide(host: GuideHost) {
   function finish() {
     if (!active) return;
     const build = active;
-    stopReading(); closePop();
+    stopReading(); closePop(); stopChecking(); stagePicture(null);
     clearHighlight(); el('guide-meter').querySelector('span')!.style.width = '100%';
     el('guide-progress').textContent = 'Finished';
     el('guide-step').textContent = ''; el('guide-check').textContent = '';
-    for (const id of ['guide-why-box', 'guide-planted', 'guide-predict', 'guide-goal', 'guide-checklist', 'guide-do', 'guide-hints', 'guide-chapters', 'guide-clip', 'guide-step-title', 'guide-read']) el(id).hidden = true;
+    for (const id of ['guide-why-box', 'guide-planted', 'guide-predict', 'guide-goal', 'guide-checklist', 'guide-do', 'guide-hints', 'guide-chapters', 'guide-clip', 'guide-step-title', 'guide-read', 'guide-puzzle']) el(id).hidden = true;
     el('guide-finish').hidden = false; setRichText(el('guide-finish-text'), build.finish.text);
     el('guide-remix').replaceChildren(...build.finish.remix.map(richItem));
     const next = build.next ? buildById(build.next) : undefined;
@@ -498,7 +592,7 @@ export function installGuide(host: GuideHost) {
     el('guide-read').setAttribute('aria-pressed', 'true'); speech.speak(utterance);
   });
   el('guide-stop').addEventListener('click', () => {
-    stopReading(); closePop();
+    stopReading(); closePop(); stopChecking(); stagePicture(null);
     active = null; timing = null; since = null; planted = {}; answers = {}; save();
     for (const id of ['guide-next', 'guide-back', 'guide-show']) el(id).hidden = false;
     clearConfirm(); host.prefer(undefined); host.tabLabel('Help'); render(); host.reveal(true); showKept(); host.stopped?.();
@@ -540,14 +634,16 @@ export function installGuide(host: GuideHost) {
         } });
       }
       // The result (and its clip) first, so the cheer that evaluate() may show is placed where the card has settled.
-      if (step.predict) { renderPredict(); el('guide-predict-result').scrollIntoView({ block: 'nearest' }); }
+      if (step.predict) { renderPredict(); scrollWithin(el('guide-predict-result')); }
       evaluate();
     },
     gameOver(won: boolean) { if (active) { facts.finished = won ? 'won' : 'lost'; evaluate(); } },
+    /** What read blocks read when Run code runs: a puzzle's Try it input (its first example to begin with). */
+    input() { return active && lesson() && active.steps[index].puzzle ? el<HTMLTextAreaElement>('guide-try-input').value : undefined; },
     /** The running game's score; Play-test goals count the highest reached. */
     score(value: number) { if (active && value > (facts.score ?? 0)) { facts.score = value; evaluate(); } },
     dispose() {
-      save(); clearTimeout(timer); clearTimeout(looseTimer); clearTimeout(coachTimer); stopReading(); closePop(); host.workspace.removeChangeListener(changed); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('pagehide', save);
+      save(); clearTimeout(timer); clearTimeout(looseTimer); clearTimeout(coachTimer); stopReading(); closePop(); stopChecking(); stagePicture(null); host.workspace.removeChangeListener(changed); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('pagehide', save);
       clearHighlight(); slot.replaceChildren(); el('guide-active')?.remove(); el('lesson-start')?.remove(); el('lesson-finish')?.remove();
     },
   };

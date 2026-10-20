@@ -10,6 +10,9 @@ Blockly.common.defineBlocksWithJsonArray([
   { type: 'py_logic', message0: '%1 %2 %3', args0: [{ type: 'input_value', name: 'A' }, { type: 'field_dropdown', name: 'OP', options: [['and', 'and'], ['or', 'or']] }, { type: 'input_value', name: 'B' }], inputsInline: true, output: null, colour: '#6682a5', tooltip: 'Python short-circuit logic: returns one of its operands.' },
   { type: 'py_not', message0: 'not %1', args0: [{ type: 'input_value', name: 'VALUE' }], output: 'Boolean', colour: '#6682a5' },
   { type: 'py_none', message0: 'None', output: null, colour: '#6682a5' },
+  // Read blocks: the next line of the program's input (a puzzle's input, or what Try it gives it), as in competitive programming.
+  { type: 'py_read_number', message0: 'read a number', output: null, colour: '#ae657d', tooltip: 'Reads the next line of the input as a whole number. In Python: int(input()).' },
+  { type: 'py_read_line', message0: 'read a line', output: null, colour: '#ae657d', tooltip: 'Reads the next line of the input as text. In Python: input().' },
   { type: 'py_convert', message0: '%1 of %2', args0: [{ type: 'field_dropdown', name: 'TYPE', options: [['integer (int)', 'int'], ['decimal (float)', 'float'], ['text (str)', 'str'], ['Boolean (bool)', 'bool']] }, { type: 'input_value', name: 'VALUE' }], output: null, colour: '#8066ba' },
   { type: 'py_range', message0: 'for %1 from %2 up to (excluding) %3 step %4 %5 %6', args0: [{ type: 'field_variable', name: 'VAR', variable: 'number' }, { type: 'input_value', name: 'START' }, { type: 'input_value', name: 'STOP' }, { type: 'input_value', name: 'STEP' }, { type: 'input_dummy' }, { type: 'input_statement', name: 'DO' }], previousStatement: null, nextStatement: null, colour: '#a57938' },
   { type: 'py_flow', message0: '%1', args0: [{ type: 'field_dropdown', name: 'FLOW', options: [['break out of loop', 'break'], ['continue with next iteration', 'continue']] }], previousStatement: null, colour: '#a57938' },
