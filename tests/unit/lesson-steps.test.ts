@@ -2,8 +2,10 @@ import { afterEach, describe, expect, it } from 'vitest';
 import { execFileSync } from 'node:child_process';
 import { sameAnswer } from '../../src/guide/checker';
 import { markupIn } from '../../src/guide/ui-refs';
-import { numberOf, findBlock, categoryItems } from '../../src/ui/levels';
+import { numberOf, findBlock, categoryItems, palette } from '../../src/ui/levels';
 import { captioned } from '../../src/ui/block-captions';
+import { blockLook } from '../../src/ui/block-icons';
+import { HAT_TYPE } from '../../src/language/hats';
 import { Blockly } from '../../src/blocks';
 import { prepareProject, restore, snapshot } from '../../src/project';
 import { compile } from '../../src/language/compiler';
@@ -86,6 +88,11 @@ describe('lessons, built step by step', () => {
       // At the lesson's level the block is in the category the lesson names; at Pro it is somewhere in the palette.
       expect(numberOf(w as never, lesson.level, category, ref), `${lesson.id}: ${category} ${ref}`).toBeGreaterThan(0);
       expect(findBlock(w as never, 'pro', category, ref), `${lesson.id} at Pro: ${category} ${ref}`).toBeDefined();
+      // The picture has the block's own colour and a symbol, as the picker draws the block (not its category's colour).
+      const look = blockLook(w, ref), [head, kind] = ref.split(':'), block = w.newBlock(head === 'hat' ? HAT_TYPE : head);
+      if (head === 'hat') (block as Blockly.Block & { loadExtraState?(state: unknown): void }).loadExtraState?.({ kind });
+      expect(look?.colour, `${lesson.id}: ${ref} colour`).toBe(block.getColour()); expect(look?.icon, `${lesson.id}: ${ref} symbol`).toBeDefined();
+      block.dispose(false);
     }
     // The picker's captions number its blocks 1, 2, 3… in order.
     const items = captioned(categoryItems(w as never, lesson.level, 'Physics'));
@@ -93,4 +100,14 @@ describe('lessons, built step by step', () => {
     expect(captions.map(text => Number(text.split('\u2002')[0]))).toEqual(captions.map((_, i) => i + 1));
     expect(captions.length).toBe(items.filter(item => item.kind === 'block').length);
   });
+});
+
+// "repeat while true" is green in the picker, while its category, Control, is brown: its picture is green too.
+it('a block picture takes the block’s colour, not its category’s', () => {
+  const w = paletteWorkspace(); spaces.push(w);
+  const loop = blockLook(w, 'controls_whileUntil')!, block = w.newBlock('controls_whileUntil');
+  expect(loop.colour).toBe(block.getColour());
+  expect(loop.colour).not.toBe(palette.builder.find(c => c.name === 'Control')!.colour);
+  expect(blockLook(w, 'hat:start')!.icon).toBe('flag');
+  expect(blockLook(w, 'scene_motion_edges')!.icon).toBe('physics');
 });

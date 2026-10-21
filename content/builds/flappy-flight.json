@@ -536,21 +536,31 @@
    "why": "Each new pipe is a <<clone>>, a copy of Pipe. A copy starts where Pipe is. So move Pipe first, then copy it!",
    "checklist": [
     {
-     "text": "At the top of the ((Control#controls_whileUntil|repeat while true)), move Pipe to a <<random>> height: ((Control#math_random_int|random integer from −40 to 90))",
+     "text": "At the top of the ((Control#controls_whileUntil|repeat while true)), add ((Motion#scene_set|set sprite Pipe y to))",
      "check": {
-      "nested": [
-       "controls_whileUntil",
-       "math_random_int"
+      "all": [
+       {
+        "nested": [
+         "controls_whileUntil",
+         "scene_set"
+        ]
+       },
+       {
+        "field": [
+         "scene_set",
+         "PROPERTY",
+         "y"
+        ]
+       }
       ]
      }
     },
     {
-     "text": "…using ((Motion#scene_set|set sprite Pipe y to))",
+     "text": "Put ((Control#math_random_int|random integer from −40 to 90)) in its hole, for a <<random>> height",
      "check": {
-      "field": [
+      "nested": [
        "scene_set",
-       "PROPERTY",
-       "y"
+       "math_random_int"
       ]
      }
     },

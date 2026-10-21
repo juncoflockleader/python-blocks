@@ -32,9 +32,9 @@ const CONTROLS: Record<string, { id?: string; icon?: IconName }> = {
   'Next step': { id: 'guide-next', icon: 'right' },
 };
 const categoryColour = (name: string) => Object.values(palette).flat().find(c => c.name === name)?.colour;
-/** Where a block is in the picker at the learner's level: its category and its number there (the editor
- * sets this; block-captions.ts numbers the picker). */
-let numberLookup: (category: string, ref: string) => { category: string; number: number } | undefined = () => undefined;
+/** Where a block is in the picker at the learner's level: its category and its number there, and how it
+ * looks (the editor sets this; block-captions.ts numbers the picker, block-icons.ts gives the look). */
+let numberLookup: (category: string, ref: string) => { category: string; number: number; colour?: string; icon?: IconName } | undefined = () => undefined;
 export function setBlockNumbers(lookup: typeof numberLookup) { numberLookup = lookup; }
 export const knownControl = (label: string) => label in CONTROLS;
 export const knownCategory = (name: string) => !!categoryColour(name);
@@ -68,8 +68,9 @@ function svg(icon: IconName) {
 function placeChip(chip: HTMLElement) {
   const named = chip.dataset.category!, ref = chip.dataset.ref, found = ref ? numberLookup(named, ref) : undefined, category = found?.category ?? named;
   chip.querySelectorAll(':scope > .block-ref-number, :scope > svg').forEach(node => node.remove());
-  chip.style.setProperty('--block', categoryColour(category) ?? '#6c7c64');
-  const icon = categoryIcons[category]; if (icon) chip.prepend(svg(icon));
+  // The block's own colour and symbol (block-icons.ts blockLook), as the picker draws it; its category's when it is not found.
+  chip.style.setProperty('--block', found?.colour ?? categoryColour(category) ?? '#6c7c64');
+  const icon = found?.icon ?? categoryIcons[category]; if (icon) chip.prepend(svg(icon));
   if (found) { const bubble = document.createElement('span'); bubble.className = 'block-ref-number'; bubble.textContent = String(found.number); bubble.title = `Number ${found.number} in ${category}`; chip.prepend(bubble); }
 }
 /** After the level changes: every block picture on the page shows where its block is now. */

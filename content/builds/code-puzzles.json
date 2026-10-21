@@ -1707,18 +1707,18 @@
    "why": "A pile splits into pairs when it is even: the <<remainder>> after sharing into 2s is 0. Count those piles in a <<variable>>.",
    "checklist": [
     {
-     "text": "Check each pile with ((Numbers#py_binary|remainder))",
-     "check": {
-      "blocks": [
-       "py_binary"
-      ]
-     }
-    },
-    {
      "text": "Count the even piles with ((Control#controls_if:else|if … else))",
      "check": {
       "blocks": [
        "controls_if"
+      ]
+     }
+    },
+    {
+     "text": "In its test, check each pile with ((Numbers#py_binary|remainder)) 2",
+     "check": {
+      "blocks": [
+       "py_binary"
       ]
      }
     },

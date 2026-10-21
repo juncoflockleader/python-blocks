@@ -99,6 +99,9 @@ export const iconArt = {
   hand: '<path d="M7 12V6a1.5 1.5 0 0 1 3 0v5m0-1V4.5a1.5 1.5 0 0 1 3 0V10m0 0V5.5a1.5 1.5 0 0 1 3 0V11m0 0V8a1.5 1.5 0 0 1 3 0v6c0 4.5-3 8-7.5 8-2.5 0-4-1-5.5-3l-3-4.5a1.6 1.6 0 0 1 2.6-1.9L7 14"/>',
   fit: '<path d="M3 9V3h6m6 0h6v6m0 6v6h-6m-6 0H3v-6"/><rect x="8" y="9" width="8" height="6" rx="1"/>',
   grid: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 4v16M2 12h20"/>',
+  hint: '<path d="M9.5 18h5M10.5 21h3M12 3a6 6 0 0 0-3.6 10.8c.9.7 1.6 1.7 1.6 2.9v.3h4v-.3c0-1.2.7-2.2 1.6-2.9A6 6 0 0 0 12 3Z"/>',
+  leave: '<path d="M13 3H4v18h9M9 12h11m-4-4 4 4-4 4"/>',
+  people: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M15.6 14.4A5 5 0 0 1 21 19"/>',
 } as const;
 export type IconName = keyof typeof iconArt;
 /** Moves that centre each drawing's bounds on the 24px grid, measured with
@@ -108,7 +111,7 @@ export const iconOffsets: Partial<Record<IconName, [number, number]>> = {
   folder: [-0.5, 0], upload: [0, -0.5], play: [-1, 0], restart: [0, -0.25], check: [-0.5, 0.5], search: [-0.5, -0.5], function: [-0.5, 0],
   volume: [-0.5, 0], mute: [-0.5, 0], music: [0, 0.75], sprite: [0, -0.5], keyboard: [0, -0.5], game: [0, -1], pen: [-0.5, 0.5], brush: [0, 0.25],
   eraser: [-0.5, 0], fill: [-0.5, 0.5], rotate: [0.25, 0.25], book: [0, -0.25], clock: [0, 0.5], learn: [0, 0.5], assist: [-0.5, 0.5], logic: [0, 1],
-  library: [-0.5, 0], unlock: [0, 0.25], spriteAdd: [-0.25, 0.5], sprout: [0, -0.5], stage: [0, -0.5], hand: [1.15, -0.5],
+  library: [-0.5, 0], unlock: [0, 0.25], spriteAdd: [-0.25, 0.5], sprout: [0, -0.5], stage: [0, -0.5], hand: [1.15, -0.5], people: [0, -0.4],
 };
 /** An icon's drawing, moved so it sits in the middle of its grid. */
 export function iconMarkup(name: IconName) {

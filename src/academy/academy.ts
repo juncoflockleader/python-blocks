@@ -121,7 +121,8 @@ export function installAcademy(host: AcademyHost) {
     const body = el('tbody'); body.append(...rows); table.append(body);
     const exportButton = el('button', 'button secondary', 'Export progress file') as HTMLButtonElement; exportButton.id = 'academy-export';
     exportButton.addEventListener('click', () => host.download(`academy-progress${progress.learner.name ? `-${progress.learner.name.replace(/[^\w-]+/g, '-')}` : ''}.json`, JSON.stringify(progress, null, 1)));
-    const importLabel = el('label', 'button secondary academy-import', 'Import progress file'), input = el('input'); input.type = 'file'; input.accept = '.json,application/json'; input.id = 'academy-import'; importLabel.append(input);
+    const importLabel = el('label', 'button secondary academy-import', 'Import progress file'), input = el('input'); input.type = 'file'; input.accept = '.json,application/json'; input.id = 'academy-import';
+    importLabel.insertAdjacentHTML('afterbegin', icon('upload', 16)); importLabel.append(input);
     const message = el('p', 'academy-note'); message.setAttribute('role', 'status');
     input.addEventListener('change', async () => {
       const file = input.files?.[0]; input.value = ''; if (!file) return;

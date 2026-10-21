@@ -23,7 +23,9 @@ input[type=checkbox], input[type=radio] { width: 20px; height: 20px; }
 
 /* Top bar */
 .top-bar { height: 52px; display: flex; align-items: center; gap: 8px; padding: 0 10px; background: #fafbf6; border-bottom: 1px solid #dce1d2; min-width: 0; }
-.brand-mark { flex: none; display: flex; align-items: center; justify-content: center; width: 34px; height: 32px; border-radius: 9px; background: #e2eaca; border: 1px solid #cbd4b4; font: 700 13px 'Space Grotesk', system-ui, sans-serif; color: #5d7136; text-decoration: none; }
+.brand-mark { flex: none; display: block; width: 38px; height: 38px; border-radius: 11px; text-decoration: none; }
+.brand-mark svg { display: block; width: 100%; height: 100%; }
+.brand-mark:focus-visible { outline: 3px solid #267c70; outline-offset: 2px; }
 .project-title { display: flex; flex-direction: column; min-width: 0; max-width: 220px; }
 .project-title strong { font-size: 14px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .project-notice { font-size: 11px; color: #5d6b52; margin: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }

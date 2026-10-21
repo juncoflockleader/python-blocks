@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="Python Blocks">
+  <!-- Python Blocks: a snake made of code blocks, curled into an S. Original artwork. -->
+  <defs><linearGradient id="pb-logo-badge" x1="0" y1="0" x2="0.4" y2="1"><stop offset="0" stop-color="#33957c"/><stop offset="1" stop-color="#1b5a4f"/></linearGradient></defs>
+  <rect x="2" y="2" width="60" height="60" rx="16" fill="url(#pb-logo-badge)"/>
+  <g fill="none" stroke-linecap="round" stroke-linejoin="round">
+    <path d="M13 48h20a8.5 8.5 0 0 0 0-17h-7a8.5 8.5 0 0 1 0-17h6" stroke="#163a31" stroke-width="14"/>
+    <path d="M13 48h20a8.5 8.5 0 0 0 0-17h-7a8.5 8.5 0 0 1 0-17h6" stroke="#f6c453" stroke-width="9"/>
+    <path d="M13 48h20a8.5 8.5 0 0 0 0-17h-7a8.5 8.5 0 0 1 0-17h6" stroke="#ef8a4b" stroke-width="9" stroke-linecap="butt" stroke-dasharray="8 8" stroke-dashoffset="4"/>
+  </g>
+  <rect x="31" y="6.5" width="21" height="17" rx="6" fill="#ef8a4b" stroke="#163a31" stroke-width="2.6"/>
+  <circle cx="44.5" cy="13.5" r="3.1" fill="#163a31"/><circle cx="45.6" cy="12.4" r="1.05" fill="#fff"/>
+  <path d="M38 19q2.6 1.8 5.2 0" fill="none" stroke="#163a31" stroke-width="1.8" stroke-linecap="round"/>
+  <path d="M52 17h3.4l1.8-1.8M55.4 17l1.8 1.8" fill="none" stroke="#ff5a5f" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

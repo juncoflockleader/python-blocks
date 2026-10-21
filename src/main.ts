@@ -1,6 +1,6 @@
 import './style.css';
 import { installIcons } from './ui/icons';
-import { installBlockIcons } from './ui/block-icons';
+import { blockLook, installBlockIcons } from './ui/block-icons';
 import { installBlockSearch } from './ui/block-search';
 import { installCaptionBubbles } from './ui/block-captions';
 import { installPaletteSearch } from './ui/palette-search';
@@ -241,7 +241,7 @@ const nudges = installNudges({
   picks: () => [['catch-the-star-game', 'Catch the star'], ['pen-patterns-game', 'Pen patterns'], ['scene-story-example', 'Story']].map(([id, title]) => ({ id, title, open: () => gallery.load(id) })),
 });
 // Block pictures in lesson text show the block's number in its category's picker, at the current level.
-setBlockNumbers((category, ref) => findBlock(workspace, level, category, ref));
+setBlockNumbers((category, ref) => { const found = findBlock(workspace, level, category, ref); return found && { ...found, ...blockLook(workspace, ref) }; });
 // In a lesson the stage steps back while the learner builds, so the step has room under it.
 const lessonStage = installLessonStage();
 const guide = installGuide({
