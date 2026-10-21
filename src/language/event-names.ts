@@ -23,7 +23,7 @@ export function describeEvent(handler: Handler | undefined, scene: SceneState): 
   else if (event === 'game:countdown') text = 'countdown ends';
   else if (event === 'game:lives_zero') text = 'lives reach zero';
   else if (event === 'world:enter') text = 'a world starts';
-  else if (prefix === 'world' && rest) text = `world becomes ${scene.worlds?.find(w => w.id === rest)?.name ?? 'unavailable world'}`;
+  else if (prefix === 'world' && rest) text = `${scene.worlds?.find(w => w.id === rest)?.name ?? 'unavailable world'} starts`;
   else if (event === 'stage:click') text = 'stage clicked';
   else if (event === 'stage:press') text = 'pointer pressed';
   else if (event === 'stage:release') text = 'pointer released';

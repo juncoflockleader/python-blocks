@@ -1,7 +1,7 @@
 import * as Blockly from 'blockly/core';
 import { numberInput } from '../blocks/core';
 import { soundsToolbox } from '../blocks/sounds';
-import { gameToolbox } from '../blocks/game';
+import { gameToolbox, levelToolbox } from '../blocks/game';
 import { HAT_KINDS, HAT_TYPE, STARTER_HATS, hatItem, needsSprite, type HatKind } from '../language/hats';
 import { blockNumber, captioned } from './block-captions';
 import { allSymbols } from '../language/functions';
@@ -61,6 +61,9 @@ const starterSensing: Part = { callback: 'PY_SENSING', types: ['scene_key', 'sce
 /** Motion for Starter and Builder also offers position reporters and the arrow-key controller, as Scratch's Motion does. */
 const motion: Part[] = [{ callback: 'PY_MOTION' }, { callback: 'PY_SENSING', types: ['scene_get'] }, label('Arrow keys'), { callback: 'PY_PHYSICS', types: ['scene_control', 'scene_motion_edges'] }];
 
+/** Builder makes a game of several levels with the world blocks a level needs; Pro's Worlds has the rest (tiles, camera). */
+const levelBlocks = ['scene_world_next', 'scene_world_set', 'scene_world_restart', 'scene_world_get'] as const;
+
 /** The single source of truth for what each level's palette contains. */
 export const palette: Record<Level, CategorySpec[]> = {
   starter: [
@@ -85,7 +88,7 @@ export const palette: Record<Level, CategorySpec[]> = {
     category('draw', 'Draw', { items: draw }, label('Sprite pen'), { callback: 'PY_PEN' }),
     category('variables', 'Variables', { callback: 'PY_VARIABLES' }),
     category('functions', 'Functions', { callback: 'PY_FUNCTIONS' }),
-    category('game', 'Game', { items: gameToolbox }, label('Sprites'), { callback: 'PY_SPRITES' }),
+    category('game', 'Game', { items: gameToolbox }, label('Sprites'), { callback: 'PY_SPRITES' }, label('Levels'), { callback: 'PY_WORLDS', types: levelBlocks }, { items: levelToolbox }),
     category('sensing', 'Sensing & input', { callback: 'PY_SENSING' }),
     category('physics', 'Physics', { callback: 'PY_PHYSICS' }),
   ],
@@ -175,7 +178,8 @@ export function installLevels(workspace: Blockly.WorkspaceSvg, selected: () => s
       });
       return { kind: 'button', text: `Go to ${handler.name}`, callbackkey: key };
     });
-    return [{ kind: 'label', text: 'Start a script' }, ...kinds.filter(kind => primary || !needsSprite(kind)).map(kind => hatItem(kind, primary?.id, other?.id)),
+    // "When a world starts" shows once the project has worlds (levels).
+    return [{ kind: 'label', text: 'Start a script' }, ...kinds.filter(kind => (primary || !needsSprite(kind)) && (kind !== 'world' || scene.worlds?.length)).map(kind => hatItem(kind, primary?.id, other?.id)),
       ...(scripts.length ? [{ kind: 'label', text: 'Your scripts' } as Item, ...scripts] : [])];
   };
   workspace.registerToolboxCategoryCallback('PB_HATS_STARTER', hats(STARTER_HATS));
@@ -213,8 +217,8 @@ export function requiredLevel(workspace: Blockly.WorkspaceSvg): LevelNeed {
     if (index > 0) need(maps.at(-1)!.get(b.type) ?? maps[index].get(b.type)!, LEVELS[index]);
   }
   const scene = sceneState(workspace);
-  // One world bigger than the stage (screens added in Stage view) is a Builder tool; several worlds are Pro.
-  if ((scene.worlds?.length ?? 0) > 1) need('Worlds', 'pro');
+  // One world bigger than the stage (screens added in Stage view) and several worlds (a game's levels) are Builder tools.
+  if ((scene.worlds?.length ?? 0) > 1) need('Levels', 'builder');
   else if (scene.worlds?.length) need('Big world', 'builder');
   if (moduleState(workspace).imports.length) need('Modules', 'pro');
   if (scene.watchers?.length) need('Watch values', 'builder');

@@ -574,5 +574,38 @@
         "ms": 1100
       }
     ]
+  },
+  {
+    "id": "level-up-game",
+    "title": "Level up",
+    "description": "Super Hopper in three levels: a meadow, a dark cave and snowy hills. The last flag wins.",
+    "kind": "game",
+    "project": "content/builds/level-up-game.json",
+    "level": "builder",
+    "tags": [
+      "world",
+      "condition",
+      "motion"
+    ],
+    "tryChanging": [
+      "Add Level 4: in [[Worlds & tilemaps]], press [[Duplicate world]]. Then change the 3 next to game level to 4.",
+      "Start on another level: choose it in [[Starting world]].",
+      "Make each level harder: when a world starts, make the beetles faster on Level 3."
+    ],
+    "build": "level-up",
+    "demo": [
+      {
+        "key": "ArrowRight",
+        "ms": 600
+      },
+      {
+        "key": "Space",
+        "ms": 80
+      },
+      {
+        "key": "ArrowRight",
+        "ms": 1100
+      }
+    ]
   }
 ]

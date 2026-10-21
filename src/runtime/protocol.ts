@@ -25,7 +25,7 @@ export type CheckStep =
   | { place: string; x: number; y: number }
   | { expect: CheckExpect };
 export type CheckExpect = ({ sprite: string } & ({ says: string } | { thinks: string } | { costume: string } | { visible: boolean } | { at: [number, number] } | { x: number | [number, number] } | { y: number | [number, number] } | { size: number | [number, number] } | { direction: number | [number, number] }))
-  | { score: number | [number, number] } | { lives: number | [number, number] } | { finished: 'won' | 'lost' | 'any' };
+  | { score: number | [number, number] } | { lives: number | [number, number] } | { level: number | [number, number] } | { finished: 'won' | 'lost' | 'any' };
 
 export type DrawCommand =
   | { type: 'move'; x1: number; y1: number; x2: number; y2: number; draw: boolean; color: string }

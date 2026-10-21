@@ -50,7 +50,11 @@ class Worlds:
             if sprite._state.get('world') is not None or sprite._runtime_world: sprite.destroy(_defer_cancel=True)
         self.scene._pending_clones = [s for s in self.scene._pending_clones if s._alive]
         if self.scene._physics: self.scene._physics.contacts.clear()
-        if self.scene._behaviors: self.scene._behaviors.contacts.clear(); self.scene._behaviors.tile_contacts.clear()
+        if self.scene._behaviors:
+            # Global sprites that were touching still are: a new world does not make them start touching again
+            # (a hero on the flag would touch it again, and skip a level, before its world script moves it).
+            behaviors, kept = self.scene._behaviors, set(self.scene.items)
+            behaviors.contacts = {pair for pair in behaviors.contacts if pair[0] in kept and pair[1] in kept}; behaviors.tile_contacts.clear()
         self.scene.clear_pen(); self.load_map()
         from _playground_scene import Sprite
         for state in self.authored:
@@ -60,10 +64,27 @@ class Worlds:
                 else: self.scene._pending_clones.append(sprite)
         self.update_camera()
         if any(s._state['motion']['body'] != 'off' or s._state['motion']['lifetime'] > 0 for s in self.scene.items.values()): self.scene.enable_motion()
+        # The level on the HUD follows the world.
+        if self.scene._game is not None: self.scene._game._send()
         self.enter(previous)
         if caller is not None and not caller._alive:
             import asyncio
             raise asyncio.CancelledError()
+
+    def next(self):
+        """The world after the active one in the project's list, and the first after the last (as next backdrop
+        goes round); the base stage goes to the first. A project with one world starts that world again."""
+        order = list(self.definitions)
+        if not order: raise ValueError('There is no next world: add a world first.')
+        following = order[(order.index(self.active) + 1) % len(order)] if self.active in order else order[0]
+        self.switch(following, following == self.active)
+
+    @property
+    def level(self):
+        """The active world's place in the project's list, from 1. The base stage is level 0 in a project
+        with worlds (a title screen, say) and level 1 in a project without any."""
+        order = list(self.definitions)
+        return order.index(self.active) + 1 if self.active in order else 0 if order else 1
 
     def enter(self, previous=None):
         import sys

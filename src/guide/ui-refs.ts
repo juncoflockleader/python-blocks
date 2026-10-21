@@ -21,6 +21,8 @@ const CONTROLS: Record<string, { id?: string; icon?: IconName }> = {
   'Sprite data & behavior': { icon: controlIcon('', 'Sprite data & behavior') },
   'Worlds & tilemaps': { id: 'scene-worlds' },
   'World library': { id: 'world-stock' },
+  'Duplicate world': { id: 'world-copy' },
+  'Starting world': { id: 'scene-browse-world', icon: 'world' },
   'Stage view': { id: 'view-stage' },
   'Add screen': { id: 'stage-add-right', icon: 'plus' },
   New: { icon: 'plus' },

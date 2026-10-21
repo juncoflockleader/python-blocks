@@ -5,8 +5,8 @@ A script is a list of steps: {"tap": "Fox"}, {"key": "Space"}, {"wait": 0.5},
 {"place": "Robot", "x": -90, "y": 70} (moves a sprite first, so an answer cannot
 just name the old spot), and {"expect": {...}}, where an expectation names a sprite
 and one thing about it ("says", "thinks", "costume", "visible", "x", "y", "at"
-[x, y], "size") or the game ("score", "lives", "finished"). Numbers match within 1
-(a place within 2), or within a [low, high] range.
+[x, y], "size") or the game ("score", "lives", "level", "finished"). Numbers match within 1
+(a place within 2, a level exactly), or within a [low, high] range.
 Each expectation is reported as {"index", "ok", "got"}: the step's index in the
 script, whether it held, and what was there instead. The browser's worker runs
 this, and so do the tests that prove every academy answer passes and every
@@ -37,9 +37,10 @@ def observe(scene, expect):
     if 'finished' in expect:
         result = game.result if game else None
         return None if result is None else ('won' if result.get('won') else 'lost')
+    if 'level' in expect: return scene.worlds.level
     for field in ('score', 'lives'):
         if field in expect: return getattr(game, field) if game else (0 if field == 'score' else 3)
-    raise ValueError('An expectation needs a sprite or score, lives or finished.')
+    raise ValueError('An expectation needs a sprite or score, lives, level or finished.')
 
 
 def holds(expect, got):
@@ -48,12 +49,12 @@ def holds(expect, got):
         if field in expect:
             wanted = expect[field]
             return (got is not None) if wanted == 'any' else got == wanted
-    for field in ('x', 'y', 'size', 'direction', 'score', 'lives'):
+    for field in ('x', 'y', 'size', 'direction', 'score', 'lives', 'level'):
         if field in expect:
             wanted = expect[field]
             if got is None: return False
             if isinstance(wanted, list): return wanted[0] <= got <= wanted[1]
-            return abs(got - wanted) <= 1
+            return got == wanted if field == 'level' else abs(got - wanted) <= 1
     return got is not None
 
 

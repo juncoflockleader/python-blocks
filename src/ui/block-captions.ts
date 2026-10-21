@@ -17,7 +17,7 @@ export function refOf(item: BlockItem) {
 }
 const HATS: Record<HatKind, string> = {
   start: 'when game starts', key: 'when a key is pressed', click: 'when clicked', overlap: 'when sprites touch',
-  update: 'when it updates', countdown: 'when time runs out', message: 'when a message comes', backdrop: 'when the backdrop changes',
+  update: 'when it updates', countdown: 'when time runs out', message: 'when a message comes', backdrop: 'when the backdrop changes', world: 'when a world starts',
 };
 /** Keywords chosen by hand where the block's own words do not say what it is for. */
 const KEYWORDS: Record<string, string> = {

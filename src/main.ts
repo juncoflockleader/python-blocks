@@ -18,7 +18,8 @@ import { Stage, validateSceneImages } from './stage';
 import { installSceneEditor } from './scene/editor';
 import spriteExample from './scene/example.json';
 import { emptyScene } from './scene/model';
-import { sceneState } from './scene/state';
+import { changeScene, sceneState } from './scene/state';
+import { duplicateWorld } from './scene/world';
 import { compile, blockForLine, type Compilation } from './language/compiler';
 import { snapshot, prepareProject, confirmMigration, restore, STORAGE_KEY, type PreparedProject } from './project';
 import { installLanguageEditor } from './language/editor';
@@ -128,7 +129,7 @@ const runner = new PythonRunner(event => {
   if (event.type === 'watch-values') sceneEditor?.watch(event.values);
   if (event.type === 'scene') {
     if (event.command.type === 'game') {
-      guide.score(event.command.state.score);
+      guide.score(event.command.state.score); guide.level(event.command.state.level);
       if (event.command.state.result) { eventReady = false; sceneEditor?.stop(); updateEventControls(); guide.gameOver(event.command.state.result.won); }
       gameView.accept(event.command.state);
     }
@@ -243,7 +244,7 @@ const nudges = installNudges({
 // Block pictures in lesson text show the block's number in its category's picker, at the current level.
 setBlockNumbers((category, ref) => { const found = findBlock(workspace, level, category, ref); return found && { ...found, ...blockLook(workspace, ref) }; });
 // In a lesson the stage steps back while the learner builds, so the step has room under it.
-const lessonStage = installLessonStage();
+const lessonStage = installLessonStage(() => sceneEditor?.reset());
 const guide = installGuide({
   workspace, level: () => level, setLevel: next => levelControl.set(next),
   compilation: () => compile(workspace),
@@ -257,6 +258,7 @@ const guide = installGuide({
   stopped: () => nudges.empty(!workspace.getTopBlocks(false).length),
   download: (name, text) => download(name, text, 'application/json'),
   revision: typeof __APP_REVISION__ === 'string' ? __APP_REVISION__ : 'development (revision unavailable)',
+  copyWorld() { const state = sceneState(workspace); duplicateWorld(state); changeScene(workspace, state); },
   insert(parts, title, select, other, replace = [], variables) {
     const lesson: Recipe = { id: 'lesson', title, group: 'game', phrases: [], level, concepts: ['event'], steps: [], blocks: parts, ...(variables?.length ? { variables } : {}) };
     const group = Blockly.Events.getGroup(); Blockly.Events.setGroup(group || true);

@@ -13,10 +13,10 @@ export const LANGUAGE_VERSION = 23;
 const inputBlocks = new Set(['input_timer', 'input_timer_reset', 'input_ask', 'input_ask_value', 'input_answer', 'input_cancel_questions']);
 const soundBlocks = new Set(['sound_asset', 'sound_play', 'sound_loop', 'sound_wait', 'sound_stop', 'sound_stop_all', 'sound_set', 'sound_change', 'sound_get', 'sound_clear', 'sound_tempo', 'sound_tempo_get', 'sound_note', 'sound_rest']);
 const gameBlocks = new Set(['game_set', 'game_change', 'game_get', 'game_show', 'game_message', 'game_lives_rule', 'game_countdown', 'game_countdown_stop', 'game_finish', 'game_effect', 'game_effect_clear']);
-const motionBlocks = new Set(['scene_camera_follow', 'scene_world_set', 'scene_world_restart', 'scene_motion_set', 'scene_motion_change', 'scene_motion_body', 'scene_motion_response', 'scene_motion_edges', 'scene_motion_auto', 'scene_control', 'scene_jump', 'scene_projectile', 'scene_fire']);
+const motionBlocks = new Set(['scene_camera_follow', 'scene_world_set', 'scene_world_next', 'scene_world_restart', 'scene_motion_set', 'scene_motion_change', 'scene_motion_body', 'scene_motion_response', 'scene_motion_edges', 'scene_motion_auto', 'scene_control', 'scene_jump', 'scene_projectile', 'scene_fire']);
 export const supportedBlocks = new Set([
   'scene_touching_color', 'scene_color_touching', ...inputBlocks, ...soundBlocks, ...gameBlocks,
-  'scene_world', 'scene_world_set', 'scene_world_restart', 'scene_world_get', 'scene_camera_go', 'scene_camera_follow', 'scene_camera_clamp', 'scene_camera_get', 'scene_map_get', 'scene_tile_get', 'scene_tile_at', 'scene_tile_set', 'scene_tile_wall', 'scene_tiles_of', 'scene_tile_place',
+  'scene_world', 'scene_world_set', 'scene_world_next', 'scene_world_restart', 'scene_world_get', 'scene_camera_go', 'scene_camera_follow', 'scene_camera_clamp', 'scene_camera_get', 'scene_map_get', 'scene_tile_get', 'scene_tile_at', 'scene_tile_set', 'scene_tile_wall', 'scene_tiles_of', 'scene_tile_place',
   ...motionBlocks, 'scene_motion_get', 'scene_motion_stop', 'scene_kind_set', 'scene_of_kind',
   'scene_self', 'scene_data', 'scene_data_get', 'scene_data_set', 'scene_instances', 'scene_all', 'scene_pixels', 'scene_pixel_point',
   'scene_pen_state', 'scene_pen_color', 'scene_pen_set', 'scene_pen_change', 'scene_pen_get', 'scene_stamp', 'scene_pen_clear',
@@ -188,7 +188,7 @@ function generator() {
   for (const type of ['scene_projectile', 'scene_fire']) g.forBlock[type] = (b, gen) => { const code = `${sprite(b, gen)}.projectile(${v(b, gen, 'COSTUME')}, ${v(b, gen, 'VX')}, ${v(b, gen, 'VY')}, ${v(b, gen, 'SECONDS')})`; return type === 'scene_projectile' ? [code, Order.FUNCTION_CALL] : code + '\n'; };
   g.forBlock['scene_world'] = (b, gen) => [b.getFieldValue('WORLD_ID') ? gen.quote_(b.getFieldValue('WORLD_ID')) : 'None', Order.ATOMIC];
   for (const [type, method, args, output] of [
-    ['scene_world_set', 'switch_world', ['WORLD'], false], ['scene_world_restart', 'restart_world', [], false],
+    ['scene_world_set', 'switch_world', ['WORLD'], false], ['scene_world_next', 'next_world', [], false], ['scene_world_restart', 'restart_world', [], false],
     ['scene_camera_go', 'camera_go', ['X', 'Y'], false], ['scene_camera_follow', 'camera_follow', ['SPRITE'], false], ['scene_camera_clamp', 'camera_clamp', ['ENABLED'], false],
     ['scene_tile_get', 'tile_get', ['COLUMN', 'ROW'], true], ['scene_tile_at', 'tile_at', ['X', 'Y'], true], ['scene_tile_set', 'tile_set', ['COLUMN', 'ROW', 'COSTUME', 'ENABLED'], false], ['scene_tile_wall', 'tile_wall', ['COLUMN', 'ROW', 'ENABLED'], false], ['scene_tiles_of', 'tiles_of', ['COSTUME'], true], ['scene_tile_place', 'tile_place', ['SPRITE', 'COLUMN', 'ROW'], false],
   ] as const) g.forBlock[type] = (b, gen) => { gen.useScene('scene'); const code = `_pb_scene.${method}(${args.map(a => v(b, gen, a)).join(', ')})`; return output ? [code, Order.FUNCTION_CALL] : code + '\n'; };

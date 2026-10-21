@@ -59,8 +59,11 @@ class Behaviors:
                 targets = [s for s in self.scene.items.values() if matches(s) and (event != 'start' or not s.is_clone)]
             result = []
             for sprite in targets:
-                async def deliver(value, sprite=sprite, starting=name == '_pb:created'):
+                async def deliver(value, sprite=sprite, starting=name == '_pb:created', epoch=payload.get('epoch') if name.startswith('_pb:') else None):
                     if not sprite._alive: return
+                    # A contact from an earlier world can be scheduled in the same moment as the switch that ends it
+                    # (two touches at once, the first switching worlds): it still never reaches the new world.
+                    if epoch is not None and epoch != self.scene.worlds.epoch: return
                     if starting: self.started(sprite)
                     token = _current.set(sprite)
                     try: await handler(value)

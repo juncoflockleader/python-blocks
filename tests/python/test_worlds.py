@@ -21,7 +21,7 @@ class WorldTests(unittest.IsolatedAsyncioTestCase):
     def setUp(self):
         self.messages = []; host = types.ModuleType('_playground_host'); host.scene_emit = lambda s: self.messages.append(json.loads(s)); host.scene_sense = lambda s: True
         self.modules = patch.dict(sys.modules, {'_playground_host': host}); self.modules.start()
-        for name in ('events', 'behaviors', 'physics', 'worlds', 'scene'):
+        for name in ('events', 'behaviors', 'physics', 'worlds', 'game', 'scene'):
             spec = importlib.util.spec_from_file_location('_playground_' + name, ROOT / (name + '.py')); module = importlib.util.module_from_spec(spec); sys.modules[spec.name] = module; spec.loader.exec_module(module); setattr(self, name + '_module', module)
         self.scene = self.scene_module.scene; self.events = self.events_module.events; self.tasks = []
         self.initial = initial(); self.initial.update(worlds=[world('first'), world('second')], world='first')
@@ -93,6 +93,59 @@ class WorldTests(unittest.IsolatedAsyncioTestCase):
         self.scene.get('friend').go_to(333, 44); self.scene.restart_world(); self.assertEqual(self.scene.get('friend').x, 100)
         with self.assertRaises(ValueError): self.scene.switch_world('missing')
         self.assertEqual(self.scene.world_id, 'first')
+
+    async def test_next_world_goes_round_the_list_and_the_level_follows(self):
+        entered = []
+        async def enter(payload): entered.append((payload['world'], payload['previous']))
+        self.events.on('world:enter', enter)
+        game = self.scene.game; game.show('level', True)
+        self.tasks.append(asyncio.create_task(self.events.run(lambda: None))); await until(lambda: entered)
+        self.assertEqual((self.scene.world_id, game.get('level')), ('first', 1))
+        self.scene.next_world(); self.assertEqual((self.scene.world_id, game.level), ('second', 2))
+        state = [m for m in self.messages if m['type'] == 'game'][-1]['state']; self.assertEqual((state['level'], state['visible']['level']), (2, True))
+        # After the last world comes the first again, as next backdrop goes round.
+        self.scene.next_world(); self.assertEqual((self.scene.world_id, game.level), ('first', 1))
+        await until(lambda: len(entered) == 3); self.assertEqual(entered, [('first', None), ('second', 'first'), ('first', 'second')])
+        # The base stage is level 0 in a project with worlds, and next world leaves it for the first.
+        self.scene.switch_world(None); self.assertEqual(game.level, 0)
+        self.scene.next_world(); self.assertEqual(self.scene.world_id, 'first')
+        # With one world, next world starts it again: its local sprites come back.
+        single = copy.deepcopy(self.initial); single['worlds'] = single['worlds'][:1]; single['sprites'] = single['sprites'][:2]
+        self.scene.configure(single); friend = self.scene.get('friend'); friend.go_to(300, 0)
+        self.scene.next_world(); self.assertEqual(self.scene.world_id, 'first'); self.assertIsNot(self.scene.get('friend'), friend); self.assertEqual(self.scene.get('friend').x, 100)
+        # Without worlds there is no next one, and the stage is level 1.
+        none = copy.deepcopy(self.initial); none.pop('worlds'); none.pop('world'); none['sprites'] = none['sprites'][:1]
+        self.scene.configure(none); self.assertEqual(self.scene.game.level, 1)
+        with self.assertRaises(ValueError): self.scene.next_world()
+
+    def with_globals(self, *names):
+        """The player and more global sprites (a goal, a coin), all at the player's place."""
+        for name in names:
+            extra = copy.deepcopy(self.initial['sprites'][0]); extra.update(id=name, name=name.title()); extra.pop('kind', None); self.initial['sprites'].append(extra)
+        self.scene.configure(self.initial); self.player = self.scene.get('player')
+
+    async def test_global_sprites_still_touching_after_a_switch_do_not_start_touching_again(self):
+        self.with_globals('goal'); seen = []
+        async def touched(payload):
+            if payload['other'] == 'goal': seen.append(self.scene.world_id)
+        self.scene.on('player', 'overlap', touched)
+        self.tasks.append(asyncio.create_task(self.events.run(lambda: None))); await until(lambda: self.events.state == 'running')
+        behaviors = self.scene._behaviors; scan = lambda: behaviors.scan_contacts(self.events._enqueue)
+        scan(); await until(lambda: seen)
+        # A hero standing on the flag that goes to the next world must not touch it again there (and skip a level).
+        self.scene.switch_world('second'); scan(); await asyncio.sleep(.02); self.assertEqual(seen, ['first'])
+        # Apart and back together is a new touch.
+        self.scene.get('goal').go_to(300, 0); scan(); self.scene.get('goal').go_to(0, 40); scan()
+        await until(lambda: len(seen) == 2); self.assertEqual(seen, ['first', 'second'])
+
+    async def test_a_touch_scheduled_with_the_switch_that_ends_its_world_never_runs_there(self):
+        # Two touches in the same moment: the first goes to the next world, so the second, from the old world, is skipped.
+        self.with_globals('coin', 'goal'); seen = []
+        async def touched(payload): seen.append(payload['other']); self.scene.next_world()
+        self.scene.on('player', 'overlap', touched)
+        self.tasks.append(asyncio.create_task(self.events.run(lambda: None))); await until(lambda: self.events.state == 'running')
+        self.scene._behaviors.scan_contacts(self.events._enqueue); await until(lambda: seen); await asyncio.sleep(.02)
+        self.assertEqual(len([o for o in seen if o in ('coin', 'goal')]), 1); self.assertEqual(self.scene.world_id, 'second')
 
     async def test_tile_entries_hit_payloads_and_epoch_discard_stale_delivery(self):
         seen = []; p = self.player; p.costume('box'); p.set('size', 5); p.go_to(0, 8); p.set_motion('vx', 2000)

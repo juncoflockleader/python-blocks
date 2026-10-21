@@ -3,7 +3,7 @@
  "title": "Maze run",
  "level": "pro",
  "minutes": 20,
- "order": 9,
+ "order": 10,
  "summary": "Explore a tile world with walls, a following camera and a door to a second world.",
  "ideas": [
   "world template",

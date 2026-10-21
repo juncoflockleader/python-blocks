@@ -527,6 +527,7 @@ class Scene(Appearance):
 
     def switch_world(self, identity): self.worlds.switch(identity)
     def restart_world(self): self.worlds.switch(self.world_id, True)
+    def next_world(self): self.worlds.next()
     def camera_go(self, x, y): self.worlds.move_camera(x, y)
     def camera_follow(self, sprite): self.worlds.follow(sprite)
     def camera_clamp(self, enabled): self.worlds.clamp(enabled)

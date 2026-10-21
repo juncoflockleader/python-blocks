@@ -41,7 +41,7 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     <label class="scene-filter">Find sprite <input id="scene-filter" type="search" placeholder="Name, kind or world" ${nameAttributes}></label><p id="scene-filter-empty" hidden>No sprites match.</p>
     <p id="scene-live"></p><p id="scene-error" role="alert"></p>
     <section class="stage-settings" aria-labelledby="stage-settings-title"><h3 id="stage-settings-title">Stage &amp; assets</h3>
-      <label class="level-pro">Starting world <select id="scene-browse-world"></select></label>
+      <label class="level-builder">Starting world <select id="scene-browse-world"></select></label>
       <div class="world-screens level-builder" role="group" aria-labelledby="world-screens-title"><span id="world-screens-title" class="world-screens-title">World size</span>
         ${(['wide', 'tall'] as const).map(side => `<span class="stepper"><span id="world-${side}-label">Screens ${side}</span><button id="world-${side}-less" class="button secondary ui-icon-only" type="button" aria-label="One screen ${side === 'wide' ? 'narrower' : 'shorter'}" title="One screen ${side === 'wide' ? 'narrower' : 'shorter'}">Fewer</button><output id="world-${side}" aria-labelledby="world-${side}-label">1</output><button id="world-${side}-more" class="button secondary ui-icon-only" type="button" aria-label="One screen ${side === 'wide' ? 'wider' : 'taller'}" title="One screen ${side === 'wide' ? 'wider' : 'taller'}">More</button></span>`).join('')}
         <p class="tab-note">One screen is the stage. Removing a screen moves its sprites onto the screens that stay; Undo brings it back.</p></div>
@@ -52,7 +52,7 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
   // A non-modal sheet over the tabs: the stage and sprite tray stay visible, so choosing another sprite updates it.
   document.querySelector('.right-column')!.insertAdjacentHTML('beforeend', `<dialog id="sprite-settings" class="sheet" aria-labelledby="sprite-settings-title"><header><h2 id="sprite-settings-title">More settings <span id="sprite-settings-name"></span></h2><button id="sprite-settings-done" class="button primary">Done</button></header>
     <div class="sheet-body scene-editor" id="sprite-settings-body"><form id="scene-more" aria-label="Where the sprite lives"><fieldset id="scene-more-fields"><legend>Where it lives</legend><div class="scene-properties-grid">
-      <label class="level-pro">Belongs to <select id="scene-world"></select></label>${numberField('scene-layer', 'Layer', -1000, 1000)}
+      <label class="level-builder">Belongs to <select id="scene-world"></select></label>${numberField('scene-layer', 'Layer', -1000, 1000)}
       <label>Rotation <select id="scene-rotation"><option value="all">All around</option><option value="left-right">Left/right only</option><option value="none">Do not rotate</option></select></label>
     </div></fieldset>
     <fieldset id="scene-animate-fields" class="scene-animate"><legend>Animation</legend>
@@ -266,7 +266,8 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
   el('scene-paint-backdrop').addEventListener('click', () => { if (editing) paint.open({ kind: 'backdrop' }); });
   el('scene-backdrop').addEventListener('change', () => attempt(() => { const scene = sceneState(workspace); (scene.worlds?.find(w => w.id === scene.world) ?? scene).backdrop = el<HTMLSelectElement>('scene-backdrop').value || null; changeScene(workspace, scene); render(true); }));
   el('scene-background').addEventListener('change', () => attempt(() => { const scene = sceneState(workspace); (scene.worlds?.find(w => w.id === scene.world) ?? scene).background = el<HTMLInputElement>('scene-background').value; changeScene(workspace, scene); render(true); }));
-  el('scene-reset').addEventListener('click', () => { if (!running) { editing = true; watchers.restore(); render(true); controls(); } });
+  const reset = () => { if (!running) { editing = true; watchers.restore(); render(true); controls(); } };
+  el('scene-reset').addEventListener('click', reset);
   el('scene-import').addEventListener('click', () => el<HTMLInputElement>('scene-image').click());
   el('scene-image').addEventListener('change', async () => {
     const file = el<HTMLInputElement>('scene-image').files?.[0]; el<HTMLInputElement>('scene-image').value = ''; if (!file) return;
@@ -322,6 +323,8 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     ready() { ready = true; playInput.setEnabled(true); },
     pause(paused: boolean) { clearKeys(); playInput.setEnabled(ready && !paused); },
     stop() { clearKeys(); playInput.setEnabled(false); ready = false; running = false; watchers.stop(); controls(); },
+    /** As Reset stage: a stopped game's last picture gives way to the starting layout, to edit it again. */
+    reset() { if (!editing) reset(); },
     /** Back to editing. A newly opened project (`fresh`) starts from its own starting views. */
     restore(fresh = false) { clearKeys(); playInput.setEnabled(false); ready = false; running = false; editing = true; if (fresh) view.forget(); watchers.restore(); render(true); controls(); },
     /** The stage's editing view: pan, zoom, fit and the tools rail. */

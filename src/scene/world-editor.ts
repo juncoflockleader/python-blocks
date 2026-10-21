@@ -2,10 +2,10 @@ import type * as Blockly from 'blockly/core';
 import { backdrops, costumes, type SceneState } from './model';
 import { assetCanvas } from './assets';
 import { sceneState, changeScene } from './state';
-import { cameraPosition, defaultCamera, newMap, resizeMap, type World } from './world';
+import { cameraPosition, defaultCamera, duplicateWorld, newMap, resizeMap, type World } from './world';
 
 export function installWorldEditor(workspace: Blockly.WorkspaceSvg, editable: () => boolean, openLibrary: () => void, paintTile: (id: string) => void) {
-  document.getElementById('scene-paint-backdrop')!.insertAdjacentHTML('afterend', '<button id="scene-worlds" class="button secondary level-pro">Worlds & tilemaps</button>');
+  document.getElementById('scene-paint-backdrop')!.insertAdjacentHTML('afterend', '<button id="scene-worlds" class="button secondary level-builder">Worlds & tilemaps</button>');
   document.body.insertAdjacentHTML('beforeend', `<dialog id="world-dialog" aria-labelledby="world-title"><h2 id="world-title">Worlds & tilemaps</h2>
     <p>Each world has its own tiles, backdrop and local sprites. Global sprites stay when worlds change. Choose the starting world here, then close to place sprites on the stage.</p>
     <div class="scene-toolbar"><label>Starting / editing world <select id="world-select"></select></label><button id="world-stock" class="button primary">World library</button><button id="world-new" class="button secondary">New world</button><button id="world-copy" class="button secondary">Duplicate world</button><button id="world-delete" class="button secondary">Remove world (keep sprites)</button></div>
@@ -76,16 +76,7 @@ export function installWorldEditor(workspace: Blockly.WorkspaceSvg, editable: ()
     (state.worlds ??= []).push(w); state.world = w.id; save(state);
   }));
   el('world-select').addEventListener('change', () => attempt(() => { const state = sceneState(workspace); state.world = el<HTMLSelectElement>('world-select').value || null; save(state); }));
-  el('world-copy').addEventListener('click', () => attempt(() => {
-    const state = sceneState(workspace), old = active(state)!; const world = structuredClone(old); world.id = crypto.randomUUID(); world.name = newName(state);
-    const names = new Set(state.sprites.map(s => s.name));
-    for (const original of state.sprites.filter(s => s.world === old.id)) {
-      const sprite = structuredClone(original); sprite.id = crypto.randomUUID(); sprite.world = world.id; let n = 1; while (names.has(`${original.name.slice(0, 30)} copy ${n}`)) n++;
-      sprite.name = `${original.name.slice(0, 30)} copy ${n}`; names.add(sprite.name); state.sprites.push(sprite);
-      if (world.camera.follow === original.id) world.camera.follow = sprite.id;
-    }
-    state.worlds!.push(world); state.world = world.id; save(state);
-  }));
+  el('world-copy').addEventListener('click', () => attempt(() => { const state = sceneState(workspace); duplicateWorld(state); save(state); }));
   el('world-delete').addEventListener('click', () => attempt(() => {
     const state = sceneState(workspace); state.sprites.forEach(s => { if (s.world === state.world) delete s.world; }); state.worlds = state.worlds!.filter(w => w.id !== state.world); state.world = null; save(state);
   }));

@@ -60,6 +60,9 @@ export const WORDS: Record<string, Word> = {
     picture: c => { sky(c); tiles(c, 16, 220, 100); art(c, 'cast/explorer-sam-idle-1@1', 80, 56, 1); art(c, 'tiles/metal-block@1', 150, 68, 1); } },
   camera: { title: 'Camera', say: 'The camera is the part of the level you can see. It follows the hero, so the level slides along.',
     picture: c => { sky(c); tiles(c, 0, 220, 100, 0.75); art(c, 'cast/explorer-sam-walk-2@1', 110, 70, 0.8); art(c, 'props/coin-1@1', 30, 70, 0.8, 0.5); art(c, 'props/coin-1@1', 196, 70, 0.8, 0.5); c.strokeStyle = '#c4602f'; c.lineWidth = 3; c.setLineDash([7, 5]); c.beginPath(); c.roundRect(60, 22, 100, 90, 8); c.stroke(); } },
+  world: { title: 'World: one level', say: 'A world is one level of the game, with its own tiles and backdrop. Next world goes on to the next level.',
+    picture: c => { sky(c); c.fillStyle = '#544b68'; c.fillRect(120, 0, W - 120, H); for (let x = 12; x <= 108; x += 24) art(c, 'tiles/grass-top@1', x, 108, 0.75); for (let x = 132; x <= 216; x += 24) art(c, 'tiles/cave-top@1', x, 108, 0.75);
+      art(c, 'props/flag@1', 92, 58, 0.32); art(c, 'cast/explorer-sam-idle-1@1', 164, 76, 0.7); arrow(c, 102, 56, 140, 56); label(c, 'Level 1', 48, 22, '#26382f', 13); label(c, 'Level 2', 178, 22, '#f1ecff', 13); } },
   grounded: { title: 'Grounded', say: 'Grounded means standing on something, like the grass or a block. Then the hero can jump.',
     picture: c => { sky(c); tiles(c, 16, 220, 100); art(c, 'cast/explorer-sam-idle-1@1', 60, 56, 1); label(c, '✓', 60, 14, '#1f6b3c', 20); art(c, 'cast/explorer-sam-jump@1', 160, 36, 1); label(c, '✗', 196, 16, '#b8454a', 20); } },
   if: { title: 'if … else', say: 'if asks a question. If the answer is yes, it does the first blocks. If not (else), it does the other blocks.',

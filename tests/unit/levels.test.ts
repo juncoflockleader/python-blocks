@@ -39,7 +39,10 @@ describe('levels', () => {
     for (const type of sets[1].keys()) expect(sets[2].has(type), type).toBe(true);
     expect(sets[0].get('controls_repeat_ext')).toBe('Control'); expect(sets[0].get('pen_move')).toBe('Draw');
     expect(sets[0].has('text_print')).toBe(false); expect(sets[1].get('text_print')).toBe('Text');
-    expect(sets[0].has('scene_world_set')).toBe(false); expect(sets[1].has('scene_world_set')).toBe(false); expect(sets[2].get('scene_world_set')).toBe('Worlds');
+    // Builder's Game has the blocks a game of several levels needs; tiles and the camera stay in Pro's Worlds.
+    expect(sets[0].has('scene_world_set')).toBe(false); expect(sets[2].get('scene_world_set')).toBe('Worlds');
+    for (const type of ['scene_world_next', 'scene_world_set', 'scene_world_restart', 'scene_world_get']) expect(sets[1].get(type), type).toBe('Game');
+    expect(sets[1].has('scene_tile_set')).toBe(false); expect(sets[1].has('scene_camera_follow')).toBe(false);
     // Starter's Control and Game groupings borrow existing blocks; nothing new is defined for them.
     for (const type of ['controls_whileUntil', 'controls_if', 'py_wait', 'py_flow', 'logic_compare', 'math_random_int', 'scene_key', 'scene_pointer', 'scene_edge', 'scene_overlaps']) expect(sets[0].get(type), type).toBe('Control');
     for (const type of ['scene_get', 'scene_control', 'scene_motion_edges']) expect(sets[0].get(type), type).toBe('Motion');
@@ -54,7 +57,10 @@ describe('levels', () => {
     expect(items('PB_STARTER_MOTION').map(i => i.type)).toEqual(expect.arrayContaining(['scene_move', 'scene_get', 'scene_control', 'scene_motion_edges']));
     expect(items('PB_STARTER_MOTION').map(i => i.type)).not.toContain('scene_jump');
     expect(items('PB_STARTER_EVENTS').map(i => i.type === HAT_TYPE ? (i.extraState as { kind: string }).kind : i.type)).toEqual(['py_program', ...STARTER_HATS]);
-    expect(items('PB_BUILDER_EVENTS').filter(i => i.type === HAT_TYPE)).toHaveLength(HAT_KINDS.length);
+    // "When a world starts" waits until the project has a world.
+    const kinds = () => items('PB_BUILDER_EVENTS').filter(i => i.type === HAT_TYPE).map(i => (i.extraState as { kind: string }).kind);
+    expect(kinds()).toEqual(HAT_KINDS.filter(kind => kind !== 'world'));
+    changeScene(w, resizeWorld(sceneState(w), 2, 1)); expect(kinds()).toEqual([...HAT_KINDS]);
     const click = items('PB_STARTER_EVENTS').find(i => (i.extraState as { kind?: string })?.kind === 'overlap')!;
     expect(click.fields).toEqual({ SPRITE: 'player', OTHER: 'friend' });
     changeScene(w, { ...sceneState(w), sprites: [] });
@@ -68,12 +74,15 @@ describe('levels', () => {
     expect(requiredLevel(w).level).toBe('builder');
     expect(requiredLevel(w).uses.map(u => u.name)).toEqual(['Numbers', 'Text']); // position reporters are Starter Motion blocks
     restore(w, prepareProject(readFileSync('src/scene/world-example.json', 'utf8')).project);
-    expect(requiredLevel(w)).toMatchObject({ level: 'pro', uses: expect.arrayContaining([{ name: 'Worlds', level: 'pro' }]) });
+    // Its tile and camera blocks are Pro's Worlds; its two worlds (levels) alone would be Builder's.
+    expect(requiredLevel(w)).toMatchObject({ level: 'pro', uses: expect.arrayContaining([{ name: 'Worlds', level: 'pro' }, { name: 'Levels', level: 'builder' }]) });
     restore(w, prepareProject(readFileSync('src/scene/drawing-example.json', 'utf8')).project);
     expect(requiredLevel(w)).toEqual({ level: 'starter', uses: [] }); // pens, stamps and effects are all Starter tools
-    // One world bigger than the stage (screens added in Stage view) is a Builder tool; several worlds are Pro.
+    // One world bigger than the stage (screens added in Stage view) is a Builder tool, and so are several worlds: a game's levels.
     changeScene(w, resizeWorld(sceneState(w), 2, 1));
     expect(requiredLevel(w)).toEqual({ level: 'builder', uses: [{ name: 'Big world', level: 'builder' }] });
+    const scene = sceneState(w); changeScene(w, { ...scene, worlds: [...scene.worlds!, { ...structuredClone(scene.worlds![0]), id: 'level-2', name: 'Level 2' }] });
+    expect(requiredLevel(w)).toEqual({ level: 'builder', uses: [{ name: 'Levels', level: 'builder' }] });
     changeScene(w, { ...sceneState(w), watchers: [{ id: 'watch', sprite: sceneState(w).sprites[0].id, property: 'x' }] });
     expect(requiredLevel(w).uses).toContainEqual({ name: 'Watch values', level: 'builder' });
   });
@@ -94,6 +103,18 @@ describe('hat blocks', () => {
     for (const message of ['', '_pb:secret', 'start']) expect(handlerSignature(w, { kind: 'message', message }).handler!.event).toBe('message');
     expect(() => handlerSignature(w, { kind: 'click', sprite: 'missing' })).toThrow(/Add a sprite/);
     expect(() => handlerSignature(w, { kind: 'key', key: 'F13' })).toThrow(/Choose a key/);
+  });
+
+  it('a world hat runs when any world starts, or one world (a level) does', () => {
+    const w = workspace(); changeScene(w, resizeWorld(sceneState(w), 2, 1));
+    const scene = sceneState(w); changeScene(w, { ...scene, worlds: [...scene.worlds!, { ...structuredClone(scene.worlds![0]), id: 'cave', name: 'Crystal Cave' }] });
+    expect(handlerSignature(w, { kind: 'world' })).toMatchObject({ name: 'on_world_start', handler: { event: 'world:enter' } });
+    expect(handlerSignature(w, { kind: 'world', world: 'cave' })).toMatchObject({ name: 'on_crystal_cave_start', handler: { event: 'world:cave' } });
+    expect(describeEvent({ event: 'world:cave', order: 0 }, sceneState(w))).toBe('Crystal Cave starts');
+    expect(describeEvent({ event: 'world:enter', order: 0 }, sceneState(w))).toBe('a world starts');
+    Blockly.serialization.blocks.append(handlerState(w, templateOf({ type: HAT_TYPE, ...hatItem('world') } as Blockly.serialization.blocks.State)), w);
+    const result = compile(w);
+    expect(result.diagnostics.filter(d => d.severity === 'error')).toEqual([]); expect(result.source).toContain('"world:enter", on_world_start');
   });
 
   it('target the chosen sprite, and overlap starts with a check for the other sprite', () => {

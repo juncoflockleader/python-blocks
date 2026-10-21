@@ -24,14 +24,14 @@ function loaded(project: unknown) {
   return w;
 }
 const game = (build: Build) => JSON.parse(readFileSync(`content/builds/${build.id}-game.json`, 'utf8'));
-const dynamic = (check: Check): boolean => 'ran' in check || 'finished' in check || 'score' in check || 'predicted' in check || 'solved' in check || ('all' in check && check.all.some(dynamic)) || ('any' in check && check.any.every(dynamic));
+const dynamic = (check: Check): boolean => 'ran' in check || 'finished' in check || 'score' in check || 'level' in check || 'predicted' in check || 'solved' in check || ('all' in check && check.all.some(dynamic)) || ('any' in check && check.any.every(dynamic));
 const finished = { ran: true, finished: 'won' as const };
 const puzzles = (build: Build) => build.steps.every(step => step.puzzle);
 
 describe('guided builds', () => {
-  it('are the six planned games and four lessons, each with a minute budget and a next step', () => {
+  it('are the six planned games and five lessons, each with a minute budget and a next step', () => {
     // Lessons are listed first.
-    expect(builds.map(b => b.title)).toEqual(['Brick Breaker', 'Flappy Flight', 'Super Hopper', 'Code Puzzles', 'Catch the star', 'Dodge the balls', 'Pen patterns', 'Talking story', 'Jump quest', 'Maze run']);
+    expect(builds.map(b => b.title)).toEqual(['Brick Breaker', 'Flappy Flight', 'Super Hopper', 'Level up', 'Code Puzzles', 'Catch the star', 'Dodge the balls', 'Pen patterns', 'Talking story', 'Jump quest', 'Maze run']);
     for (const build of builds) {
       expect(build.minutes, build.id).toBeGreaterThan(0);
       expect(build.finish.remix, build.id).toHaveLength(3);
@@ -69,7 +69,9 @@ describe('guided builds', () => {
         expect(step.title, where).toBeTruthy(); expect(step.title!.split(' ').length, where).toBeLessThanOrEqual(6);
         texts.push(step.title!, step.text, step.why ?? '', ...(step.hints ?? []), ...(step.checklist ?? []).map(c => c.text));
         if (step.predict) texts.push(step.predict.question, ...step.predict.choices, step.predict.explain);
-        if (step.kind !== 'play') expect(`${step.text} ${step.hints?.join(' ')} ${step.checklist?.map(c => c.text).join(' ')}`, `${where} shows a block`).toMatch(/\(\([A-Z][^|]*\|/);
+        // A step done in Worlds & tilemaps (a new level) uses no blocks.
+        const blocks = step.kind !== 'play' && !(step.solution?.world && !step.solution.parts.length);
+        if (blocks) expect(`${step.text} ${step.hints?.join(' ')} ${step.checklist?.map(c => c.text).join(' ')}`, `${where} shows a block`).toMatch(/\(\([A-Z][^|]*\|/);
       }
       for (const text of texts) {
         const sentences = plainText(text.replace(/\(\([^)]*\)\)|<<[^>]*>>/g, 'it')).split(/(?<=[.!?:])\s+/);
@@ -108,7 +110,7 @@ describe('guided builds', () => {
 
   it('lessons have chapters, live checklists, hints, sound predictions and repairable plants', () => {
     const lessons = builds.filter(b => b.kind === 'lesson');
-    expect(lessons.map(b => b.id)).toEqual(['brick-breaker', 'flappy-flight', 'super-hopper', 'code-puzzles']);
+    expect(lessons.map(b => b.id)).toEqual(['brick-breaker', 'flappy-flight', 'super-hopper', 'level-up', 'code-puzzles']);
     for (const lesson of lessons) {
       expect(lesson.chapters!.reduce((sum, c) => sum + c.steps, 0), lesson.id).toBe(lesson.steps.length);
       expect(lesson.learn!.length, lesson.id).toBeGreaterThanOrEqual(3);
@@ -120,7 +122,8 @@ describe('guided builds', () => {
         if (step.kind !== 'play') {
           expect(step.checklist?.length, where).toBeGreaterThan(0);
           expect(step.hints, where).toHaveLength(2);
-          expect(step.recipe || step.solution || step.plant, `${where} needs a last rung or a planted puzzle`).toBeTruthy();
+          // A step that is only a guess and a run has nothing to show; one with blocks to add (or a level to make) does.
+          if (step.checklist!.some(part => !dynamic(part.check))) expect(step.recipe || step.solution || step.plant, `${where} needs a last rung or a planted puzzle`).toBeTruthy();
           // The finished game ticks every part that does not depend on a run.
           if (w) for (const part of step.checklist!) if (!dynamic(part.check)) expect(passes(part.check, w, finished), `${where}: ${part.text}`).toBe(true);
         }
@@ -138,7 +141,7 @@ describe('guided builds', () => {
   it('plant a puzzle that compiles but does not pass, and add solutions that resolve every placeholder', () => {
     for (const lesson of builds.filter(b => b.kind === 'lesson')) for (const [index, step] of lesson.steps.entries()) {
       for (const parts of [step.plant, step.solution?.parts]) {
-        if (!parts) continue;
+        if (!parts?.length) continue;
         const w = loaded(lesson.starter);
         const recipe = { id: 'lesson', title: 'Lesson', group: 'game', phrases: [], level: 'pro', concepts: ['event'], steps: [], blocks: parts, ...(parts === step.solution?.parts && step.solution.variables ? { variables: step.solution.variables } : {}) } as Recipe;
         appendRecipe(w, recipe, placement(w, recipe, step.select ?? '', step.other));
@@ -178,9 +181,9 @@ describe('guided builds', () => {
 });
 
 describe('gallery', () => {
-  it('keeps the ten examples and adds the nine guided-build and lesson games, with three things to try', () => {
-    expect(entries).toHaveLength(19);
-    expect(new Set(entries.map(e => e.id)).size).toBe(19);
+  it('keeps the ten examples and adds the ten guided-build and lesson games, with three things to try', () => {
+    expect(entries).toHaveLength(20);
+    expect(new Set(entries.map(e => e.id)).size).toBe(20);
     for (const id of ['scene-example', 'scene-motion-example', 'scene-story-example', 'scene-drawing-example', 'scene-behavior-example', 'scene-game-example', 'scene-world-example', 'scene-star-game', 'sound-example', 'scene-input-example']) expect(entries.some(e => e.id === id), id).toBe(true);
     for (const entry of entries) {
       expect(entry.tryChanging, entry.id).toHaveLength(3);

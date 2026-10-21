@@ -9,10 +9,12 @@ import { HAT_TYPE } from '../../src/language/hats';
 import { Blockly } from '../../src/blocks';
 import { prepareProject, restore, snapshot } from '../../src/project';
 import { compile } from '../../src/language/compiler';
-import { builds } from '../../src/guide/builds';
+import { builds, scriptsNamed } from '../../src/guide/builds';
 import { passes, type Check } from '../../src/guide/checks';
 import { appendRecipe, placement, recipeById, type Recipe, type RecipePart } from '../../src/guide/recipes';
 import { paletteWorkspace } from './palette-workspace';
+import { changeScene, sceneState } from '../../src/scene/state';
+import { duplicateWorld } from '../../src/scene/world';
 
 /** Each lesson, built step by step the way "Show me how" builds it: the
  * lesson's planted blocks, then each step's own blocks (or its idea card) on
@@ -21,7 +23,7 @@ import { paletteWorkspace } from './palette-workspace';
  * suite records that clip from (tests/fixtures/lessons, kept by a file snapshot). */
 const spaces: Blockly.Workspace[] = [];
 afterEach(() => spaces.splice(0).forEach(w => w.dispose()));
-const dynamic = (check: Check): boolean => 'ran' in check || 'finished' in check || 'score' in check || 'predicted' in check || 'solved' in check || ('all' in check && check.all.some(dynamic)) || ('any' in check && check.any.every(dynamic));
+const dynamic = (check: Check): boolean => 'ran' in check || 'finished' in check || 'score' in check || 'level' in check || 'predicted' in check || 'solved' in check || ('all' in check && check.all.some(dynamic)) || ('any' in check && check.any.every(dynamic));
 const settled = { ran: true, finished: 'won' as const, predicted: true };
 /** The parts of a check that do not depend on a run. */
 const still = (check: Check): Check | null => 'all' in check ? { all: check.all.filter(part => !dynamic(part)) } : dynamic(check) ? null : check;
@@ -58,7 +60,13 @@ describe('lessons, built step by step', () => {
       if (step.plant) planted[index] = add(step.plant, step.select, step.other);
       if (step.solution) {
         if (step.solution.replacesPlant !== undefined) for (const id of planted[step.solution.replacesPlant] ?? []) w.getBlockById(id)?.dispose(false);
-        add(step.solution.parts, step.select, step.other, step.solution.variables);
+        // Scripts the step moves blocks out of are taken away by name, as Show me how does.
+        const replaced = scriptsNamed(w, step.solution.replaces ?? []);
+        expect(replaced, `${where}: replaces ${step.solution.replaces}`).toHaveLength(step.solution.replaces?.length ?? 0);
+        for (const id of replaced) w.getBlockById(id)?.dispose(false);
+        // A new level, as Duplicate world makes it (with ids that stay the same from run to run).
+        if (step.solution.world === 'copy') { const state = sceneState(w); duplicateWorld(state, () => `${lesson.id}-world-${index + 1}`); changeScene(w, state); }
+        if (step.solution.parts.length) add(step.solution.parts, step.select, step.other, step.solution.variables);
       } else if (step.recipe) add(recipeById(step.recipe)!, step.select, step.other);
       const check = still(step.check);
       // An idea card's numbers are the learner's to change (win at 10, not its 5), so only its blocks are checked.

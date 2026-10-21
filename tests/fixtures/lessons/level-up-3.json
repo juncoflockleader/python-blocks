@@ -1,0 +1,6323 @@
+{
+ "format": "python-blocks",
+ "formatVersion": 2,
+ "languageVersion": 23,
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "py_handler",
+     "id": "level-up-1",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "level-up-161",
+      "signature": {
+       "id": "level-up-161",
+       "name": "on_start",
+       "parameters": [
+        {
+         "id": "level-up-162",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "start",
+        "order": 0
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_motion_set",
+        "id": "level-up-2",
+        "fields": {
+         "PROPERTY": "ay"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "level-up-3",
+           "fields": {
+            "SPRITE_ID": "hero"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "id": "level-up-4",
+           "fields": {
+            "VALUE": "-1200"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_control",
+          "id": "level-up-5",
+          "fields": {
+           "SCHEME": "arrows"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "id": "level-up-6",
+             "fields": {
+              "SPRITE_ID": "hero"
+             }
+            }
+           },
+           "VX": {
+            "shadow": {
+             "type": "py_number",
+             "id": "level-up-7",
+             "fields": {
+              "VALUE": "180"
+             }
+            }
+           },
+           "VY": {
+            "shadow": {
+             "type": "py_number",
+             "id": "level-up-8",
+             "fields": {
+              "VALUE": "0"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "level-up-9",
+     "x": 40,
+     "y": 262,
+     "extraState": {
+      "functionId": "level-up-163",
+      "signature": {
+       "id": "level-up-163",
+       "name": "on_left_arrow_key",
+       "parameters": [
+        {
+         "id": "level-up-164",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "key:ArrowLeft",
+        "order": 1
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_set",
+        "id": "level-up-10",
+        "fields": {
+         "PROPERTY": "direction"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "level-up-11",
+           "fields": {
+            "SPRITE_ID": "hero"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "id": "level-up-12",
+           "fields": {
+            "VALUE": "180"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "level-up-13",
+     "x": 40,
+     "y": 409,
+     "extraState": {
+      "functionId": "level-up-165",
+      "signature": {
+       "id": "level-up-165",
+       "name": "on_right_arrow_key",
+       "parameters": [
+        {
+         "id": "level-up-166",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "key:ArrowRight",
+        "order": 2
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_set",
+        "id": "level-up-14",
+        "fields": {
+         "PROPERTY": "direction"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "level-up-15",
+           "fields": {
+            "SPRITE_ID": "hero"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "id": "level-up-16",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "level-up-17",
+     "x": 40,
+     "y": 556,
+     "extraState": {
+      "functionId": "level-up-167",
+      "signature": {
+       "id": "level-up-167",
+       "name": "on_space_key",
+       "parameters": [
+        {
+         "id": "level-up-168",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "key:Space",
+        "order": 3
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_jump",
+        "id": "level-up-18",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "level-up-19",
+           "fields": {
+            "SPRITE_ID": "hero"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "id": "level-up-20",
+           "fields": {
+            "VALUE": "520"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "sound_play",
+          "id": "level-up-21",
+          "inputs": {
+           "SOUND": {
+            "block": {
+             "type": "sound_asset",
+             "id": "level-up-22",
+             "fields": {
+              "SOUND_ID": "jump"
+             }
+            }
+           },
+           "OWNER": {
+            "block": {
+             "type": "py_none",
+             "id": "level-up-23"
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "level-up-24",
+     "x": 40,
+     "y": 788,
+     "extraState": {
+      "functionId": "level-up-169",
+      "signature": {
+       "id": "level-up-169",
+       "name": "on_start_2",
+       "parameters": [
+        {
+         "id": "level-up-170",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "start",
+        "order": 4
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "game_set",
+        "id": "level-up-25",
+        "fields": {
+         "FIELD": "score"
+        },
+        "inputs": {
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "id": "level-up-26",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "game_set",
+          "id": "level-up-27",
+          "fields": {
+           "FIELD": "lives"
+          },
+          "inputs": {
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "id": "level-up-28",
+             "fields": {
+              "VALUE": "3"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "level-up-29",
+     "x": 40,
+     "y": 965,
+     "extraState": {
+      "functionId": "level-up-171",
+      "signature": {
+       "id": "level-up-171",
+       "name": "play_music",
+       "parameters": [
+        {
+         "id": "level-up-172",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "start",
+        "order": 5
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "sound_loop",
+        "id": "level-up-30",
+        "inputs": {
+         "SOUND": {
+          "block": {
+           "type": "sound_asset",
+           "id": "level-up-31",
+           "fields": {
+            "SOUND_ID": "music"
+           }
+          }
+         },
+         "OWNER": {
+          "block": {
+           "type": "py_none",
+           "id": "level-up-32"
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "level-up-33",
+     "x": 40,
+     "y": 1140,
+     "extraState": {
+      "functionId": "level-up-173",
+      "signature": {
+       "id": "level-up-173",
+       "name": "on_start_3",
+       "parameters": [
+        {
+         "id": "level-up-174",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "start",
+        "order": 6
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_go",
+        "id": "level-up-34",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "level-up-35",
+           "fields": {
+            "SPRITE_ID": "coin"
+           }
+          }
+         },
+         "X": {
+          "shadow": {
+           "type": "py_number",
+           "id": "level-up-36",
+           "fields": {
+            "VALUE": "-32"
+           }
+          }
+         },
+         "Y": {
+          "shadow": {
+           "type": "py_number",
+           "id": "level-up-37",
+           "fields": {
+            "VALUE": "-73"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "controls_repeat_ext",
+          "id": "level-up-38",
+          "inputs": {
+           "TIMES": {
+            "shadow": {
+             "type": "py_number",
+             "id": "level-up-39",
+             "fields": {
+              "VALUE": "5"
+             }
+            }
+           },
+           "DO": {
+            "block": {
+             "type": "scene_visibility",
+             "id": "level-up-40",
+             "fields": {
+              "ACTION": "show"
+             },
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_clone",
+                "id": "level-up-41",
+                "inputs": {
+                 "SPRITE": {
+                  "block": {
+                   "type": "scene_sprite",
+                   "id": "level-up-42",
+                   "fields": {
+                    "SPRITE_ID": "coin"
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_change",
+               "id": "level-up-43",
+               "fields": {
+                "PROPERTY": "x"
+               },
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_sprite",
+                  "id": "level-up-44",
+                  "fields": {
+                   "SPRITE_ID": "coin"
+                  }
+                 }
+                },
+                "VALUE": {
+                 "shadow": {
+                  "type": "py_number",
+                  "id": "level-up-45",
+                  "fields": {
+                   "VALUE": "32"
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "scene_go",
+            "id": "level-up-46",
+            "inputs": {
+             "SPRITE": {
+              "block": {
+               "type": "scene_sprite",
+               "id": "level-up-47",
+               "fields": {
+                "SPRITE_ID": "coin"
+               }
+              }
+             },
+             "X": {
+              "shadow": {
+               "type": "py_number",
+               "id": "level-up-48",
+               "fields": {
+                "VALUE": "416"
+               }
+              }
+             },
+             "Y": {
+              "shadow": {
+               "type": "py_number",
+               "id": "level-up-49",
+               "fields": {
+                "VALUE": "16"
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "controls_repeat_ext",
+              "id": "level-up-50",
+              "inputs": {
+               "TIMES": {
+                "shadow": {
+                 "type": "py_number",
+                 "id": "level-up-51",
+                 "fields": {
+                  "VALUE": "4"
+                 }
+                }
+               },
+               "DO": {
+                "block": {
+                 "type": "scene_visibility",
+                 "id": "level-up-52",
+                 "fields": {
+                  "ACTION": "show"
+                 },
+                 "inputs": {
+                  "SPRITE": {
+                   "block": {
+                    "type": "scene_clone",
+                    "id": "level-up-53",
+                    "inputs": {
+                     "SPRITE": {
+                      "block": {
+                       "type": "scene_sprite",
+                       "id": "level-up-54",
+                       "fields": {
+                        "SPRITE_ID": "coin"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 },
+                 "next": {
+                  "block": {
+                   "type": "scene_change",
+                   "id": "level-up-55",
+                   "fields": {
+                    "PROPERTY": "x"
+                   },
+                   "inputs": {
+                    "SPRITE": {
+                     "block": {
+                      "type": "scene_sprite",
+                      "id": "level-up-56",
+                      "fields": {
+                       "SPRITE_ID": "coin"
+                      }
+                     }
+                    },
+                    "VALUE": {
+                     "shadow": {
+                      "type": "py_number",
+                      "id": "level-up-57",
+                      "fields": {
+                       "VALUE": "32"
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "scene_go",
+                "id": "level-up-58",
+                "inputs": {
+                 "SPRITE": {
+                  "block": {
+                   "type": "scene_sprite",
+                   "id": "level-up-59",
+                   "fields": {
+                    "SPRITE_ID": "coin"
+                   }
+                  }
+                 },
+                 "X": {
+                  "shadow": {
+                   "type": "py_number",
+                   "id": "level-up-60",
+                   "fields": {
+                    "VALUE": "1184"
+                   }
+                  }
+                 },
+                 "Y": {
+                  "shadow": {
+                   "type": "py_number",
+                   "id": "level-up-61",
+                   "fields": {
+                    "VALUE": "-48"
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "controls_repeat_ext",
+                  "id": "level-up-62",
+                  "inputs": {
+                   "TIMES": {
+                    "shadow": {
+                     "type": "py_number",
+                     "id": "level-up-63",
+                     "fields": {
+                      "VALUE": "3"
+                     }
+                    }
+                   },
+                   "DO": {
+                    "block": {
+                     "type": "scene_visibility",
+                     "id": "level-up-64",
+                     "fields": {
+                      "ACTION": "show"
+                     },
+                     "inputs": {
+                      "SPRITE": {
+                       "block": {
+                        "type": "scene_clone",
+                        "id": "level-up-65",
+                        "inputs": {
+                         "SPRITE": {
+                          "block": {
+                           "type": "scene_sprite",
+                           "id": "level-up-66",
+                           "fields": {
+                            "SPRITE_ID": "coin"
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     },
+                     "next": {
+                      "block": {
+                       "type": "scene_change",
+                       "id": "level-up-67",
+                       "fields": {
+                        "PROPERTY": "x"
+                       },
+                       "inputs": {
+                        "SPRITE": {
+                         "block": {
+                          "type": "scene_sprite",
+                          "id": "level-up-68",
+                          "fields": {
+                           "SPRITE_ID": "coin"
+                          }
+                         }
+                        },
+                        "VALUE": {
+                         "shadow": {
+                          "type": "py_number",
+                          "id": "level-up-69",
+                          "fields": {
+                           "VALUE": "32"
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  },
+                  "next": {
+                   "block": {
+                    "type": "scene_motion_set",
+                    "id": "level-up-70",
+                    "fields": {
+                     "PROPERTY": "vx"
+                    },
+                    "inputs": {
+                     "SPRITE": {
+                      "block": {
+                       "type": "scene_sprite",
+                       "id": "level-up-71",
+                       "fields": {
+                        "SPRITE_ID": "beetle"
+                       }
+                      }
+                     },
+                     "VALUE": {
+                      "shadow": {
+                       "type": "py_number",
+                       "id": "level-up-72",
+                       "fields": {
+                        "VALUE": "-60"
+                       }
+                      }
+                     }
+                    },
+                    "next": {
+                     "block": {
+                      "type": "scene_motion_response",
+                      "id": "level-up-73",
+                      "fields": {
+                       "MODE": "bounce"
+                      },
+                      "inputs": {
+                       "SPRITE": {
+                        "block": {
+                         "type": "scene_sprite",
+                         "id": "level-up-74",
+                         "fields": {
+                          "SPRITE_ID": "beetle"
+                         }
+                        }
+                       }
+                      },
+                      "next": {
+                       "block": {
+                        "type": "scene_go",
+                        "id": "level-up-75",
+                        "inputs": {
+                         "SPRITE": {
+                          "block": {
+                           "type": "scene_sprite",
+                           "id": "level-up-76",
+                           "fields": {
+                            "SPRITE_ID": "beetle"
+                           }
+                          }
+                         },
+                         "X": {
+                          "shadow": {
+                           "type": "py_number",
+                           "id": "level-up-77",
+                           "fields": {
+                            "VALUE": "800"
+                           }
+                          }
+                         },
+                         "Y": {
+                          "shadow": {
+                           "type": "py_number",
+                           "id": "level-up-78",
+                           "fields": {
+                            "VALUE": "-80"
+                           }
+                          }
+                         }
+                        },
+                        "next": {
+                         "block": {
+                          "type": "scene_visibility",
+                          "id": "level-up-79",
+                          "fields": {
+                           "ACTION": "show"
+                          },
+                          "inputs": {
+                           "SPRITE": {
+                            "block": {
+                             "type": "scene_clone",
+                             "id": "level-up-80",
+                             "inputs": {
+                              "SPRITE": {
+                               "block": {
+                                "type": "scene_sprite",
+                                "id": "level-up-81",
+                                "fields": {
+                                 "SPRITE_ID": "beetle"
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          },
+                          "next": {
+                           "block": {
+                            "type": "scene_go",
+                            "id": "level-up-82",
+                            "inputs": {
+                             "SPRITE": {
+                              "block": {
+                               "type": "scene_sprite",
+                               "id": "level-up-83",
+                               "fields": {
+                                "SPRITE_ID": "beetle"
+                               }
+                              }
+                             },
+                             "X": {
+                              "shadow": {
+                               "type": "py_number",
+                               "id": "level-up-84",
+                               "fields": {
+                                "VALUE": "1600"
+                               }
+                              }
+                             },
+                             "Y": {
+                              "shadow": {
+                               "type": "py_number",
+                               "id": "level-up-85",
+                               "fields": {
+                                "VALUE": "-80"
+                               }
+                              }
+                             }
+                            },
+                            "next": {
+                             "block": {
+                              "type": "scene_visibility",
+                              "id": "level-up-86",
+                              "fields": {
+                               "ACTION": "show"
+                              },
+                              "inputs": {
+                               "SPRITE": {
+                                "block": {
+                                 "type": "scene_clone",
+                                 "id": "level-up-87",
+                                 "inputs": {
+                                  "SPRITE": {
+                                   "block": {
+                                    "type": "scene_sprite",
+                                    "id": "level-up-88",
+                                    "fields": {
+                                     "SPRITE_ID": "beetle"
+                                    }
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "level-up-89",
+     "x": 700,
+     "y": 30,
+     "extraState": {
+      "functionId": "level-up-175",
+      "signature": {
+       "id": "level-up-175",
+       "name": "on_coin_overlap",
+       "parameters": [
+        {
+         "id": "level-up-176",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "overlap",
+        "order": 7,
+        "sprite": "coin"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "level-up-90",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "scene_overlaps",
+           "id": "level-up-91",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_self",
+              "id": "level-up-92"
+             }
+            },
+            "OTHER": {
+             "block": {
+              "type": "scene_sprite",
+              "id": "level-up-93",
+              "fields": {
+               "SPRITE_ID": "hero"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "sound_play",
+           "id": "level-up-94",
+           "inputs": {
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "level-up-95",
+              "fields": {
+               "SOUND_ID": "coin"
+              }
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "level-up-96"
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "game_change",
+             "id": "level-up-97",
+             "fields": {
+              "FIELD": "score"
+             },
+             "inputs": {
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "id": "level-up-98",
+                "fields": {
+                 "VALUE": "1"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_destroy",
+               "id": "level-up-99",
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_self",
+                  "id": "level-up-100"
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "level-up-101",
+     "x": 700,
+     "y": 332,
+     "extraState": {
+      "functionId": "level-up-177",
+      "signature": {
+       "id": "level-up-177",
+       "name": "on_hero_update",
+       "parameters": [
+        {
+         "id": "level-up-178",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "update",
+        "order": 8,
+        "sprite": "hero"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "level-up-102",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "logic_compare",
+           "id": "level-up-103",
+           "fields": {
+            "OP": "LT"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "scene_get",
+              "id": "level-up-104",
+              "fields": {
+               "PROPERTY": "y"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_self",
+                 "id": "level-up-105"
+                }
+               }
+              }
+             }
+            },
+            "B": {
+             "shadow": {
+              "type": "py_number",
+              "id": "level-up-106",
+              "fields": {
+               "VALUE": "-200"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "sound_play",
+           "id": "level-up-107",
+           "inputs": {
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "level-up-108",
+              "fields": {
+               "SOUND_ID": "hit"
+              }
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "level-up-109"
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "game_change",
+             "id": "level-up-110",
+             "fields": {
+              "FIELD": "lives"
+             },
+             "inputs": {
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "id": "level-up-111",
+                "fields": {
+                 "VALUE": "-1"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_go",
+               "id": "level-up-112",
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_sprite",
+                  "id": "level-up-113",
+                  "fields": {
+                   "SPRITE_ID": "hero"
+                  }
+                 }
+                },
+                "X": {
+                 "shadow": {
+                  "type": "py_number",
+                  "id": "level-up-114",
+                  "fields": {
+                   "VALUE": "-128"
+                  }
+                 }
+                },
+                "Y": {
+                 "shadow": {
+                  "type": "py_number",
+                  "id": "level-up-115",
+                  "fields": {
+                   "VALUE": "40"
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "level-up-116",
+     "x": 700,
+     "y": 700,
+     "extraState": {
+      "functionId": "level-up-179",
+      "signature": {
+       "id": "level-up-179",
+       "name": "on_beetle_overlap",
+       "parameters": [
+        {
+         "id": "level-up-180",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "overlap",
+        "order": 9,
+        "sprite": "beetle"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "level-up-117",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "scene_overlaps",
+           "id": "level-up-118",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_self",
+              "id": "level-up-119"
+             }
+            },
+            "OTHER": {
+             "block": {
+              "type": "scene_sprite",
+              "id": "level-up-120",
+              "fields": {
+               "SPRITE_ID": "hero"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "controls_if",
+           "id": "level-up-121",
+           "extraState": {
+            "hasElse": true
+           },
+           "inputs": {
+            "IF0": {
+             "block": {
+              "type": "logic_compare",
+              "id": "level-up-122",
+              "fields": {
+               "OP": "LT"
+              },
+              "inputs": {
+               "A": {
+                "block": {
+                 "type": "scene_motion_get",
+                 "id": "level-up-123",
+                 "fields": {
+                  "PROPERTY": "vy"
+                 },
+                 "inputs": {
+                  "SPRITE": {
+                   "block": {
+                    "type": "scene_sprite",
+                    "id": "level-up-124",
+                    "fields": {
+                     "SPRITE_ID": "hero"
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "B": {
+                "shadow": {
+                 "type": "py_number",
+                 "id": "level-up-125",
+                 "fields": {
+                  "VALUE": "0"
+                 }
+                }
+               }
+              }
+             }
+            },
+            "DO0": {
+             "block": {
+              "type": "scene_motion_set",
+              "id": "level-up-126",
+              "fields": {
+               "PROPERTY": "vy"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "id": "level-up-127",
+                 "fields": {
+                  "SPRITE_ID": "hero"
+                 }
+                }
+               },
+               "VALUE": {
+                "shadow": {
+                 "type": "py_number",
+                 "id": "level-up-128",
+                 "fields": {
+                  "VALUE": "380"
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "sound_play",
+                "id": "level-up-129",
+                "inputs": {
+                 "SOUND": {
+                  "block": {
+                   "type": "sound_asset",
+                   "id": "level-up-130",
+                   "fields": {
+                    "SOUND_ID": "pop"
+                   }
+                  }
+                 },
+                 "OWNER": {
+                  "block": {
+                   "type": "py_none",
+                   "id": "level-up-131"
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "game_change",
+                  "id": "level-up-132",
+                  "fields": {
+                   "FIELD": "score"
+                  },
+                  "inputs": {
+                   "VALUE": {
+                    "shadow": {
+                     "type": "py_number",
+                     "id": "level-up-133",
+                     "fields": {
+                      "VALUE": "5"
+                     }
+                    }
+                   }
+                  },
+                  "next": {
+                   "block": {
+                    "type": "scene_destroy",
+                    "id": "level-up-134",
+                    "inputs": {
+                     "SPRITE": {
+                      "block": {
+                       "type": "scene_self",
+                       "id": "level-up-135"
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            },
+            "ELSE": {
+             "block": {
+              "type": "sound_play",
+              "id": "level-up-136",
+              "inputs": {
+               "SOUND": {
+                "block": {
+                 "type": "sound_asset",
+                 "id": "level-up-137",
+                 "fields": {
+                  "SOUND_ID": "hit"
+                 }
+                }
+               },
+               "OWNER": {
+                "block": {
+                 "type": "py_none",
+                 "id": "level-up-138"
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "game_change",
+                "id": "level-up-139",
+                "fields": {
+                 "FIELD": "lives"
+                },
+                "inputs": {
+                 "VALUE": {
+                  "shadow": {
+                   "type": "py_number",
+                   "id": "level-up-140",
+                   "fields": {
+                    "VALUE": "-1"
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "scene_go",
+                  "id": "level-up-141",
+                  "inputs": {
+                   "SPRITE": {
+                    "block": {
+                     "type": "scene_sprite",
+                     "id": "level-up-142",
+                     "fields": {
+                      "SPRITE_ID": "hero"
+                     }
+                    }
+                   },
+                   "X": {
+                    "shadow": {
+                     "type": "py_number",
+                     "id": "level-up-143",
+                     "fields": {
+                      "VALUE": "-128"
+                     }
+                    }
+                   },
+                   "Y": {
+                    "shadow": {
+                     "type": "py_number",
+                     "id": "level-up-144",
+                     "fields": {
+                      "VALUE": "40"
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "level-up-145",
+     "x": 0,
+     "y": 0,
+     "extraState": {
+      "functionId": "level-up-181",
+      "signature": {
+       "id": "level-up-181",
+       "name": "on_world_start",
+       "parameters": [
+        {
+         "id": "level-up-182",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "world:enter",
+        "order": 11,
+        "sprite": "hero"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_go",
+        "id": "level-up-146",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "level-up-147",
+           "fields": {
+            "SPRITE_ID": "hero"
+           }
+          }
+         },
+         "X": {
+          "shadow": {
+           "type": "py_number",
+           "id": "level-up-148",
+           "fields": {
+            "VALUE": "-128"
+           }
+          }
+         },
+         "Y": {
+          "shadow": {
+           "type": "py_number",
+           "id": "level-up-149",
+           "fields": {
+            "VALUE": "40"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "level-up-150",
+     "x": 0,
+     "y": 0,
+     "extraState": {
+      "functionId": "level-up-183",
+      "signature": {
+       "id": "level-up-183",
+       "name": "on_hero_overlap",
+       "parameters": [
+        {
+         "id": "level-up-184",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "overlap",
+        "order": 12,
+        "sprite": "hero"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "level-up-151",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "scene_overlaps",
+           "id": "level-up-152",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_self",
+              "id": "level-up-153"
+             }
+            },
+            "OTHER": {
+             "block": {
+              "type": "scene_sprite",
+              "id": "level-up-154",
+              "fields": {
+               "SPRITE_ID": "flag"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "sound_play",
+           "id": "level-up-155",
+           "inputs": {
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "level-up-156",
+              "fields": {
+               "SOUND_ID": "win"
+              }
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "level-up-157"
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "scene_world_next",
+             "id": "level-up-158"
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "level-up-159",
+     "x": 0,
+     "y": 0,
+     "extraState": {
+      "functionId": "level-up-185",
+      "signature": {
+       "id": "level-up-185",
+       "name": "on_start_4",
+       "parameters": [
+        {
+         "id": "level-up-186",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "start",
+        "order": 13,
+        "sprite": "hero"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "game_show",
+        "id": "level-up-160",
+        "fields": {
+         "SHOW": "TRUE",
+         "FIELD": "level"
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  "variables": [
+   {
+    "name": "level-up-187",
+    "id": "level-up-187"
+   },
+   {
+    "name": "level-up-188",
+    "id": "level-up-188"
+   },
+   {
+    "name": "level-up-189",
+    "id": "level-up-189"
+   },
+   {
+    "name": "level-up-190",
+    "id": "level-up-190"
+   },
+   {
+    "name": "level-up-191",
+    "id": "level-up-191"
+   },
+   {
+    "name": "level-up-192",
+    "id": "level-up-192"
+   },
+   {
+    "name": "level-up-193",
+    "id": "level-up-193"
+   },
+   {
+    "name": "level-up-194",
+    "id": "level-up-194"
+   },
+   {
+    "name": "level-up-195",
+    "id": "level-up-195"
+   },
+   {
+    "name": "level-up-196",
+    "id": "level-up-196"
+   },
+   {
+    "name": "level-up-197",
+    "id": "level-up-197"
+   },
+   {
+    "name": "level-up-198",
+    "id": "level-up-198"
+   },
+   {
+    "name": "level-up-199",
+    "id": "level-up-199"
+   },
+   {
+    "name": "level-up-200",
+    "id": "level-up-200"
+   }
+  ],
+  "pythonScene": {
+   "version": 1,
+   "background": "#80cdef",
+   "assets": [
+    {
+     "id": "stock-explorer-sam-idle-1",
+     "name": "Sam idle 1",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-idle-1@1"
+    },
+    {
+     "id": "stock-explorer-sam-idle-2",
+     "name": "Sam idle 2",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-idle-2@1"
+    },
+    {
+     "id": "stock-explorer-sam-walk-1",
+     "name": "Sam walk 1",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-walk-1@1"
+    },
+    {
+     "id": "stock-explorer-sam-walk-2",
+     "name": "Sam walk 2",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-walk-2@1"
+    },
+    {
+     "id": "stock-explorer-sam-walk-3",
+     "name": "Sam walk 3",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-walk-3@1"
+    },
+    {
+     "id": "stock-explorer-sam-walk-4",
+     "name": "Sam walk 4",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-walk-4@1"
+    },
+    {
+     "id": "stock-explorer-sam-jump",
+     "name": "Sam jump",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-jump@1"
+    },
+    {
+     "id": "stock-explorer-sam-happy",
+     "name": "Sam happy",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-happy@1"
+    },
+    {
+     "id": "stock-coin-1",
+     "name": "Coin 1",
+     "width": 32,
+     "height": 32,
+     "stock": "props/coin-1@1"
+    },
+    {
+     "id": "stock-coin-2",
+     "name": "Coin 2",
+     "width": 32,
+     "height": 32,
+     "stock": "props/coin-2@1"
+    },
+    {
+     "id": "stock-coin-3",
+     "name": "Coin 3",
+     "width": 32,
+     "height": 32,
+     "stock": "props/coin-3@1"
+    },
+    {
+     "id": "stock-coin-4",
+     "name": "Coin 4",
+     "width": 32,
+     "height": 32,
+     "stock": "props/coin-4@1"
+    },
+    {
+     "id": "stock-coin-5",
+     "name": "Coin 5",
+     "width": 32,
+     "height": 32,
+     "stock": "props/coin-5@1"
+    },
+    {
+     "id": "stock-coin-6",
+     "name": "Coin 6",
+     "width": 32,
+     "height": 32,
+     "stock": "props/coin-6@1"
+    },
+    {
+     "id": "stock-beetle-walk-1",
+     "name": "Beetle walk 1",
+     "width": 36,
+     "height": 30,
+     "stock": "cast/beetle-walk-1@1"
+    },
+    {
+     "id": "stock-beetle-walk-2",
+     "name": "Beetle walk 2",
+     "width": 36,
+     "height": 30,
+     "stock": "cast/beetle-walk-2@1"
+    },
+    {
+     "id": "stock-flag",
+     "name": "Flag",
+     "width": 40,
+     "height": 256,
+     "stock": "props/flag@1"
+    },
+    {
+     "id": "stock-brick-block",
+     "name": "Brick block",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/brick-block@1"
+    },
+    {
+     "id": "stock-grass-left",
+     "name": "Grass left",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/grass-left@1"
+    },
+    {
+     "id": "stock-grass-middle",
+     "name": "Grass middle",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/grass-middle@1"
+    },
+    {
+     "id": "stock-grass-right",
+     "name": "Grass right",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/grass-right@1"
+    },
+    {
+     "id": "stock-grass-top",
+     "name": "Grass top",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/grass-top@1"
+    },
+    {
+     "id": "stock-grass-top-left",
+     "name": "Grass top left",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/grass-top-left@1"
+    },
+    {
+     "id": "stock-grass-top-right",
+     "name": "Grass top right",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/grass-top-right@1"
+    },
+    {
+     "id": "stock-metal-block",
+     "name": "Metal block",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/metal-block@1"
+    },
+    {
+     "id": "stock-cave-top-left",
+     "name": "Cave top left",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-top-left@1"
+    },
+    {
+     "id": "stock-cave-top",
+     "name": "Cave top",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-top@1"
+    },
+    {
+     "id": "stock-cave-top-right",
+     "name": "Cave top right",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-top-right@1"
+    },
+    {
+     "id": "stock-cave-left",
+     "name": "Cave left",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-left@1"
+    },
+    {
+     "id": "stock-cave-middle",
+     "name": "Cave middle",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-middle@1"
+    },
+    {
+     "id": "stock-cave-right",
+     "name": "Cave right",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-right@1"
+    },
+    {
+     "id": "stock-cave-platform",
+     "name": "Cave platform",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-platform@1"
+    },
+    {
+     "id": "stock-cave-block",
+     "name": "Cave block",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-block@1"
+    },
+    {
+     "id": "stock-snow-top-left",
+     "name": "Snow top left",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-top-left@1"
+    },
+    {
+     "id": "stock-snow-top",
+     "name": "Snow top",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-top@1"
+    },
+    {
+     "id": "stock-snow-top-right",
+     "name": "Snow top right",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-top-right@1"
+    },
+    {
+     "id": "stock-snow-left",
+     "name": "Snow left",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-left@1"
+    },
+    {
+     "id": "stock-snow-middle",
+     "name": "Snow middle",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-middle@1"
+    },
+    {
+     "id": "stock-snow-right",
+     "name": "Snow right",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-right@1"
+    },
+    {
+     "id": "stock-snow-platform",
+     "name": "Snow platform",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-platform@1"
+    },
+    {
+     "id": "stock-snow-block",
+     "name": "Snow block",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-block@1"
+    }
+   ],
+   "backdrops": [
+    {
+     "id": "stock-hills",
+     "name": "Hills",
+     "width": 480,
+     "height": 320,
+     "stock": "backdrops/hills@1"
+    },
+    {
+     "id": "stock-cave",
+     "name": "Cave",
+     "width": 480,
+     "height": 320,
+     "stock": "backdrops/cave@1"
+    },
+    {
+     "id": "stock-snow",
+     "name": "Snow",
+     "width": 480,
+     "height": 320,
+     "stock": "backdrops/snow@1"
+    },
+    {
+     "id": "stock-castle",
+     "name": "Castle",
+     "width": 480,
+     "height": 320,
+     "stock": "backdrops/castle@1"
+    }
+   ],
+   "backdrop": null,
+   "worlds": [
+    {
+     "id": "main",
+     "name": "Level 1",
+     "background": "#80cdef",
+     "backdrop": "stock-hills",
+     "map": {
+      "columns": 75,
+      "rows": 10,
+      "tileSize": 32,
+      "tiles": [
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-brick-block",
+       "stock-brick-block",
+       "stock-brick-block",
+       "stock-brick-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       "stock-metal-block",
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       "stock-metal-block",
+       "stock-metal-block",
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top-right",
+       null,
+       null,
+       null,
+       "stock-grass-top-left",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top-right",
+       null,
+       null,
+       null,
+       "stock-grass-top-left",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-right",
+       null,
+       null,
+       null,
+       "stock-grass-left",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-right",
+       null,
+       null,
+       null,
+       "stock-grass-left",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle"
+      ],
+      "walls": [
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ]
+     },
+     "camera": {
+      "x": 0,
+      "y": 0,
+      "follow": "hero",
+      "clamp": true
+     }
+    },
+    {
+     "id": "cave",
+     "name": "Level 2",
+     "background": "#2e2840",
+     "backdrop": "stock-cave",
+     "map": {
+      "columns": 75,
+      "rows": 10,
+      "tileSize": 32,
+      "tiles": [
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       "stock-cave-block",
+       "stock-cave-block",
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       "stock-cave-block",
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       "stock-cave-block",
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       "stock-cave-block",
+       "stock-cave-block",
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top-right",
+       null,
+       null,
+       null,
+       "stock-cave-top-left",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top-right",
+       null,
+       null,
+       "stock-cave-top-left",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top-right",
+       null,
+       null,
+       null,
+       "stock-cave-top-left",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top-right",
+       null,
+       null,
+       "stock-cave-top-left",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-right",
+       null,
+       null,
+       null,
+       "stock-cave-left",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-right",
+       null,
+       null,
+       "stock-cave-left",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-right",
+       null,
+       null,
+       null,
+       "stock-cave-left",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-right",
+       null,
+       null,
+       "stock-cave-left",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle"
+      ],
+      "walls": [
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ]
+     },
+     "camera": {
+      "x": 0,
+      "y": 0,
+      "follow": "hero",
+      "clamp": true
+     }
+    }
+   ],
+   "world": "main",
+   "sprites": [
+    {
+     "id": "hero",
+     "name": "Hero",
+     "x": -128,
+     "y": 40,
+     "direction": 0,
+     "size": 72,
+     "layer": 4,
+     "visible": true,
+     "costume": "stock-explorer-sam-idle-1",
+     "rotationStyle": "left-right",
+     "costumes": [
+      "stock-explorer-sam-walk-1",
+      "stock-explorer-sam-walk-2",
+      "stock-explorer-sam-walk-3",
+      "stock-explorer-sam-walk-4"
+     ],
+     "frameSeconds": 0.12,
+     "animations": [
+      {
+       "name": "idle",
+       "frames": [
+        "stock-explorer-sam-idle-1",
+        "stock-explorer-sam-idle-2"
+       ],
+       "seconds": 0.4
+      },
+      {
+       "name": "walk",
+       "frames": [
+        "stock-explorer-sam-walk-1",
+        "stock-explorer-sam-walk-2",
+        "stock-explorer-sam-walk-3",
+        "stock-explorer-sam-walk-4"
+       ]
+      },
+      {
+       "name": "jump",
+       "frames": [
+        "stock-explorer-sam-jump"
+       ]
+      },
+      {
+       "name": "happy",
+       "frames": [
+        "stock-explorer-sam-happy"
+       ]
+      }
+     ],
+     "autoAnimate": {
+      "moving": "walk",
+      "air": "jump",
+      "still": "idle",
+      "turn": false
+     }
+    },
+    {
+     "id": "coin",
+     "name": "Coin",
+     "x": -32,
+     "y": -73,
+     "direction": 0,
+     "size": 85,
+     "layer": 2,
+     "visible": false,
+     "costume": "stock-coin-1",
+     "rotationStyle": "all",
+     "costumes": [
+      "stock-coin-1",
+      "stock-coin-2",
+      "stock-coin-3",
+      "stock-coin-4",
+      "stock-coin-5",
+      "stock-coin-6"
+     ],
+     "frameSeconds": 0.1,
+     "animations": [
+      {
+       "name": "spin",
+       "frames": [
+        "stock-coin-1",
+        "stock-coin-2",
+        "stock-coin-3",
+        "stock-coin-4",
+        "stock-coin-5",
+        "stock-coin-6"
+       ]
+      }
+     ],
+     "autoAnimate": {
+      "moving": "",
+      "air": "",
+      "still": "spin",
+      "turn": false
+     }
+    },
+    {
+     "id": "beetle",
+     "name": "Beetle",
+     "x": 800,
+     "y": -80,
+     "direction": 0,
+     "size": 100,
+     "layer": 3,
+     "visible": false,
+     "costume": "stock-beetle-walk-1",
+     "rotationStyle": "left-right",
+     "costumes": [
+      "stock-beetle-walk-1",
+      "stock-beetle-walk-2"
+     ],
+     "frameSeconds": 0.15,
+     "animations": [
+      {
+       "name": "walk",
+       "frames": [
+        "stock-beetle-walk-1",
+        "stock-beetle-walk-2"
+       ]
+      }
+     ],
+     "autoAnimate": {
+      "moving": "walk",
+      "air": "",
+      "still": "",
+      "turn": true
+     }
+    },
+    {
+     "id": "flag",
+     "name": "Flag",
+     "x": 2048,
+     "y": 32,
+     "direction": 0,
+     "size": 100,
+     "layer": 1,
+     "visible": true,
+     "costume": "stock-flag",
+     "rotationStyle": "none"
+    }
+   ],
+   "sounds": [
+    {
+     "id": "jump",
+     "name": "Jump",
+     "kind": "clip",
+     "stock": "effects/jump@1"
+    },
+    {
+     "id": "coin",
+     "name": "Coin",
+     "kind": "clip",
+     "stock": "effects/coin@1"
+    },
+    {
+     "id": "pop",
+     "name": "Pop",
+     "kind": "clip",
+     "stock": "effects/pop@1"
+    },
+    {
+     "id": "hit",
+     "name": "Hit",
+     "kind": "clip",
+     "stock": "effects/hit@1"
+    },
+    {
+     "id": "win",
+     "name": "Win",
+     "kind": "clip",
+     "stock": "effects/win@1"
+    },
+    {
+     "id": "music",
+     "name": "Chase",
+     "kind": "song",
+     "tempo": 150,
+     "beats": 16,
+     "notes": [
+      {
+       "at": 0,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 0,
+       "beats": 0.5,
+       "pitch": 45,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 0,
+       "beats": 0.5,
+       "pitch": 69,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 0.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 0.5,
+       "beats": 0.5,
+       "pitch": 45,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 0.5,
+       "beats": 0.5,
+       "pitch": 72,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 1,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 1,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 1,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 1,
+       "beats": 0.5,
+       "pitch": 45,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 1,
+       "beats": 0.5,
+       "pitch": 76,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 1.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 1.5,
+       "beats": 0.5,
+       "pitch": 57,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 1.5,
+       "beats": 0.5,
+       "pitch": 72,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 2,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 2,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 2,
+       "beats": 0.5,
+       "pitch": 45,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 2,
+       "beats": 0.5,
+       "pitch": 69,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 2.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 2.5,
+       "beats": 0.5,
+       "pitch": 45,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 2.5,
+       "beats": 0.5,
+       "pitch": 72,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 3,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 3,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 3,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 3,
+       "beats": 0.5,
+       "pitch": 45,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 3,
+       "beats": 0.5,
+       "pitch": 76,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 3.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 3.5,
+       "beats": 0.5,
+       "pitch": 57,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 3.5,
+       "beats": 0.5,
+       "pitch": 72,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 4,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 4,
+       "beats": 0.5,
+       "pitch": 41,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 4,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 4,
+       "beats": 0.5,
+       "pitch": 65,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 4.5,
+       "beats": 0.5,
+       "pitch": 41,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 4.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 4.5,
+       "beats": 0.5,
+       "pitch": 69,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 5,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 5,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 5,
+       "beats": 0.5,
+       "pitch": 41,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 5,
+       "beats": 0.5,
+       "pitch": 72,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 5.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 5.5,
+       "beats": 0.5,
+       "pitch": 53,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 5.5,
+       "beats": 0.5,
+       "pitch": 69,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 6,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 6,
+       "beats": 0.5,
+       "pitch": 41,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 6,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 6,
+       "beats": 0.5,
+       "pitch": 65,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 6.5,
+       "beats": 0.5,
+       "pitch": 41,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 6.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 6.5,
+       "beats": 0.5,
+       "pitch": 69,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 7,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 7,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 7,
+       "beats": 0.5,
+       "pitch": 41,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 7,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 7,
+       "beats": 0.5,
+       "pitch": 72,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 7.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 7.5,
+       "beats": 0.5,
+       "pitch": 53,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 7.5,
+       "beats": 0.5,
+       "pitch": 69,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 8,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 8,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 8,
+       "beats": 0.5,
+       "pitch": 43,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 8,
+       "beats": 0.5,
+       "pitch": 67,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 8.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 8.5,
+       "beats": 0.5,
+       "pitch": 43,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 8.5,
+       "beats": 0.5,
+       "pitch": 71,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 9,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 9,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 9,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 9,
+       "beats": 0.5,
+       "pitch": 43,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 9,
+       "beats": 0.5,
+       "pitch": 74,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 9.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 9.5,
+       "beats": 0.5,
+       "pitch": 55,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 9.5,
+       "beats": 0.5,
+       "pitch": 71,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 10,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 10,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 10,
+       "beats": 0.5,
+       "pitch": 43,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 10,
+       "beats": 0.5,
+       "pitch": 67,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 10.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 10.5,
+       "beats": 0.5,
+       "pitch": 43,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 10.5,
+       "beats": 0.5,
+       "pitch": 71,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 11,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 11,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 11,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 11,
+       "beats": 0.5,
+       "pitch": 43,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 11,
+       "beats": 0.5,
+       "pitch": 74,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 11.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 11.5,
+       "beats": 0.5,
+       "pitch": 55,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 11.5,
+       "beats": 0.5,
+       "pitch": 71,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 12,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 12,
+       "beats": 0.5,
+       "pitch": 40,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 12,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 12,
+       "beats": 0.5,
+       "pitch": 64,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 12.5,
+       "beats": 0.5,
+       "pitch": 40,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 12.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 12.5,
+       "beats": 0.5,
+       "pitch": 68,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 13,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 13,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 13,
+       "beats": 0.5,
+       "pitch": 40,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 13,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 13,
+       "beats": 0.5,
+       "pitch": 71,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 13.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 13.5,
+       "beats": 0.5,
+       "pitch": 52,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 13.5,
+       "beats": 0.5,
+       "pitch": 68,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 14,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 14,
+       "beats": 0.5,
+       "pitch": 40,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 14,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 14,
+       "beats": 0.5,
+       "pitch": 64,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 14.5,
+       "beats": 0.5,
+       "pitch": 40,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 14.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 14.5,
+       "beats": 0.5,
+       "pitch": 68,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 15,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 15,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 15,
+       "beats": 0.5,
+       "pitch": 40,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 15,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 15,
+       "beats": 0.5,
+       "pitch": 71,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 15.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 15.5,
+       "beats": 0.5,
+       "pitch": 52,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 15.5,
+       "beats": 0.5,
+       "pitch": 68,
+       "instrument": "square",
+       "volume": 27
+      }
+     ]
+    }
+   ]
+  },
+  "procedures": [
+   {
+    "id": "level-up-161",
+    "name": "on_start",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 0
+    },
+    "parameters": [
+     {
+      "id": "level-up-162",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "level-up-163",
+    "name": "on_left_arrow_key",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "key:ArrowLeft",
+     "order": 1
+    },
+    "parameters": [
+     {
+      "id": "level-up-164",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "level-up-165",
+    "name": "on_right_arrow_key",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "key:ArrowRight",
+     "order": 2
+    },
+    "parameters": [
+     {
+      "id": "level-up-166",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "level-up-167",
+    "name": "on_space_key",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "key:Space",
+     "order": 3
+    },
+    "parameters": [
+     {
+      "id": "level-up-168",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "level-up-169",
+    "name": "on_start_2",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 4
+    },
+    "parameters": [
+     {
+      "id": "level-up-170",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "level-up-171",
+    "name": "play_music",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 5
+    },
+    "parameters": [
+     {
+      "id": "level-up-172",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "level-up-173",
+    "name": "on_start_3",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 6
+    },
+    "parameters": [
+     {
+      "id": "level-up-174",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "level-up-175",
+    "name": "on_coin_overlap",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "overlap",
+     "order": 7,
+     "sprite": "coin"
+    },
+    "parameters": [
+     {
+      "id": "level-up-176",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "level-up-177",
+    "name": "on_hero_update",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "update",
+     "order": 8,
+     "sprite": "hero"
+    },
+    "parameters": [
+     {
+      "id": "level-up-178",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "level-up-179",
+    "name": "on_beetle_overlap",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "overlap",
+     "order": 9,
+     "sprite": "beetle"
+    },
+    "parameters": [
+     {
+      "id": "level-up-180",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "level-up-181",
+    "name": "on_world_start",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "world:enter",
+     "order": 11,
+     "sprite": "hero"
+    },
+    "parameters": [
+     {
+      "id": "level-up-182",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "level-up-183",
+    "name": "on_hero_overlap",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "overlap",
+     "order": 12,
+     "sprite": "hero"
+    },
+    "parameters": [
+     {
+      "id": "level-up-184",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "level-up-185",
+    "name": "on_start_4",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 13,
+     "sprite": "hero"
+    },
+    "parameters": [
+     {
+      "id": "level-up-186",
+      "name": "payload"
+     }
+    ]
+   }
+  ]
+ }
+}
