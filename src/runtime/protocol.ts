@@ -22,8 +22,9 @@ export type CheckStep =
   | { tap: string }
   | { key: string; hold?: number }
   | { wait: number }
+  | { place: string; x: number; y: number }
   | { expect: CheckExpect };
-export type CheckExpect = ({ sprite: string } & ({ says: string } | { thinks: string } | { costume: string } | { visible: boolean } | { x: number | [number, number] } | { y: number | [number, number] } | { size: number | [number, number] } | { direction: number | [number, number] }))
+export type CheckExpect = ({ sprite: string } & ({ says: string } | { thinks: string } | { costume: string } | { visible: boolean } | { at: [number, number] } | { x: number | [number, number] } | { y: number | [number, number] } | { size: number | [number, number] } | { direction: number | [number, number] }))
   | { score: number | [number, number] } | { lives: number | [number, number] } | { finished: 'won' | 'lost' | 'any' };
 
 export type DrawCommand =

@@ -1,10 +1,12 @@
 """Checks a game the way a player would (academy practice): tap sprites, press keys
 and wait, then compare what the sprites say and show with what was wanted.
 
-A script is a list of steps: {"tap": "Fox"}, {"key": "Space"}, {"wait": 0.5}, and
-{"expect": {...}}, where an expectation names a sprite and one thing about it
-("says", "thinks", "costume", "visible", "x", "y", "size") or the game ("score",
-"lives", "finished"). Numbers match within 1, or within a [low, high] range.
+A script is a list of steps: {"tap": "Fox"}, {"key": "Space"}, {"wait": 0.5},
+{"place": "Robot", "x": -90, "y": 70} (moves a sprite first, so an answer cannot
+just name the old spot), and {"expect": {...}}, where an expectation names a sprite
+and one thing about it ("says", "thinks", "costume", "visible", "x", "y", "at"
+[x, y], "size") or the game ("score", "lives", "finished"). Numbers match within 1
+(a place within 2), or within a [low, high] range.
 Each expectation is reported as {"index", "ok", "got"}: the step's index in the
 script, whether it held, and what was there instead. The browser's worker runs
 this, and so do the tests that prove every academy answer passes and every
@@ -27,6 +29,7 @@ def observe(scene, expect):
         if 'says' in expect or 'thinks' in expect:
             text, style = sprite._said
             return text if style == ('say' if 'says' in expect else 'think') else ''
+        if 'at' in expect: return [sprite._state['x'], sprite._state['y']]
         for field in ('costume', 'visible', 'x', 'y', 'size', 'direction'):
             if field in expect: return sprite._state[field]
         return True
@@ -40,6 +43,7 @@ def observe(scene, expect):
 
 
 def holds(expect, got):
+    if 'at' in expect: return got is not None and all(abs(g - w) <= 2 for g, w in zip(got, expect['at']))
     for field in ('says', 'thinks', 'costume', 'visible', 'finished'):
         if field in expect:
             wanted = expect[field]
@@ -75,6 +79,9 @@ async def play(scene, receive_input, sleep, steps, report, done):
             await sleep(0.05)
         elif 'wait' in step:
             await sleep(step['wait'])
+        elif 'place' in step:
+            sprite = _sprite(scene, step['place'])
+            if sprite is not None and sprite._alive: sprite.go_to(step['x'], step['y'])
         elif 'expect' in step:
             judge(scene, index, step, report)
         done.append(index)

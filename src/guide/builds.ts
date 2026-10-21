@@ -68,8 +68,8 @@ export interface Build {
   id: string; title: string; level: Level; minutes: number; order: number; summary: string; ideas: string[];
   starter: unknown; steps: BuildStep[]; finish: { text: string; remix: string[] }; next?: string;
   kind?: 'build' | 'lesson' | 'unit'; chapters?: Chapter[]; learn?: string[];
-  /** An academy unit's place: chapter 1, unit 1 is "1.1". */
-  unit?: { chapter: number; number: number };
+  /** An academy unit's place: chapter 1, unit 1 is "1.1"; a capstone is the chapter's big project. */
+  unit?: { chapter: number; number: number; capstone?: boolean };
 }
 const modules = import.meta.glob<Build>(['../../content/builds/*.json', '!../../content/builds/*-game.json', '../../content/academy/units/*.json'], { eager: true, import: 'default' });
 // Lessons are listed before the shorter guided builds.
@@ -128,13 +128,15 @@ export interface GuideHost {
   lessonMode?(on: boolean, puzzle: boolean): void;
   /** The project compiled as Run would run it, for a puzzle's checker. */
   compilation(): Compilation;
+  /** The project as it is now, so an academy step's work can be put back when the learner returns to it. */
+  snapshot?(): unknown;
   /** Academy progress: a step was done (its check passed), or an answer was tried (a quiz, or Check my answer), and how it went. */
   progress?(event: { build: Build; index: number; type: 'done' | 'tried'; ok?: boolean; hints: number; ms: number }): void;
 }
 /** Active time per step (the tab hidden does not count) and whether "Show me
  * how" was used, so tester sessions can be compared with each build's minutes. */
 interface Timing { started: string; steps: number[]; shown: boolean[] }
-interface Saved { id: string; index: number; timing?: Timing; planted?: Record<string, string[]>; answers?: Record<string, number>; variants?: Record<string, number>; mastery?: Record<string, boolean> }
+interface Saved { id: string; index: number; timing?: Timing; planted?: Record<string, string[]>; answers?: Record<string, number>; variants?: Record<string, number>; mastery?: Record<string, boolean>; reached?: number[] }
 const minutesText = (ms: number) => { const seconds = Math.round(ms / 1000); return `${Math.floor(seconds / 60)} min ${seconds % 60} s`; };
 const STORAGE = 'python-blocks.guide.v1';
 const item = (tag: string, className: string, text = '') => Object.assign(document.createElement(tag), { className, textContent: text });
@@ -183,6 +185,10 @@ export function installGuide(host: GuideHost) {
   let planted: Record<string, string[]> = {}, answers: Record<string, number> = {}, early = false;
   // Academy units: each step's chosen version, the step whose own project is on the workspace, and how mastery problems went.
   let variants: Record<string, number> = {}, loadedFor = -1, mastery: Record<string, boolean> = {};
+  // The learner's work on each academy step with its own project, kept while they look at other steps.
+  let work: Record<number, unknown> = {};
+  // Steps already done: going back to one and on again does not ask for it twice.
+  let reached = new Set<number>();
   let rendering = false, cheers = 0, coachTimer = 0, looseTimer = 0, keysTip = false, cheerWaits = false, checking = 0, built = false, blocksFirst = false;
   const looseShown = new Set<string>();
   const hintLevel = new Map<number, number>();
@@ -215,7 +221,7 @@ export function installGuide(host: GuideHost) {
   }
   function save() {
     clock();
-    try { if (active) localStorage.setItem(STORAGE, JSON.stringify({ id: active.id, index, timing: timing ?? undefined, planted, answers, variants, mastery } satisfies Saved)); else localStorage.removeItem(STORAGE); } catch { /* the build continues in this tab */ }
+    try { if (active) localStorage.setItem(STORAGE, JSON.stringify({ id: active.id, index, timing: timing ?? undefined, planted, answers, variants, mastery, reached: [...reached] } satisfies Saved)); else localStorage.removeItem(STORAGE); } catch { /* the build continues in this tab */ }
   }
   const visibility = () => { if (document.hidden) save(); else if (timing && since === null) since = performance.now(); };
   document.addEventListener('visibilitychange', visibility); window.addEventListener('pagehide', save);
@@ -265,7 +271,7 @@ export function installGuide(host: GuideHost) {
   });
 
   function begin(build: Build, at = 0, load = true, resumed: Saved | null = null, confirmed = false) {
-    variants = resumed?.variants ?? {}; mastery = resumed?.mastery ?? {}; build = versions(buildById(build.id) ?? build);
+    variants = resumed?.variants ?? {}; mastery = resumed?.mastery ?? {}; work = {}; reached = new Set(resumed?.reached ?? []); build = versions(buildById(build.id) ?? build);
     // A resumed unit's workspace is the learner's work on the open problem.
     loadedFor = load ? -1 : at;
     if (load) {
@@ -340,8 +346,12 @@ export function installGuide(host: GuideHost) {
     el<HTMLButtonElement>('guide-back').disabled = index === 0;
     // Lessons offer "Show me how" as the last rung of the hint ladder.
     el('guide-show').hidden = isLesson || !step.recipe;
-    // An academy problem opens with its own small project (the learner's own was kept when the unit started), and its scripts.
-    if (step.project && loadedFor !== index) openProject(step);
+    // An academy problem opens with its own small project (the learner's own was kept when the unit started), and its scripts;
+    // coming back to a step puts back the work done on it.
+    if (step.project && loadedFor !== index) {
+      if (loadedFor >= 0 && host.snapshot) work[loadedFor] = host.snapshot();
+      if (work[index] !== undefined) { host.load(structuredClone(work[index]), active.title); loadedFor = index; } else openProject(step);
+    }
     el('guide-restart').hidden = !step.project;
     if (step.select) host.select(step.select);
     host.prefer(step.other);
@@ -405,7 +415,7 @@ export function installGuide(host: GuideHost) {
     const base = buildById(active.id)?.steps[index]; if (!base) return;
     variants[index] = ((variants[index] ?? 0) + 1) % ((base.variants?.length ?? 0) + 1);
     active.steps[index] = version(base, variants[index]);
-    delete answers[index]; loadedFor = -1; save(); render(); scrollWithin(el('guide-predict'));
+    delete answers[index]; delete work[index]; loadedFor = -1; save(); render(); scrollWithin(el('guide-predict'));
   });
   /** The guess waits until the blocks listed before it are in, so a lesson shows one moment at a time: build, guess, run. */
   const guessWaits = () => lesson() && !!active!.steps[index].predict && answers[index] === undefined && !early && !facts.ran && blocksFirst;
@@ -550,6 +560,7 @@ export function installGuide(host: GuideHost) {
       if ('says' in expect || 'thinks' in expect) return got ? `${expect.sprite} ${'says' in expect ? 'said' : 'thought'} “${got}”.` : `${expect.sprite} said nothing.`;
       if ('costume' in expect) return `${expect.sprite} wore ${costumeName(got)}.`;
       if ('visible' in expect) return `${expect.sprite} was ${got ? 'showing' : 'hidden'}.`;
+      if ('at' in expect && Array.isArray(got)) return `${expect.sprite} was at x ${Math.round(Number(got[0]))}, y ${Math.round(Number(got[1]))}.`;
       for (const field of ['x', 'y', 'size', 'direction'] as const) if (field in expect) return `${expect.sprite}’s ${field} was ${Math.round(Number(got))}.`;
     }
     if ('score' in expect) return `The score was ${got}.`;
@@ -584,6 +595,7 @@ export function installGuide(host: GuideHost) {
   }
   /** Load a step's own project and plant its scripts, as one fresh start. */
   function openProject(step: BuildStep) {
+    delete work[index];
     host.load(structuredClone(step.project), active!.title); loadedFor = index;
     if (step.plant) { planted[index] = host.insert(step.plant, `${active!.title}: step ${index + 1}`, step.select, step.other); save(); }
   }
@@ -657,7 +669,8 @@ export function installGuide(host: GuideHost) {
   }
   function evaluate() {
     if (!active) return;
-    const step = active.steps[index], ok = passes(step.check, host.workspace, facts);
+    const step = active.steps[index], ok = passes(step.check, host.workspace, facts) || reached.has(index);
+    if (ok) reached.add(index);
     if (ok && !done) { host.notify(); host.progress?.({ build: active, index, type: 'done', hints: hintLevel.get(index) ?? 0, ms: timing?.steps[index] ?? 0 }); if (lesson() && !rendering) cheer(); }
     done = ok;
     el('guide-check').textContent = ok ? (lesson() ? 'You did it! Press Next step.' : 'Done! Go to the next step.') : lesson() ? 'Do everything on the list to go on.' : 'When this step is done, it gets a check mark.';
@@ -757,7 +770,7 @@ export function installGuide(host: GuideHost) {
   });
   el('guide-stop').addEventListener('click', () => {
     stopReading(); closePop(); stopChecking(); stopGameCheck(); stagePicture(null); hideClip();
-    active = null; timing = null; since = null; planted = {}; answers = {}; variants = {}; mastery = {}; loadedFor = -1; save();
+    active = null; timing = null; since = null; planted = {}; answers = {}; variants = {}; mastery = {}; loadedFor = -1; reached = new Set(); save();
     for (const id of ['guide-next', 'guide-back', 'guide-show']) el(id).hidden = false;
     clearConfirm(); host.prefer(undefined); host.tabLabel('Help'); render(); host.reveal(true); showKept(); host.stopped?.();
   });
@@ -779,6 +792,7 @@ export function installGuide(host: GuideHost) {
       answers: entries(saved!.answers, v => Number.isInteger(v)) as Record<string, number>,
       variants: entries(saved!.variants, v => Number.isInteger(v) && (v as number) >= 0) as Record<string, number>,
       mastery: entries(saved!.mastery, v => typeof v === 'boolean') as Record<string, boolean>,
+      reached: Array.isArray(saved!.reached) ? saved!.reached.filter(n => Number.isInteger(n) && n >= 0) : [],
     });
   } catch { /* start fresh */ }
   showKept();

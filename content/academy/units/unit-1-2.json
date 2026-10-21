@@ -1,0 +1,4251 @@
+{
+ "id": "unit-1-2",
+ "kind": "unit",
+ "unit": {
+  "chapter": 1,
+  "number": 2
+ },
+ "title": "Keys move things",
+ "level": "starter",
+ "minutes": 25,
+ "order": 2,
+ "summary": "Drive characters with the arrow keys. Learn how x and y change, and make a jump and a glide.",
+ "ideas": [],
+ "learn": [
+  "Use arrow keys as signals",
+  "Change x to go left and right, y to go up and down",
+  "Plus and minus mean opposite ways",
+  "Make a jump with a wait, and a glide"
+ ],
+ "starter": {
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 23,
+  "workspace": {
+   "blocks": {
+    "languageVersion": 0,
+    "blocks": []
+   },
+   "pythonScene": {
+    "version": 1,
+    "background": "#bfe3f2",
+    "assets": [
+     {
+      "id": "stock-robot-idle-1",
+      "name": "Robot idle 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/robot-idle-1@1"
+     },
+     {
+      "id": "stock-robot-happy",
+      "name": "Robot happy",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/robot-happy@1"
+     },
+     {
+      "id": "stock-robot-jump",
+      "name": "Robot jump",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/robot-jump@1"
+     },
+     {
+      "id": "stock-fox-idle-1",
+      "name": "Fox idle 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/fox-idle-1@1"
+     },
+     {
+      "id": "stock-fox-happy",
+      "name": "Fox happy",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/fox-happy@1"
+     }
+    ],
+    "backdrops": [
+     {
+      "id": "stock-hills",
+      "name": "Hills",
+      "width": 480,
+      "height": 320,
+      "stock": "backdrops/hills@1"
+     }
+    ],
+    "backdrop": "stock-hills",
+    "sprites": [
+     {
+      "id": "robot",
+      "name": "Robot",
+      "x": 0,
+      "y": -40,
+      "direction": 0,
+      "size": 150,
+      "layer": 1,
+      "visible": true,
+      "costume": "stock-robot-idle-1",
+      "rotationStyle": "all",
+      "costumes": [
+       "stock-robot-idle-1",
+       "stock-robot-happy",
+       "stock-robot-jump"
+      ],
+      "frameSeconds": 0.2
+     },
+     {
+      "id": "fox",
+      "name": "Fox",
+      "x": -160,
+      "y": -40,
+      "direction": 0,
+      "size": 150,
+      "layer": 1,
+      "visible": true,
+      "costume": "stock-fox-idle-1",
+      "rotationStyle": "all",
+      "costumes": [
+       "stock-fox-idle-1",
+       "stock-fox-happy"
+      ],
+      "frameSeconds": 0.2
+     }
+    ]
+   }
+  }
+ },
+ "chapters": [
+  {
+   "title": "Play",
+   "idea": "Play it first",
+   "steps": 1
+  },
+  {
+   "title": "Guide",
+   "idea": "The ideas, one at a time",
+   "steps": 4
+  },
+  {
+   "title": "Practice",
+   "idea": "Nine problems, three levels",
+   "steps": 9
+  },
+  {
+   "title": "Challenge",
+   "idea": "Make your own",
+   "steps": 1
+  },
+  {
+   "title": "Mastery",
+   "idea": "Three problems, one try each",
+   "steps": 3
+  }
+ ],
+ "finish": {
+  "text": "You can drive sprites with keys, and make them jump and glide!",
+  "remix": [
+   "Make Robot drive with the W A S D keys.",
+   "Make Fox say Wheee! while it glides."
+  ]
+ },
+ "steps": [
+  {
+   "kind": "play",
+   "title": "Play first",
+   "keys": "arrows",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       },
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "text": "Drive Robot around! Press [[Run code]], tap the game, then press the arrow keys [←] [→] [↑] [↓]. Press [space] too.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowRight",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "x"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "20"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowLeft",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "x"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "-20"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowUp",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "y"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "20"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowDown",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "y"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "-20"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "key",
+      "key": "Space",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Beep!"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "1"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "checklist": [
+    {
+     "text": "Press [[Run code]] and drive",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "ran": true
+   },
+   "why": "Each key is its own <<signal>>, and each one has its own blocks."
+  },
+  {
+   "kind": "predict",
+   "title": "One key, one move",
+   "keys": "arrows",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       },
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "panel": {
+    "backdrop": "backdrops/hills@1",
+    "art": [
+     [
+      "cast/robot-idle-1@1",
+      240,
+      238,
+      1.7
+     ]
+    ],
+    "labels": [
+     [
+      "x = 0",
+      240,
+      120,
+      "say"
+     ]
+    ]
+   },
+   "text": "Robot is in the middle, at <<x>> = 0. ((Events#hat:key|when right arrow key pressed)) runs ((Motion#scene_change|change sprite Robot x by 30)) each time you press [→].",
+   "plant": [
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowRight",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "x"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "30"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "predict": {
+    "question": "You press → three times. What is Robot’s x now?",
+    "choices": [
+     "30",
+     "90",
+     "3",
+     "0"
+    ],
+    "answer": 1,
+    "explain": "Each press runs the blocks once: 0 + 30 + 30 + 30 = 90. A bigger x is further right."
+   },
+   "checklist": [
+    {
+     "text": "Make your guess",
+     "check": {
+      "predicted": true
+     }
+    },
+    {
+     "text": "Press [[Run code]] and try it",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "all": [
+     {
+      "predicted": true
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "why": "Change x adds to where the sprite is now, so each press moves it a bit more."
+  },
+  {
+   "kind": "predict",
+   "title": "Minus goes left",
+   "keys": "arrows",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       },
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "panel": {
+    "backdrop": "backdrops/hills@1",
+    "art": [
+     [
+      "cast/robot-idle-1@1",
+      240,
+      238,
+      1.7
+     ]
+    ],
+    "labels": [
+     [
+      "← minus",
+      150,
+      120,
+      "say"
+     ]
+    ]
+   },
+   "text": "Now [←] runs ((Motion#scene_change|change sprite Robot x by -30)). The minus sign means the other way.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowLeft",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "x"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "-30"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "predict": {
+    "question": "Robot starts at x = 0. You press ← two times. What is x now?",
+    "choices": [
+     "60",
+     "-60",
+     "-30",
+     "0"
+    ],
+    "answer": 1,
+    "explain": "Minus 30, twice, is -60. A minus x is left of the middle."
+   },
+   "checklist": [
+    {
+     "text": "Make your guess",
+     "check": {
+      "predicted": true
+     }
+    },
+    {
+     "text": "Press [[Run code]] and try it",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "all": [
+     {
+      "predicted": true
+     },
+     {
+      "ran": true
+     }
+    ]
+   }
+  },
+  {
+   "kind": "predict",
+   "title": "Up and down are y",
+   "keys": "arrows",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       },
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "panel": {
+    "backdrop": "backdrops/hills@1",
+    "art": [
+     [
+      "cast/robot-idle-1@1",
+      240,
+      238,
+      1.7
+     ]
+    ],
+    "labels": [
+     [
+      "↑ y gets bigger",
+      240,
+      110,
+      "say"
+     ]
+    ]
+   },
+   "text": "<<y>> is up and down. [↑] runs ((Motion#scene_change|change sprite Robot y by 20)) and [↓] runs ((Motion#scene_change|change sprite Robot y by -20)).",
+   "plant": [
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowUp",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "y"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "20"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowDown",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "y"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "-20"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "predict": {
+    "question": "Robot starts at y = -40. You press ↑, ↑, then ↓. What is y now?",
+    "choices": [
+     "-20",
+     "0",
+     "20",
+     "-60"
+    ],
+    "answer": 0,
+    "explain": "-40 + 20 + 20 − 20 = -20. Up adds to y, down takes away."
+   },
+   "checklist": [
+    {
+     "text": "Make your guess",
+     "check": {
+      "predicted": true
+     }
+    },
+    {
+     "text": "Press [[Run code]] and try it",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "all": [
+     {
+      "predicted": true
+     },
+     {
+      "ran": true
+     }
+    ]
+   }
+  },
+  {
+   "kind": "build",
+   "title": "Drive Fox",
+   "keys": "arrows",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "highlight": {
+    "category": "motion"
+   },
+   "coach": "Change blocks are in Motion. Tap it!",
+   "text": "Make Fox move right by 10 when you press [→].",
+   "checklist": [
+    {
+     "text": "Add ((Events#hat:key|when right arrow key pressed))",
+     "check": {
+      "handler": "key"
+     }
+    },
+    {
+     "text": "Put ((Motion#scene_change|change sprite Fox x by 10)) under it",
+     "check": {
+      "handler": "key",
+      "contains": [
+       "scene_change"
+      ]
+     }
+    },
+    {
+     "text": "Run it. Tap the game, then press [→]",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "all": [
+     {
+      "handler": "key",
+      "contains": [
+       "scene_change"
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "hints": [
+    "Drag ((Events#hat:key|when space key pressed)) out of {{Events}} and choose right arrow in its menu.",
+    "Snap ((Motion#scene_change|change sprite Fox x by 10)) from {{Motion}} under it."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "ArrowRight",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_change",
+        "fields": {
+         "PROPERTY": "x"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "10"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "kind": "quiz",
+   "tier": 1,
+   "title": "Five presses",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       },
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "text": "Read the blocks, then answer.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowRight",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "x"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "10"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "quiz": {
+    "question": "Robot starts at x = 0. You press → 5 times. What is Robot’s x?",
+    "choices": [
+     "5",
+     "10",
+     "50",
+     "15"
+    ],
+    "answer": 2,
+    "explain": "10 each time, five times: 50."
+   },
+   "check": {
+    "answered": true
+   },
+   "variants": [
+    {
+     "plant": [
+      {
+       "handler": {
+        "kind": "key",
+        "key": "ArrowRight",
+        "sprite": "$sprite"
+       },
+       "stack": [
+        {
+         "type": "scene_change",
+         "fields": {
+          "PROPERTY": "x"
+         },
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "robot"
+            }
+           }
+          },
+          "VALUE": {
+           "shadow": {
+            "type": "py_number",
+            "fields": {
+             "VALUE": "20"
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     ],
+     "quiz": {
+      "question": "Robot starts at x = 0. You press → 3 times. What is Robot’s x?",
+      "choices": [
+       "23",
+       "60",
+       "20",
+       "3"
+      ],
+      "answer": 1,
+      "explain": "20 each time, three times: 60."
+     }
+    },
+    {
+     "plant": [
+      {
+       "handler": {
+        "kind": "key",
+        "key": "ArrowLeft",
+        "sprite": "$sprite"
+       },
+       "stack": [
+        {
+         "type": "scene_change",
+         "fields": {
+          "PROPERTY": "x"
+         },
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "robot"
+            }
+           }
+          },
+          "VALUE": {
+           "shadow": {
+            "type": "py_number",
+            "fields": {
+             "VALUE": "-10"
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     ],
+     "quiz": {
+      "question": "Robot starts at x = 0. You press ← 4 times. What is Robot’s x?",
+      "choices": [
+       "40",
+       "-40",
+       "-10",
+       "4"
+      ],
+      "answer": 1,
+      "explain": "Minus 10, four times: -40. It went left."
+     }
+    }
+   ]
+  },
+  {
+   "kind": "complete",
+   "tier": 1,
+   "title": "Snap it in",
+   "keys": "arrows",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       },
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "text": "Snap the loose change block under ((Events#hat:key|when right arrow key pressed)), so [→] moves Robot right.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowRight",
+      "sprite": "$sprite"
+     },
+     "stack": []
+    },
+    {
+     "handler": {
+      "kind": "loose"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "x"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "20"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "game": {
+    "script": [
+     {
+      "key": "ArrowRight"
+     },
+     {
+      "wait": 0.2
+     },
+     {
+      "expect": {
+       "sprite": "Robot",
+       "x": 20
+      },
+      "label": "Press →: Robot moves to x 20"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]]: every check passes",
+     "check": {
+      "solved": true
+     }
+    }
+   ],
+   "check": {
+    "solved": true
+   },
+   "hints": [
+    "Drag the change block by its left edge and drop it under the when block."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "ArrowRight",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_change",
+        "fields": {
+         "PROPERTY": "x"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "robot"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "20"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ],
+    "replacesPlant": 6
+   }
+  },
+  {
+   "kind": "build",
+   "tier": 1,
+   "title": "Left with ←",
+   "keys": "arrows",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "Make Fox move left by 20 each time you press [←].",
+   "game": {
+    "script": [
+     {
+      "key": "ArrowLeft"
+     },
+     {
+      "wait": 0.2
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "x": -20
+      },
+      "label": "Press ← once: Fox is at x -20"
+     },
+     {
+      "key": "ArrowLeft"
+     },
+     {
+      "wait": 0.2
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "x": -40
+      },
+      "label": "Press ← again: Fox is at x -40"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]]: every check passes",
+     "check": {
+      "solved": true
+     }
+    }
+   ],
+   "check": {
+    "solved": true
+   },
+   "hints": [
+    "Use ((Events#hat:key|when left arrow key pressed)) from {{Events}}.",
+    "Under it, ((Motion#scene_change|change sprite Fox x by -20)). Left is minus."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "ArrowLeft",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_change",
+        "fields": {
+         "PROPERTY": "x"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "-20"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "kind": "quiz",
+   "tier": 2,
+   "title": "There and back",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       },
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "text": "[→] adds 25 to Robot’s x, and [←] takes 25 away.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowRight",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "x"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "25"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowLeft",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "x"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "-25"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "quiz": {
+    "question": "Robot starts at x = 0. You press →, →, ←, →. What is x now?",
+    "choices": [
+     "50",
+     "100",
+     "25",
+     "-50"
+    ],
+    "answer": 0,
+    "explain": "25 + 25 − 25 + 25 = 50."
+   },
+   "check": {
+    "answered": true
+   },
+   "variants": [
+    {
+     "quiz": {
+      "question": "Robot starts at x = 0. You press ←, ←, →. What is x now?",
+      "choices": [
+       "-25",
+       "25",
+       "-75",
+       "0"
+      ],
+      "answer": 0,
+      "explain": "-25 − 25 + 25 = -25."
+     }
+    },
+    {
+     "quiz": {
+      "question": "Robot starts at x = 0. You press →, ←, →, ←. What is x now?",
+      "choices": [
+       "0",
+       "50",
+       "100",
+       "-50"
+      ],
+      "answer": 0,
+      "explain": "Every → is undone by a ←, so Robot is back at 0."
+     }
+    }
+   ]
+  },
+  {
+   "kind": "fix",
+   "tier": 2,
+   "title": "Up goes down",
+   "keys": "arrows",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "Pressing [↑] should move Fox up. But Fox goes down! Fix the blocks.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowUp",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "y"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "-20"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "game": {
+    "script": [
+     {
+      "key": "ArrowUp"
+     },
+     {
+      "wait": 0.2
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "y": -20
+      },
+      "label": "Press ↑: Fox goes up to y -20"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]]: every check passes",
+     "check": {
+      "solved": true
+     }
+    }
+   ],
+   "check": {
+    "solved": true
+   },
+   "hints": [
+    "Up makes y bigger. Is the number plus or minus?",
+    "Change -20 to 20."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "ArrowUp",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_change",
+        "fields": {
+         "PROPERTY": "y"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "20"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ],
+    "replacesPlant": 9
+   }
+  },
+  {
+   "kind": "build",
+   "tier": 2,
+   "title": "Up and down",
+   "keys": "arrows",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       },
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "text": "Make Robot go up by 20 with [↑] and down by 20 with [↓].",
+   "game": {
+    "script": [
+     {
+      "key": "ArrowUp"
+     },
+     {
+      "key": "ArrowUp"
+     },
+     {
+      "wait": 0.2
+     },
+     {
+      "expect": {
+       "sprite": "Robot",
+       "y": 0
+      },
+      "label": "Press ↑ twice: Robot is at y 0"
+     },
+     {
+      "key": "ArrowDown"
+     },
+     {
+      "wait": 0.2
+     },
+     {
+      "expect": {
+       "sprite": "Robot",
+       "y": -20
+      },
+      "label": "Then ↓: Robot is at y -20"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]]: every check passes",
+     "check": {
+      "solved": true
+     }
+    }
+   ],
+   "check": {
+    "solved": true
+   },
+   "hints": [
+    "You need two when blocks: ((Events#hat:key|when up arrow key pressed)) and ((Events#hat:key|when down arrow key pressed)).",
+    "Up: ((Motion#scene_change|change sprite Robot y by 20)). Down: ((Motion#scene_change|change sprite Robot y by -20))."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "ArrowUp",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_change",
+        "fields": {
+         "PROPERTY": "y"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "robot"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "20"
+           }
+          }
+         }
+        }
+       }
+      ]
+     },
+     {
+      "handler": {
+       "kind": "key",
+       "key": "ArrowDown",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_change",
+        "fields": {
+         "PROPERTY": "y"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "robot"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "-20"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "kind": "build",
+   "tier": 3,
+   "title": "Jump!",
+   "keys": "space",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "When you press [space], Fox jumps: it goes up 60, waits 0.3 seconds, then comes down 60. The wait block is ((Control#py_wait|wait 1 seconds)).",
+   "game": {
+    "script": [
+     {
+      "key": "Space"
+     },
+     {
+      "wait": 0.15
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "y": 20
+      },
+      "label": "Press space: Fox goes up to y 20"
+     },
+     {
+      "wait": 0.5
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "y": -40
+      },
+      "label": "and comes back down to y -40"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]]: every check passes",
+     "check": {
+      "solved": true
+     }
+    }
+   ],
+   "check": {
+    "solved": true
+   },
+   "hints": [
+    "Three blocks under the space block: change y by 60, wait, change y by -60.",
+    "The wait block is in {{Control}}. Type 0.3 in it."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "Space",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_change",
+        "fields": {
+         "PROPERTY": "y"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "60"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "py_wait",
+        "inputs": {
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "0.3"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "scene_change",
+        "fields": {
+         "PROPERTY": "y"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "-60"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "why": "Without the wait, Fox would go up and down so fast that you would not see it."
+  },
+  {
+   "kind": "quiz",
+   "tier": 3,
+   "title": "Two moves at once",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       },
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "text": "Each [→] runs two blocks: change x by 20, then change y by 10.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowRight",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "x"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "20"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "y"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "10"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "quiz": {
+    "question": "Robot starts at x = 0, y = -40. You press → twice. Where is Robot?",
+    "choices": [
+     "x 40, y -20",
+     "x 20, y -30",
+     "x 40, y -40",
+     "x 2, y 2"
+    ],
+    "answer": 0,
+    "explain": "Two presses: x goes 0 → 20 → 40, and y goes -40 → -30 → -20."
+   },
+   "check": {
+    "answered": true
+   },
+   "variants": [
+    {
+     "plant": [
+      {
+       "handler": {
+        "kind": "key",
+        "key": "ArrowLeft",
+        "sprite": "$sprite"
+       },
+       "stack": [
+        {
+         "type": "scene_change",
+         "fields": {
+          "PROPERTY": "x"
+         },
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "robot"
+            }
+           }
+          },
+          "VALUE": {
+           "shadow": {
+            "type": "py_number",
+            "fields": {
+             "VALUE": "-10"
+            }
+           }
+          }
+         }
+        },
+        {
+         "type": "scene_change",
+         "fields": {
+          "PROPERTY": "y"
+         },
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "robot"
+            }
+           }
+          },
+          "VALUE": {
+           "shadow": {
+            "type": "py_number",
+            "fields": {
+             "VALUE": "20"
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     ],
+     "quiz": {
+      "question": "Robot starts at x = 0, y = -40. You press ← three times. Where is Robot?",
+      "choices": [
+       "x -30, y 20",
+       "x 30, y 20",
+       "x -30, y -40",
+       "x -10, y 20"
+      ],
+      "answer": 0,
+      "explain": "x: 0 → -10 → -20 → -30. y: -40 → -20 → 0 → 20."
+     }
+    }
+   ]
+  },
+  {
+   "kind": "build",
+   "tier": 3,
+   "title": "Glide",
+   "keys": "space",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       },
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "text": "When you press [space], Robot glides to x 100, y 0 in 1 second. Use ((Motion#scene_glide|glide sprite Robot for 1 seconds to x 100 y 0)).",
+   "game": {
+    "script": [
+     {
+      "key": "Space"
+     },
+     {
+      "wait": 0.4
+     },
+     {
+      "expect": {
+       "sprite": "Robot",
+       "x": [
+        5,
+        95
+       ]
+      },
+      "label": "Robot slides on its way"
+     },
+     {
+      "wait": 1
+     },
+     {
+      "expect": {
+       "sprite": "Robot",
+       "at": [
+        100,
+        0
+       ]
+      },
+      "label": "and ends at x 100, y 0"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]]: every check passes",
+     "check": {
+      "solved": true
+     }
+    }
+   ],
+   "check": {
+    "solved": true
+   },
+   "hints": [
+    "Glide is in {{Motion}}. It moves a little at a time, so you see it slide.",
+    "Set seconds to 1, x to 100 and y to 0."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "Space",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_glide",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "robot"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "1"
+           }
+          }
+         },
+         "X": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "100"
+           }
+          }
+         },
+         "Y": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "kind": "challenge",
+   "title": "Make a dance",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -80,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 80,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "★ Make Fox and Robot dance! Try the ideas below, then press Next step when you are happy with it.",
+   "checklist": [
+    {
+     "text": "Arrow keys move someone around",
+     "check": {
+      "count": [
+       "scene_change",
+       2
+      ]
+     }
+    },
+    {
+     "text": "Someone jumps with a wait in the middle",
+     "check": {
+      "all": [
+       {
+        "blocks": [
+         "py_wait"
+        ]
+       },
+       {
+        "blocks": [
+         "scene_change"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "text": "Someone glides",
+     "check": {
+      "blocks": [
+       "scene_glide"
+      ]
+     }
+    }
+   ],
+   "check": {
+    "all": []
+   }
+  },
+  {
+   "kind": "build",
+   "mastery": true,
+   "title": "Show what you know: move",
+   "keys": "arrows",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "Make Fox move right by 15 each time you press [→].",
+   "game": {
+    "script": [
+     {
+      "key": "ArrowRight"
+     },
+     {
+      "wait": 0.2
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "x": 15
+      },
+      "label": "Press →: Fox is at x 15"
+     },
+     {
+      "key": "ArrowRight"
+     },
+     {
+      "wait": 0.2
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "x": 30
+      },
+      "label": "Press → again: Fox is at x 30"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]] once",
+     "check": {
+      "tried": true
+     }
+    }
+   ],
+   "check": {
+    "tried": true
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "ArrowRight",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_change",
+        "fields": {
+         "PROPERTY": "x"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "15"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "variants": [
+    {
+     "text": "Make Fox move up by 25 each time you press [↑].",
+     "game": {
+      "script": [
+       {
+        "key": "ArrowUp"
+       },
+       {
+        "wait": 0.2
+       },
+       {
+        "expect": {
+         "sprite": "Fox",
+         "y": -15
+        },
+        "label": "Press ↑: Fox is at y -15"
+       },
+       {
+        "key": "ArrowUp"
+       },
+       {
+        "wait": 0.2
+       },
+       {
+        "expect": {
+         "sprite": "Fox",
+         "y": 10
+        },
+        "label": "Press ↑ again: Fox is at y 10"
+       }
+      ]
+     },
+     "solution": {
+      "parts": [
+       {
+        "handler": {
+         "kind": "key",
+         "key": "ArrowUp",
+         "sprite": "$sprite"
+        },
+        "stack": [
+         {
+          "type": "scene_change",
+          "fields": {
+           "PROPERTY": "y"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "fox"
+             }
+            }
+           },
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "25"
+             }
+            }
+           }
+          }
+         }
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "text": "Make Fox move left by 30 each time you press [←].",
+     "game": {
+      "script": [
+       {
+        "key": "ArrowLeft"
+       },
+       {
+        "wait": 0.2
+       },
+       {
+        "expect": {
+         "sprite": "Fox",
+         "x": -30
+        },
+        "label": "Press ←: Fox is at x -30"
+       },
+       {
+        "key": "ArrowLeft"
+       },
+       {
+        "wait": 0.2
+       },
+       {
+        "expect": {
+         "sprite": "Fox",
+         "x": -60
+        },
+        "label": "Press ← again: Fox is at x -60"
+       }
+      ]
+     },
+     "solution": {
+      "parts": [
+       {
+        "handler": {
+         "kind": "key",
+         "key": "ArrowLeft",
+         "sprite": "$sprite"
+        },
+        "stack": [
+         {
+          "type": "scene_change",
+          "fields": {
+           "PROPERTY": "x"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "fox"
+             }
+            }
+           },
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "-30"
+             }
+            }
+           }
+          }
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "kind": "quiz",
+   "mastery": true,
+   "title": "Show what you know: where is it?",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       },
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "text": "[→] adds 15 to Robot’s x, and [↓] takes 10 from its y.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowRight",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "x"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "15"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowDown",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "y"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "-10"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "quiz": {
+    "question": "Robot starts at x = 0, y = -40. You press →, →, ↓. Where is Robot?",
+    "choices": [
+     "x 30, y -50",
+     "x 15, y -50",
+     "x 30, y -40",
+     "x 30, y -30"
+    ],
+    "answer": 0,
+    "explain": "x: 0 → 15 → 30. y: -40 → -50."
+   },
+   "checklist": [
+    {
+     "text": "Answer once",
+     "check": {
+      "tried": true
+     }
+    }
+   ],
+   "check": {
+    "tried": true
+   },
+   "variants": [
+    {
+     "quiz": {
+      "question": "Robot starts at x = 0, y = -40. You press ↓, ↓, →. Where is Robot?",
+      "choices": [
+       "x 15, y -60",
+       "x 30, y -60",
+       "x 15, y -50",
+       "x 15, y -20"
+      ],
+      "answer": 0,
+      "explain": "x: 0 → 15. y: -40 → -50 → -60."
+     }
+    }
+   ]
+  },
+  {
+   "kind": "fix",
+   "mastery": true,
+   "title": "Show what you know: fix it",
+   "keys": "arrows",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 160,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "[→] should move Fox right by 10, but Fox goes left. Fix it.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowRight",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "x"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "-10"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "game": {
+    "script": [
+     {
+      "key": "ArrowRight"
+     },
+     {
+      "wait": 0.2
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "x": 10
+      },
+      "label": "Press →: Fox is at x 10"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]] once",
+     "check": {
+      "tried": true
+     }
+    }
+   ],
+   "check": {
+    "tried": true
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "ArrowRight",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_change",
+        "fields": {
+         "PROPERTY": "x"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "10"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ],
+    "replacesPlant": 17
+   },
+   "variants": [
+    {
+     "text": "Pressing [↓] should move Fox down by 20, but nothing happens when you press ↓. Fix it.",
+     "plant": [
+      {
+       "handler": {
+        "kind": "key",
+        "key": "ArrowUp",
+        "sprite": "$sprite"
+       },
+       "stack": [
+        {
+         "type": "scene_change",
+         "fields": {
+          "PROPERTY": "y"
+         },
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "fox"
+            }
+           }
+          },
+          "VALUE": {
+           "shadow": {
+            "type": "py_number",
+            "fields": {
+             "VALUE": "-20"
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     ],
+     "game": {
+      "script": [
+       {
+        "key": "ArrowDown"
+       },
+       {
+        "wait": 0.2
+       },
+       {
+        "expect": {
+         "sprite": "Fox",
+         "y": -60
+        },
+        "label": "Press ↓: Fox goes down to y -60"
+       }
+      ]
+     },
+     "solution": {
+      "parts": [
+       {
+        "handler": {
+         "kind": "key",
+         "key": "ArrowDown",
+         "sprite": "$sprite"
+        },
+        "stack": [
+         {
+          "type": "scene_change",
+          "fields": {
+           "PROPERTY": "y"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "fox"
+             }
+            }
+           },
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "-20"
+             }
+            }
+           }
+          }
+         }
+        ]
+       }
+      ],
+      "replacesPlant": null
+     }
+    }
+   ]
+  }
+ ]
+}

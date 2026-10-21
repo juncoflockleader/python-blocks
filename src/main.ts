@@ -248,6 +248,7 @@ const guide = installGuide({
   workspace, level: () => level, setLevel: next => levelControl.set(next),
   compilation: () => compile(workspace),
   lessonMode: (on, puzzle) => lessonStage.lesson(on, puzzle),
+  snapshot: () => snapshot(workspace),
   // A guided build works in the blocks, so it starts in Blocks view.
   load(project, title) { if (!installProject(prepareProject(JSON.stringify(project)).project)) return false; setTitle(title); viewSwitch?.show('blocks'); return true; },
   select: id => sceneEditor?.select(id), prefer: id => { preferredTarget = id; }, showRecipe: recipe => ideas.show(recipe), reveal: list => { if (list) showHelp('builds'); else tabs.activate('help'); }, notify: helpDot,

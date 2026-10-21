@@ -48,10 +48,11 @@ it('the map lists every unit once, and every unit it lists exists', () => {
 
 describe('academy units', () => {
   for (const unit of units) {
-    it(`${unit.id}: its parts add up to its steps, mastery is three one-try problems, and every quiz's answer is one of its choices`, () => {
+    it(`${unit.id}: its parts add up to its steps, mastery is three one-try problems (a big project has none), and every quiz's answer is one of its choices`, () => {
       expect(unit.chapters!.reduce((sum, part) => sum + part.steps, 0)).toBe(unit.steps.length);
       const mastery = unit.steps.filter(step => step.mastery);
-      expect(mastery).toHaveLength(3);
+      expect(mastery).toHaveLength(unit.unit!.capstone ? 0 : 3);
+      expect(chapters[unit.unit!.chapter - 1].units[unit.unit!.number - 1].capstone ?? false).toBe(unit.unit!.capstone ?? false);
       for (const step of mastery) { expect(step.check).toEqual({ tried: true }); expect(step.hints ?? []).toEqual([]); }
       for (const [i, base] of unit.steps.entries()) for (let v = 0; v <= (base.variants?.length ?? 0); v++) {
         const quiz = version(base, v).quiz;
@@ -74,7 +75,24 @@ describe('academy units', () => {
         expect(answered.reports.filter(report => report.ok), `${where} answer: ${JSON.stringify(answered.reports)}`).toHaveLength(wanted);
         checked++;
       }
-      expect(checked).toBeGreaterThan(5);
+      expect(checked).toBeGreaterThan(unit.unit!.capstone ? -1 : 5);
+    });
+
+    // A big project builds one card a step at a time: each step's answer goes on top of the ones before, and its check passes.
+    if (unit.unit?.capstone) it(`${unit.id}: built step by step, every step passes once its blocks are in`, () => {
+      let w: Blockly.Workspace | null = null, base: BuildStep | null = null;
+      for (const [i, step] of unit.steps.entries()) {
+        if (step.project) { w = open(step); base = step; }
+        if (!w || !base || i === 0 || !step.solution) continue;
+        const recipe = { id: 'unit', title: 'unit', group: 'game', phrases: [], level: 'pro', concepts: ['event'], steps: [], blocks: step.solution.parts } as Recipe;
+        appendRecipe(w, recipe, placement(w, recipe, step.select ?? '', step.other));
+        const check = still(step.check);
+        if (check) expect(passes(check, w, { ran: true, finished: 'won', predicted: true }), `${unit.id} step ${i + 1}`).toBe(true);
+        expect(compile(w).diagnostics.filter(d => d.severity === 'error'), `${unit.id} step ${i + 1}`).toEqual([]);
+      }
+      // The finished card ticks every item of Make it yours.
+      const last = unit.steps.at(-1)!;
+      for (const item of last.checklist ?? []) expect(passes(item.check, w!, { ran: true, finished: null }), `${unit.id}: ${item.text}`).toBe(true);
     });
 
     it(`${unit.id}: guide and build steps pass with their answers, and block pictures carry picker numbers`, () => {

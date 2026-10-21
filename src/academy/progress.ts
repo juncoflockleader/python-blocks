@@ -56,7 +56,8 @@ export function unitStatus(build: Build, unit: UnitRecord | undefined) {
   });
   const tries = build.steps.flatMap((step, i) => step.mastery ? [unit?.steps[i]] : []);
   const right = tries.filter(step => step?.ok).length;
-  const mastered = tries.length > 0 && tries.every(step => step?.tries) && right >= Math.min(2, tries.length);
+  // A big project (a chapter's capstone) has no mastery problems: finishing it is its star.
+  const mastered = tries.length > 0 ? tries.every(step => step?.tries) && right >= Math.min(2, tries.length) : !!build.unit?.capstone && !!unit?.finished;
   const done = parts.reduce((sum, part) => sum + part.done, 0);
   // The first step not yet done is where Continue goes.
   const next = build.steps.findIndex((_, i) => !unit?.steps[i]?.done);
