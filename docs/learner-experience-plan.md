@@ -574,6 +574,20 @@ Engine fixes found while testing the lesson: (1) a world switch cleared contact 
 
 Verification: [Python tests](../tests/python/test_worlds.py) for next world, the level and both fixes; a [unit test](../tests/unit/level-up.test.ts) plays the finished game with the scripted player (each flag goes on, the Hero starts on the left with new coins, the last flag wins) and the starter (the flag still wins on Level 1); the lesson unit tests build it step by step, and the [browser test](../tests/e2e/lesson.spec.ts) walks all nine steps, including Duplicate world at the Builder palette's level and playing through three levels to the win.
 
+### 3.20 Arcade examples (built 2026-10-21)
+
+The owner asked for more examples: a Pac-Man, a Space Invaders and other old arcade games. Five are in Examples, with original names and art (as the lessons avoid the games they are modelled on), each a finished game to play and change, with three things to try.
+
+| Example | Level | What it shows |
+| --- | --- | --- |
+| Maze Muncher (Pac-Man) | Pro | A maze painted with the new maze walls and dots as tiles. The muncher moves a square at a time with a wanted direction it takes at the next crossing (so a key can be pressed early), and eats the dot tile it stands on. Four ghost sprites of kind ghost choose, at each crossing, the way nearest the muncher (with a little chance), never turning back, and run the other way and slower while scared. One game loop moves everything; functions open_at, at_center, eat, move_muncher, move_ghost, caught and reset, a list of the four ways, sprite data per ghost, and tiles of to count the dots. |
+| Sky Defenders (Space Invaders) | Builder | Three rows of eight alien clones, each row with its own animation, march together: one loop moves every alien of kind alien, and when one reaches the edge they all turn and drop. A single laser (a sprite, shown when fired), bombs as clones that fall, score and lives. |
+| Rock Blaster (Asteroids) | Builder | The ship turns and flies with the arrows (move in its direction), a wrap function brings it and the rocks back from the other edge, and a rock hit by the shot splits into two smaller clones flying off in new directions. A new wave comes when every rock is gone. |
+| Snake | Builder | The head moves a square at a time; the body is a trail of pieces fired with no speed and a lifetime as long as the snake, so the snake grows by making the pieces last longer. Touching anything but the apple ends the game. |
+| Moon Lander | Builder | Moon gravity (ay −40) and an engine that pushes up while fuel lasts, side thrusters, and a landing that counts only on the pad and slowly. |
+
+New library art for them (Characters, Objects, Tiles and a Moon backdrop) is in the library for every project: [arcade.ts](../src/art/arcade.ts). The projects are built from blocks with the editor's own functions (so every block is real) and checked by a [unit test](../tests/unit/arcade.test.ts) that plays each one with the academy's scripted player: the controls do what they say, nothing fails, and each can be lost.
+
 ## 4. Track C: academy
 
 ### 4.1 Model

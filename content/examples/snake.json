@@ -1,0 +1,1807 @@
+{
+ "format": "python-blocks",
+ "formatVersion": 2,
+ "languageVersion": 23,
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "py_function",
+     "id": "place_apple_function_block",
+     "x": 2484,
+     "y": 30,
+     "extraState": {
+      "functionId": "place_apple_function",
+      "signature": {
+       "id": "place_apple_function",
+       "name": "place_apple",
+       "parameters": []
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_go",
+        "id": "snake-1",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "snake-2",
+           "fields": {
+            "SPRITE_ID": "apple"
+           }
+          }
+         },
+         "X": {
+          "block": {
+           "type": "py_binary",
+           "id": "snake-3",
+           "fields": {
+            "OP": "+"
+           },
+           "inputs": {
+            "A": {
+             "shadow": {
+              "type": "py_number",
+              "id": "snake-4",
+              "fields": {
+               "VALUE": "-230"
+              }
+             }
+            },
+            "B": {
+             "block": {
+              "type": "py_binary",
+              "id": "snake-5",
+              "fields": {
+               "OP": "*"
+              },
+              "inputs": {
+               "A": {
+                "shadow": {
+                 "type": "py_number",
+                 "id": "snake-6",
+                 "fields": {
+                  "VALUE": "20"
+                 }
+                }
+               },
+               "B": {
+                "block": {
+                 "type": "math_random_int",
+                 "id": "snake-7",
+                 "inputs": {
+                  "FROM": {
+                   "shadow": {
+                    "type": "py_number",
+                    "id": "snake-8",
+                    "fields": {
+                     "VALUE": "0"
+                    }
+                   }
+                  },
+                  "TO": {
+                   "shadow": {
+                    "type": "py_number",
+                    "id": "snake-9",
+                    "fields": {
+                     "VALUE": "23"
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         },
+         "Y": {
+          "block": {
+           "type": "py_binary",
+           "id": "snake-10",
+           "fields": {
+            "OP": "+"
+           },
+           "inputs": {
+            "A": {
+             "shadow": {
+              "type": "py_number",
+              "id": "snake-11",
+              "fields": {
+               "VALUE": "-150"
+              }
+             }
+            },
+            "B": {
+             "block": {
+              "type": "py_binary",
+              "id": "snake-12",
+              "fields": {
+               "OP": "*"
+              },
+              "inputs": {
+               "A": {
+                "shadow": {
+                 "type": "py_number",
+                 "id": "snake-13",
+                 "fields": {
+                  "VALUE": "20"
+                 }
+                }
+               },
+               "B": {
+                "block": {
+                 "type": "math_random_int",
+                 "id": "snake-14",
+                 "inputs": {
+                  "FROM": {
+                   "shadow": {
+                    "type": "py_number",
+                    "id": "snake-15",
+                    "fields": {
+                     "VALUE": "0"
+                    }
+                   }
+                  },
+                  "TO": {
+                   "shadow": {
+                    "type": "py_number",
+                    "id": "snake-16",
+                    "fields": {
+                     "VALUE": "15"
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_start_handler_block",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_start_handler",
+      "signature": {
+       "id": "on_start_handler",
+       "name": "on_start",
+       "parameters": [
+        {
+         "id": "on_start_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "start",
+        "order": 0,
+        "sprite": "head"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "game_set",
+        "id": "snake-17",
+        "fields": {
+         "FIELD": "score"
+        },
+        "inputs": {
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "id": "snake-18",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "py_set",
+          "id": "snake-19",
+          "fields": {
+           "SYMBOL": "snake-147"
+          },
+          "inputs": {
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "id": "snake-20",
+             "fields": {
+              "VALUE": "20"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "py_set",
+            "id": "snake-21",
+            "fields": {
+             "SYMBOL": "snake-148"
+            },
+            "inputs": {
+             "VALUE": {
+              "shadow": {
+               "type": "py_number",
+               "id": "snake-22",
+               "fields": {
+                "VALUE": "0"
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "py_set",
+              "id": "snake-23",
+              "fields": {
+               "SYMBOL": "snake-149"
+              },
+              "inputs": {
+               "VALUE": {
+                "shadow": {
+                 "type": "py_number",
+                 "id": "snake-24",
+                 "fields": {
+                  "VALUE": "4"
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "scene_go",
+                "id": "snake-25",
+                "inputs": {
+                 "SPRITE": {
+                  "block": {
+                   "type": "scene_sprite",
+                   "id": "snake-26",
+                   "fields": {
+                    "SPRITE_ID": "head"
+                   }
+                  }
+                 },
+                 "X": {
+                  "shadow": {
+                   "type": "py_number",
+                   "id": "snake-27",
+                   "fields": {
+                    "VALUE": "-110"
+                   }
+                  }
+                 },
+                 "Y": {
+                  "shadow": {
+                   "type": "py_number",
+                   "id": "snake-28",
+                   "fields": {
+                    "VALUE": "10"
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "scene_set",
+                  "id": "snake-29",
+                  "fields": {
+                   "PROPERTY": "direction"
+                  },
+                  "inputs": {
+                   "SPRITE": {
+                    "block": {
+                     "type": "scene_sprite",
+                     "id": "snake-30",
+                     "fields": {
+                      "SPRITE_ID": "head"
+                     }
+                    }
+                   },
+                   "VALUE": {
+                    "shadow": {
+                     "type": "py_number",
+                     "id": "snake-31",
+                     "fields": {
+                      "VALUE": "0"
+                     }
+                    }
+                   }
+                  },
+                  "next": {
+                   "block": {
+                    "type": "py_call",
+                    "id": "snake-32",
+                    "extraState": {
+                     "functionId": "place_apple_function",
+                     "signature": {
+                      "id": "place_apple_function",
+                      "name": "place_apple",
+                      "parameters": []
+                     }
+                    },
+                    "next": {
+                     "block": {
+                      "type": "controls_whileUntil",
+                      "id": "snake-33",
+                      "fields": {
+                       "MODE": "WHILE"
+                      },
+                      "inputs": {
+                       "BOOL": {
+                        "shadow": {
+                         "type": "logic_boolean",
+                         "id": "snake-34",
+                         "fields": {
+                          "BOOL": "TRUE"
+                         }
+                        }
+                       },
+                       "DO": {
+                        "block": {
+                         "type": "py_wait",
+                         "id": "snake-35",
+                         "inputs": {
+                          "SECONDS": {
+                           "shadow": {
+                            "type": "py_number",
+                            "id": "snake-36",
+                            "fields": {
+                             "VALUE": "0.12"
+                            }
+                           }
+                          }
+                         },
+                         "next": {
+                          "block": {
+                           "type": "scene_go",
+                           "id": "snake-37",
+                           "inputs": {
+                            "SPRITE": {
+                             "block": {
+                              "type": "scene_sprite",
+                              "id": "snake-38",
+                              "fields": {
+                               "SPRITE_ID": "body"
+                              }
+                             }
+                            },
+                            "X": {
+                             "block": {
+                              "type": "scene_get",
+                              "id": "snake-39",
+                              "fields": {
+                               "PROPERTY": "x"
+                              },
+                              "inputs": {
+                               "SPRITE": {
+                                "block": {
+                                 "type": "scene_sprite",
+                                 "id": "snake-40",
+                                 "fields": {
+                                  "SPRITE_ID": "head"
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            },
+                            "Y": {
+                             "block": {
+                              "type": "scene_get",
+                              "id": "snake-41",
+                              "fields": {
+                               "PROPERTY": "y"
+                              },
+                              "inputs": {
+                               "SPRITE": {
+                                "block": {
+                                 "type": "scene_sprite",
+                                 "id": "snake-42",
+                                 "fields": {
+                                  "SPRITE_ID": "head"
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           },
+                           "next": {
+                            "block": {
+                             "type": "scene_fire",
+                             "id": "snake-43",
+                             "inputs": {
+                              "SPRITE": {
+                               "block": {
+                                "type": "scene_sprite",
+                                "id": "snake-44",
+                                "fields": {
+                                 "SPRITE_ID": "body"
+                                }
+                               }
+                              },
+                              "COSTUME": {
+                               "block": {
+                                "type": "scene_costume",
+                                "id": "snake-45",
+                                "fields": {
+                                 "COSTUME_ID": "stock-snake-body"
+                                }
+                               }
+                              },
+                              "VX": {
+                               "shadow": {
+                                "type": "py_number",
+                                "id": "snake-46",
+                                "fields": {
+                                 "VALUE": "0"
+                                }
+                               }
+                              },
+                              "VY": {
+                               "shadow": {
+                                "type": "py_number",
+                                "id": "snake-47",
+                                "fields": {
+                                 "VALUE": "0"
+                                }
+                               }
+                              },
+                              "SECONDS": {
+                               "block": {
+                                "type": "py_binary",
+                                "id": "snake-48",
+                                "fields": {
+                                 "OP": "-"
+                                },
+                                "inputs": {
+                                 "A": {
+                                  "block": {
+                                   "type": "py_binary",
+                                   "id": "snake-49",
+                                   "fields": {
+                                    "OP": "*"
+                                   },
+                                   "inputs": {
+                                    "A": {
+                                     "block": {
+                                      "type": "py_get",
+                                      "id": "snake-50",
+                                      "fields": {
+                                       "SYMBOL": "snake-149"
+                                      }
+                                     }
+                                    },
+                                    "B": {
+                                     "shadow": {
+                                      "type": "py_number",
+                                      "id": "snake-51",
+                                      "fields": {
+                                       "VALUE": "0.12"
+                                      }
+                                     }
+                                    }
+                                   }
+                                  }
+                                 },
+                                 "B": {
+                                  "shadow": {
+                                   "type": "py_number",
+                                   "id": "snake-52",
+                                   "fields": {
+                                    "VALUE": "0.05"
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             },
+                             "next": {
+                              "block": {
+                               "type": "scene_change",
+                               "id": "snake-53",
+                               "fields": {
+                                "PROPERTY": "x"
+                               },
+                               "inputs": {
+                                "SPRITE": {
+                                 "block": {
+                                  "type": "scene_sprite",
+                                  "id": "snake-54",
+                                  "fields": {
+                                   "SPRITE_ID": "head"
+                                  }
+                                 }
+                                },
+                                "VALUE": {
+                                 "block": {
+                                  "type": "py_get",
+                                  "id": "snake-55",
+                                  "fields": {
+                                   "SYMBOL": "snake-147"
+                                  }
+                                 }
+                                }
+                               },
+                               "next": {
+                                "block": {
+                                 "type": "scene_change",
+                                 "id": "snake-56",
+                                 "fields": {
+                                  "PROPERTY": "y"
+                                 },
+                                 "inputs": {
+                                  "SPRITE": {
+                                   "block": {
+                                    "type": "scene_sprite",
+                                    "id": "snake-57",
+                                    "fields": {
+                                     "SPRITE_ID": "head"
+                                    }
+                                   }
+                                  },
+                                  "VALUE": {
+                                   "block": {
+                                    "type": "py_get",
+                                    "id": "snake-58",
+                                    "fields": {
+                                     "SYMBOL": "snake-148"
+                                    }
+                                   }
+                                  }
+                                 },
+                                 "next": {
+                                  "block": {
+                                   "type": "controls_if",
+                                   "id": "snake-59",
+                                   "inputs": {
+                                    "IF0": {
+                                     "block": {
+                                      "type": "py_logic",
+                                      "id": "snake-60",
+                                      "fields": {
+                                       "OP": "or"
+                                      },
+                                      "inputs": {
+                                       "A": {
+                                        "block": {
+                                         "type": "py_logic",
+                                         "id": "snake-61",
+                                         "fields": {
+                                          "OP": "or"
+                                         },
+                                         "inputs": {
+                                          "A": {
+                                           "block": {
+                                            "type": "logic_compare",
+                                            "id": "snake-62",
+                                            "fields": {
+                                             "OP": "GT"
+                                            },
+                                            "inputs": {
+                                             "A": {
+                                              "block": {
+                                               "type": "scene_get",
+                                               "id": "snake-63",
+                                               "fields": {
+                                                "PROPERTY": "x"
+                                               },
+                                               "inputs": {
+                                                "SPRITE": {
+                                                 "block": {
+                                                  "type": "scene_sprite",
+                                                  "id": "snake-64",
+                                                  "fields": {
+                                                   "SPRITE_ID": "head"
+                                                  }
+                                                 }
+                                                }
+                                               }
+                                              }
+                                             },
+                                             "B": {
+                                              "shadow": {
+                                               "type": "py_number",
+                                               "id": "snake-65",
+                                               "fields": {
+                                                "VALUE": "235"
+                                               }
+                                              }
+                                             }
+                                            }
+                                           }
+                                          },
+                                          "B": {
+                                           "block": {
+                                            "type": "logic_compare",
+                                            "id": "snake-66",
+                                            "fields": {
+                                             "OP": "LT"
+                                            },
+                                            "inputs": {
+                                             "A": {
+                                              "block": {
+                                               "type": "scene_get",
+                                               "id": "snake-67",
+                                               "fields": {
+                                                "PROPERTY": "x"
+                                               },
+                                               "inputs": {
+                                                "SPRITE": {
+                                                 "block": {
+                                                  "type": "scene_sprite",
+                                                  "id": "snake-68",
+                                                  "fields": {
+                                                   "SPRITE_ID": "head"
+                                                  }
+                                                 }
+                                                }
+                                               }
+                                              }
+                                             },
+                                             "B": {
+                                              "shadow": {
+                                               "type": "py_number",
+                                               "id": "snake-69",
+                                               "fields": {
+                                                "VALUE": "-235"
+                                               }
+                                              }
+                                             }
+                                            }
+                                           }
+                                          }
+                                         }
+                                        }
+                                       },
+                                       "B": {
+                                        "block": {
+                                         "type": "py_logic",
+                                         "id": "snake-70",
+                                         "fields": {
+                                          "OP": "or"
+                                         },
+                                         "inputs": {
+                                          "A": {
+                                           "block": {
+                                            "type": "logic_compare",
+                                            "id": "snake-71",
+                                            "fields": {
+                                             "OP": "GT"
+                                            },
+                                            "inputs": {
+                                             "A": {
+                                              "block": {
+                                               "type": "scene_get",
+                                               "id": "snake-72",
+                                               "fields": {
+                                                "PROPERTY": "y"
+                                               },
+                                               "inputs": {
+                                                "SPRITE": {
+                                                 "block": {
+                                                  "type": "scene_sprite",
+                                                  "id": "snake-73",
+                                                  "fields": {
+                                                   "SPRITE_ID": "head"
+                                                  }
+                                                 }
+                                                }
+                                               }
+                                              }
+                                             },
+                                             "B": {
+                                              "shadow": {
+                                               "type": "py_number",
+                                               "id": "snake-74",
+                                               "fields": {
+                                                "VALUE": "155"
+                                               }
+                                              }
+                                             }
+                                            }
+                                           }
+                                          },
+                                          "B": {
+                                           "block": {
+                                            "type": "logic_compare",
+                                            "id": "snake-75",
+                                            "fields": {
+                                             "OP": "LT"
+                                            },
+                                            "inputs": {
+                                             "A": {
+                                              "block": {
+                                               "type": "scene_get",
+                                               "id": "snake-76",
+                                               "fields": {
+                                                "PROPERTY": "y"
+                                               },
+                                               "inputs": {
+                                                "SPRITE": {
+                                                 "block": {
+                                                  "type": "scene_sprite",
+                                                  "id": "snake-77",
+                                                  "fields": {
+                                                   "SPRITE_ID": "head"
+                                                  }
+                                                 }
+                                                }
+                                               }
+                                              }
+                                             },
+                                             "B": {
+                                              "shadow": {
+                                               "type": "py_number",
+                                               "id": "snake-78",
+                                               "fields": {
+                                                "VALUE": "-155"
+                                               }
+                                              }
+                                             }
+                                            }
+                                           }
+                                          }
+                                         }
+                                        }
+                                       }
+                                      }
+                                     }
+                                    },
+                                    "DO0": {
+                                     "block": {
+                                      "type": "sound_play",
+                                      "id": "snake-79",
+                                      "inputs": {
+                                       "SOUND": {
+                                        "block": {
+                                         "type": "sound_asset",
+                                         "id": "snake-80",
+                                         "fields": {
+                                          "SOUND_ID": "lose"
+                                         }
+                                        }
+                                       },
+                                       "OWNER": {
+                                        "block": {
+                                         "type": "py_none",
+                                         "id": "snake-81"
+                                        }
+                                       }
+                                      },
+                                      "next": {
+                                       "block": {
+                                        "type": "game_finish",
+                                        "id": "snake-82",
+                                        "fields": {
+                                         "WON": "FALSE"
+                                        },
+                                        "inputs": {
+                                         "TEXT": {
+                                          "shadow": {
+                                           "type": "text",
+                                           "id": "snake-83",
+                                           "fields": {
+                                            "TEXT": "Ouch, the wall!"
+                                           }
+                                          }
+                                         }
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_left_key_handler_block",
+     "x": 1796,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_left_key_handler",
+      "signature": {
+       "id": "on_left_key_handler",
+       "name": "on_left_key",
+       "parameters": [
+        {
+         "id": "on_left_key_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "key:ArrowLeft",
+        "order": 1
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "snake-84",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "logic_compare",
+           "id": "snake-85",
+           "fields": {
+            "OP": "EQ"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "py_get",
+              "id": "snake-86",
+              "fields": {
+               "SYMBOL": "snake-147"
+              }
+             }
+            },
+            "B": {
+             "shadow": {
+              "type": "py_number",
+              "id": "snake-87",
+              "fields": {
+               "VALUE": "0"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "py_set",
+           "id": "snake-88",
+           "fields": {
+            "SYMBOL": "snake-147"
+           },
+           "inputs": {
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "id": "snake-89",
+              "fields": {
+               "VALUE": "-20"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "py_set",
+             "id": "snake-90",
+             "fields": {
+              "SYMBOL": "snake-148"
+             },
+             "inputs": {
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "id": "snake-91",
+                "fields": {
+                 "VALUE": "0"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_set",
+               "id": "snake-92",
+               "fields": {
+                "PROPERTY": "direction"
+               },
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_sprite",
+                  "id": "snake-93",
+                  "fields": {
+                   "SPRITE_ID": "head"
+                  }
+                 }
+                },
+                "VALUE": {
+                 "shadow": {
+                  "type": "py_number",
+                  "id": "snake-94",
+                  "fields": {
+                   "VALUE": "180"
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_right_key_handler_block",
+     "x": 1796,
+     "y": 308,
+     "extraState": {
+      "functionId": "on_right_key_handler",
+      "signature": {
+       "id": "on_right_key_handler",
+       "name": "on_right_key",
+       "parameters": [
+        {
+         "id": "on_right_key_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "key:ArrowRight",
+        "order": 2
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "snake-95",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "logic_compare",
+           "id": "snake-96",
+           "fields": {
+            "OP": "EQ"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "py_get",
+              "id": "snake-97",
+              "fields": {
+               "SYMBOL": "snake-147"
+              }
+             }
+            },
+            "B": {
+             "shadow": {
+              "type": "py_number",
+              "id": "snake-98",
+              "fields": {
+               "VALUE": "0"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "py_set",
+           "id": "snake-99",
+           "fields": {
+            "SYMBOL": "snake-147"
+           },
+           "inputs": {
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "id": "snake-100",
+              "fields": {
+               "VALUE": "20"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "py_set",
+             "id": "snake-101",
+             "fields": {
+              "SYMBOL": "snake-148"
+             },
+             "inputs": {
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "id": "snake-102",
+                "fields": {
+                 "VALUE": "0"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_set",
+               "id": "snake-103",
+               "fields": {
+                "PROPERTY": "direction"
+               },
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_sprite",
+                  "id": "snake-104",
+                  "fields": {
+                   "SPRITE_ID": "head"
+                  }
+                 }
+                },
+                "VALUE": {
+                 "shadow": {
+                  "type": "py_number",
+                  "id": "snake-105",
+                  "fields": {
+                   "VALUE": "0"
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_up_key_handler_block",
+     "x": 1796,
+     "y": 586,
+     "extraState": {
+      "functionId": "on_up_key_handler",
+      "signature": {
+       "id": "on_up_key_handler",
+       "name": "on_up_key",
+       "parameters": [
+        {
+         "id": "on_up_key_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "key:ArrowUp",
+        "order": 3
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "snake-106",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "logic_compare",
+           "id": "snake-107",
+           "fields": {
+            "OP": "EQ"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "py_get",
+              "id": "snake-108",
+              "fields": {
+               "SYMBOL": "snake-148"
+              }
+             }
+            },
+            "B": {
+             "shadow": {
+              "type": "py_number",
+              "id": "snake-109",
+              "fields": {
+               "VALUE": "0"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "py_set",
+           "id": "snake-110",
+           "fields": {
+            "SYMBOL": "snake-147"
+           },
+           "inputs": {
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "id": "snake-111",
+              "fields": {
+               "VALUE": "0"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "py_set",
+             "id": "snake-112",
+             "fields": {
+              "SYMBOL": "snake-148"
+             },
+             "inputs": {
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "id": "snake-113",
+                "fields": {
+                 "VALUE": "20"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_set",
+               "id": "snake-114",
+               "fields": {
+                "PROPERTY": "direction"
+               },
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_sprite",
+                  "id": "snake-115",
+                  "fields": {
+                   "SPRITE_ID": "head"
+                  }
+                 }
+                },
+                "VALUE": {
+                 "shadow": {
+                  "type": "py_number",
+                  "id": "snake-116",
+                  "fields": {
+                   "VALUE": "270"
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_down_key_handler_block",
+     "x": 1796,
+     "y": 864,
+     "extraState": {
+      "functionId": "on_down_key_handler",
+      "signature": {
+       "id": "on_down_key_handler",
+       "name": "on_down_key",
+       "parameters": [
+        {
+         "id": "on_down_key_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "key:ArrowDown",
+        "order": 4
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "snake-117",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "logic_compare",
+           "id": "snake-118",
+           "fields": {
+            "OP": "EQ"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "py_get",
+              "id": "snake-119",
+              "fields": {
+               "SYMBOL": "snake-148"
+              }
+             }
+            },
+            "B": {
+             "shadow": {
+              "type": "py_number",
+              "id": "snake-120",
+              "fields": {
+               "VALUE": "0"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "py_set",
+           "id": "snake-121",
+           "fields": {
+            "SYMBOL": "snake-147"
+           },
+           "inputs": {
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "id": "snake-122",
+              "fields": {
+               "VALUE": "0"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "py_set",
+             "id": "snake-123",
+             "fields": {
+              "SYMBOL": "snake-148"
+             },
+             "inputs": {
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "id": "snake-124",
+                "fields": {
+                 "VALUE": "-20"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_set",
+               "id": "snake-125",
+               "fields": {
+                "PROPERTY": "direction"
+               },
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_sprite",
+                  "id": "snake-126",
+                  "fields": {
+                   "SPRITE_ID": "head"
+                  }
+                 }
+                },
+                "VALUE": {
+                 "shadow": {
+                  "type": "py_number",
+                  "id": "snake-127",
+                  "fields": {
+                   "VALUE": "90"
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_head_overlap_handler_block",
+     "x": 1796,
+     "y": 1142,
+     "extraState": {
+      "functionId": "on_head_overlap_handler",
+      "signature": {
+       "id": "on_head_overlap_handler",
+       "name": "on_head_overlap",
+       "parameters": [
+        {
+         "id": "on_head_overlap_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "overlap",
+        "order": 5,
+        "sprite": "head"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "snake-128",
+        "extraState": {
+         "hasElse": true
+        },
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "scene_overlaps",
+           "id": "snake-129",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_self",
+              "id": "snake-130"
+             }
+            },
+            "OTHER": {
+             "block": {
+              "type": "scene_sprite",
+              "id": "snake-131",
+              "fields": {
+               "SPRITE_ID": "apple"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "sound_play",
+           "id": "snake-132",
+           "inputs": {
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "snake-133",
+              "fields": {
+               "SOUND_ID": "coin"
+              }
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "snake-134"
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "game_change",
+             "id": "snake-135",
+             "fields": {
+              "FIELD": "score"
+             },
+             "inputs": {
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "id": "snake-136",
+                "fields": {
+                 "VALUE": "1"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "py_set",
+               "id": "snake-137",
+               "fields": {
+                "SYMBOL": "snake-149"
+               },
+               "inputs": {
+                "VALUE": {
+                 "block": {
+                  "type": "py_binary",
+                  "id": "snake-138",
+                  "fields": {
+                   "OP": "+"
+                  },
+                  "inputs": {
+                   "A": {
+                    "block": {
+                     "type": "py_get",
+                     "id": "snake-139",
+                     "fields": {
+                      "SYMBOL": "snake-149"
+                     }
+                    }
+                   },
+                   "B": {
+                    "shadow": {
+                     "type": "py_number",
+                     "id": "snake-140",
+                     "fields": {
+                      "VALUE": "1"
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "next": {
+                "block": {
+                 "type": "py_call",
+                 "id": "snake-141",
+                 "extraState": {
+                  "functionId": "place_apple_function",
+                  "signature": {
+                   "id": "place_apple_function",
+                   "name": "place_apple",
+                   "parameters": []
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         },
+         "ELSE": {
+          "block": {
+           "type": "sound_play",
+           "id": "snake-142",
+           "inputs": {
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "snake-143",
+              "fields": {
+               "SOUND_ID": "lose"
+              }
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "snake-144"
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "game_finish",
+             "id": "snake-145",
+             "fields": {
+              "WON": "FALSE"
+             },
+             "inputs": {
+              "TEXT": {
+               "shadow": {
+                "type": "text",
+                "id": "snake-146",
+                "fields": {
+                 "TEXT": "Oops, you bit your tail!"
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  "variables": [
+   {
+    "name": "dx",
+    "id": "snake-147",
+    "type": "py:module"
+   },
+   {
+    "name": "dy",
+    "id": "snake-148",
+    "type": "py:module"
+   },
+   {
+    "name": "length",
+    "id": "snake-149",
+    "type": "py:module"
+   },
+   {
+    "name": "_pb_parameter_on_start_handler_payload",
+    "id": "_pb_parameter_on_start_handler_payload"
+   },
+   {
+    "name": "_pb_parameter_on_left_key_handler_payload",
+    "id": "_pb_parameter_on_left_key_handler_payload"
+   },
+   {
+    "name": "_pb_parameter_on_right_key_handler_payload",
+    "id": "_pb_parameter_on_right_key_handler_payload"
+   },
+   {
+    "name": "_pb_parameter_on_up_key_handler_payload",
+    "id": "_pb_parameter_on_up_key_handler_payload"
+   },
+   {
+    "name": "_pb_parameter_on_down_key_handler_payload",
+    "id": "_pb_parameter_on_down_key_handler_payload"
+   },
+   {
+    "name": "_pb_parameter_on_head_overlap_handler_payload",
+    "id": "_pb_parameter_on_head_overlap_handler_payload"
+   }
+  ],
+  "pythonScene": {
+   "version": 1,
+   "background": "#a7d98b",
+   "sprites": [
+    {
+     "direction": 0,
+     "size": 100,
+     "layer": 3,
+     "visible": true,
+     "rotationStyle": "all",
+     "costume": "stock-snake-head",
+     "id": "head",
+     "name": "Head",
+     "x": -110,
+     "y": 10
+    },
+    {
+     "direction": 0,
+     "size": 100,
+     "layer": 1,
+     "visible": false,
+     "rotationStyle": "none",
+     "costume": "stock-snake-body",
+     "id": "body",
+     "name": "Body",
+     "x": -130,
+     "y": 10
+    },
+    {
+     "direction": 0,
+     "size": 100,
+     "layer": 2,
+     "visible": true,
+     "rotationStyle": "none",
+     "costume": "stock-apple",
+     "id": "apple",
+     "name": "Apple",
+     "x": 90,
+     "y": 10
+    }
+   ],
+   "assets": [
+    {
+     "id": "stock-snake-head",
+     "name": "Snake head",
+     "width": 20,
+     "height": 20,
+     "stock": "props/snake-head@1"
+    },
+    {
+     "id": "stock-snake-body",
+     "name": "Snake body",
+     "width": 20,
+     "height": 20,
+     "stock": "props/snake-body@1"
+    },
+    {
+     "id": "stock-apple",
+     "name": "Apple",
+     "width": 20,
+     "height": 20,
+     "stock": "props/apple@1"
+    }
+   ],
+   "backdrops": [],
+   "backdrop": null,
+   "sounds": [
+    {
+     "id": "coin",
+     "name": "Coin",
+     "kind": "clip",
+     "stock": "effects/coin@1"
+    },
+    {
+     "id": "lose",
+     "name": "Lose",
+     "kind": "clip",
+     "stock": "effects/lose@1"
+    }
+   ]
+  },
+  "procedures": [
+   {
+    "id": "place_apple_function",
+    "name": "place_apple",
+    "returnTypes": null
+   },
+   {
+    "id": "on_start_handler",
+    "name": "on_start",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 0,
+     "sprite": "head"
+    },
+    "parameters": [
+     {
+      "id": "on_start_handler_payload",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "on_left_key_handler",
+    "name": "on_left_key",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "key:ArrowLeft",
+     "order": 1
+    },
+    "parameters": [
+     {
+      "id": "on_left_key_handler_payload",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "on_right_key_handler",
+    "name": "on_right_key",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "key:ArrowRight",
+     "order": 2
+    },
+    "parameters": [
+     {
+      "id": "on_right_key_handler_payload",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "on_up_key_handler",
+    "name": "on_up_key",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "key:ArrowUp",
+     "order": 3
+    },
+    "parameters": [
+     {
+      "id": "on_up_key_handler_payload",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "on_down_key_handler",
+    "name": "on_down_key",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "key:ArrowDown",
+     "order": 4
+    },
+    "parameters": [
+     {
+      "id": "on_down_key_handler_payload",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "on_head_overlap_handler",
+    "name": "on_head_overlap",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "overlap",
+     "order": 5,
+     "sprite": "head"
+    },
+    "parameters": [
+     {
+      "id": "on_head_overlap_handler_payload",
+      "name": "payload"
+     }
+    ]
+   }
+  ]
+ }
+}

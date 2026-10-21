@@ -1,0 +1,1049 @@
+{
+ "format": "python-blocks",
+ "formatVersion": 2,
+ "languageVersion": 23,
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "py_handler",
+     "id": "on_start_handler_block",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_start_handler",
+      "signature": {
+       "id": "on_start_handler",
+       "name": "on_start",
+       "parameters": [
+        {
+         "id": "on_start_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "start",
+        "order": 0
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "py_set",
+        "id": "moon-lander-1",
+        "fields": {
+         "SYMBOL": "moon-lander-92"
+        },
+        "inputs": {
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "id": "moon-lander-2",
+           "fields": {
+            "VALUE": "150"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_go",
+          "id": "moon-lander-3",
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "id": "moon-lander-4",
+             "fields": {
+              "SPRITE_ID": "pad"
+             }
+            }
+           },
+           "X": {
+            "block": {
+             "type": "math_random_int",
+             "id": "moon-lander-5",
+             "inputs": {
+              "FROM": {
+               "shadow": {
+                "type": "py_number",
+                "id": "moon-lander-6",
+                "fields": {
+                 "VALUE": "-120"
+                }
+               }
+              },
+              "TO": {
+               "shadow": {
+                "type": "py_number",
+                "id": "moon-lander-7",
+                "fields": {
+                 "VALUE": "180"
+                }
+               }
+              }
+             }
+            }
+           },
+           "Y": {
+            "shadow": {
+             "type": "py_number",
+             "id": "moon-lander-8",
+             "fields": {
+              "VALUE": "-94"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "scene_motion_set",
+            "id": "moon-lander-9",
+            "fields": {
+             "PROPERTY": "ay"
+            },
+            "inputs": {
+             "SPRITE": {
+              "block": {
+               "type": "scene_sprite",
+               "id": "moon-lander-10",
+               "fields": {
+                "SPRITE_ID": "lander"
+               }
+              }
+             },
+             "VALUE": {
+              "shadow": {
+               "type": "py_number",
+               "id": "moon-lander-11",
+               "fields": {
+                "VALUE": "-40"
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "scene_motion_set",
+              "id": "moon-lander-12",
+              "fields": {
+               "PROPERTY": "vx"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "id": "moon-lander-13",
+                 "fields": {
+                  "SPRITE_ID": "lander"
+                 }
+                }
+               },
+               "VALUE": {
+                "shadow": {
+                 "type": "py_number",
+                 "id": "moon-lander-14",
+                 "fields": {
+                  "VALUE": "30"
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "scene_motion_edges",
+                "id": "moon-lander-15",
+                "fields": {
+                 "MODE": "stop"
+                },
+                "inputs": {
+                 "SPRITE": {
+                  "block": {
+                   "type": "scene_sprite",
+                   "id": "moon-lander-16",
+                   "fields": {
+                    "SPRITE_ID": "lander"
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_lander_update_handler_block",
+     "x": 40,
+     "y": 428,
+     "extraState": {
+      "functionId": "on_lander_update_handler",
+      "signature": {
+       "id": "on_lander_update_handler",
+       "name": "on_lander_update",
+       "parameters": [
+        {
+         "id": "on_lander_update_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "update",
+        "order": 1,
+        "sprite": "lander"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "moon-lander-17",
+        "extraState": {
+         "hasElse": true
+        },
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "py_logic",
+           "id": "moon-lander-18",
+           "fields": {
+            "OP": "and"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "scene_key",
+              "id": "moon-lander-19",
+              "fields": {
+               "KEY": "ArrowUp"
+              }
+             }
+            },
+            "B": {
+             "block": {
+              "type": "logic_compare",
+              "id": "moon-lander-20",
+              "fields": {
+               "OP": "GT"
+              },
+              "inputs": {
+               "A": {
+                "block": {
+                 "type": "py_get",
+                 "id": "moon-lander-21",
+                 "fields": {
+                  "SYMBOL": "moon-lander-92"
+                 }
+                }
+               },
+               "B": {
+                "shadow": {
+                 "type": "py_number",
+                 "id": "moon-lander-22",
+                 "fields": {
+                  "VALUE": "0"
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "scene_motion_set",
+           "id": "moon-lander-23",
+           "fields": {
+            "PROPERTY": "ay"
+           },
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_sprite",
+              "id": "moon-lander-24",
+              "fields": {
+               "SPRITE_ID": "lander"
+              }
+             }
+            },
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "id": "moon-lander-25",
+              "fields": {
+               "VALUE": "60"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "scene_costume_set",
+             "id": "moon-lander-26",
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "id": "moon-lander-27",
+                "fields": {
+                 "SPRITE_ID": "lander"
+                }
+               }
+              },
+              "COSTUME": {
+               "block": {
+                "type": "scene_costume",
+                "id": "moon-lander-28",
+                "fields": {
+                 "COSTUME_ID": "stock-lander-2"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "py_set",
+               "id": "moon-lander-29",
+               "fields": {
+                "SYMBOL": "moon-lander-92"
+               },
+               "inputs": {
+                "VALUE": {
+                 "block": {
+                  "type": "py_binary",
+                  "id": "moon-lander-30",
+                  "fields": {
+                   "OP": "-"
+                  },
+                  "inputs": {
+                   "A": {
+                    "block": {
+                     "type": "py_get",
+                     "id": "moon-lander-31",
+                     "fields": {
+                      "SYMBOL": "moon-lander-92"
+                     }
+                    }
+                   },
+                   "B": {
+                    "shadow": {
+                     "type": "py_number",
+                     "id": "moon-lander-32",
+                     "fields": {
+                      "VALUE": "1"
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         },
+         "ELSE": {
+          "block": {
+           "type": "scene_motion_set",
+           "id": "moon-lander-33",
+           "fields": {
+            "PROPERTY": "ay"
+           },
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_sprite",
+              "id": "moon-lander-34",
+              "fields": {
+               "SPRITE_ID": "lander"
+              }
+             }
+            },
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "id": "moon-lander-35",
+              "fields": {
+               "VALUE": "-40"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "scene_costume_set",
+             "id": "moon-lander-36",
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "id": "moon-lander-37",
+                "fields": {
+                 "SPRITE_ID": "lander"
+                }
+               }
+              },
+              "COSTUME": {
+               "block": {
+                "type": "scene_costume",
+                "id": "moon-lander-38",
+                "fields": {
+                 "COSTUME_ID": "stock-lander-1"
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "controls_if",
+          "id": "moon-lander-39",
+          "inputs": {
+           "IF0": {
+            "block": {
+             "type": "scene_key",
+             "id": "moon-lander-40",
+             "fields": {
+              "KEY": "ArrowLeft"
+             }
+            }
+           },
+           "DO0": {
+            "block": {
+             "type": "scene_motion_change",
+             "id": "moon-lander-41",
+             "fields": {
+              "PROPERTY": "vx"
+             },
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "id": "moon-lander-42",
+                "fields": {
+                 "SPRITE_ID": "lander"
+                }
+               }
+              },
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "id": "moon-lander-43",
+                "fields": {
+                 "VALUE": "-2"
+                }
+               }
+              }
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "controls_if",
+            "id": "moon-lander-44",
+            "inputs": {
+             "IF0": {
+              "block": {
+               "type": "scene_key",
+               "id": "moon-lander-45",
+               "fields": {
+                "KEY": "ArrowRight"
+               }
+              }
+             },
+             "DO0": {
+              "block": {
+               "type": "scene_motion_change",
+               "id": "moon-lander-46",
+               "fields": {
+                "PROPERTY": "vx"
+               },
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_sprite",
+                  "id": "moon-lander-47",
+                  "fields": {
+                   "SPRITE_ID": "lander"
+                  }
+                 }
+                },
+                "VALUE": {
+                 "shadow": {
+                  "type": "py_number",
+                  "id": "moon-lander-48",
+                  "fields": {
+                   "VALUE": "2"
+                  }
+                 }
+                }
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "game_message",
+              "id": "moon-lander-49",
+              "inputs": {
+               "TEXT": {
+                "block": {
+                 "type": "text_join",
+                 "id": "moon-lander-50",
+                 "extraState": {
+                  "itemCount": 2
+                 },
+                 "inputs": {
+                  "ADD0": {
+                   "shadow": {
+                    "type": "text",
+                    "id": "moon-lander-51",
+                    "fields": {
+                     "TEXT": "Fuel "
+                    }
+                   }
+                  },
+                  "ADD1": {
+                   "block": {
+                    "type": "py_get",
+                    "id": "moon-lander-52",
+                    "fields": {
+                     "SYMBOL": "moon-lander-92"
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "controls_if",
+                "id": "moon-lander-53",
+                "inputs": {
+                 "IF0": {
+                  "block": {
+                   "type": "scene_overlaps",
+                   "id": "moon-lander-54",
+                   "inputs": {
+                    "SPRITE": {
+                     "block": {
+                      "type": "scene_sprite",
+                      "id": "moon-lander-55",
+                      "fields": {
+                       "SPRITE_ID": "lander"
+                      }
+                     }
+                    },
+                    "OTHER": {
+                     "block": {
+                      "type": "scene_sprite",
+                      "id": "moon-lander-56",
+                      "fields": {
+                       "SPRITE_ID": "pad"
+                      }
+                     }
+                    }
+                   }
+                  }
+                 },
+                 "DO0": {
+                  "block": {
+                   "type": "controls_if",
+                   "id": "moon-lander-57",
+                   "extraState": {
+                    "hasElse": true
+                   },
+                   "inputs": {
+                    "IF0": {
+                     "block": {
+                      "type": "py_logic",
+                      "id": "moon-lander-58",
+                      "fields": {
+                       "OP": "and"
+                      },
+                      "inputs": {
+                       "A": {
+                        "block": {
+                         "type": "logic_compare",
+                         "id": "moon-lander-59",
+                         "fields": {
+                          "OP": "GT"
+                         },
+                         "inputs": {
+                          "A": {
+                           "block": {
+                            "type": "scene_motion_get",
+                            "id": "moon-lander-60",
+                            "fields": {
+                             "PROPERTY": "vy"
+                            },
+                            "inputs": {
+                             "SPRITE": {
+                              "block": {
+                               "type": "scene_sprite",
+                               "id": "moon-lander-61",
+                               "fields": {
+                                "SPRITE_ID": "lander"
+                               }
+                              }
+                             }
+                            }
+                           }
+                          },
+                          "B": {
+                           "shadow": {
+                            "type": "py_number",
+                            "id": "moon-lander-62",
+                            "fields": {
+                             "VALUE": "-50"
+                            }
+                           }
+                          }
+                         }
+                        }
+                       },
+                       "B": {
+                        "block": {
+                         "type": "py_logic",
+                         "id": "moon-lander-63",
+                         "fields": {
+                          "OP": "and"
+                         },
+                         "inputs": {
+                          "A": {
+                           "block": {
+                            "type": "logic_compare",
+                            "id": "moon-lander-64",
+                            "fields": {
+                             "OP": "GT"
+                            },
+                            "inputs": {
+                             "A": {
+                              "block": {
+                               "type": "scene_motion_get",
+                               "id": "moon-lander-65",
+                               "fields": {
+                                "PROPERTY": "vx"
+                               },
+                               "inputs": {
+                                "SPRITE": {
+                                 "block": {
+                                  "type": "scene_sprite",
+                                  "id": "moon-lander-66",
+                                  "fields": {
+                                   "SPRITE_ID": "lander"
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             },
+                             "B": {
+                              "shadow": {
+                               "type": "py_number",
+                               "id": "moon-lander-67",
+                               "fields": {
+                                "VALUE": "-30"
+                               }
+                              }
+                             }
+                            }
+                           }
+                          },
+                          "B": {
+                           "block": {
+                            "type": "logic_compare",
+                            "id": "moon-lander-68",
+                            "fields": {
+                             "OP": "LT"
+                            },
+                            "inputs": {
+                             "A": {
+                              "block": {
+                               "type": "scene_motion_get",
+                               "id": "moon-lander-69",
+                               "fields": {
+                                "PROPERTY": "vx"
+                               },
+                               "inputs": {
+                                "SPRITE": {
+                                 "block": {
+                                  "type": "scene_sprite",
+                                  "id": "moon-lander-70",
+                                  "fields": {
+                                   "SPRITE_ID": "lander"
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             },
+                             "B": {
+                              "shadow": {
+                               "type": "py_number",
+                               "id": "moon-lander-71",
+                               "fields": {
+                                "VALUE": "30"
+                               }
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    },
+                    "DO0": {
+                     "block": {
+                      "type": "sound_play",
+                      "id": "moon-lander-72",
+                      "inputs": {
+                       "SOUND": {
+                        "block": {
+                         "type": "sound_asset",
+                         "id": "moon-lander-73",
+                         "fields": {
+                          "SOUND_ID": "win"
+                         }
+                        }
+                       },
+                       "OWNER": {
+                        "block": {
+                         "type": "py_none",
+                         "id": "moon-lander-74"
+                        }
+                       }
+                      },
+                      "next": {
+                       "block": {
+                        "type": "game_finish",
+                        "id": "moon-lander-75",
+                        "fields": {
+                         "WON": "TRUE"
+                        },
+                        "inputs": {
+                         "TEXT": {
+                          "shadow": {
+                           "type": "text",
+                           "id": "moon-lander-76",
+                           "fields": {
+                            "TEXT": "A soft landing. Well done!"
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    },
+                    "ELSE": {
+                     "block": {
+                      "type": "sound_play",
+                      "id": "moon-lander-77",
+                      "inputs": {
+                       "SOUND": {
+                        "block": {
+                         "type": "sound_asset",
+                         "id": "moon-lander-78",
+                         "fields": {
+                          "SOUND_ID": "lose"
+                         }
+                        }
+                       },
+                       "OWNER": {
+                        "block": {
+                         "type": "py_none",
+                         "id": "moon-lander-79"
+                        }
+                       }
+                      },
+                      "next": {
+                       "block": {
+                        "type": "game_finish",
+                        "id": "moon-lander-80",
+                        "fields": {
+                         "WON": "FALSE"
+                        },
+                        "inputs": {
+                         "TEXT": {
+                          "shadow": {
+                           "type": "text",
+                           "id": "moon-lander-81",
+                           "fields": {
+                            "TEXT": "Crash! You came down too fast."
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "controls_if",
+                  "id": "moon-lander-82",
+                  "inputs": {
+                   "IF0": {
+                    "block": {
+                     "type": "logic_compare",
+                     "id": "moon-lander-83",
+                     "fields": {
+                      "OP": "LT"
+                     },
+                     "inputs": {
+                      "A": {
+                       "block": {
+                        "type": "scene_get",
+                        "id": "moon-lander-84",
+                        "fields": {
+                         "PROPERTY": "y"
+                        },
+                        "inputs": {
+                         "SPRITE": {
+                          "block": {
+                           "type": "scene_sprite",
+                           "id": "moon-lander-85",
+                           "fields": {
+                            "SPRITE_ID": "lander"
+                           }
+                          }
+                         }
+                        }
+                       }
+                      },
+                      "B": {
+                       "shadow": {
+                        "type": "py_number",
+                        "id": "moon-lander-86",
+                        "fields": {
+                         "VALUE": "-78"
+                        }
+                       }
+                      }
+                     }
+                    }
+                   },
+                   "DO0": {
+                    "block": {
+                     "type": "sound_play",
+                     "id": "moon-lander-87",
+                     "inputs": {
+                      "SOUND": {
+                       "block": {
+                        "type": "sound_asset",
+                        "id": "moon-lander-88",
+                        "fields": {
+                         "SOUND_ID": "lose"
+                        }
+                       }
+                      },
+                      "OWNER": {
+                       "block": {
+                        "type": "py_none",
+                        "id": "moon-lander-89"
+                       }
+                      }
+                     },
+                     "next": {
+                      "block": {
+                       "type": "game_finish",
+                       "id": "moon-lander-90",
+                       "fields": {
+                        "WON": "FALSE"
+                       },
+                       "inputs": {
+                        "TEXT": {
+                         "shadow": {
+                          "type": "text",
+                          "id": "moon-lander-91",
+                          "fields": {
+                           "TEXT": "Crash! You missed the pad."
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  "variables": [
+   {
+    "name": "fuel",
+    "id": "moon-lander-92",
+    "type": "py:module"
+   },
+   {
+    "name": "_pb_parameter_on_start_handler_payload",
+    "id": "_pb_parameter_on_start_handler_payload"
+   },
+   {
+    "name": "_pb_parameter_on_lander_update_handler_payload",
+    "id": "_pb_parameter_on_lander_update_handler_payload"
+   }
+  ],
+  "pythonScene": {
+   "version": 1,
+   "background": "#0b1029",
+   "sprites": [
+    {
+     "direction": 0,
+     "size": 100,
+     "layer": 2,
+     "visible": true,
+     "rotationStyle": "none",
+     "costume": "stock-lander-1",
+     "costumes": [
+      "stock-lander-1",
+      "stock-lander-2"
+     ],
+     "id": "lander",
+     "name": "Lander",
+     "x": -170,
+     "y": 120
+    },
+    {
+     "direction": 0,
+     "size": 100,
+     "layer": 1,
+     "visible": true,
+     "rotationStyle": "none",
+     "costume": "stock-landing-pad",
+     "id": "pad",
+     "name": "Pad",
+     "x": 110,
+     "y": -94
+    }
+   ],
+   "assets": [
+    {
+     "id": "stock-lander-1",
+     "name": "Moon lander 1",
+     "width": 40,
+     "height": 44,
+     "stock": "props/lander-1@1"
+    },
+    {
+     "id": "stock-lander-2",
+     "name": "Moon lander 2",
+     "width": 40,
+     "height": 44,
+     "stock": "props/lander-2@1"
+    },
+    {
+     "id": "stock-landing-pad",
+     "name": "Landing pad",
+     "width": 64,
+     "height": 12,
+     "stock": "props/landing-pad@1"
+    }
+   ],
+   "backdrops": [
+    {
+     "id": "stock-moon",
+     "name": "Moon",
+     "width": 480,
+     "height": 320,
+     "stock": "backdrops/moon@1"
+    }
+   ],
+   "backdrop": "stock-moon",
+   "sounds": [
+    {
+     "id": "win",
+     "name": "Win",
+     "kind": "clip",
+     "stock": "effects/win@1"
+    },
+    {
+     "id": "lose",
+     "name": "Lose",
+     "kind": "clip",
+     "stock": "effects/lose@1"
+    }
+   ]
+  },
+  "procedures": [
+   {
+    "id": "on_start_handler",
+    "name": "on_start",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 0
+    },
+    "parameters": [
+     {
+      "id": "on_start_handler_payload",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "on_lander_update_handler",
+    "name": "on_lander_update",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "update",
+     "order": 1,
+     "sprite": "lander"
+    },
+    "parameters": [
+     {
+      "id": "on_lander_update_handler_payload",
+      "name": "payload"
+     }
+    ]
+   }
+  ]
+ }
+}

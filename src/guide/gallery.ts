@@ -17,7 +17,7 @@ export interface GalleryEntry {
 }
 export const entries = gallery as GalleryEntry[];
 // Bundled like the examples always were, so opening one replaces the project at once.
-const projects = import.meta.glob(['../scene/*.json', '../../content/builds/*-game.json'], { eager: true, import: 'default' });
+const projects = import.meta.glob(['../scene/*.json', '../../content/examples/*.json', '../../content/builds/*-game.json'], { eager: true, import: 'default' });
 /** Load a gallery project by its repository path, for example src/scene/example.json. */
 export function loadProject(path: string): unknown {
   const project = projects[path.startsWith('src/') ? `../${path.slice(4)}` : `../../${path}`];

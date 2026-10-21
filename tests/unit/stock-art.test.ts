@@ -19,9 +19,9 @@ describe('library catalogue', () => {
     for (const e of STOCK_ENTRIES) for (const ref of [...e.assets, e.costume, ...(e.frames ?? [])]) expect(stockAsset(ref), `${e.id} ${ref}`).toBeDefined();
   });
 
-  it('has the cast with eight poses each, a chick and a beetle, spinning props, the lessons’ pieces, seven tile sets and ten backdrops', () => {
+  it('has the cast with eight poses each, a chick and a beetle, spinning props, the lessons’ and arcade games’ pieces, nine tile sets and eleven backdrops', () => {
     const characters = LIBRARY.filter(e => e.category === 'Characters');
-    expect(characters.map(e => e.name)).toEqual(['Fox', 'Cat', 'Rabbit', 'Robot', 'Turtle', 'Bee', 'Fish', 'Sam', 'Ruby', 'Chick', 'Beetle']);
+    expect(characters.map(e => e.name)).toEqual(['Fox', 'Cat', 'Rabbit', 'Robot', 'Turtle', 'Bee', 'Fish', 'Sam', 'Ruby', 'Chick', 'Beetle', 'Muncher', 'Alien']);
     for (const c of characters.slice(0, 9)) { expect(c.assets).toHaveLength(FRAMES.length); expect(c.frames).toHaveLength(4); expect(c.autoAnimate).toEqual({ moving: 'walk', air: 'jump', still: 'idle', turn: true }); }
     const chick = LIBRARY.find(e => e.id === 'chick')!, beetle = LIBRARY.find(e => e.id === 'beetle')!;
     expect([chick.width, chick.height, chick.assets.length, chick.animations!.map(a => a.name)]).toEqual([52, 40, 8, ['idle', 'flap', 'jump', 'happy']]);
@@ -32,8 +32,16 @@ describe('library catalogue', () => {
     expect(['paddle', 'little-ball', 'brick', 'pipes', 'flag'].map(id => { const e = LIBRARY.find(x => x.id === id)!; return [e.width, e.height, e.assets.length]; }))
       .toEqual([[80, 12, 1], [14, 14, 1], [44, 14, 5], [26, 255, 1], [40, 256, 1]]);
     expect(LIBRARY.find(e => e.id === 'brick')!.animations).toBeUndefined();
-    expect(LIBRARY.filter(e => e.category === 'Tiles').map(e => e.id)).toEqual(['grass-tiles', 'snow-tiles', 'cave-tiles', 'castle-tiles', 'sand-tiles', 'metal-tiles', 'brick-tiles']);
-    expect(LIBRARY.filter(e => e.category === 'Backdrops').map(e => e.id)).toEqual(['cave', 'snow', 'castle', 'desert', 'city-sky', 'hills', 'forest', 'reef', 'city', 'space']);
+    expect(LIBRARY.filter(e => e.category === 'Tiles').map(e => e.id)).toEqual(['grass-tiles', 'snow-tiles', 'cave-tiles', 'castle-tiles', 'sand-tiles', 'metal-tiles', 'brick-tiles', 'maze-tiles', 'maze-dots']);
+    expect(LIBRARY.filter(e => e.category === 'Backdrops').map(e => e.id)).toEqual(['cave', 'snow', 'castle', 'desert', 'city-sky', 'hills', 'moon', 'forest', 'reef', 'city', 'space']);
+    // The arcade games' pieces: a muncher that chomps, three aliens with two poses, ghosts in four colours and scared,
+    // maze walls for every way a wall can join its neighbours (n, e, s, w), and ships with their engines off and on.
+    const entry = (id: string) => LIBRARY.find(e => e.id === id)!;
+    expect([entry('muncher').animations!.map(a => a.name), entry('muncher').autoAnimate]).toEqual([['chomp'], { moving: 'chomp', air: '', still: '', turn: false }]);
+    expect(entry('alien').animations!.map(a => a.name)).toEqual(['squid', 'crab', 'octopus']);
+    expect(entry('ghost').assets).toEqual(['red', 'pink', 'cyan', 'orange', 'scared'].map(c => `props/ghost-${c}@1`));
+    expect(entry('maze-tiles').assets).toHaveLength(16); expect(entry('maze-tiles').assets).toContain('tiles/maze-wall-nesw@1'); expect(entry('maze-tiles').assets).toContain('tiles/maze-wall-o@1');
+    for (const id of ['spaceship', 'lander']) { expect(entry(id).frames, id).toHaveLength(2); expect(entry(id).animations, id).toBeUndefined(); }
     // The dialog also lists the built-in shapes and backdrops.
     expect(stockArtwork.filter(a => a.builtin).map(a => a.id)).toEqual(['bird', 'star', 'ball', 'box', 'backdrop_meadow', 'backdrop_night']);
   });

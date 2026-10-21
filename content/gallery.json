@@ -301,6 +301,174 @@
     ]
   },
   {
+    "id": "maze-muncher",
+    "title": "Maze Muncher",
+    "description": "Eat every dot in the maze while four ghosts chase you. A power dot turns the tables.",
+    "kind": "game",
+    "project": "content/examples/maze-muncher.json",
+    "level": "pro",
+    "tags": [
+      "world",
+      "function",
+      "list"
+    ],
+    "tryChanging": [
+      "Make the ghosts slower: change their speed from 4 to 2.",
+      "Scared for longer: set scared to 400 when a power dot is eaten.",
+      "Paint your own maze in [[Worlds & tilemaps]] with the maze walls and dots."
+    ],
+    "demo": [
+      {
+        "key": "ArrowLeft",
+        "ms": 900
+      },
+      {
+        "key": "ArrowUp",
+        "ms": 900
+      }
+    ]
+  },
+  {
+    "id": "sky-defenders",
+    "title": "Sky Defenders",
+    "description": "Rows of aliens march side to side and down. Shoot them all before they land!",
+    "kind": "game",
+    "project": "content/examples/sky-defenders.json",
+    "level": "builder",
+    "tags": [
+      "loop",
+      "list",
+      "collision"
+    ],
+    "tryChanging": [
+      "More aliens: add a fourth row in make aliens.",
+      "Faster lasers: change the laser's 10 to 16.",
+      "Fewer bombs: change random 1 to 40 into 1 to 80."
+    ],
+    "demo": [
+      {
+        "key": "Space",
+        "ms": 80
+      },
+      {
+        "key": "ArrowLeft",
+        "ms": 500
+      },
+      {
+        "key": "Space",
+        "ms": 80
+      },
+      {
+        "wait": 600
+      },
+      {
+        "key": "Space",
+        "ms": 80
+      }
+    ]
+  },
+  {
+    "id": "rock-blaster",
+    "title": "Rock Blaster",
+    "description": "Turn, fly and shoot. Big space rocks break into smaller ones.",
+    "kind": "game",
+    "project": "content/examples/rock-blaster.json",
+    "level": "builder",
+    "tags": [
+      "motion",
+      "collision",
+      "function"
+    ],
+    "tryChanging": [
+      "Turn faster: change the ship's 6 degrees to 10.",
+      "Make rocks split three ways: repeat 3 instead of 2.",
+      "Start with more rocks: change 2 + wave to 4 + wave."
+    ],
+    "demo": [
+      {
+        "key": "Space",
+        "ms": 80
+      },
+      {
+        "key": "ArrowRight",
+        "ms": 500
+      },
+      {
+        "key": "Space",
+        "ms": 80
+      },
+      {
+        "key": "ArrowUp",
+        "ms": 600
+      }
+    ]
+  },
+  {
+    "id": "snake",
+    "title": "Snake",
+    "description": "Steer the snake to the apples. Each apple makes it longer. Don't bite your tail!",
+    "kind": "game",
+    "project": "content/examples/snake.json",
+    "level": "builder",
+    "tags": [
+      "loop",
+      "condition",
+      "coordinates"
+    ],
+    "tryChanging": [
+      "Make it faster: change wait 0.12 to 0.08.",
+      "Start longer: set length to 8.",
+      "Wrap around instead of crashing into the walls."
+    ],
+    "demo": [
+      {
+        "wait": 500
+      },
+      {
+        "key": "ArrowUp",
+        "ms": 80
+      },
+      {
+        "wait": 600
+      },
+      {
+        "key": "ArrowRight",
+        "ms": 80
+      }
+    ]
+  },
+  {
+    "id": "moon-lander",
+    "title": "Moon Lander",
+    "description": "Gravity pulls you down. Fire the engine to land gently on the pad.",
+    "kind": "game",
+    "project": "content/examples/moon-lander.json",
+    "level": "builder",
+    "tags": [
+      "motion",
+      "condition",
+      "game"
+    ],
+    "tryChanging": [
+      "Stronger gravity: change −40 to −80.",
+      "More fuel: set fuel to 300.",
+      "A smaller pad: make Pad's size 60%."
+    ],
+    "demo": [
+      {
+        "wait": 700
+      },
+      {
+        "key": "ArrowUp",
+        "ms": 900
+      },
+      {
+        "key": "ArrowRight",
+        "ms": 300
+      }
+    ]
+  },
+  {
     "id": "catch-the-star-game",
     "title": "Catch the star",
     "description": "Fly a bird with the arrow keys and catch a star five times.",
