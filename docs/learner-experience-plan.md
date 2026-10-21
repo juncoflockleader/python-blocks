@@ -545,6 +545,17 @@ The owner found the Lesson panel too small in Blocks view: it sat under the stag
 
 Measured with Flappy Flight's first step: the build moment is 281–351 px and the guess 400–416 px on windows from 1024 × 768 to 1440 × 900, so both fit without scrolling; while a game runs the lesson has its old room, and the result and Next fit in it. Verification: [browser tests](../tests/e2e/lesson-room.spec.ts) check the small stage beside the sprites, each moment fitting at 1180 × 820, 1080 × 700, 1366 × 768 and 1024 × 768, Run code and the blocks switching the sizes, the stage button keeping it big, puzzles and Stage view, and leaving the lesson; the lesson walkthroughs and [lesson help](../tests/e2e/lesson-help.spec.ts) cover the clip on the stage.
 
+### 3.18 An icon sweep, block pictures in their own colours, and a logo (built 2026-10-20)
+
+The owner asked for icons on the buttons still without one, block pictures that match the picker, steps that name a block's container before what goes in it, and a more artistic logo than "pb".
+
+| Part | What | Where |
+| --- | --- | --- |
+| Icons | A browser sweep listed every visible button without an icon. Now: Back ←, Next step →, Give me a hint and the Ideas section (a new lightbulb), Leave lesson or unit (a new door), Start, Continue, Start lesson and Play ▶, Play the result (a game pad), Close ×, Try another one ↻, For grown-ups (a new pair of people), Export and Import, Find ideas, Side by side, and the tabs: Sprite, Python, Output, and Help, which shows a graduation cap while it reads Lesson. What is left without one is a value (zoom 100%) or a colour swatch. | [icons.ts](../src/ui/icons.ts), [icon-art.ts](../src/ui/icon-art.ts) |
+| Block pictures | A block picture in lesson text takes the block's own colour and symbol from the block's definition, the same data the picker draws it with, not its category's: "repeat while true" is green like the block, not Control's brown, and "when game starts" shows its flag. A test checks every picture in every lesson against its block. | [block-icons.ts](../src/ui/block-icons.ts) `blockLook`, [ui-refs.ts](../src/guide/ui-refs.ts) |
+| Order | Steps say where a block goes before what goes in it: Flappy Flight adds set sprite Pipe y first, then puts the random number in its hole; Code Puzzles' Gem pairs adds the if first, then the remainder in its test; 1.3's Meet Robot uses move to x y first, then fills its holes. | lesson files, unit 1.3 |
+| Logo | An original mark: a snake made of code blocks, curled into an S, with a blocky head, on the app's teal. It is the top bar's home link, the favicon, and the touch icon; it still reads as an orange S at 16 px. | [logo.svg](../src/ui/logo.svg), [index.html](../index.html), [apple-touch-icon.png](../public/apple-touch-icon.png) |
+
 ## 4. Track C: academy
 
 ### 4.1 Model

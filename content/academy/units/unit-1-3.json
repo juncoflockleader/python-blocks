@@ -3398,7 +3398,7 @@
    },
    "select": "fox",
    "other": "robot",
-   "text": "When you tap Fox, Fox goes to wherever Robot is, even after Robot moves. Put ((Motion#scene_get|sprite Robot x)) and ((Motion#scene_get|sprite Robot y)) into ((Motion#scene_go|move sprite Fox to x … y …)).",
+   "text": "When you tap Fox, Fox goes to wherever Robot is, even after Robot moves. Use ((Motion#scene_go|move sprite Fox to x … y …)), then put ((Motion#scene_get|sprite Robot x)) and ((Motion#scene_get|sprite Robot y)) in its holes.",
    "game": {
     "script": [
      {

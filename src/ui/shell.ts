@@ -1,3 +1,4 @@
+import logo from './logo.svg?raw';
 import { LEVELS, atLeast, levelNames, storeLevel, storedLevel, type Level, type LevelNeed } from './levels';
 import { iconSvg, type IconName } from './icon-art';
 import './shell.css';
@@ -23,7 +24,7 @@ const helpLabels: Record<HelpSection, string> = { ideas: 'Ideas', builds: 'Lesso
 export const shellMarkup = `
   <div class="app-shell" id="shell">
     <header class="top-bar" aria-label="Project">
-      <a class="brand-mark" href="./" aria-label="Python Blocks home">pb</a>
+      <a class="brand-mark" href="./" aria-label="Python Blocks home">${logo.replace(/role="img" aria-label="Python Blocks"/, 'aria-hidden="true" focusable="false"')}</a>
       <div class="project-title"><strong id="project-title">My project</strong><span id="save-state" class="project-notice" role="status"></span></div>
       <div class="top-history" id="top-history" aria-label="Edit history"></div>
       <div class="view-switch" id="view-switch" role="group" aria-label="View"><button id="view-blocks" class="view-option" type="button" aria-pressed="true" title="Blocks view: code first, with a small stage">Blocks</button><button id="view-stage" class="view-option" type="button" aria-pressed="false" title="Stage view: a large stage to place sprites, build big worlds and play">Stage</button></div>
