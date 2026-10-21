@@ -7,14 +7,24 @@ import eventLimits from './event-limits.json';
 export { eventLimits };
 export type ExecutionMode = 'sequential' | 'events';
 export type RunnerCommand =
-  /** `stdin` is what read blocks (input()) read, line by line; with `tests`, the program runs once per input and reports each one. */
-  | { type: 'run'; code: string; mode: ExecutionMode; runtimeURL?: string; files?: Record<string, string>; scene?: SceneState; debug?: DebugOptions & { control: SharedArrayBuffer }; stdin?: string; tests?: string[] }
+  /** `stdin` is what read blocks (input()) read, line by line; with `tests`, the program runs once per input and reports each one;
+   * with `check`, an event program runs with a scripted player (checks.py) and reports each expectation. */
+  | { type: 'run'; code: string; mode: ExecutionMode; runtimeURL?: string; files?: Record<string, string>; scene?: SceneState; debug?: DebugOptions & { control: SharedArrayBuffer }; stdin?: string; tests?: string[]; check?: CheckStep[] }
   | { type: 'debug-pause' }
   | { type: 'input'; id: number; input: SceneInput }
   | { type: 'answer'; reply: QuestionReply }
   | { type: 'audio-ended'; id: number; error?: string }
   | { type: 'ping'; id: number }
   | { type: 'event'; id: number; message: string };
+
+/** One step of a scripted player (src/runtime/checks.py): tap a sprite, press a key, wait, or judge what the game shows. */
+export type CheckStep =
+  | { tap: string }
+  | { key: string; hold?: number }
+  | { wait: number }
+  | { expect: CheckExpect };
+export type CheckExpect = ({ sprite: string } & ({ says: string } | { thinks: string } | { costume: string } | { visible: boolean } | { x: number | [number, number] } | { y: number | [number, number] } | { size: number | [number, number] } | { direction: number | [number, number] }))
+  | { score: number | [number, number] } | { lives: number | [number, number] } | { finished: 'won' | 'lost' | 'any' };
 
 export type DrawCommand =
   | { type: 'move'; x1: number; y1: number; x2: number; y2: number; draw: boolean; color: string }
@@ -32,6 +42,8 @@ export type RunnerEvent =
   | { type: 'stdout'; text: string }
   /** One test of a check run: what the program printed for that input, and its error if it stopped with one. */
   | { type: 'test-result'; index: number; output: string; error?: { message: string; exceptionType?: string; frames?: { file: string; line: number; name: string }[] } }
+  /** One expectation of a scripted check: whether it held, and what the game showed instead. */
+  | { type: 'check-result'; index: number; ok: boolean; got: unknown }
   | { type: 'started' }
   | { type: 'ready' }
   | { type: 'pong'; id: number }

@@ -1,0 +1,176 @@
+[
+ {
+  "number": 1,
+  "title": "Signals",
+  "theme": "Tap and talk stories",
+  "ideas": "events, say, costumes, sounds, x and y",
+  "icon": "sprout",
+  "units": [
+   {
+    "id": "unit-1-1",
+    "title": "Tap and it talks"
+   },
+   {
+    "title": "Keys move things"
+   },
+   {
+    "title": "Where is x, y?"
+   },
+   {
+    "title": "Greeting card",
+    "capstone": true
+   }
+  ]
+ },
+ {
+  "number": 2,
+  "title": "Loops",
+  "theme": "Pen art and runners",
+  "ideas": "repeat, forever, loops inside loops",
+  "icon": "loop",
+  "units": [
+   {
+    "title": "Squares from repeat"
+   },
+   {
+    "title": "Loops inside loops"
+   },
+   {
+    "title": "Forever and update"
+   },
+   {
+    "title": "Dodge",
+    "capstone": true
+   }
+  ]
+ },
+ {
+  "number": 3,
+  "title": "Decisions",
+  "theme": "Collect and dodge games",
+  "ideas": "if, compare, variables, score and lives, random",
+  "icon": "decide",
+  "units": [
+   {
+    "title": "If it touches"
+   },
+   {
+    "title": "Lives and losing one"
+   },
+   {
+    "title": "Random surprises"
+   },
+   {
+    "title": "Star catcher",
+    "capstone": true
+   }
+  ]
+ },
+ {
+  "number": 4,
+  "title": "Functions",
+  "theme": "Pong and shooters",
+  "ideas": "make your own blocks, inputs, answers back",
+  "icon": "function",
+  "units": [
+   {
+    "title": "Name a recipe"
+   },
+   {
+    "title": "Give it inputs"
+   },
+   {
+    "title": "Get an answer back"
+   },
+   {
+    "title": "Pong",
+    "capstone": true
+   }
+  ]
+ },
+ {
+  "number": 5,
+  "title": "Collections",
+  "theme": "Quiz and wave games",
+  "ideas": "lists, going through a list, dictionaries",
+  "icon": "list",
+  "units": [
+   {
+    "title": "Lists of things"
+   },
+   {
+    "title": "One by one"
+   },
+   {
+    "title": "Look it up"
+   },
+   {
+    "title": "Quiz game",
+    "capstone": true
+   }
+  ]
+ },
+ {
+  "number": 6,
+  "title": "Recursion",
+  "theme": "Fractals and mazes",
+  "ideas": "blocks that use themselves, base cases",
+  "icon": "sprout",
+  "units": [
+   {
+    "title": "A block that calls itself"
+   },
+   {
+    "title": "Trees and snowflakes"
+   },
+   {
+    "title": "Maze explorer",
+    "capstone": true
+   }
+  ]
+ },
+ {
+  "number": 7,
+  "title": "Algorithms",
+  "theme": "Dungeon chase",
+  "ideas": "search, sort, finding the way",
+  "icon": "target",
+  "units": [
+   {
+    "title": "Guess my number"
+   },
+   {
+    "title": "Sort the leaderboard"
+   },
+   {
+    "title": "Find the way"
+   },
+   {
+    "title": "Dungeon chase",
+    "capstone": true
+   }
+  ]
+ },
+ {
+  "number": 8,
+  "title": "Systems",
+  "theme": "Games made of parts",
+  "ideas": "messages, modules, Python by hand",
+  "icon": "module",
+  "units": [
+   {
+    "title": "Messages"
+   },
+   {
+    "title": "Modules"
+   },
+   {
+    "title": "Python by hand"
+   },
+   {
+    "title": "Your own game",
+    "capstone": true
+   }
+  ]
+ }
+]

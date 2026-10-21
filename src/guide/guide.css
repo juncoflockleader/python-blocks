@@ -268,7 +268,8 @@
 
 /* Puzzles: examples, Try it, Check my answer and its results, and the picture over the stage. */
 .guide-puzzle { display: grid; gap: 8px; }
-.guide-puzzle[hidden], .puzzle-try[hidden], .puzzle-results[hidden] { display: none; }
+.guide-puzzle[hidden], .puzzle-try[hidden], .puzzle-results[hidden], .puzzle-examples[hidden] { display: none; }
+.puzzle-actions [hidden] { display: none !important; }
 .puzzle-examples { display: grid; gap: 6px; }
 .puzzle-example { display: grid; grid-template-columns: 1fr 1fr; gap: 6px; }
 .puzzle-box { display: grid; align-content: start; gap: 2px; padding: 6px 8px; border: 1px solid #d8decb; border-radius: 8px; background: #fafbf6; min-width: 0; }

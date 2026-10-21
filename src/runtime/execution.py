@@ -170,6 +170,34 @@ def check_program(source, files, inputs, report):
     return json.dumps({"type": "done"})
 
 
+async def check_scene(source, files, steps, report, sleep=None):
+    """Run an event program with a scripted player (checks.py): taps, keys and waits while the
+    game runs, then each expectation reported as it is judged. A game that ends early is judged on its last picture."""
+    from _playground_events import reset_session
+    from _playground_scene import scene, receive_input
+    from _playground_checks import play, finish_after
+    session = reset_session() if sleep is None else reset_session(sleep=sleep)
+    done = []
+    async def player(_payload):
+        await play(scene, receive_input, session._sleep, steps, report, done)
+        session.finish()
+    try:
+        with generated_modules(source, files):
+            try:
+                exec(compile(source, "program.py", "exec"), {"__name__": "__main__"})
+                session._service(player)
+                await session.run()
+            except BaseException as error:
+                from _playground_events import SessionFinished
+                if not isinstance(error, SessionFinished):
+                    if session.state == 'setup': session.state = 'closed'
+                    return error_result(error)
+            finish_after(scene, steps, report, done)
+            return json.dumps({"type": "done"})
+    except BaseException as error:
+        return error_result(error)
+
+
 def receive_host_event(message):
     from _playground_events import events
     try:

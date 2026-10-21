@@ -263,7 +263,7 @@ class EventSession:
 events = EventSession()
 
 
-def reset_session():
+def reset_session(**options):
     global events
-    events = EventSession()
+    events = EventSession(**options)
     return events

@@ -44,7 +44,8 @@ export function installLessons(host: LessonsHost) {
     article.append(image, kind, title, summary, tags, actions); item.append(article);
     return item;
   };
-  list.append(...builds.map(card));
+  // Academy units live in the Academy, not here.
+  list.append(...builds.filter(build => build.kind !== 'unit').map(card));
   const show = () => dialog.showModal();
   for (const id of ['lessons-open', 'menu-lessons']) document.getElementById(id)?.addEventListener('click', show);
   document.getElementById('lessons-close')!.addEventListener('click', () => dialog.close());

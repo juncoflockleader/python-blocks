@@ -12,8 +12,9 @@ type State = Blockly.serialization.blocks.State;
 export const RECIPE_GROUPS = ['move', 'look', 'touch', 'game', 'sound', 'draw', 'data', 'fix'] as const;
 export type RecipeGroup = typeof RECIPE_GROUPS[number];
 export type SpriteRef = '$sprite' | '$other';
-/** A handler made through the hat-block path; `program` (lessons only) fills the project's Program block instead. */
-export interface RecipeHandler { kind: HatKind | 'program'; key?: string; sprite?: SpriteRef; other?: SpriteRef; message?: string; backdrop?: string }
+/** A handler made through the hat-block path; `program` (lessons only) fills the project's Program block instead,
+ * and `loose` (academy problems only) leaves the stack on the workspace unsnapped, for the learner to put in place. */
+export interface RecipeHandler { kind: HatKind | 'program' | 'loose'; key?: string; sprite?: SpriteRef; other?: SpriteRef; message?: string; backdrop?: string }
 /** One top-level script: a handler made through the hat-block path, holding a stack. */
 export interface RecipePart { handler: RecipeHandler; stack: State[] }
 /** Input played while recording a preview: hold a key, or click a sprite. */
@@ -105,6 +106,7 @@ export function appendRecipe(workspace: Blockly.Workspace, recipe: Recipe, place
   if (recipe.variables?.length) refreshSymbols(workspace);
   const ref = (value?: SpriteRef) => value === '$other' ? place.other : value === '$sprite' ? place.sprite : undefined;
   return recipe.blocks.map(part => {
+    if (part.handler.kind === 'loose') return Blockly.serialization.blocks.append(resolve(chain(part.stack), place), workspace, { recordUndo: true });
     if (part.handler.kind === 'program') {
       // The Program block gets this stack in place of what it held (a puzzle's "Show me how").
       const program = workspace.getTopBlocks(true).find(b => b.type === 'py_program');
@@ -121,6 +123,8 @@ export function appendRecipe(workspace: Blockly.Workspace, recipe: Recipe, place
       return program;
     }
     const state = handlerState(workspace, { kind: part.handler.kind as HatKind, key: part.handler.key, sprite: ref(part.handler.sprite ?? '$sprite'), other: ref(part.handler.other), message: part.handler.message, backdrop: part.handler.backdrop });
+    // An empty stack leaves the "when …" block waiting for the learner's blocks (an academy problem).
+    if (!part.stack.length) return Blockly.serialization.blocks.append(state, workspace, { recordUndo: true });
     const body = resolve(chain(part.stack), place);
     // "Overlaps <other>" starts with an if; the recipe's stack goes inside it.
     const check = state.inputs?.BODY?.block;

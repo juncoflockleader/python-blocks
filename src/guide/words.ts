@@ -76,6 +76,8 @@ export const WORDS: Record<string, Word> = {
     picture: c => { sky(c); c.fillStyle = '#e8b97c'; c.strokeStyle = INK; c.lineWidth = 2.5; c.beginPath(); c.roundRect(64, 40, 92, 62, 8); c.fill(); c.stroke(); c.fillStyle = '#d29b55'; c.beginPath(); c.roundRect(58, 30, 104, 18, 6); c.fill(); c.stroke(); label(c, 'best', 110, 18, '#8a3f17', 15); label(c, '9', 110, 76, '#26382f', 24); } },
   remainder: { title: 'Remainder', say: 'The remainder is what is left over after sharing into equal groups. 7 shared into 3s leaves 1. A number is even when the remainder after 2 is 0.',
     picture: c => { sky(c); for (const [g, x] of [[0, 30], [1, 92]] as const) { c.strokeStyle = '#8c9b85'; c.setLineDash([4, 3]); c.lineWidth = 2; c.beginPath(); c.roundRect(x - 6, 26, 56, 46, 10); c.stroke(); c.setLineDash([]); for (let k = 0; k < 3; k++) art(c, 'props/gem-1@1', x + 6 + (k % 2) * 22, 40 + Math.floor(k / 2) * 20, 0.55); void g; } art(c, 'props/gem-1@1', 176, 48, 0.7); arrow(c, 176, 92, 176, 66, '#c4602f', 3); label(c, '7 in 3s: 1 left', 110, 104, '#c4602f', 14); } },
+  signal: { title: 'Signal', say: 'A signal tells a sprite to start: a tap, a key, or the game starting. Its “when” blocks wait for it.',
+    picture: c => { sky(c); art(c, 'cast/fox-happy@1', 70, 66, 0.9); arrow(c, 190, 30, 112, 52, '#c4602f', 3); label(c, 'tap!', 196, 24, '#c4602f', 14); label(c, 'when Fox clicked', 70, 112, '#4e5f49', 11); } },
   costume: { title: 'Costume', say: 'A costume is one picture of a sprite. Showing costumes one after another makes an animation.',
     picture: c => { sky(c); ['flap-1', 'flap-2', 'flap-3', 'flap-4'].forEach((f, i) => art(c, `cast/chick-${f}@1`, 32 + i * 52, 60, 0.85)); } },
 };

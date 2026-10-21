@@ -14,7 +14,8 @@ export interface PuzzlePicture {
 }
 const JUDGE: [number, number, number] = [418, 236, 1.5];
 
-export function paintPuzzle(canvas: HTMLCanvasElement, picture: PuzzlePicture, cheering = false) {
+/** `judge`: the Chick in the corner, for a puzzle; a guide panel is the cast alone. */
+export function paintPuzzle(canvas: HTMLCanvasElement, picture: PuzzlePicture, cheering = false, judge = true) {
   const scale = canvas.width / 480, c = canvas.getContext('2d'); if (!c) return;
   c.save(); c.clearRect(0, 0, canvas.width, canvas.height); c.scale(scale, scale); c.lineJoin = 'round'; c.lineCap = 'round';
   paintStock(c, picture.backdrop);
@@ -27,6 +28,6 @@ export function paintPuzzle(canvas: HTMLCanvasElement, picture: PuzzlePicture, c
     if (say) { c.strokeStyle = INK; c.lineWidth = 2.2; c.stroke(); }
     c.fillStyle = '#26382f'; c.fillText(text, x, y + 1); c.restore();
   }
-  place(cheering ? 'cast/chick-happy@1' : 'cast/chick-idle-1@1', ...JUDGE);
+  if (judge) place(cheering ? 'cast/chick-happy@1' : 'cast/chick-idle-1@1', ...JUDGE);
   c.restore();
 }
