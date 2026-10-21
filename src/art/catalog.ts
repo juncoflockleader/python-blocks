@@ -5,6 +5,7 @@ import { CRITTERS, paintCritter } from './critters';
 import { PIECES, PIECE_NAMES, THEMES, THEME_NAMES, paintTile, type Piece, type Theme } from './tiles';
 import { BACKDROPS, paintBackdrop } from './backdrops';
 import { paintLegacyBackdrop } from './legacy';
+import { mazeDot, mazeWall } from './arcade';
 
 /** The library catalogue. Every piece of library art has a reference such as
  * `cast/fox-walk-1@1` that a project can store instead of a picture: the app
@@ -39,19 +40,20 @@ for (const critter of CRITTERS) {
   const at = (frame: string) => refs[critter.frames.indexOf(frame)];
   const animations = Object.entries(critter.animations).map(([name, frames]) => ({ name, frames: frames.map(at), ...(name === 'idle' ? { seconds: 0.4 } : {}) }));
   // The chick flaps whenever it is off the ground; the beetle steps while it walks.
-  const autoAnimate = critter.animations.flap ? { moving: 'flap', air: 'flap', still: 'idle', turn: true } : { moving: 'walk', air: '', still: '', turn: true };
-  entries.push({ id: critter.id, name: critter.name, category: 'Characters', kind: 'costume', width: critter.width, height: critter.height, assets: refs, costume: refs[0], frames: (critter.animations.flap ?? critter.animations.walk).map(at), animations, autoAnimate, detail: critter.detail });
+  const autoAnimate = critter.autoAnimate ?? (critter.animations.flap ? { moving: 'flap', air: 'flap', still: 'idle', turn: true } : { moving: 'walk', air: '', still: '', turn: true });
+  entries.push({ id: critter.id, name: critter.name, category: 'Characters', kind: 'costume', width: critter.width, height: critter.height, assets: refs, costume: refs[0], frames: (critter.animations.flap ?? critter.animations.walk ?? critter.frames).map(at), animations, autoAnimate, detail: critter.detail });
 }
 for (const prop of PROPS) {
   if (prop.variants) {
     const refs = prop.variants.map((variant, f) => add(ref(`props/${prop.id}-${variant}`), `stock-${prop.id}-${variant}`, `${prop.name} ${variant}`, 'costume', prop.width, prop.height, c => paintProp(c, prop.id, f)));
-    entries.push({ id: prop.id, name: prop.name, category: 'Objects', kind: 'costume', width: prop.width, height: prop.height, assets: refs, costume: refs[0], frames: refs, detail: `${refs.length} colours` });
+    entries.push({ id: prop.id, name: prop.name, category: 'Objects', kind: 'costume', width: prop.width, height: prop.height, assets: refs, costume: refs[0], frames: refs, detail: prop.detail ?? `${refs.length} colours` });
     continue;
   }
   const refs = Array.from({ length: prop.frames }, (_, f) => prop.frames > 1
     ? add(ref(`props/${prop.id}-${f + 1}`), `stock-${prop.id}-${f + 1}`, `${prop.name} ${f + 1}`, 'costume', prop.width, prop.height, c => paintProp(c, prop.id, f))
     : add(ref(`props/${prop.id}`), `stock-${prop.id}`, prop.name, 'costume', prop.width, prop.height, c => paintProp(c, prop.id)));
-  entries.push({ id: prop.id, name: prop.name, category: 'Objects', kind: 'costume', width: prop.width, height: prop.height, assets: refs, costume: refs[0], ...(refs.length > 1 ? { frames: refs, animations: [{ name: prop.id === 'rocket' ? 'flame' : 'spin', frames: refs }] } : {}), detail: refs.length > 1 ? (prop.id === 'rocket' ? 'Flame flickers' : 'Spins') : 'Object' });
+  const animation = prop.animation === undefined ? (prop.id === 'rocket' ? 'flame' : 'spin') : prop.animation;
+  entries.push({ id: prop.id, name: prop.name, category: 'Objects', kind: 'costume', width: prop.width, height: prop.height, assets: refs, costume: refs[0], ...(refs.length > 1 ? { frames: refs, ...(animation ? { animations: [{ name: animation, frames: refs }] } : {}) } : {}), detail: prop.detail ?? (refs.length > 1 ? (prop.id === 'rocket' ? 'Flame flickers' : 'Spins') : 'Object') });
 }
 for (const theme of THEMES) {
   const refs = PIECES.map(piece => add(ref(`tiles/${theme}-${piece}`), `stock-${theme}-${piece}`, `${THEME_NAMES[theme]} ${PIECE_NAMES[piece]}`, 'costume', 32, 32, c => paintTile(c, theme, piece)));
@@ -65,6 +67,12 @@ for (const [id, name] of [['forest', 'Forest'], ['reef', 'Coral reef'], ['city',
   const r = add(ref(`backdrops/${id}`), `stock-${id}`, name, 'backdrop', 480, 320, c => paintLegacyBackdrop(c, id));
   entries.push({ id, name, category: 'Backdrops', kind: 'backdrop', width: 480, height: 320, assets: [r], costume: r, detail: 'Backdrop' });
 }
+// Maze walls join the sides named in their ids (n, e, s, w; o joins none), so walls painted side by side connect; and the dots.
+const JOINS = Array.from({ length: 16 }, (_, joins) => [joins, 'nesw'.split('').filter((_, i) => joins & (1 << i)).join('') || 'o'] as const);
+const walls = JOINS.map(([joins, code]) => add(ref(`tiles/maze-wall-${code}`), `stock-maze-wall-${code}`, `Maze wall ${code}`, 'costume', 32, 32, c => mazeWall(c, joins)));
+entries.push({ id: 'maze-tiles', name: 'Maze walls', category: 'Tiles', kind: 'costume', width: 32, height: 32, assets: walls, costume: walls[15], detail: 'Walls that join up, on a dark floor' });
+const dots = [add(ref('tiles/maze-dot'), 'stock-maze-dot', 'Maze dot', 'costume', 32, 32, c => mazeDot(c, false)), add(ref('tiles/maze-power'), 'stock-maze-power', 'Power dot', 'costume', 32, 32, c => mazeDot(c, true))];
+entries.push({ id: 'maze-dots', name: 'Maze dots', category: 'Tiles', kind: 'costume', width: 32, height: 32, assets: dots, costume: dots[1], detail: 'A dot and a power dot' });
 /** Library ids that world templates and older code use for a single tile. */
 const SINGLE: Record<string, [Theme, Piece]> = { grass: ['grass', 'top'], stone: ['castle', 'middle'], sand: ['sand', 'top'], metal: ['metal', 'block'] };
 for (const [id, [theme, piece]] of Object.entries(SINGLE)) {

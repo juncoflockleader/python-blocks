@@ -1,0 +1,5759 @@
+{
+ "format": "python-blocks",
+ "formatVersion": 2,
+ "languageVersion": 23,
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "py_function",
+     "id": "open_at_function_block",
+     "x": 1974,
+     "y": 30,
+     "extraState": {
+      "functionId": "open_at_function",
+      "signature": {
+       "id": "open_at_function",
+       "name": "open_at",
+       "parameters": [
+        {
+         "id": "open_at_x",
+         "name": "x"
+        },
+        {
+         "id": "open_at_y",
+         "name": "y"
+        }
+       ]
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "py_return_value",
+        "id": "maze-muncher-1",
+        "inputs": {
+         "VALUE": {
+          "block": {
+           "type": "py_not",
+           "id": "maze-muncher-2",
+           "inputs": {
+            "VALUE": {
+             "block": {
+              "type": "py_item_get",
+              "id": "maze-muncher-3",
+              "inputs": {
+               "COLLECTION": {
+                "block": {
+                 "type": "scene_tile_at",
+                 "id": "maze-muncher-4",
+                 "inputs": {
+                  "X": {
+                   "block": {
+                    "type": "py_get",
+                    "id": "maze-muncher-5",
+                    "fields": {
+                     "SYMBOL": "param:open_at_x"
+                    }
+                   }
+                  },
+                  "Y": {
+                   "block": {
+                    "type": "py_get",
+                    "id": "maze-muncher-6",
+                    "fields": {
+                     "SYMBOL": "param:open_at_y"
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "KEY": {
+                "shadow": {
+                 "type": "text",
+                 "id": "maze-muncher-7",
+                 "fields": {
+                  "TEXT": "solid"
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_function",
+     "id": "at_center_function_block",
+     "x": 1974,
+     "y": 202,
+     "extraState": {
+      "functionId": "at_center_function",
+      "signature": {
+       "id": "at_center_function",
+       "name": "at_center",
+       "parameters": [
+        {
+         "id": "at_center_thing",
+         "name": "thing"
+        }
+       ]
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "py_return_value",
+        "id": "maze-muncher-8",
+        "inputs": {
+         "VALUE": {
+          "block": {
+           "type": "py_logic",
+           "id": "maze-muncher-9",
+           "fields": {
+            "OP": "and"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "logic_compare",
+              "id": "maze-muncher-10",
+              "fields": {
+               "OP": "EQ"
+              },
+              "inputs": {
+               "A": {
+                "block": {
+                 "type": "py_binary",
+                 "id": "maze-muncher-11",
+                 "fields": {
+                  "OP": "%"
+                 },
+                 "inputs": {
+                  "A": {
+                   "block": {
+                    "type": "py_binary",
+                    "id": "maze-muncher-12",
+                    "fields": {
+                     "OP": "+"
+                    },
+                    "inputs": {
+                     "A": {
+                      "block": {
+                       "type": "scene_get",
+                       "id": "maze-muncher-13",
+                       "fields": {
+                        "PROPERTY": "x"
+                       },
+                       "inputs": {
+                        "SPRITE": {
+                         "block": {
+                          "type": "py_get",
+                          "id": "maze-muncher-14",
+                          "fields": {
+                           "SYMBOL": "param:at_center_thing"
+                          }
+                         }
+                        }
+                       }
+                      }
+                     },
+                     "B": {
+                      "shadow": {
+                       "type": "py_number",
+                       "id": "maze-muncher-15",
+                       "fields": {
+                        "VALUE": "224"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  },
+                  "B": {
+                   "shadow": {
+                    "type": "py_number",
+                    "id": "maze-muncher-16",
+                    "fields": {
+                     "VALUE": "32"
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "B": {
+                "shadow": {
+                 "type": "py_number",
+                 "id": "maze-muncher-17",
+                 "fields": {
+                  "VALUE": "0"
+                 }
+                }
+               }
+              }
+             }
+            },
+            "B": {
+             "block": {
+              "type": "logic_compare",
+              "id": "maze-muncher-18",
+              "fields": {
+               "OP": "EQ"
+              },
+              "inputs": {
+               "A": {
+                "block": {
+                 "type": "py_binary",
+                 "id": "maze-muncher-19",
+                 "fields": {
+                  "OP": "%"
+                 },
+                 "inputs": {
+                  "A": {
+                   "block": {
+                    "type": "py_binary",
+                    "id": "maze-muncher-20",
+                    "fields": {
+                     "OP": "-"
+                    },
+                    "inputs": {
+                     "A": {
+                      "block": {
+                       "type": "scene_get",
+                       "id": "maze-muncher-21",
+                       "fields": {
+                        "PROPERTY": "y"
+                       },
+                       "inputs": {
+                        "SPRITE": {
+                         "block": {
+                          "type": "py_get",
+                          "id": "maze-muncher-22",
+                          "fields": {
+                           "SYMBOL": "param:at_center_thing"
+                          }
+                         }
+                        }
+                       }
+                      }
+                     },
+                     "B": {
+                      "shadow": {
+                       "type": "py_number",
+                       "id": "maze-muncher-23",
+                       "fields": {
+                        "VALUE": "144"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  },
+                  "B": {
+                   "shadow": {
+                    "type": "py_number",
+                    "id": "maze-muncher-24",
+                    "fields": {
+                     "VALUE": "32"
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "B": {
+                "shadow": {
+                 "type": "py_number",
+                 "id": "maze-muncher-25",
+                 "fields": {
+                  "VALUE": "0"
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_function",
+     "id": "eat_function_block",
+     "x": 1974,
+     "y": 376,
+     "extraState": {
+      "functionId": "eat_function",
+      "signature": {
+       "id": "eat_function",
+       "name": "eat",
+       "parameters": []
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "py_set",
+        "id": "maze-muncher-26",
+        "fields": {
+         "SYMBOL": "maze-muncher-490"
+        },
+        "inputs": {
+         "VALUE": {
+          "block": {
+           "type": "scene_tile_at",
+           "id": "maze-muncher-27",
+           "inputs": {
+            "X": {
+             "block": {
+              "type": "scene_get",
+              "id": "maze-muncher-28",
+              "fields": {
+               "PROPERTY": "x"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "id": "maze-muncher-29",
+                 "fields": {
+                  "SPRITE_ID": "muncher"
+                 }
+                }
+               }
+              }
+             }
+            },
+            "Y": {
+             "block": {
+              "type": "scene_get",
+              "id": "maze-muncher-30",
+              "fields": {
+               "PROPERTY": "y"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "id": "maze-muncher-31",
+                 "fields": {
+                  "SPRITE_ID": "muncher"
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "controls_if",
+          "id": "maze-muncher-32",
+          "inputs": {
+           "IF0": {
+            "block": {
+             "type": "logic_compare",
+             "id": "maze-muncher-33",
+             "fields": {
+              "OP": "EQ"
+             },
+             "inputs": {
+              "A": {
+               "block": {
+                "type": "py_item_get",
+                "id": "maze-muncher-34",
+                "inputs": {
+                 "COLLECTION": {
+                  "block": {
+                   "type": "py_get",
+                   "id": "maze-muncher-35",
+                   "fields": {
+                    "SYMBOL": "maze-muncher-490"
+                   }
+                  }
+                 },
+                 "KEY": {
+                  "shadow": {
+                   "type": "text",
+                   "id": "maze-muncher-36",
+                   "fields": {
+                    "TEXT": "costume"
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "B": {
+               "shadow": {
+                "type": "text",
+                "id": "maze-muncher-37",
+                "fields": {
+                 "TEXT": "stock-maze-dot"
+                }
+               }
+              }
+             }
+            }
+           },
+           "DO0": {
+            "block": {
+             "type": "scene_tile_set",
+             "id": "maze-muncher-38",
+             "inputs": {
+              "COLUMN": {
+               "block": {
+                "type": "py_item_get",
+                "id": "maze-muncher-39",
+                "inputs": {
+                 "COLLECTION": {
+                  "block": {
+                   "type": "py_get",
+                   "id": "maze-muncher-40",
+                   "fields": {
+                    "SYMBOL": "maze-muncher-490"
+                   }
+                  }
+                 },
+                 "KEY": {
+                  "shadow": {
+                   "type": "text",
+                   "id": "maze-muncher-41",
+                   "fields": {
+                    "TEXT": "column"
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "ROW": {
+               "block": {
+                "type": "py_item_get",
+                "id": "maze-muncher-42",
+                "inputs": {
+                 "COLLECTION": {
+                  "block": {
+                   "type": "py_get",
+                   "id": "maze-muncher-43",
+                   "fields": {
+                    "SYMBOL": "maze-muncher-490"
+                   }
+                  }
+                 },
+                 "KEY": {
+                  "shadow": {
+                   "type": "text",
+                   "id": "maze-muncher-44",
+                   "fields": {
+                    "TEXT": "row"
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "COSTUME": {
+               "block": {
+                "type": "py_none",
+                "id": "maze-muncher-45"
+               }
+              },
+              "ENABLED": {
+               "block": {
+                "type": "logic_boolean",
+                "id": "maze-muncher-46",
+                "fields": {
+                 "BOOL": "FALSE"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "game_change",
+               "id": "maze-muncher-47",
+               "fields": {
+                "FIELD": "score"
+               },
+               "inputs": {
+                "VALUE": {
+                 "shadow": {
+                  "type": "py_number",
+                  "id": "maze-muncher-48",
+                  "fields": {
+                   "VALUE": "10"
+                  }
+                 }
+                }
+               },
+               "next": {
+                "block": {
+                 "type": "py_set",
+                 "id": "maze-muncher-49",
+                 "fields": {
+                  "SYMBOL": "maze-muncher-482"
+                 },
+                 "inputs": {
+                  "VALUE": {
+                   "block": {
+                    "type": "py_binary",
+                    "id": "maze-muncher-50",
+                    "fields": {
+                     "OP": "-"
+                    },
+                    "inputs": {
+                     "A": {
+                      "block": {
+                       "type": "py_get",
+                       "id": "maze-muncher-51",
+                       "fields": {
+                        "SYMBOL": "maze-muncher-482"
+                       }
+                      }
+                     },
+                     "B": {
+                      "shadow": {
+                       "type": "py_number",
+                       "id": "maze-muncher-52",
+                       "fields": {
+                        "VALUE": "1"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 },
+                 "next": {
+                  "block": {
+                   "type": "sound_play",
+                   "id": "maze-muncher-53",
+                   "inputs": {
+                    "SOUND": {
+                     "block": {
+                      "type": "sound_asset",
+                      "id": "maze-muncher-54",
+                      "fields": {
+                       "SOUND_ID": "blip"
+                      }
+                     }
+                    },
+                    "OWNER": {
+                     "block": {
+                      "type": "py_none",
+                      "id": "maze-muncher-55"
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "controls_if",
+            "id": "maze-muncher-56",
+            "inputs": {
+             "IF0": {
+              "block": {
+               "type": "logic_compare",
+               "id": "maze-muncher-57",
+               "fields": {
+                "OP": "EQ"
+               },
+               "inputs": {
+                "A": {
+                 "block": {
+                  "type": "py_item_get",
+                  "id": "maze-muncher-58",
+                  "inputs": {
+                   "COLLECTION": {
+                    "block": {
+                     "type": "py_get",
+                     "id": "maze-muncher-59",
+                     "fields": {
+                      "SYMBOL": "maze-muncher-490"
+                     }
+                    }
+                   },
+                   "KEY": {
+                    "shadow": {
+                     "type": "text",
+                     "id": "maze-muncher-60",
+                     "fields": {
+                      "TEXT": "costume"
+                     }
+                    }
+                   }
+                  }
+                 }
+                },
+                "B": {
+                 "shadow": {
+                  "type": "text",
+                  "id": "maze-muncher-61",
+                  "fields": {
+                   "TEXT": "stock-maze-power"
+                  }
+                 }
+                }
+               }
+              }
+             },
+             "DO0": {
+              "block": {
+               "type": "scene_tile_set",
+               "id": "maze-muncher-62",
+               "inputs": {
+                "COLUMN": {
+                 "block": {
+                  "type": "py_item_get",
+                  "id": "maze-muncher-63",
+                  "inputs": {
+                   "COLLECTION": {
+                    "block": {
+                     "type": "py_get",
+                     "id": "maze-muncher-64",
+                     "fields": {
+                      "SYMBOL": "maze-muncher-490"
+                     }
+                    }
+                   },
+                   "KEY": {
+                    "shadow": {
+                     "type": "text",
+                     "id": "maze-muncher-65",
+                     "fields": {
+                      "TEXT": "column"
+                     }
+                    }
+                   }
+                  }
+                 }
+                },
+                "ROW": {
+                 "block": {
+                  "type": "py_item_get",
+                  "id": "maze-muncher-66",
+                  "inputs": {
+                   "COLLECTION": {
+                    "block": {
+                     "type": "py_get",
+                     "id": "maze-muncher-67",
+                     "fields": {
+                      "SYMBOL": "maze-muncher-490"
+                     }
+                    }
+                   },
+                   "KEY": {
+                    "shadow": {
+                     "type": "text",
+                     "id": "maze-muncher-68",
+                     "fields": {
+                      "TEXT": "row"
+                     }
+                    }
+                   }
+                  }
+                 }
+                },
+                "COSTUME": {
+                 "block": {
+                  "type": "py_none",
+                  "id": "maze-muncher-69"
+                 }
+                },
+                "ENABLED": {
+                 "block": {
+                  "type": "logic_boolean",
+                  "id": "maze-muncher-70",
+                  "fields": {
+                   "BOOL": "FALSE"
+                  }
+                 }
+                }
+               },
+               "next": {
+                "block": {
+                 "type": "game_change",
+                 "id": "maze-muncher-71",
+                 "fields": {
+                  "FIELD": "score"
+                 },
+                 "inputs": {
+                  "VALUE": {
+                   "shadow": {
+                    "type": "py_number",
+                    "id": "maze-muncher-72",
+                    "fields": {
+                     "VALUE": "50"
+                    }
+                   }
+                  }
+                 },
+                 "next": {
+                  "block": {
+                   "type": "py_set",
+                   "id": "maze-muncher-73",
+                   "fields": {
+                    "SYMBOL": "maze-muncher-482"
+                   },
+                   "inputs": {
+                    "VALUE": {
+                     "block": {
+                      "type": "py_binary",
+                      "id": "maze-muncher-74",
+                      "fields": {
+                       "OP": "-"
+                      },
+                      "inputs": {
+                       "A": {
+                        "block": {
+                         "type": "py_get",
+                         "id": "maze-muncher-75",
+                         "fields": {
+                          "SYMBOL": "maze-muncher-482"
+                         }
+                        }
+                       },
+                       "B": {
+                        "shadow": {
+                         "type": "py_number",
+                         "id": "maze-muncher-76",
+                         "fields": {
+                          "VALUE": "1"
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   },
+                   "next": {
+                    "block": {
+                     "type": "sound_play",
+                     "id": "maze-muncher-77",
+                     "inputs": {
+                      "SOUND": {
+                       "block": {
+                        "type": "sound_asset",
+                        "id": "maze-muncher-78",
+                        "fields": {
+                         "SOUND_ID": "powerup"
+                        }
+                       }
+                      },
+                      "OWNER": {
+                       "block": {
+                        "type": "py_none",
+                        "id": "maze-muncher-79"
+                       }
+                      }
+                     },
+                     "next": {
+                      "block": {
+                       "type": "py_set",
+                       "id": "maze-muncher-80",
+                       "fields": {
+                        "SYMBOL": "maze-muncher-483"
+                       },
+                       "inputs": {
+                        "VALUE": {
+                         "shadow": {
+                          "type": "py_number",
+                          "id": "maze-muncher-81",
+                          "fields": {
+                           "VALUE": "200"
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "controls_if",
+              "id": "maze-muncher-82",
+              "inputs": {
+               "IF0": {
+                "block": {
+                 "type": "logic_compare",
+                 "id": "maze-muncher-83",
+                 "fields": {
+                  "OP": "EQ"
+                 },
+                 "inputs": {
+                  "A": {
+                   "block": {
+                    "type": "py_get",
+                    "id": "maze-muncher-84",
+                    "fields": {
+                     "SYMBOL": "maze-muncher-482"
+                    }
+                   }
+                  },
+                  "B": {
+                   "shadow": {
+                    "type": "py_number",
+                    "id": "maze-muncher-85",
+                    "fields": {
+                     "VALUE": "0"
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "DO0": {
+                "block": {
+                 "type": "sound_play",
+                 "id": "maze-muncher-86",
+                 "inputs": {
+                  "SOUND": {
+                   "block": {
+                    "type": "sound_asset",
+                    "id": "maze-muncher-87",
+                    "fields": {
+                     "SOUND_ID": "win"
+                    }
+                   }
+                  },
+                  "OWNER": {
+                   "block": {
+                    "type": "py_none",
+                    "id": "maze-muncher-88"
+                   }
+                  }
+                 },
+                 "next": {
+                  "block": {
+                   "type": "game_finish",
+                   "id": "maze-muncher-89",
+                   "fields": {
+                    "WON": "TRUE"
+                   },
+                   "inputs": {
+                    "TEXT": {
+                     "shadow": {
+                      "type": "text",
+                      "id": "maze-muncher-90",
+                      "fields": {
+                       "TEXT": "You ate every dot!"
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_function",
+     "id": "move_muncher_function_block",
+     "x": 1974,
+     "y": 1521,
+     "extraState": {
+      "functionId": "move_muncher_function",
+      "signature": {
+       "id": "move_muncher_function",
+       "name": "move_muncher",
+       "parameters": []
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "maze-muncher-91",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "py_call_value",
+           "id": "maze-muncher-92",
+           "extraState": {
+            "functionId": "at_center_function",
+            "signature": {
+             "id": "at_center_function",
+             "name": "at_center",
+             "parameters": [
+              {
+               "id": "at_center_thing",
+               "name": "thing"
+              }
+             ]
+            }
+           },
+           "inputs": {
+            "ARG_at_center_thing": {
+             "block": {
+              "type": "scene_sprite",
+              "id": "maze-muncher-93",
+              "fields": {
+               "SPRITE_ID": "muncher"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "py_call",
+           "id": "maze-muncher-94",
+           "extraState": {
+            "functionId": "eat_function",
+            "signature": {
+             "id": "eat_function",
+             "name": "eat",
+             "parameters": []
+            }
+           },
+           "next": {
+            "block": {
+             "type": "controls_if",
+             "id": "maze-muncher-95",
+             "inputs": {
+              "IF0": {
+               "block": {
+                "type": "py_call_value",
+                "id": "maze-muncher-96",
+                "extraState": {
+                 "functionId": "open_at_function",
+                 "signature": {
+                  "id": "open_at_function",
+                  "name": "open_at",
+                  "parameters": [
+                   {
+                    "id": "open_at_x",
+                    "name": "x"
+                   },
+                   {
+                    "id": "open_at_y",
+                    "name": "y"
+                   }
+                  ]
+                 }
+                },
+                "inputs": {
+                 "ARG_open_at_x": {
+                  "block": {
+                   "type": "py_binary",
+                   "id": "maze-muncher-97",
+                   "fields": {
+                    "OP": "+"
+                   },
+                   "inputs": {
+                    "A": {
+                     "block": {
+                      "type": "scene_get",
+                      "id": "maze-muncher-98",
+                      "fields": {
+                       "PROPERTY": "x"
+                      },
+                      "inputs": {
+                       "SPRITE": {
+                        "block": {
+                         "type": "scene_sprite",
+                         "id": "maze-muncher-99",
+                         "fields": {
+                          "SPRITE_ID": "muncher"
+                         }
+                        }
+                       }
+                      }
+                     }
+                    },
+                    "B": {
+                     "block": {
+                      "type": "py_binary",
+                      "id": "maze-muncher-100",
+                      "fields": {
+                       "OP": "*"
+                      },
+                      "inputs": {
+                       "A": {
+                        "block": {
+                         "type": "py_get",
+                         "id": "maze-muncher-101",
+                         "fields": {
+                          "SYMBOL": "maze-muncher-478"
+                         }
+                        }
+                       },
+                       "B": {
+                        "shadow": {
+                         "type": "py_number",
+                         "id": "maze-muncher-102",
+                         "fields": {
+                          "VALUE": "32"
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 },
+                 "ARG_open_at_y": {
+                  "block": {
+                   "type": "py_binary",
+                   "id": "maze-muncher-103",
+                   "fields": {
+                    "OP": "+"
+                   },
+                   "inputs": {
+                    "A": {
+                     "block": {
+                      "type": "scene_get",
+                      "id": "maze-muncher-104",
+                      "fields": {
+                       "PROPERTY": "y"
+                      },
+                      "inputs": {
+                       "SPRITE": {
+                        "block": {
+                         "type": "scene_sprite",
+                         "id": "maze-muncher-105",
+                         "fields": {
+                          "SPRITE_ID": "muncher"
+                         }
+                        }
+                       }
+                      }
+                     }
+                    },
+                    "B": {
+                     "block": {
+                      "type": "py_binary",
+                      "id": "maze-muncher-106",
+                      "fields": {
+                       "OP": "*"
+                      },
+                      "inputs": {
+                       "A": {
+                        "block": {
+                         "type": "py_get",
+                         "id": "maze-muncher-107",
+                         "fields": {
+                          "SYMBOL": "maze-muncher-479"
+                         }
+                        }
+                       },
+                       "B": {
+                        "shadow": {
+                         "type": "py_number",
+                         "id": "maze-muncher-108",
+                         "fields": {
+                          "VALUE": "32"
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "DO0": {
+               "block": {
+                "type": "py_set",
+                "id": "maze-muncher-109",
+                "fields": {
+                 "SYMBOL": "maze-muncher-480"
+                },
+                "inputs": {
+                 "VALUE": {
+                  "block": {
+                   "type": "py_get",
+                   "id": "maze-muncher-110",
+                   "fields": {
+                    "SYMBOL": "maze-muncher-478"
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "py_set",
+                  "id": "maze-muncher-111",
+                  "fields": {
+                   "SYMBOL": "maze-muncher-481"
+                  },
+                  "inputs": {
+                   "VALUE": {
+                    "block": {
+                     "type": "py_get",
+                     "id": "maze-muncher-112",
+                     "fields": {
+                      "SYMBOL": "maze-muncher-479"
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "controls_if",
+               "id": "maze-muncher-113",
+               "inputs": {
+                "IF0": {
+                 "block": {
+                  "type": "py_not",
+                  "id": "maze-muncher-114",
+                  "inputs": {
+                   "VALUE": {
+                    "block": {
+                     "type": "py_call_value",
+                     "id": "maze-muncher-115",
+                     "extraState": {
+                      "functionId": "open_at_function",
+                      "signature": {
+                       "id": "open_at_function",
+                       "name": "open_at",
+                       "parameters": [
+                        {
+                         "id": "open_at_x",
+                         "name": "x"
+                        },
+                        {
+                         "id": "open_at_y",
+                         "name": "y"
+                        }
+                       ]
+                      }
+                     },
+                     "inputs": {
+                      "ARG_open_at_x": {
+                       "block": {
+                        "type": "py_binary",
+                        "id": "maze-muncher-116",
+                        "fields": {
+                         "OP": "+"
+                        },
+                        "inputs": {
+                         "A": {
+                          "block": {
+                           "type": "scene_get",
+                           "id": "maze-muncher-117",
+                           "fields": {
+                            "PROPERTY": "x"
+                           },
+                           "inputs": {
+                            "SPRITE": {
+                             "block": {
+                              "type": "scene_sprite",
+                              "id": "maze-muncher-118",
+                              "fields": {
+                               "SPRITE_ID": "muncher"
+                              }
+                             }
+                            }
+                           }
+                          }
+                         },
+                         "B": {
+                          "block": {
+                           "type": "py_binary",
+                           "id": "maze-muncher-119",
+                           "fields": {
+                            "OP": "*"
+                           },
+                           "inputs": {
+                            "A": {
+                             "block": {
+                              "type": "py_get",
+                              "id": "maze-muncher-120",
+                              "fields": {
+                               "SYMBOL": "maze-muncher-480"
+                              }
+                             }
+                            },
+                            "B": {
+                             "shadow": {
+                              "type": "py_number",
+                              "id": "maze-muncher-121",
+                              "fields": {
+                               "VALUE": "32"
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      },
+                      "ARG_open_at_y": {
+                       "block": {
+                        "type": "py_binary",
+                        "id": "maze-muncher-122",
+                        "fields": {
+                         "OP": "+"
+                        },
+                        "inputs": {
+                         "A": {
+                          "block": {
+                           "type": "scene_get",
+                           "id": "maze-muncher-123",
+                           "fields": {
+                            "PROPERTY": "y"
+                           },
+                           "inputs": {
+                            "SPRITE": {
+                             "block": {
+                              "type": "scene_sprite",
+                              "id": "maze-muncher-124",
+                              "fields": {
+                               "SPRITE_ID": "muncher"
+                              }
+                             }
+                            }
+                           }
+                          }
+                         },
+                         "B": {
+                          "block": {
+                           "type": "py_binary",
+                           "id": "maze-muncher-125",
+                           "fields": {
+                            "OP": "*"
+                           },
+                           "inputs": {
+                            "A": {
+                             "block": {
+                              "type": "py_get",
+                              "id": "maze-muncher-126",
+                              "fields": {
+                               "SYMBOL": "maze-muncher-481"
+                              }
+                             }
+                            },
+                            "B": {
+                             "shadow": {
+                              "type": "py_number",
+                              "id": "maze-muncher-127",
+                              "fields": {
+                               "VALUE": "32"
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                },
+                "DO0": {
+                 "block": {
+                  "type": "py_set",
+                  "id": "maze-muncher-128",
+                  "fields": {
+                   "SYMBOL": "maze-muncher-480"
+                  },
+                  "inputs": {
+                   "VALUE": {
+                    "shadow": {
+                     "type": "py_number",
+                     "id": "maze-muncher-129",
+                     "fields": {
+                      "VALUE": "0"
+                     }
+                    }
+                   }
+                  },
+                  "next": {
+                   "block": {
+                    "type": "py_set",
+                    "id": "maze-muncher-130",
+                    "fields": {
+                     "SYMBOL": "maze-muncher-481"
+                    },
+                    "inputs": {
+                     "VALUE": {
+                      "shadow": {
+                       "type": "py_number",
+                       "id": "maze-muncher-131",
+                       "fields": {
+                        "VALUE": "0"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "next": {
+                "block": {
+                 "type": "controls_if",
+                 "id": "maze-muncher-132",
+                 "inputs": {
+                  "IF0": {
+                   "block": {
+                    "type": "py_logic",
+                    "id": "maze-muncher-133",
+                    "fields": {
+                     "OP": "or"
+                    },
+                    "inputs": {
+                     "A": {
+                      "block": {
+                       "type": "logic_compare",
+                       "id": "maze-muncher-134",
+                       "fields": {
+                        "OP": "NEQ"
+                       },
+                       "inputs": {
+                        "A": {
+                         "block": {
+                          "type": "py_get",
+                          "id": "maze-muncher-135",
+                          "fields": {
+                           "SYMBOL": "maze-muncher-480"
+                          }
+                         }
+                        },
+                        "B": {
+                         "shadow": {
+                          "type": "py_number",
+                          "id": "maze-muncher-136",
+                          "fields": {
+                           "VALUE": "0"
+                          }
+                         }
+                        }
+                       }
+                      }
+                     },
+                     "B": {
+                      "block": {
+                       "type": "logic_compare",
+                       "id": "maze-muncher-137",
+                       "fields": {
+                        "OP": "NEQ"
+                       },
+                       "inputs": {
+                        "A": {
+                         "block": {
+                          "type": "py_get",
+                          "id": "maze-muncher-138",
+                          "fields": {
+                           "SYMBOL": "maze-muncher-481"
+                          }
+                         }
+                        },
+                        "B": {
+                         "shadow": {
+                          "type": "py_number",
+                          "id": "maze-muncher-139",
+                          "fields": {
+                           "VALUE": "0"
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  },
+                  "DO0": {
+                   "block": {
+                    "type": "scene_point",
+                    "id": "maze-muncher-140",
+                    "inputs": {
+                     "SPRITE": {
+                      "block": {
+                       "type": "scene_sprite",
+                       "id": "maze-muncher-141",
+                       "fields": {
+                        "SPRITE_ID": "muncher"
+                       }
+                      }
+                     },
+                     "X": {
+                      "block": {
+                       "type": "py_binary",
+                       "id": "maze-muncher-142",
+                       "fields": {
+                        "OP": "+"
+                       },
+                       "inputs": {
+                        "A": {
+                         "block": {
+                          "type": "scene_get",
+                          "id": "maze-muncher-143",
+                          "fields": {
+                           "PROPERTY": "x"
+                          },
+                          "inputs": {
+                           "SPRITE": {
+                            "block": {
+                             "type": "scene_sprite",
+                             "id": "maze-muncher-144",
+                             "fields": {
+                              "SPRITE_ID": "muncher"
+                             }
+                            }
+                           }
+                          }
+                         }
+                        },
+                        "B": {
+                         "block": {
+                          "type": "py_get",
+                          "id": "maze-muncher-145",
+                          "fields": {
+                           "SYMBOL": "maze-muncher-480"
+                          }
+                         }
+                        }
+                       }
+                      }
+                     },
+                     "Y": {
+                      "block": {
+                       "type": "py_binary",
+                       "id": "maze-muncher-146",
+                       "fields": {
+                        "OP": "+"
+                       },
+                       "inputs": {
+                        "A": {
+                         "block": {
+                          "type": "scene_get",
+                          "id": "maze-muncher-147",
+                          "fields": {
+                           "PROPERTY": "y"
+                          },
+                          "inputs": {
+                           "SPRITE": {
+                            "block": {
+                             "type": "scene_sprite",
+                             "id": "maze-muncher-148",
+                             "fields": {
+                              "SPRITE_ID": "muncher"
+                             }
+                            }
+                           }
+                          }
+                         }
+                        },
+                        "B": {
+                         "block": {
+                          "type": "py_get",
+                          "id": "maze-muncher-149",
+                          "fields": {
+                           "SYMBOL": "maze-muncher-481"
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_change",
+          "id": "maze-muncher-150",
+          "fields": {
+           "PROPERTY": "x"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "id": "maze-muncher-151",
+             "fields": {
+              "SPRITE_ID": "muncher"
+             }
+            }
+           },
+           "VALUE": {
+            "block": {
+             "type": "py_binary",
+             "id": "maze-muncher-152",
+             "fields": {
+              "OP": "*"
+             },
+             "inputs": {
+              "A": {
+               "block": {
+                "type": "py_get",
+                "id": "maze-muncher-153",
+                "fields": {
+                 "SYMBOL": "maze-muncher-480"
+                }
+               }
+              },
+              "B": {
+               "shadow": {
+                "type": "py_number",
+                "id": "maze-muncher-154",
+                "fields": {
+                 "VALUE": "4"
+                }
+               }
+              }
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "scene_change",
+            "id": "maze-muncher-155",
+            "fields": {
+             "PROPERTY": "y"
+            },
+            "inputs": {
+             "SPRITE": {
+              "block": {
+               "type": "scene_sprite",
+               "id": "maze-muncher-156",
+               "fields": {
+                "SPRITE_ID": "muncher"
+               }
+              }
+             },
+             "VALUE": {
+              "block": {
+               "type": "py_binary",
+               "id": "maze-muncher-157",
+               "fields": {
+                "OP": "*"
+               },
+               "inputs": {
+                "A": {
+                 "block": {
+                  "type": "py_get",
+                  "id": "maze-muncher-158",
+                  "fields": {
+                   "SYMBOL": "maze-muncher-481"
+                  }
+                 }
+                },
+                "B": {
+                 "shadow": {
+                  "type": "py_number",
+                  "id": "maze-muncher-159",
+                  "fields": {
+                   "VALUE": "4"
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_function",
+     "id": "move_ghost_function_block",
+     "x": 1974,
+     "y": 2369,
+     "extraState": {
+      "functionId": "move_ghost_function",
+      "signature": {
+       "id": "move_ghost_function",
+       "name": "move_ghost",
+       "parameters": [
+        {
+         "id": "move_ghost_ghost",
+         "name": "ghost"
+        }
+       ]
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "maze-muncher-160",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "logic_compare",
+           "id": "maze-muncher-161",
+           "fields": {
+            "OP": "GT"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "scene_data_get",
+              "id": "maze-muncher-162",
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "py_get",
+                 "id": "maze-muncher-163",
+                 "fields": {
+                  "SYMBOL": "param:move_ghost_ghost"
+                 }
+                }
+               },
+               "KEY": {
+                "shadow": {
+                 "type": "text",
+                 "id": "maze-muncher-164",
+                 "fields": {
+                  "TEXT": "wait"
+                 }
+                }
+               }
+              }
+             }
+            },
+            "B": {
+             "shadow": {
+              "type": "py_number",
+              "id": "maze-muncher-165",
+              "fields": {
+               "VALUE": "0"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "scene_data_set",
+           "id": "maze-muncher-166",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "py_get",
+              "id": "maze-muncher-167",
+              "fields": {
+               "SYMBOL": "param:move_ghost_ghost"
+              }
+             }
+            },
+            "KEY": {
+             "shadow": {
+              "type": "text",
+              "id": "maze-muncher-168",
+              "fields": {
+               "TEXT": "wait"
+              }
+             }
+            },
+            "VALUE": {
+             "block": {
+              "type": "py_binary",
+              "id": "maze-muncher-169",
+              "fields": {
+               "OP": "-"
+              },
+              "inputs": {
+               "A": {
+                "block": {
+                 "type": "scene_data_get",
+                 "id": "maze-muncher-170",
+                 "inputs": {
+                  "SPRITE": {
+                   "block": {
+                    "type": "py_get",
+                    "id": "maze-muncher-171",
+                    "fields": {
+                     "SYMBOL": "param:move_ghost_ghost"
+                    }
+                   }
+                  },
+                  "KEY": {
+                   "shadow": {
+                    "type": "text",
+                    "id": "maze-muncher-172",
+                    "fields": {
+                     "TEXT": "wait"
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "B": {
+                "shadow": {
+                 "type": "py_number",
+                 "id": "maze-muncher-173",
+                 "fields": {
+                  "VALUE": "1"
+                 }
+                }
+               }
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "py_return",
+             "id": "maze-muncher-174"
+            }
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "controls_if",
+          "id": "maze-muncher-175",
+          "inputs": {
+           "IF0": {
+            "block": {
+             "type": "py_call_value",
+             "id": "maze-muncher-176",
+             "extraState": {
+              "functionId": "at_center_function",
+              "signature": {
+               "id": "at_center_function",
+               "name": "at_center",
+               "parameters": [
+                {
+                 "id": "at_center_thing",
+                 "name": "thing"
+                }
+               ]
+              }
+             },
+             "inputs": {
+              "ARG_at_center_thing": {
+               "block": {
+                "type": "py_get",
+                "id": "maze-muncher-177",
+                "fields": {
+                 "SYMBOL": "param:move_ghost_ghost"
+                }
+               }
+              }
+             }
+            }
+           },
+           "DO0": {
+            "block": {
+             "type": "py_set",
+             "id": "maze-muncher-178",
+             "fields": {
+              "SYMBOL": "maze-muncher-486"
+             },
+             "inputs": {
+              "VALUE": {
+               "block": {
+                "type": "py_binary",
+                "id": "maze-muncher-179",
+                "fields": {
+                 "OP": "-"
+                },
+                "inputs": {
+                 "A": {
+                  "shadow": {
+                   "type": "py_number",
+                   "id": "maze-muncher-180",
+                   "fields": {
+                    "VALUE": "0"
+                   }
+                  }
+                 },
+                 "B": {
+                  "block": {
+                   "type": "scene_data_get",
+                   "id": "maze-muncher-181",
+                   "inputs": {
+                    "SPRITE": {
+                     "block": {
+                      "type": "py_get",
+                      "id": "maze-muncher-182",
+                      "fields": {
+                       "SYMBOL": "param:move_ghost_ghost"
+                      }
+                     }
+                    },
+                    "KEY": {
+                     "shadow": {
+                      "type": "text",
+                      "id": "maze-muncher-183",
+                      "fields": {
+                       "TEXT": "dx"
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "py_set",
+               "id": "maze-muncher-184",
+               "fields": {
+                "SYMBOL": "maze-muncher-487"
+               },
+               "inputs": {
+                "VALUE": {
+                 "block": {
+                  "type": "py_binary",
+                  "id": "maze-muncher-185",
+                  "fields": {
+                   "OP": "-"
+                  },
+                  "inputs": {
+                   "A": {
+                    "shadow": {
+                     "type": "py_number",
+                     "id": "maze-muncher-186",
+                     "fields": {
+                      "VALUE": "0"
+                     }
+                    }
+                   },
+                   "B": {
+                    "block": {
+                     "type": "scene_data_get",
+                     "id": "maze-muncher-187",
+                     "inputs": {
+                      "SPRITE": {
+                       "block": {
+                        "type": "py_get",
+                        "id": "maze-muncher-188",
+                        "fields": {
+                         "SYMBOL": "param:move_ghost_ghost"
+                        }
+                       }
+                      },
+                      "KEY": {
+                       "shadow": {
+                        "type": "text",
+                        "id": "maze-muncher-189",
+                        "fields": {
+                         "TEXT": "dy"
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "next": {
+                "block": {
+                 "type": "py_set",
+                 "id": "maze-muncher-190",
+                 "fields": {
+                  "SYMBOL": "maze-muncher-488"
+                 },
+                 "inputs": {
+                  "VALUE": {
+                   "shadow": {
+                    "type": "py_number",
+                    "id": "maze-muncher-191",
+                    "fields": {
+                     "VALUE": "99999"
+                    }
+                   }
+                  }
+                 },
+                 "next": {
+                  "block": {
+                   "type": "py_for_each",
+                   "id": "maze-muncher-192",
+                   "fields": {
+                    "SYMBOL": "maze-muncher-485"
+                   },
+                   "inputs": {
+                    "ITERABLE": {
+                     "block": {
+                      "type": "lists_create_with",
+                      "id": "maze-muncher-193",
+                      "extraState": {
+                       "itemCount": 4
+                      },
+                      "inputs": {
+                       "ADD0": {
+                        "block": {
+                         "type": "lists_create_with",
+                         "id": "maze-muncher-194",
+                         "extraState": {
+                          "itemCount": 2
+                         },
+                         "inputs": {
+                          "ADD0": {
+                           "shadow": {
+                            "type": "py_number",
+                            "id": "maze-muncher-195",
+                            "fields": {
+                             "VALUE": "1"
+                            }
+                           }
+                          },
+                          "ADD1": {
+                           "shadow": {
+                            "type": "py_number",
+                            "id": "maze-muncher-196",
+                            "fields": {
+                             "VALUE": "0"
+                            }
+                           }
+                          }
+                         }
+                        }
+                       },
+                       "ADD1": {
+                        "block": {
+                         "type": "lists_create_with",
+                         "id": "maze-muncher-197",
+                         "extraState": {
+                          "itemCount": 2
+                         },
+                         "inputs": {
+                          "ADD0": {
+                           "shadow": {
+                            "type": "py_number",
+                            "id": "maze-muncher-198",
+                            "fields": {
+                             "VALUE": "-1"
+                            }
+                           }
+                          },
+                          "ADD1": {
+                           "shadow": {
+                            "type": "py_number",
+                            "id": "maze-muncher-199",
+                            "fields": {
+                             "VALUE": "0"
+                            }
+                           }
+                          }
+                         }
+                        }
+                       },
+                       "ADD2": {
+                        "block": {
+                         "type": "lists_create_with",
+                         "id": "maze-muncher-200",
+                         "extraState": {
+                          "itemCount": 2
+                         },
+                         "inputs": {
+                          "ADD0": {
+                           "shadow": {
+                            "type": "py_number",
+                            "id": "maze-muncher-201",
+                            "fields": {
+                             "VALUE": "0"
+                            }
+                           }
+                          },
+                          "ADD1": {
+                           "shadow": {
+                            "type": "py_number",
+                            "id": "maze-muncher-202",
+                            "fields": {
+                             "VALUE": "1"
+                            }
+                           }
+                          }
+                         }
+                        }
+                       },
+                       "ADD3": {
+                        "block": {
+                         "type": "lists_create_with",
+                         "id": "maze-muncher-203",
+                         "extraState": {
+                          "itemCount": 2
+                         },
+                         "inputs": {
+                          "ADD0": {
+                           "shadow": {
+                            "type": "py_number",
+                            "id": "maze-muncher-204",
+                            "fields": {
+                             "VALUE": "0"
+                            }
+                           }
+                          },
+                          "ADD1": {
+                           "shadow": {
+                            "type": "py_number",
+                            "id": "maze-muncher-205",
+                            "fields": {
+                             "VALUE": "-1"
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    },
+                    "DO": {
+                     "block": {
+                      "type": "controls_if",
+                      "id": "maze-muncher-206",
+                      "inputs": {
+                       "IF0": {
+                        "block": {
+                         "type": "py_logic",
+                         "id": "maze-muncher-207",
+                         "fields": {
+                          "OP": "and"
+                         },
+                         "inputs": {
+                          "A": {
+                           "block": {
+                            "type": "py_not",
+                            "id": "maze-muncher-208",
+                            "inputs": {
+                             "VALUE": {
+                              "block": {
+                               "type": "py_logic",
+                               "id": "maze-muncher-209",
+                               "fields": {
+                                "OP": "and"
+                               },
+                               "inputs": {
+                                "A": {
+                                 "block": {
+                                  "type": "logic_compare",
+                                  "id": "maze-muncher-210",
+                                  "fields": {
+                                   "OP": "EQ"
+                                  },
+                                  "inputs": {
+                                   "A": {
+                                    "block": {
+                                     "type": "py_item_get",
+                                     "id": "maze-muncher-211",
+                                     "inputs": {
+                                      "COLLECTION": {
+                                       "block": {
+                                        "type": "py_get",
+                                        "id": "maze-muncher-212",
+                                        "fields": {
+                                         "SYMBOL": "maze-muncher-485"
+                                        }
+                                       }
+                                      },
+                                      "KEY": {
+                                       "shadow": {
+                                        "type": "py_number",
+                                        "id": "maze-muncher-213",
+                                        "fields": {
+                                         "VALUE": "0"
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   },
+                                   "B": {
+                                    "block": {
+                                     "type": "py_binary",
+                                     "id": "maze-muncher-214",
+                                     "fields": {
+                                      "OP": "-"
+                                     },
+                                     "inputs": {
+                                      "A": {
+                                       "shadow": {
+                                        "type": "py_number",
+                                        "id": "maze-muncher-215",
+                                        "fields": {
+                                         "VALUE": "0"
+                                        }
+                                       }
+                                      },
+                                      "B": {
+                                       "block": {
+                                        "type": "scene_data_get",
+                                        "id": "maze-muncher-216",
+                                        "inputs": {
+                                         "SPRITE": {
+                                          "block": {
+                                           "type": "py_get",
+                                           "id": "maze-muncher-217",
+                                           "fields": {
+                                            "SYMBOL": "param:move_ghost_ghost"
+                                           }
+                                          }
+                                         },
+                                         "KEY": {
+                                          "shadow": {
+                                           "type": "text",
+                                           "id": "maze-muncher-218",
+                                           "fields": {
+                                            "TEXT": "dx"
+                                           }
+                                          }
+                                         }
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                },
+                                "B": {
+                                 "block": {
+                                  "type": "logic_compare",
+                                  "id": "maze-muncher-219",
+                                  "fields": {
+                                   "OP": "EQ"
+                                  },
+                                  "inputs": {
+                                   "A": {
+                                    "block": {
+                                     "type": "py_item_get",
+                                     "id": "maze-muncher-220",
+                                     "inputs": {
+                                      "COLLECTION": {
+                                       "block": {
+                                        "type": "py_get",
+                                        "id": "maze-muncher-221",
+                                        "fields": {
+                                         "SYMBOL": "maze-muncher-485"
+                                        }
+                                       }
+                                      },
+                                      "KEY": {
+                                       "shadow": {
+                                        "type": "py_number",
+                                        "id": "maze-muncher-222",
+                                        "fields": {
+                                         "VALUE": "1"
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   },
+                                   "B": {
+                                    "block": {
+                                     "type": "py_binary",
+                                     "id": "maze-muncher-223",
+                                     "fields": {
+                                      "OP": "-"
+                                     },
+                                     "inputs": {
+                                      "A": {
+                                       "shadow": {
+                                        "type": "py_number",
+                                        "id": "maze-muncher-224",
+                                        "fields": {
+                                         "VALUE": "0"
+                                        }
+                                       }
+                                      },
+                                      "B": {
+                                       "block": {
+                                        "type": "scene_data_get",
+                                        "id": "maze-muncher-225",
+                                        "inputs": {
+                                         "SPRITE": {
+                                          "block": {
+                                           "type": "py_get",
+                                           "id": "maze-muncher-226",
+                                           "fields": {
+                                            "SYMBOL": "param:move_ghost_ghost"
+                                           }
+                                          }
+                                         },
+                                         "KEY": {
+                                          "shadow": {
+                                           "type": "text",
+                                           "id": "maze-muncher-227",
+                                           "fields": {
+                                            "TEXT": "dy"
+                                           }
+                                          }
+                                         }
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          },
+                          "B": {
+                           "block": {
+                            "type": "py_call_value",
+                            "id": "maze-muncher-228",
+                            "extraState": {
+                             "functionId": "open_at_function",
+                             "signature": {
+                              "id": "open_at_function",
+                              "name": "open_at",
+                              "parameters": [
+                               {
+                                "id": "open_at_x",
+                                "name": "x"
+                               },
+                               {
+                                "id": "open_at_y",
+                                "name": "y"
+                               }
+                              ]
+                             }
+                            },
+                            "inputs": {
+                             "ARG_open_at_x": {
+                              "block": {
+                               "type": "py_binary",
+                               "id": "maze-muncher-229",
+                               "fields": {
+                                "OP": "+"
+                               },
+                               "inputs": {
+                                "A": {
+                                 "block": {
+                                  "type": "scene_get",
+                                  "id": "maze-muncher-230",
+                                  "fields": {
+                                   "PROPERTY": "x"
+                                  },
+                                  "inputs": {
+                                   "SPRITE": {
+                                    "block": {
+                                     "type": "py_get",
+                                     "id": "maze-muncher-231",
+                                     "fields": {
+                                      "SYMBOL": "param:move_ghost_ghost"
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                },
+                                "B": {
+                                 "block": {
+                                  "type": "py_binary",
+                                  "id": "maze-muncher-232",
+                                  "fields": {
+                                   "OP": "*"
+                                  },
+                                  "inputs": {
+                                   "A": {
+                                    "block": {
+                                     "type": "py_item_get",
+                                     "id": "maze-muncher-233",
+                                     "inputs": {
+                                      "COLLECTION": {
+                                       "block": {
+                                        "type": "py_get",
+                                        "id": "maze-muncher-234",
+                                        "fields": {
+                                         "SYMBOL": "maze-muncher-485"
+                                        }
+                                       }
+                                      },
+                                      "KEY": {
+                                       "shadow": {
+                                        "type": "py_number",
+                                        "id": "maze-muncher-235",
+                                        "fields": {
+                                         "VALUE": "0"
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   },
+                                   "B": {
+                                    "shadow": {
+                                     "type": "py_number",
+                                     "id": "maze-muncher-236",
+                                     "fields": {
+                                      "VALUE": "32"
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             },
+                             "ARG_open_at_y": {
+                              "block": {
+                               "type": "py_binary",
+                               "id": "maze-muncher-237",
+                               "fields": {
+                                "OP": "+"
+                               },
+                               "inputs": {
+                                "A": {
+                                 "block": {
+                                  "type": "scene_get",
+                                  "id": "maze-muncher-238",
+                                  "fields": {
+                                   "PROPERTY": "y"
+                                  },
+                                  "inputs": {
+                                   "SPRITE": {
+                                    "block": {
+                                     "type": "py_get",
+                                     "id": "maze-muncher-239",
+                                     "fields": {
+                                      "SYMBOL": "param:move_ghost_ghost"
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                },
+                                "B": {
+                                 "block": {
+                                  "type": "py_binary",
+                                  "id": "maze-muncher-240",
+                                  "fields": {
+                                   "OP": "*"
+                                  },
+                                  "inputs": {
+                                   "A": {
+                                    "block": {
+                                     "type": "py_item_get",
+                                     "id": "maze-muncher-241",
+                                     "inputs": {
+                                      "COLLECTION": {
+                                       "block": {
+                                        "type": "py_get",
+                                        "id": "maze-muncher-242",
+                                        "fields": {
+                                         "SYMBOL": "maze-muncher-485"
+                                        }
+                                       }
+                                      },
+                                      "KEY": {
+                                       "shadow": {
+                                        "type": "py_number",
+                                        "id": "maze-muncher-243",
+                                        "fields": {
+                                         "VALUE": "1"
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   },
+                                   "B": {
+                                    "shadow": {
+                                     "type": "py_number",
+                                     "id": "maze-muncher-244",
+                                     "fields": {
+                                      "VALUE": "32"
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       },
+                       "DO0": {
+                        "block": {
+                         "type": "py_set",
+                         "id": "maze-muncher-245",
+                         "fields": {
+                          "SYMBOL": "maze-muncher-489"
+                         },
+                         "inputs": {
+                          "VALUE": {
+                           "block": {
+                            "type": "py_binary",
+                            "id": "maze-muncher-246",
+                            "fields": {
+                             "OP": "+"
+                            },
+                            "inputs": {
+                             "A": {
+                              "block": {
+                               "type": "scene_distance",
+                               "id": "maze-muncher-247",
+                               "inputs": {
+                                "SPRITE": {
+                                 "block": {
+                                  "type": "scene_sprite",
+                                  "id": "maze-muncher-248",
+                                  "fields": {
+                                   "SPRITE_ID": "muncher"
+                                  }
+                                 }
+                                },
+                                "X": {
+                                 "block": {
+                                  "type": "py_binary",
+                                  "id": "maze-muncher-249",
+                                  "fields": {
+                                   "OP": "+"
+                                  },
+                                  "inputs": {
+                                   "A": {
+                                    "block": {
+                                     "type": "scene_get",
+                                     "id": "maze-muncher-250",
+                                     "fields": {
+                                      "PROPERTY": "x"
+                                     },
+                                     "inputs": {
+                                      "SPRITE": {
+                                       "block": {
+                                        "type": "py_get",
+                                        "id": "maze-muncher-251",
+                                        "fields": {
+                                         "SYMBOL": "param:move_ghost_ghost"
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   },
+                                   "B": {
+                                    "block": {
+                                     "type": "py_binary",
+                                     "id": "maze-muncher-252",
+                                     "fields": {
+                                      "OP": "*"
+                                     },
+                                     "inputs": {
+                                      "A": {
+                                       "block": {
+                                        "type": "py_item_get",
+                                        "id": "maze-muncher-253",
+                                        "inputs": {
+                                         "COLLECTION": {
+                                          "block": {
+                                           "type": "py_get",
+                                           "id": "maze-muncher-254",
+                                           "fields": {
+                                            "SYMBOL": "maze-muncher-485"
+                                           }
+                                          }
+                                         },
+                                         "KEY": {
+                                          "shadow": {
+                                           "type": "py_number",
+                                           "id": "maze-muncher-255",
+                                           "fields": {
+                                            "VALUE": "0"
+                                           }
+                                          }
+                                         }
+                                        }
+                                       }
+                                      },
+                                      "B": {
+                                       "shadow": {
+                                        "type": "py_number",
+                                        "id": "maze-muncher-256",
+                                        "fields": {
+                                         "VALUE": "32"
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                },
+                                "Y": {
+                                 "block": {
+                                  "type": "py_binary",
+                                  "id": "maze-muncher-257",
+                                  "fields": {
+                                   "OP": "+"
+                                  },
+                                  "inputs": {
+                                   "A": {
+                                    "block": {
+                                     "type": "scene_get",
+                                     "id": "maze-muncher-258",
+                                     "fields": {
+                                      "PROPERTY": "y"
+                                     },
+                                     "inputs": {
+                                      "SPRITE": {
+                                       "block": {
+                                        "type": "py_get",
+                                        "id": "maze-muncher-259",
+                                        "fields": {
+                                         "SYMBOL": "param:move_ghost_ghost"
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   },
+                                   "B": {
+                                    "block": {
+                                     "type": "py_binary",
+                                     "id": "maze-muncher-260",
+                                     "fields": {
+                                      "OP": "*"
+                                     },
+                                     "inputs": {
+                                      "A": {
+                                       "block": {
+                                        "type": "py_item_get",
+                                        "id": "maze-muncher-261",
+                                        "inputs": {
+                                         "COLLECTION": {
+                                          "block": {
+                                           "type": "py_get",
+                                           "id": "maze-muncher-262",
+                                           "fields": {
+                                            "SYMBOL": "maze-muncher-485"
+                                           }
+                                          }
+                                         },
+                                         "KEY": {
+                                          "shadow": {
+                                           "type": "py_number",
+                                           "id": "maze-muncher-263",
+                                           "fields": {
+                                            "VALUE": "1"
+                                           }
+                                          }
+                                         }
+                                        }
+                                       }
+                                      },
+                                      "B": {
+                                       "shadow": {
+                                        "type": "py_number",
+                                        "id": "maze-muncher-264",
+                                        "fields": {
+                                         "VALUE": "32"
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             },
+                             "B": {
+                              "block": {
+                               "type": "math_random_int",
+                               "id": "maze-muncher-265",
+                               "inputs": {
+                                "FROM": {
+                                 "shadow": {
+                                  "type": "py_number",
+                                  "id": "maze-muncher-266",
+                                  "fields": {
+                                   "VALUE": "0"
+                                  }
+                                 }
+                                },
+                                "TO": {
+                                 "shadow": {
+                                  "type": "py_number",
+                                  "id": "maze-muncher-267",
+                                  "fields": {
+                                   "VALUE": "48"
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          }
+                         },
+                         "next": {
+                          "block": {
+                           "type": "controls_if",
+                           "id": "maze-muncher-268",
+                           "inputs": {
+                            "IF0": {
+                             "block": {
+                              "type": "logic_compare",
+                              "id": "maze-muncher-269",
+                              "fields": {
+                               "OP": "GT"
+                              },
+                              "inputs": {
+                               "A": {
+                                "block": {
+                                 "type": "py_get",
+                                 "id": "maze-muncher-270",
+                                 "fields": {
+                                  "SYMBOL": "maze-muncher-483"
+                                 }
+                                }
+                               },
+                               "B": {
+                                "shadow": {
+                                 "type": "py_number",
+                                 "id": "maze-muncher-271",
+                                 "fields": {
+                                  "VALUE": "0"
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            },
+                            "DO0": {
+                             "block": {
+                              "type": "py_set",
+                              "id": "maze-muncher-272",
+                              "fields": {
+                               "SYMBOL": "maze-muncher-489"
+                              },
+                              "inputs": {
+                               "VALUE": {
+                                "block": {
+                                 "type": "py_binary",
+                                 "id": "maze-muncher-273",
+                                 "fields": {
+                                  "OP": "-"
+                                 },
+                                 "inputs": {
+                                  "A": {
+                                   "shadow": {
+                                    "type": "py_number",
+                                    "id": "maze-muncher-274",
+                                    "fields": {
+                                     "VALUE": "0"
+                                    }
+                                   }
+                                  },
+                                  "B": {
+                                   "block": {
+                                    "type": "py_get",
+                                    "id": "maze-muncher-275",
+                                    "fields": {
+                                     "SYMBOL": "maze-muncher-489"
+                                    }
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           },
+                           "next": {
+                            "block": {
+                             "type": "controls_if",
+                             "id": "maze-muncher-276",
+                             "inputs": {
+                              "IF0": {
+                               "block": {
+                                "type": "logic_compare",
+                                "id": "maze-muncher-277",
+                                "fields": {
+                                 "OP": "LT"
+                                },
+                                "inputs": {
+                                 "A": {
+                                  "block": {
+                                   "type": "py_get",
+                                   "id": "maze-muncher-278",
+                                   "fields": {
+                                    "SYMBOL": "maze-muncher-489"
+                                   }
+                                  }
+                                 },
+                                 "B": {
+                                  "block": {
+                                   "type": "py_get",
+                                   "id": "maze-muncher-279",
+                                   "fields": {
+                                    "SYMBOL": "maze-muncher-488"
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              },
+                              "DO0": {
+                               "block": {
+                                "type": "py_set",
+                                "id": "maze-muncher-280",
+                                "fields": {
+                                 "SYMBOL": "maze-muncher-488"
+                                },
+                                "inputs": {
+                                 "VALUE": {
+                                  "block": {
+                                   "type": "py_get",
+                                   "id": "maze-muncher-281",
+                                   "fields": {
+                                    "SYMBOL": "maze-muncher-489"
+                                   }
+                                  }
+                                 }
+                                },
+                                "next": {
+                                 "block": {
+                                  "type": "py_set",
+                                  "id": "maze-muncher-282",
+                                  "fields": {
+                                   "SYMBOL": "maze-muncher-486"
+                                  },
+                                  "inputs": {
+                                   "VALUE": {
+                                    "block": {
+                                     "type": "py_item_get",
+                                     "id": "maze-muncher-283",
+                                     "inputs": {
+                                      "COLLECTION": {
+                                       "block": {
+                                        "type": "py_get",
+                                        "id": "maze-muncher-284",
+                                        "fields": {
+                                         "SYMBOL": "maze-muncher-485"
+                                        }
+                                       }
+                                      },
+                                      "KEY": {
+                                       "shadow": {
+                                        "type": "py_number",
+                                        "id": "maze-muncher-285",
+                                        "fields": {
+                                         "VALUE": "0"
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   }
+                                  },
+                                  "next": {
+                                   "block": {
+                                    "type": "py_set",
+                                    "id": "maze-muncher-286",
+                                    "fields": {
+                                     "SYMBOL": "maze-muncher-487"
+                                    },
+                                    "inputs": {
+                                     "VALUE": {
+                                      "block": {
+                                       "type": "py_item_get",
+                                       "id": "maze-muncher-287",
+                                       "inputs": {
+                                        "COLLECTION": {
+                                         "block": {
+                                          "type": "py_get",
+                                          "id": "maze-muncher-288",
+                                          "fields": {
+                                           "SYMBOL": "maze-muncher-485"
+                                          }
+                                         }
+                                        },
+                                        "KEY": {
+                                         "shadow": {
+                                          "type": "py_number",
+                                          "id": "maze-muncher-289",
+                                          "fields": {
+                                           "VALUE": "1"
+                                          }
+                                         }
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   },
+                   "next": {
+                    "block": {
+                     "type": "scene_data_set",
+                     "id": "maze-muncher-290",
+                     "inputs": {
+                      "SPRITE": {
+                       "block": {
+                        "type": "py_get",
+                        "id": "maze-muncher-291",
+                        "fields": {
+                         "SYMBOL": "param:move_ghost_ghost"
+                        }
+                       }
+                      },
+                      "KEY": {
+                       "shadow": {
+                        "type": "text",
+                        "id": "maze-muncher-292",
+                        "fields": {
+                         "TEXT": "dx"
+                        }
+                       }
+                      },
+                      "VALUE": {
+                       "block": {
+                        "type": "py_get",
+                        "id": "maze-muncher-293",
+                        "fields": {
+                         "SYMBOL": "maze-muncher-486"
+                        }
+                       }
+                      }
+                     },
+                     "next": {
+                      "block": {
+                       "type": "scene_data_set",
+                       "id": "maze-muncher-294",
+                       "inputs": {
+                        "SPRITE": {
+                         "block": {
+                          "type": "py_get",
+                          "id": "maze-muncher-295",
+                          "fields": {
+                           "SYMBOL": "param:move_ghost_ghost"
+                          }
+                         }
+                        },
+                        "KEY": {
+                         "shadow": {
+                          "type": "text",
+                          "id": "maze-muncher-296",
+                          "fields": {
+                           "TEXT": "dy"
+                          }
+                         }
+                        },
+                        "VALUE": {
+                         "block": {
+                          "type": "py_get",
+                          "id": "maze-muncher-297",
+                          "fields": {
+                           "SYMBOL": "maze-muncher-487"
+                          }
+                         }
+                        }
+                       },
+                       "next": {
+                        "block": {
+                         "type": "controls_if",
+                         "id": "maze-muncher-298",
+                         "extraState": {
+                          "hasElse": true
+                         },
+                         "inputs": {
+                          "IF0": {
+                           "block": {
+                            "type": "logic_compare",
+                            "id": "maze-muncher-299",
+                            "fields": {
+                             "OP": "GT"
+                            },
+                            "inputs": {
+                             "A": {
+                              "block": {
+                               "type": "py_get",
+                               "id": "maze-muncher-300",
+                               "fields": {
+                                "SYMBOL": "maze-muncher-483"
+                               }
+                              }
+                             },
+                             "B": {
+                              "shadow": {
+                               "type": "py_number",
+                               "id": "maze-muncher-301",
+                               "fields": {
+                                "VALUE": "0"
+                               }
+                              }
+                             }
+                            }
+                           }
+                          },
+                          "DO0": {
+                           "block": {
+                            "type": "scene_data_set",
+                            "id": "maze-muncher-302",
+                            "inputs": {
+                             "SPRITE": {
+                              "block": {
+                               "type": "py_get",
+                               "id": "maze-muncher-303",
+                               "fields": {
+                                "SYMBOL": "param:move_ghost_ghost"
+                               }
+                              }
+                             },
+                             "KEY": {
+                              "shadow": {
+                               "type": "text",
+                               "id": "maze-muncher-304",
+                               "fields": {
+                                "TEXT": "speed"
+                               }
+                              }
+                             },
+                             "VALUE": {
+                              "shadow": {
+                               "type": "py_number",
+                               "id": "maze-muncher-305",
+                               "fields": {
+                                "VALUE": "2"
+                               }
+                              }
+                             }
+                            },
+                            "next": {
+                             "block": {
+                              "type": "scene_costume_set",
+                              "id": "maze-muncher-306",
+                              "inputs": {
+                               "SPRITE": {
+                                "block": {
+                                 "type": "py_get",
+                                 "id": "maze-muncher-307",
+                                 "fields": {
+                                  "SYMBOL": "param:move_ghost_ghost"
+                                 }
+                                }
+                               },
+                               "COSTUME": {
+                                "block": {
+                                 "type": "scene_costume",
+                                 "id": "maze-muncher-308",
+                                 "fields": {
+                                  "COSTUME_ID": "stock-ghost-scared"
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          },
+                          "ELSE": {
+                           "block": {
+                            "type": "scene_data_set",
+                            "id": "maze-muncher-309",
+                            "inputs": {
+                             "SPRITE": {
+                              "block": {
+                               "type": "py_get",
+                               "id": "maze-muncher-310",
+                               "fields": {
+                                "SYMBOL": "param:move_ghost_ghost"
+                               }
+                              }
+                             },
+                             "KEY": {
+                              "shadow": {
+                               "type": "text",
+                               "id": "maze-muncher-311",
+                               "fields": {
+                                "TEXT": "speed"
+                               }
+                              }
+                             },
+                             "VALUE": {
+                              "shadow": {
+                               "type": "py_number",
+                               "id": "maze-muncher-312",
+                               "fields": {
+                                "VALUE": "4"
+                               }
+                              }
+                             }
+                            },
+                            "next": {
+                             "block": {
+                              "type": "scene_costume_set",
+                              "id": "maze-muncher-313",
+                              "inputs": {
+                               "SPRITE": {
+                                "block": {
+                                 "type": "py_get",
+                                 "id": "maze-muncher-314",
+                                 "fields": {
+                                  "SYMBOL": "param:move_ghost_ghost"
+                                 }
+                                }
+                               },
+                               "COSTUME": {
+                                "block": {
+                                 "type": "scene_data_get",
+                                 "id": "maze-muncher-315",
+                                 "inputs": {
+                                  "SPRITE": {
+                                   "block": {
+                                    "type": "py_get",
+                                    "id": "maze-muncher-316",
+                                    "fields": {
+                                     "SYMBOL": "param:move_ghost_ghost"
+                                    }
+                                   }
+                                  },
+                                  "KEY": {
+                                   "shadow": {
+                                    "type": "text",
+                                    "id": "maze-muncher-317",
+                                    "fields": {
+                                     "TEXT": "colour"
+                                    }
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "scene_change",
+            "id": "maze-muncher-318",
+            "fields": {
+             "PROPERTY": "x"
+            },
+            "inputs": {
+             "SPRITE": {
+              "block": {
+               "type": "py_get",
+               "id": "maze-muncher-319",
+               "fields": {
+                "SYMBOL": "param:move_ghost_ghost"
+               }
+              }
+             },
+             "VALUE": {
+              "block": {
+               "type": "py_binary",
+               "id": "maze-muncher-320",
+               "fields": {
+                "OP": "*"
+               },
+               "inputs": {
+                "A": {
+                 "block": {
+                  "type": "scene_data_get",
+                  "id": "maze-muncher-321",
+                  "inputs": {
+                   "SPRITE": {
+                    "block": {
+                     "type": "py_get",
+                     "id": "maze-muncher-322",
+                     "fields": {
+                      "SYMBOL": "param:move_ghost_ghost"
+                     }
+                    }
+                   },
+                   "KEY": {
+                    "shadow": {
+                     "type": "text",
+                     "id": "maze-muncher-323",
+                     "fields": {
+                      "TEXT": "dx"
+                     }
+                    }
+                   }
+                  }
+                 }
+                },
+                "B": {
+                 "block": {
+                  "type": "scene_data_get",
+                  "id": "maze-muncher-324",
+                  "inputs": {
+                   "SPRITE": {
+                    "block": {
+                     "type": "py_get",
+                     "id": "maze-muncher-325",
+                     "fields": {
+                      "SYMBOL": "param:move_ghost_ghost"
+                     }
+                    }
+                   },
+                   "KEY": {
+                    "shadow": {
+                     "type": "text",
+                     "id": "maze-muncher-326",
+                     "fields": {
+                      "TEXT": "speed"
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "scene_change",
+              "id": "maze-muncher-327",
+              "fields": {
+               "PROPERTY": "y"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "py_get",
+                 "id": "maze-muncher-328",
+                 "fields": {
+                  "SYMBOL": "param:move_ghost_ghost"
+                 }
+                }
+               },
+               "VALUE": {
+                "block": {
+                 "type": "py_binary",
+                 "id": "maze-muncher-329",
+                 "fields": {
+                  "OP": "*"
+                 },
+                 "inputs": {
+                  "A": {
+                   "block": {
+                    "type": "scene_data_get",
+                    "id": "maze-muncher-330",
+                    "inputs": {
+                     "SPRITE": {
+                      "block": {
+                       "type": "py_get",
+                       "id": "maze-muncher-331",
+                       "fields": {
+                        "SYMBOL": "param:move_ghost_ghost"
+                       }
+                      }
+                     },
+                     "KEY": {
+                      "shadow": {
+                       "type": "text",
+                       "id": "maze-muncher-332",
+                       "fields": {
+                        "TEXT": "dy"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  },
+                  "B": {
+                   "block": {
+                    "type": "scene_data_get",
+                    "id": "maze-muncher-333",
+                    "inputs": {
+                     "SPRITE": {
+                      "block": {
+                       "type": "py_get",
+                       "id": "maze-muncher-334",
+                       "fields": {
+                        "SYMBOL": "param:move_ghost_ghost"
+                       }
+                      }
+                     },
+                     "KEY": {
+                      "shadow": {
+                       "type": "text",
+                       "id": "maze-muncher-335",
+                       "fields": {
+                        "TEXT": "speed"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_function",
+     "id": "reset_function_block",
+     "x": 1974,
+     "y": 4476,
+     "extraState": {
+      "functionId": "reset_function",
+      "signature": {
+       "id": "reset_function",
+       "name": "reset",
+       "parameters": []
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_go",
+        "id": "maze-muncher-336",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "maze-muncher-337",
+           "fields": {
+            "SPRITE_ID": "muncher"
+           }
+          }
+         },
+         "X": {
+          "shadow": {
+           "type": "py_number",
+           "id": "maze-muncher-338",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         },
+         "Y": {
+          "shadow": {
+           "type": "py_number",
+           "id": "maze-muncher-339",
+           "fields": {
+            "VALUE": "-112"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_set",
+          "id": "maze-muncher-340",
+          "fields": {
+           "PROPERTY": "direction"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "id": "maze-muncher-341",
+             "fields": {
+              "SPRITE_ID": "muncher"
+             }
+            }
+           },
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "id": "maze-muncher-342",
+             "fields": {
+              "VALUE": "180"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "py_set",
+            "id": "maze-muncher-343",
+            "fields": {
+             "SYMBOL": "maze-muncher-480"
+            },
+            "inputs": {
+             "VALUE": {
+              "shadow": {
+               "type": "py_number",
+               "id": "maze-muncher-344",
+               "fields": {
+                "VALUE": "0"
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "py_set",
+              "id": "maze-muncher-345",
+              "fields": {
+               "SYMBOL": "maze-muncher-481"
+              },
+              "inputs": {
+               "VALUE": {
+                "shadow": {
+                 "type": "py_number",
+                 "id": "maze-muncher-346",
+                 "fields": {
+                  "VALUE": "0"
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "py_set",
+                "id": "maze-muncher-347",
+                "fields": {
+                 "SYMBOL": "maze-muncher-478"
+                },
+                "inputs": {
+                 "VALUE": {
+                  "shadow": {
+                   "type": "py_number",
+                   "id": "maze-muncher-348",
+                   "fields": {
+                    "VALUE": "-1"
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "py_set",
+                  "id": "maze-muncher-349",
+                  "fields": {
+                   "SYMBOL": "maze-muncher-479"
+                  },
+                  "inputs": {
+                   "VALUE": {
+                    "shadow": {
+                     "type": "py_number",
+                     "id": "maze-muncher-350",
+                     "fields": {
+                      "VALUE": "0"
+                     }
+                    }
+                   }
+                  },
+                  "next": {
+                   "block": {
+                    "type": "py_set",
+                    "id": "maze-muncher-351",
+                    "fields": {
+                     "SYMBOL": "maze-muncher-483"
+                    },
+                    "inputs": {
+                     "VALUE": {
+                      "shadow": {
+                       "type": "py_number",
+                       "id": "maze-muncher-352",
+                       "fields": {
+                        "VALUE": "0"
+                       }
+                      }
+                     }
+                    },
+                    "next": {
+                     "block": {
+                      "type": "py_for_each",
+                      "id": "maze-muncher-353",
+                      "fields": {
+                       "SYMBOL": "maze-muncher-484"
+                      },
+                      "inputs": {
+                       "ITERABLE": {
+                        "block": {
+                         "type": "scene_of_kind",
+                         "id": "maze-muncher-354",
+                         "inputs": {
+                          "KIND": {
+                           "shadow": {
+                            "type": "text",
+                            "id": "maze-muncher-355",
+                            "fields": {
+                             "TEXT": "ghost"
+                            }
+                           }
+                          }
+                         }
+                        }
+                       },
+                       "DO": {
+                        "block": {
+                         "type": "scene_go",
+                         "id": "maze-muncher-356",
+                         "inputs": {
+                          "SPRITE": {
+                           "block": {
+                            "type": "py_get",
+                            "id": "maze-muncher-357",
+                            "fields": {
+                             "SYMBOL": "maze-muncher-484"
+                            }
+                           }
+                          },
+                          "X": {
+                           "block": {
+                            "type": "scene_data_get",
+                            "id": "maze-muncher-358",
+                            "inputs": {
+                             "SPRITE": {
+                              "block": {
+                               "type": "py_get",
+                               "id": "maze-muncher-359",
+                               "fields": {
+                                "SYMBOL": "maze-muncher-484"
+                               }
+                              }
+                             },
+                             "KEY": {
+                              "shadow": {
+                               "type": "text",
+                               "id": "maze-muncher-360",
+                               "fields": {
+                                "TEXT": "home_x"
+                               }
+                              }
+                             }
+                            }
+                           }
+                          },
+                          "Y": {
+                           "block": {
+                            "type": "scene_data_get",
+                            "id": "maze-muncher-361",
+                            "inputs": {
+                             "SPRITE": {
+                              "block": {
+                               "type": "py_get",
+                               "id": "maze-muncher-362",
+                               "fields": {
+                                "SYMBOL": "maze-muncher-484"
+                               }
+                              }
+                             },
+                             "KEY": {
+                              "shadow": {
+                               "type": "text",
+                               "id": "maze-muncher-363",
+                               "fields": {
+                                "TEXT": "home_y"
+                               }
+                              }
+                             }
+                            }
+                           }
+                          }
+                         },
+                         "next": {
+                          "block": {
+                           "type": "scene_data_set",
+                           "id": "maze-muncher-364",
+                           "inputs": {
+                            "SPRITE": {
+                             "block": {
+                              "type": "py_get",
+                              "id": "maze-muncher-365",
+                              "fields": {
+                               "SYMBOL": "maze-muncher-484"
+                              }
+                             }
+                            },
+                            "KEY": {
+                             "shadow": {
+                              "type": "text",
+                              "id": "maze-muncher-366",
+                              "fields": {
+                               "TEXT": "dx"
+                              }
+                             }
+                            },
+                            "VALUE": {
+                             "shadow": {
+                              "type": "py_number",
+                              "id": "maze-muncher-367",
+                              "fields": {
+                               "VALUE": "0"
+                              }
+                             }
+                            }
+                           },
+                           "next": {
+                            "block": {
+                             "type": "scene_data_set",
+                             "id": "maze-muncher-368",
+                             "inputs": {
+                              "SPRITE": {
+                               "block": {
+                                "type": "py_get",
+                                "id": "maze-muncher-369",
+                                "fields": {
+                                 "SYMBOL": "maze-muncher-484"
+                                }
+                               }
+                              },
+                              "KEY": {
+                               "shadow": {
+                                "type": "text",
+                                "id": "maze-muncher-370",
+                                "fields": {
+                                 "TEXT": "dy"
+                                }
+                               }
+                              },
+                              "VALUE": {
+                               "shadow": {
+                                "type": "py_number",
+                                "id": "maze-muncher-371",
+                                "fields": {
+                                 "VALUE": "0"
+                                }
+                               }
+                              }
+                             },
+                             "next": {
+                              "block": {
+                               "type": "scene_costume_set",
+                               "id": "maze-muncher-372",
+                               "inputs": {
+                                "SPRITE": {
+                                 "block": {
+                                  "type": "py_get",
+                                  "id": "maze-muncher-373",
+                                  "fields": {
+                                   "SYMBOL": "maze-muncher-484"
+                                  }
+                                 }
+                                },
+                                "COSTUME": {
+                                 "block": {
+                                  "type": "scene_data_get",
+                                  "id": "maze-muncher-374",
+                                  "inputs": {
+                                   "SPRITE": {
+                                    "block": {
+                                     "type": "py_get",
+                                     "id": "maze-muncher-375",
+                                     "fields": {
+                                      "SYMBOL": "maze-muncher-484"
+                                     }
+                                    }
+                                   },
+                                   "KEY": {
+                                    "shadow": {
+                                     "type": "text",
+                                     "id": "maze-muncher-376",
+                                     "fields": {
+                                      "TEXT": "colour"
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                }
+                               },
+                               "next": {
+                                "block": {
+                                 "type": "scene_data_set",
+                                 "id": "maze-muncher-377",
+                                 "inputs": {
+                                  "SPRITE": {
+                                   "block": {
+                                    "type": "py_get",
+                                    "id": "maze-muncher-378",
+                                    "fields": {
+                                     "SYMBOL": "maze-muncher-484"
+                                    }
+                                   }
+                                  },
+                                  "KEY": {
+                                   "shadow": {
+                                    "type": "text",
+                                    "id": "maze-muncher-379",
+                                    "fields": {
+                                     "TEXT": "wait"
+                                    }
+                                   }
+                                  },
+                                  "VALUE": {
+                                   "block": {
+                                    "type": "scene_data_get",
+                                    "id": "maze-muncher-380",
+                                    "inputs": {
+                                     "SPRITE": {
+                                      "block": {
+                                       "type": "py_get",
+                                       "id": "maze-muncher-381",
+                                       "fields": {
+                                        "SYMBOL": "maze-muncher-484"
+                                       }
+                                      }
+                                     },
+                                     "KEY": {
+                                      "shadow": {
+                                       "type": "text",
+                                       "id": "maze-muncher-382",
+                                       "fields": {
+                                        "TEXT": "delay"
+                                       }
+                                      }
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_function",
+     "id": "caught_function_block",
+     "x": 1974,
+     "y": 5450,
+     "extraState": {
+      "functionId": "caught_function",
+      "signature": {
+       "id": "caught_function",
+       "name": "caught",
+       "parameters": [
+        {
+         "id": "caught_ghost",
+         "name": "ghost"
+        }
+       ]
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "maze-muncher-383",
+        "extraState": {
+         "hasElse": true
+        },
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "logic_compare",
+           "id": "maze-muncher-384",
+           "fields": {
+            "OP": "GT"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "py_get",
+              "id": "maze-muncher-385",
+              "fields": {
+               "SYMBOL": "maze-muncher-483"
+              }
+             }
+            },
+            "B": {
+             "shadow": {
+              "type": "py_number",
+              "id": "maze-muncher-386",
+              "fields": {
+               "VALUE": "0"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "sound_play",
+           "id": "maze-muncher-387",
+           "inputs": {
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "maze-muncher-388",
+              "fields": {
+               "SOUND_ID": "coin"
+              }
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "maze-muncher-389"
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "game_change",
+             "id": "maze-muncher-390",
+             "fields": {
+              "FIELD": "score"
+             },
+             "inputs": {
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "id": "maze-muncher-391",
+                "fields": {
+                 "VALUE": "200"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_go",
+               "id": "maze-muncher-392",
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "py_get",
+                  "id": "maze-muncher-393",
+                  "fields": {
+                   "SYMBOL": "param:caught_ghost"
+                  }
+                 }
+                },
+                "X": {
+                 "block": {
+                  "type": "scene_data_get",
+                  "id": "maze-muncher-394",
+                  "inputs": {
+                   "SPRITE": {
+                    "block": {
+                     "type": "py_get",
+                     "id": "maze-muncher-395",
+                     "fields": {
+                      "SYMBOL": "param:caught_ghost"
+                     }
+                    }
+                   },
+                   "KEY": {
+                    "shadow": {
+                     "type": "text",
+                     "id": "maze-muncher-396",
+                     "fields": {
+                      "TEXT": "home_x"
+                     }
+                    }
+                   }
+                  }
+                 }
+                },
+                "Y": {
+                 "block": {
+                  "type": "scene_data_get",
+                  "id": "maze-muncher-397",
+                  "inputs": {
+                   "SPRITE": {
+                    "block": {
+                     "type": "py_get",
+                     "id": "maze-muncher-398",
+                     "fields": {
+                      "SYMBOL": "param:caught_ghost"
+                     }
+                    }
+                   },
+                   "KEY": {
+                    "shadow": {
+                     "type": "text",
+                     "id": "maze-muncher-399",
+                     "fields": {
+                      "TEXT": "home_y"
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "next": {
+                "block": {
+                 "type": "scene_data_set",
+                 "id": "maze-muncher-400",
+                 "inputs": {
+                  "SPRITE": {
+                   "block": {
+                    "type": "py_get",
+                    "id": "maze-muncher-401",
+                    "fields": {
+                     "SYMBOL": "param:caught_ghost"
+                    }
+                   }
+                  },
+                  "KEY": {
+                   "shadow": {
+                    "type": "text",
+                    "id": "maze-muncher-402",
+                    "fields": {
+                     "TEXT": "dx"
+                    }
+                   }
+                  },
+                  "VALUE": {
+                   "shadow": {
+                    "type": "py_number",
+                    "id": "maze-muncher-403",
+                    "fields": {
+                     "VALUE": "0"
+                    }
+                   }
+                  }
+                 },
+                 "next": {
+                  "block": {
+                   "type": "scene_data_set",
+                   "id": "maze-muncher-404",
+                   "inputs": {
+                    "SPRITE": {
+                     "block": {
+                      "type": "py_get",
+                      "id": "maze-muncher-405",
+                      "fields": {
+                       "SYMBOL": "param:caught_ghost"
+                      }
+                     }
+                    },
+                    "KEY": {
+                     "shadow": {
+                      "type": "text",
+                      "id": "maze-muncher-406",
+                      "fields": {
+                       "TEXT": "dy"
+                      }
+                     }
+                    },
+                    "VALUE": {
+                     "shadow": {
+                      "type": "py_number",
+                      "id": "maze-muncher-407",
+                      "fields": {
+                       "VALUE": "0"
+                      }
+                     }
+                    }
+                   },
+                   "next": {
+                    "block": {
+                     "type": "scene_costume_set",
+                     "id": "maze-muncher-408",
+                     "inputs": {
+                      "SPRITE": {
+                       "block": {
+                        "type": "py_get",
+                        "id": "maze-muncher-409",
+                        "fields": {
+                         "SYMBOL": "param:caught_ghost"
+                        }
+                       }
+                      },
+                      "COSTUME": {
+                       "block": {
+                        "type": "scene_data_get",
+                        "id": "maze-muncher-410",
+                        "inputs": {
+                         "SPRITE": {
+                          "block": {
+                           "type": "py_get",
+                           "id": "maze-muncher-411",
+                           "fields": {
+                            "SYMBOL": "param:caught_ghost"
+                           }
+                          }
+                         },
+                         "KEY": {
+                          "shadow": {
+                           "type": "text",
+                           "id": "maze-muncher-412",
+                           "fields": {
+                            "TEXT": "colour"
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     },
+                     "next": {
+                      "block": {
+                       "type": "scene_data_set",
+                       "id": "maze-muncher-413",
+                       "inputs": {
+                        "SPRITE": {
+                         "block": {
+                          "type": "py_get",
+                          "id": "maze-muncher-414",
+                          "fields": {
+                           "SYMBOL": "param:caught_ghost"
+                          }
+                         }
+                        },
+                        "KEY": {
+                         "shadow": {
+                          "type": "text",
+                          "id": "maze-muncher-415",
+                          "fields": {
+                           "TEXT": "wait"
+                          }
+                         }
+                        },
+                        "VALUE": {
+                         "shadow": {
+                          "type": "py_number",
+                          "id": "maze-muncher-416",
+                          "fields": {
+                           "VALUE": "60"
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         },
+         "ELSE": {
+          "block": {
+           "type": "sound_play",
+           "id": "maze-muncher-417",
+           "inputs": {
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "maze-muncher-418",
+              "fields": {
+               "SOUND_ID": "lose"
+              }
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "maze-muncher-419"
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "game_change",
+             "id": "maze-muncher-420",
+             "fields": {
+              "FIELD": "lives"
+             },
+             "inputs": {
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "id": "maze-muncher-421",
+                "fields": {
+                 "VALUE": "-1"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "py_call",
+               "id": "maze-muncher-422",
+               "extraState": {
+                "functionId": "reset_function",
+                "signature": {
+                 "id": "reset_function",
+                 "name": "reset",
+                 "parameters": []
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_start_handler_block",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_start_handler",
+      "signature": {
+       "id": "on_start_handler",
+       "name": "on_start",
+       "parameters": [
+        {
+         "id": "on_start_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "start",
+        "order": 0
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "game_set",
+        "id": "maze-muncher-423",
+        "fields": {
+         "FIELD": "score"
+        },
+        "inputs": {
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "id": "maze-muncher-424",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "game_set",
+          "id": "maze-muncher-425",
+          "fields": {
+           "FIELD": "lives"
+          },
+          "inputs": {
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "id": "maze-muncher-426",
+             "fields": {
+              "VALUE": "3"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "py_set",
+            "id": "maze-muncher-427",
+            "fields": {
+             "SYMBOL": "maze-muncher-482"
+            },
+            "inputs": {
+             "VALUE": {
+              "block": {
+               "type": "py_binary",
+               "id": "maze-muncher-428",
+               "fields": {
+                "OP": "+"
+               },
+               "inputs": {
+                "A": {
+                 "block": {
+                  "type": "py_length",
+                  "id": "maze-muncher-429",
+                  "inputs": {
+                   "VALUE": {
+                    "block": {
+                     "type": "scene_tiles_of",
+                     "id": "maze-muncher-430",
+                     "inputs": {
+                      "COSTUME": {
+                       "block": {
+                        "type": "scene_costume",
+                        "id": "maze-muncher-431",
+                        "fields": {
+                         "COSTUME_ID": "stock-maze-dot"
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                },
+                "B": {
+                 "block": {
+                  "type": "py_length",
+                  "id": "maze-muncher-432",
+                  "inputs": {
+                   "VALUE": {
+                    "block": {
+                     "type": "scene_tiles_of",
+                     "id": "maze-muncher-433",
+                     "inputs": {
+                      "COSTUME": {
+                       "block": {
+                        "type": "scene_costume",
+                        "id": "maze-muncher-434",
+                        "fields": {
+                         "COSTUME_ID": "stock-maze-power"
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "py_call",
+              "id": "maze-muncher-435",
+              "extraState": {
+               "functionId": "reset_function",
+               "signature": {
+                "id": "reset_function",
+                "name": "reset",
+                "parameters": []
+               }
+              },
+              "next": {
+               "block": {
+                "type": "scene_animation_play",
+                "id": "maze-muncher-436",
+                "fields": {
+                 "ANIMATION": "chomp"
+                },
+                "inputs": {
+                 "SPRITE": {
+                  "block": {
+                   "type": "scene_sprite",
+                   "id": "maze-muncher-437",
+                   "fields": {
+                    "SPRITE_ID": "muncher"
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "controls_whileUntil",
+                  "id": "maze-muncher-438",
+                  "fields": {
+                   "MODE": "WHILE"
+                  },
+                  "inputs": {
+                   "BOOL": {
+                    "shadow": {
+                     "type": "logic_boolean",
+                     "id": "maze-muncher-439",
+                     "fields": {
+                      "BOOL": "TRUE"
+                     }
+                    }
+                   },
+                   "DO": {
+                    "block": {
+                     "type": "py_call",
+                     "id": "maze-muncher-440",
+                     "extraState": {
+                      "functionId": "move_muncher_function",
+                      "signature": {
+                       "id": "move_muncher_function",
+                       "name": "move_muncher",
+                       "parameters": []
+                      }
+                     },
+                     "next": {
+                      "block": {
+                       "type": "py_for_each",
+                       "id": "maze-muncher-441",
+                       "fields": {
+                        "SYMBOL": "maze-muncher-484"
+                       },
+                       "inputs": {
+                        "ITERABLE": {
+                         "block": {
+                          "type": "scene_of_kind",
+                          "id": "maze-muncher-442",
+                          "inputs": {
+                           "KIND": {
+                            "shadow": {
+                             "type": "text",
+                             "id": "maze-muncher-443",
+                             "fields": {
+                              "TEXT": "ghost"
+                             }
+                            }
+                           }
+                          }
+                         }
+                        },
+                        "DO": {
+                         "block": {
+                          "type": "py_call",
+                          "id": "maze-muncher-444",
+                          "extraState": {
+                           "functionId": "move_ghost_function",
+                           "signature": {
+                            "id": "move_ghost_function",
+                            "name": "move_ghost",
+                            "parameters": [
+                             {
+                              "id": "move_ghost_ghost",
+                              "name": "ghost"
+                             }
+                            ]
+                           }
+                          },
+                          "inputs": {
+                           "ARG_move_ghost_ghost": {
+                            "block": {
+                             "type": "py_get",
+                             "id": "maze-muncher-445",
+                             "fields": {
+                              "SYMBOL": "maze-muncher-484"
+                             }
+                            }
+                           }
+                          },
+                          "next": {
+                           "block": {
+                            "type": "controls_if",
+                            "id": "maze-muncher-446",
+                            "inputs": {
+                             "IF0": {
+                              "block": {
+                               "type": "scene_overlaps",
+                               "id": "maze-muncher-447",
+                               "inputs": {
+                                "SPRITE": {
+                                 "block": {
+                                  "type": "scene_sprite",
+                                  "id": "maze-muncher-448",
+                                  "fields": {
+                                   "SPRITE_ID": "muncher"
+                                  }
+                                 }
+                                },
+                                "OTHER": {
+                                 "block": {
+                                  "type": "py_get",
+                                  "id": "maze-muncher-449",
+                                  "fields": {
+                                   "SYMBOL": "maze-muncher-484"
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             },
+                             "DO0": {
+                              "block": {
+                               "type": "py_call",
+                               "id": "maze-muncher-450",
+                               "extraState": {
+                                "functionId": "caught_function",
+                                "signature": {
+                                 "id": "caught_function",
+                                 "name": "caught",
+                                 "parameters": [
+                                  {
+                                   "id": "caught_ghost",
+                                   "name": "ghost"
+                                  }
+                                 ]
+                                }
+                               },
+                               "inputs": {
+                                "ARG_caught_ghost": {
+                                 "block": {
+                                  "type": "py_get",
+                                  "id": "maze-muncher-451",
+                                  "fields": {
+                                   "SYMBOL": "maze-muncher-484"
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       },
+                       "next": {
+                        "block": {
+                         "type": "controls_if",
+                         "id": "maze-muncher-452",
+                         "inputs": {
+                          "IF0": {
+                           "block": {
+                            "type": "logic_compare",
+                            "id": "maze-muncher-453",
+                            "fields": {
+                             "OP": "GT"
+                            },
+                            "inputs": {
+                             "A": {
+                              "block": {
+                               "type": "py_get",
+                               "id": "maze-muncher-454",
+                               "fields": {
+                                "SYMBOL": "maze-muncher-483"
+                               }
+                              }
+                             },
+                             "B": {
+                              "shadow": {
+                               "type": "py_number",
+                               "id": "maze-muncher-455",
+                               "fields": {
+                                "VALUE": "0"
+                               }
+                              }
+                             }
+                            }
+                           }
+                          },
+                          "DO0": {
+                           "block": {
+                            "type": "py_set",
+                            "id": "maze-muncher-456",
+                            "fields": {
+                             "SYMBOL": "maze-muncher-483"
+                            },
+                            "inputs": {
+                             "VALUE": {
+                              "block": {
+                               "type": "py_binary",
+                               "id": "maze-muncher-457",
+                               "fields": {
+                                "OP": "-"
+                               },
+                               "inputs": {
+                                "A": {
+                                 "block": {
+                                  "type": "py_get",
+                                  "id": "maze-muncher-458",
+                                  "fields": {
+                                   "SYMBOL": "maze-muncher-483"
+                                  }
+                                 }
+                                },
+                                "B": {
+                                 "shadow": {
+                                  "type": "py_number",
+                                  "id": "maze-muncher-459",
+                                  "fields": {
+                                   "VALUE": "1"
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          }
+                         },
+                         "next": {
+                          "block": {
+                           "type": "py_wait",
+                           "id": "maze-muncher-460",
+                           "inputs": {
+                            "SECONDS": {
+                             "shadow": {
+                              "type": "py_number",
+                              "id": "maze-muncher-461",
+                              "fields": {
+                               "VALUE": "0.03"
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_left_key_handler_block",
+     "x": 1365,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_left_key_handler",
+      "signature": {
+       "id": "on_left_key_handler",
+       "name": "on_left_key",
+       "parameters": [
+        {
+         "id": "on_left_key_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "key:ArrowLeft",
+        "order": 1
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "py_set",
+        "id": "maze-muncher-462",
+        "fields": {
+         "SYMBOL": "maze-muncher-478"
+        },
+        "inputs": {
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "id": "maze-muncher-463",
+           "fields": {
+            "VALUE": "-1"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "py_set",
+          "id": "maze-muncher-464",
+          "fields": {
+           "SYMBOL": "maze-muncher-479"
+          },
+          "inputs": {
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "id": "maze-muncher-465",
+             "fields": {
+              "VALUE": "0"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_right_key_handler_block",
+     "x": 1365,
+     "y": 200,
+     "extraState": {
+      "functionId": "on_right_key_handler",
+      "signature": {
+       "id": "on_right_key_handler",
+       "name": "on_right_key",
+       "parameters": [
+        {
+         "id": "on_right_key_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "key:ArrowRight",
+        "order": 2
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "py_set",
+        "id": "maze-muncher-466",
+        "fields": {
+         "SYMBOL": "maze-muncher-478"
+        },
+        "inputs": {
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "id": "maze-muncher-467",
+           "fields": {
+            "VALUE": "1"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "py_set",
+          "id": "maze-muncher-468",
+          "fields": {
+           "SYMBOL": "maze-muncher-479"
+          },
+          "inputs": {
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "id": "maze-muncher-469",
+             "fields": {
+              "VALUE": "0"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_up_key_handler_block",
+     "x": 1365,
+     "y": 370,
+     "extraState": {
+      "functionId": "on_up_key_handler",
+      "signature": {
+       "id": "on_up_key_handler",
+       "name": "on_up_key",
+       "parameters": [
+        {
+         "id": "on_up_key_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "key:ArrowUp",
+        "order": 3
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "py_set",
+        "id": "maze-muncher-470",
+        "fields": {
+         "SYMBOL": "maze-muncher-478"
+        },
+        "inputs": {
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "id": "maze-muncher-471",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "py_set",
+          "id": "maze-muncher-472",
+          "fields": {
+           "SYMBOL": "maze-muncher-479"
+          },
+          "inputs": {
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "id": "maze-muncher-473",
+             "fields": {
+              "VALUE": "1"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_down_key_handler_block",
+     "x": 1365,
+     "y": 540,
+     "extraState": {
+      "functionId": "on_down_key_handler",
+      "signature": {
+       "id": "on_down_key_handler",
+       "name": "on_down_key",
+       "parameters": [
+        {
+         "id": "on_down_key_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "key:ArrowDown",
+        "order": 4
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "py_set",
+        "id": "maze-muncher-474",
+        "fields": {
+         "SYMBOL": "maze-muncher-478"
+        },
+        "inputs": {
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "id": "maze-muncher-475",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "py_set",
+          "id": "maze-muncher-476",
+          "fields": {
+           "SYMBOL": "maze-muncher-479"
+          },
+          "inputs": {
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "id": "maze-muncher-477",
+             "fields": {
+              "VALUE": "-1"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  "variables": [
+   {
+    "name": "want_x",
+    "id": "maze-muncher-478",
+    "type": "py:module"
+   },
+   {
+    "name": "want_y",
+    "id": "maze-muncher-479",
+    "type": "py:module"
+   },
+   {
+    "name": "dx",
+    "id": "maze-muncher-480",
+    "type": "py:module"
+   },
+   {
+    "name": "dy",
+    "id": "maze-muncher-481",
+    "type": "py:module"
+   },
+   {
+    "name": "dots",
+    "id": "maze-muncher-482",
+    "type": "py:module"
+   },
+   {
+    "name": "scared",
+    "id": "maze-muncher-483",
+    "type": "py:module"
+   },
+   {
+    "name": "ghost",
+    "id": "maze-muncher-484",
+    "type": "py:module"
+   },
+   {
+    "name": "step",
+    "id": "maze-muncher-485",
+    "type": "py:module"
+   },
+   {
+    "name": "best_x",
+    "id": "maze-muncher-486",
+    "type": "py:module"
+   },
+   {
+    "name": "best_y",
+    "id": "maze-muncher-487",
+    "type": "py:module"
+   },
+   {
+    "name": "best_d",
+    "id": "maze-muncher-488",
+    "type": "py:module"
+   },
+   {
+    "name": "d",
+    "id": "maze-muncher-489",
+    "type": "py:module"
+   },
+   {
+    "name": "tile",
+    "id": "maze-muncher-490",
+    "type": "py:module"
+   },
+   {
+    "name": "_pb_parameter_open_at_x",
+    "id": "_pb_parameter_open_at_x"
+   },
+   {
+    "name": "_pb_parameter_open_at_y",
+    "id": "_pb_parameter_open_at_y"
+   },
+   {
+    "name": "_pb_parameter_at_center_thing",
+    "id": "_pb_parameter_at_center_thing"
+   },
+   {
+    "name": "_pb_parameter_move_ghost_ghost",
+    "id": "_pb_parameter_move_ghost_ghost"
+   },
+   {
+    "name": "_pb_parameter_caught_ghost",
+    "id": "_pb_parameter_caught_ghost"
+   },
+   {
+    "name": "_pb_parameter_on_start_handler_payload",
+    "id": "_pb_parameter_on_start_handler_payload"
+   },
+   {
+    "name": "_pb_parameter_on_left_key_handler_payload",
+    "id": "_pb_parameter_on_left_key_handler_payload"
+   },
+   {
+    "name": "_pb_parameter_on_right_key_handler_payload",
+    "id": "_pb_parameter_on_right_key_handler_payload"
+   },
+   {
+    "name": "_pb_parameter_on_up_key_handler_payload",
+    "id": "_pb_parameter_on_up_key_handler_payload"
+   },
+   {
+    "name": "_pb_parameter_on_down_key_handler_payload",
+    "id": "_pb_parameter_on_down_key_handler_payload"
+   }
+  ],
+  "pythonScene": {
+   "version": 1,
+   "background": "#141a3c",
+   "sprites": [
+    {
+     "direction": 180,
+     "size": 90,
+     "layer": 3,
+     "visible": true,
+     "rotationStyle": "all",
+     "costume": "stock-muncher-chomp-1",
+     "costumes": [
+      "stock-muncher-chomp-1",
+      "stock-muncher-chomp-2",
+      "stock-muncher-chomp-3"
+     ],
+     "animations": [
+      {
+       "name": "chomp",
+       "frames": [
+        "stock-muncher-chomp-1",
+        "stock-muncher-chomp-2",
+        "stock-muncher-chomp-3",
+        "stock-muncher-chomp-2"
+       ]
+      }
+     ],
+     "id": "muncher",
+     "name": "Muncher",
+     "x": 0,
+     "y": -112
+    },
+    {
+     "direction": 0,
+     "size": 90,
+     "layer": 2,
+     "visible": true,
+     "rotationStyle": "none",
+     "costume": "stock-ghost-red",
+     "costumes": [
+      "stock-ghost-red",
+      "stock-ghost-scared"
+     ],
+     "id": "ghost_red",
+     "name": "Red ghost",
+     "x": -64,
+     "y": 16,
+     "kind": "ghost",
+     "data": {
+      "colour": "stock-ghost-red",
+      "home_x": -64,
+      "home_y": 16,
+      "delay": 30,
+      "wait": 30,
+      "dx": 0,
+      "dy": 0,
+      "speed": 4
+     }
+    },
+    {
+     "direction": 0,
+     "size": 90,
+     "layer": 2,
+     "visible": true,
+     "rotationStyle": "none",
+     "costume": "stock-ghost-pink",
+     "costumes": [
+      "stock-ghost-pink",
+      "stock-ghost-scared"
+     ],
+     "id": "ghost_pink",
+     "name": "Pink ghost",
+     "x": -32,
+     "y": 16,
+     "kind": "ghost",
+     "data": {
+      "colour": "stock-ghost-pink",
+      "home_x": -32,
+      "home_y": 16,
+      "delay": 90,
+      "wait": 90,
+      "dx": 0,
+      "dy": 0,
+      "speed": 4
+     }
+    },
+    {
+     "direction": 0,
+     "size": 90,
+     "layer": 2,
+     "visible": true,
+     "rotationStyle": "none",
+     "costume": "stock-ghost-cyan",
+     "costumes": [
+      "stock-ghost-cyan",
+      "stock-ghost-scared"
+     ],
+     "id": "ghost_cyan",
+     "name": "Blue ghost",
+     "x": 32,
+     "y": 16,
+     "kind": "ghost",
+     "data": {
+      "colour": "stock-ghost-cyan",
+      "home_x": 32,
+      "home_y": 16,
+      "delay": 150,
+      "wait": 150,
+      "dx": 0,
+      "dy": 0,
+      "speed": 4
+     }
+    },
+    {
+     "direction": 0,
+     "size": 90,
+     "layer": 2,
+     "visible": true,
+     "rotationStyle": "none",
+     "costume": "stock-ghost-orange",
+     "costumes": [
+      "stock-ghost-orange",
+      "stock-ghost-scared"
+     ],
+     "id": "ghost_orange",
+     "name": "Orange ghost",
+     "x": 64,
+     "y": 16,
+     "kind": "ghost",
+     "data": {
+      "colour": "stock-ghost-orange",
+      "home_x": 64,
+      "home_y": 16,
+      "delay": 210,
+      "wait": 210,
+      "dx": 0,
+      "dy": 0,
+      "speed": 4
+     }
+    }
+   ],
+   "assets": [
+    {
+     "id": "stock-maze-wall-o",
+     "name": "Maze wall o",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-o@1"
+    },
+    {
+     "id": "stock-maze-wall-n",
+     "name": "Maze wall n",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-n@1"
+    },
+    {
+     "id": "stock-maze-wall-e",
+     "name": "Maze wall e",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-e@1"
+    },
+    {
+     "id": "stock-maze-wall-ne",
+     "name": "Maze wall ne",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-ne@1"
+    },
+    {
+     "id": "stock-maze-wall-s",
+     "name": "Maze wall s",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-s@1"
+    },
+    {
+     "id": "stock-maze-wall-ns",
+     "name": "Maze wall ns",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-ns@1"
+    },
+    {
+     "id": "stock-maze-wall-es",
+     "name": "Maze wall es",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-es@1"
+    },
+    {
+     "id": "stock-maze-wall-nes",
+     "name": "Maze wall nes",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-nes@1"
+    },
+    {
+     "id": "stock-maze-wall-w",
+     "name": "Maze wall w",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-w@1"
+    },
+    {
+     "id": "stock-maze-wall-nw",
+     "name": "Maze wall nw",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-nw@1"
+    },
+    {
+     "id": "stock-maze-wall-ew",
+     "name": "Maze wall ew",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-ew@1"
+    },
+    {
+     "id": "stock-maze-wall-new",
+     "name": "Maze wall new",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-new@1"
+    },
+    {
+     "id": "stock-maze-wall-sw",
+     "name": "Maze wall sw",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-sw@1"
+    },
+    {
+     "id": "stock-maze-wall-nsw",
+     "name": "Maze wall nsw",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-nsw@1"
+    },
+    {
+     "id": "stock-maze-wall-esw",
+     "name": "Maze wall esw",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-esw@1"
+    },
+    {
+     "id": "stock-maze-wall-nesw",
+     "name": "Maze wall nesw",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-wall-nesw@1"
+    },
+    {
+     "id": "stock-maze-dot",
+     "name": "Maze dot",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-dot@1"
+    },
+    {
+     "id": "stock-maze-power",
+     "name": "Power dot",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/maze-power@1"
+    },
+    {
+     "id": "stock-muncher-chomp-1",
+     "name": "Muncher chomp 1",
+     "width": 30,
+     "height": 30,
+     "stock": "cast/muncher-chomp-1@1"
+    },
+    {
+     "id": "stock-muncher-chomp-2",
+     "name": "Muncher chomp 2",
+     "width": 30,
+     "height": 30,
+     "stock": "cast/muncher-chomp-2@1"
+    },
+    {
+     "id": "stock-muncher-chomp-3",
+     "name": "Muncher chomp 3",
+     "width": 30,
+     "height": 30,
+     "stock": "cast/muncher-chomp-3@1"
+    },
+    {
+     "id": "stock-ghost-red",
+     "name": "Ghost red",
+     "width": 28,
+     "height": 28,
+     "stock": "props/ghost-red@1"
+    },
+    {
+     "id": "stock-ghost-pink",
+     "name": "Ghost pink",
+     "width": 28,
+     "height": 28,
+     "stock": "props/ghost-pink@1"
+    },
+    {
+     "id": "stock-ghost-cyan",
+     "name": "Ghost cyan",
+     "width": 28,
+     "height": 28,
+     "stock": "props/ghost-cyan@1"
+    },
+    {
+     "id": "stock-ghost-orange",
+     "name": "Ghost orange",
+     "width": 28,
+     "height": 28,
+     "stock": "props/ghost-orange@1"
+    },
+    {
+     "id": "stock-ghost-scared",
+     "name": "Ghost scared",
+     "width": 28,
+     "height": 28,
+     "stock": "props/ghost-scared@1"
+    }
+   ],
+   "backdrops": [],
+   "backdrop": null,
+   "worlds": [
+    {
+     "id": "maze",
+     "name": "Maze",
+     "background": "#141a3c",
+     "backdrop": null,
+     "map": {
+      "columns": 15,
+      "rows": 10,
+      "tileSize": 32,
+      "tiles": [
+       "stock-maze-wall-es",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-sw",
+       "stock-maze-wall-ns",
+       "stock-maze-power",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-power",
+       "stock-maze-wall-ns",
+       "stock-maze-wall-ns",
+       "stock-maze-dot",
+       "stock-maze-wall-e",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-w",
+       "stock-maze-dot",
+       "stock-maze-wall-s",
+       "stock-maze-dot",
+       "stock-maze-wall-s",
+       "stock-maze-dot",
+       "stock-maze-wall-e",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-w",
+       "stock-maze-dot",
+       "stock-maze-wall-ns",
+       "stock-maze-wall-ns",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-wall-n",
+       "stock-maze-dot",
+       "stock-maze-wall-n",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-wall-ns",
+       "stock-maze-wall-ns",
+       "stock-maze-dot",
+       "stock-maze-wall-es",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-w",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-wall-e",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-sw",
+       "stock-maze-dot",
+       "stock-maze-wall-ns",
+       "stock-maze-wall-ns",
+       "stock-maze-dot",
+       "stock-maze-wall-ns",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-wall-e",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-w",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-wall-ns",
+       "stock-maze-dot",
+       "stock-maze-wall-ns",
+       "stock-maze-wall-ns",
+       "stock-maze-dot",
+       "stock-maze-wall-ns",
+       "stock-maze-dot",
+       "stock-maze-wall-s",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-wall-s",
+       "stock-maze-dot",
+       "stock-maze-wall-ns",
+       "stock-maze-dot",
+       "stock-maze-wall-ns",
+       "stock-maze-wall-ns",
+       "stock-maze-dot",
+       "stock-maze-wall-n",
+       "stock-maze-dot",
+       "stock-maze-wall-n",
+       "stock-maze-dot",
+       "stock-maze-wall-e",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-w",
+       "stock-maze-dot",
+       "stock-maze-wall-n",
+       "stock-maze-dot",
+       "stock-maze-wall-n",
+       "stock-maze-dot",
+       "stock-maze-wall-ns",
+       "stock-maze-wall-ns",
+       "stock-maze-power",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       null,
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-dot",
+       "stock-maze-power",
+       "stock-maze-wall-ns",
+       "stock-maze-wall-ne",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-ew",
+       "stock-maze-wall-nw"
+      ],
+      "walls": [
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       true,
+       true,
+       true,
+       false,
+       true,
+       false,
+       true,
+       false,
+       true,
+       true,
+       true,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       false,
+       true,
+       true,
+       false,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       false,
+       true,
+       true,
+       false,
+       true,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       true,
+       false,
+       true,
+       true,
+       false,
+       true,
+       false,
+       true,
+       false,
+       true,
+       true,
+       true,
+       false,
+       true,
+       false,
+       true,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ]
+     },
+     "camera": {
+      "x": 0,
+      "y": 0,
+      "follow": null,
+      "clamp": true
+     }
+    }
+   ],
+   "world": "maze",
+   "sounds": [
+    {
+     "id": "blip",
+     "name": "Blip",
+     "kind": "clip",
+     "stock": "effects/blip@1"
+    },
+    {
+     "id": "powerup",
+     "name": "Power-up",
+     "kind": "clip",
+     "stock": "effects/powerup@1"
+    },
+    {
+     "id": "coin",
+     "name": "Coin",
+     "kind": "clip",
+     "stock": "effects/coin@1"
+    },
+    {
+     "id": "lose",
+     "name": "Lose",
+     "kind": "clip",
+     "stock": "effects/lose@1"
+    },
+    {
+     "id": "win",
+     "name": "Win",
+     "kind": "clip",
+     "stock": "effects/win@1"
+    }
+   ]
+  },
+  "procedures": [
+   {
+    "id": "open_at_function",
+    "name": "open_at",
+    "returnTypes": null,
+    "parameters": [
+     {
+      "id": "open_at_x",
+      "name": "x"
+     },
+     {
+      "id": "open_at_y",
+      "name": "y"
+     }
+    ]
+   },
+   {
+    "id": "at_center_function",
+    "name": "at_center",
+    "returnTypes": null,
+    "parameters": [
+     {
+      "id": "at_center_thing",
+      "name": "thing"
+     }
+    ]
+   },
+   {
+    "id": "eat_function",
+    "name": "eat",
+    "returnTypes": null
+   },
+   {
+    "id": "move_muncher_function",
+    "name": "move_muncher",
+    "returnTypes": null
+   },
+   {
+    "id": "move_ghost_function",
+    "name": "move_ghost",
+    "returnTypes": null,
+    "parameters": [
+     {
+      "id": "move_ghost_ghost",
+      "name": "ghost"
+     }
+    ]
+   },
+   {
+    "id": "reset_function",
+    "name": "reset",
+    "returnTypes": null
+   },
+   {
+    "id": "caught_function",
+    "name": "caught",
+    "returnTypes": null,
+    "parameters": [
+     {
+      "id": "caught_ghost",
+      "name": "ghost"
+     }
+    ]
+   },
+   {
+    "id": "on_start_handler",
+    "name": "on_start",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 0
+    },
+    "parameters": [
+     {
+      "id": "on_start_handler_payload",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "on_left_key_handler",
+    "name": "on_left_key",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "key:ArrowLeft",
+     "order": 1
+    },
+    "parameters": [
+     {
+      "id": "on_left_key_handler_payload",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "on_right_key_handler",
+    "name": "on_right_key",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "key:ArrowRight",
+     "order": 2
+    },
+    "parameters": [
+     {
+      "id": "on_right_key_handler_payload",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "on_up_key_handler",
+    "name": "on_up_key",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "key:ArrowUp",
+     "order": 3
+    },
+    "parameters": [
+     {
+      "id": "on_up_key_handler_payload",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "on_down_key_handler",
+    "name": "on_down_key",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "key:ArrowDown",
+     "order": 4
+    },
+    "parameters": [
+     {
+      "id": "on_down_key_handler_payload",
+      "name": "payload"
+     }
+    ]
+   }
+  ]
+ }
+}

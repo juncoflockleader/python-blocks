@@ -1,9 +1,12 @@
 import { BLUSH, INK, curve, ellipse, eyes, line, shade, shape, type Ctx } from './draw';
+import { ARCADE_CHARACTERS } from './arcade';
 
 /** Library characters with their own poses: a Chick that flaps (for flying
  * games) and a Beetle that walks (an enemy to patrol). Their boxes hug their
  * bodies, since flying and stomping games collide by the box. */
-export interface Critter { id: string; name: string; width: number; height: number; frames: string[]; animations: Record<string, string[]>; detail: string; draw(c: Ctx, frame: number): void }
+export interface Critter { id: string; name: string; width: number; height: number; frames: string[]; animations: Record<string, string[]>; detail: string; draw(c: Ctx, frame: number): void;
+  /** How it animates when added from the library, when not as the chick (flap) or the beetle (walk). */
+  autoAnimate?: { moving: string; air: string; still: string; turn: boolean } }
 
 /** A round chick facing right; the wing beats through flap 1–4. 52 × 40. */
 function chick(c: Ctx, frame: number) {
@@ -41,6 +44,9 @@ export const CRITTERS: Critter[] = [
   { id: 'chick', name: 'Chick', width: 52, height: 40, frames: ['idle-1', 'idle-2', 'flap-1', 'flap-2', 'flap-3', 'flap-4', 'jump', 'happy'],
     animations: { idle: ['idle-1', 'idle-2'], flap: ['flap-1', 'flap-2', 'flap-3', 'flap-4'], jump: ['jump'], happy: ['happy'] }, detail: 'Idle, flap, jump and happy', draw: chick },
   { id: 'beetle', name: 'Beetle', width: 36, height: 30, frames: ['walk-1', 'walk-2'], animations: { walk: ['walk-1', 'walk-2'] }, detail: 'Walks', draw: beetle },
+  // The arcade examples' characters: a muncher that chomps as it moves, and three aliens.
+  { ...ARCADE_CHARACTERS[0], autoAnimate: { moving: 'chomp', air: '', still: '', turn: false } },
+  { ...ARCADE_CHARACTERS[1], autoAnimate: { moving: '', air: '', still: '', turn: false } },
 ];
 export function paintCritter(c: Ctx, id: string, frame: number) {
   const critter = CRITTERS.find(x => x.id === id); if (!critter) throw new Error(`No character ${id}`);

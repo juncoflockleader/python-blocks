@@ -1,4 +1,5 @@
 import { INK, ellipse, shade, shape, type Ctx } from './draw';
+import { moon } from './arcade';
 
 /** Backdrops, 480 × 320 from the top-left corner: soft layered scenery with a
  * clear floor band near the bottom, so sprites standing at y −120 sit on it. */
@@ -153,7 +154,7 @@ export const BACKDROPS: Backdrop[] = [
   { id: 'meadow', name: 'Meadow', draw: meadow }, { id: 'night', name: 'Night', draw: night },
   { id: 'cave', name: 'Cave', draw: cave }, { id: 'snow', name: 'Snow', draw: snow },
   { id: 'castle', name: 'Castle', draw: castle }, { id: 'desert', name: 'Desert', draw: desert },
-  { id: 'city-sky', name: 'City sky', draw: citySky }, { id: 'hills', name: 'Hills', draw: rollingHills },
+  { id: 'city-sky', name: 'City sky', draw: citySky }, { id: 'hills', name: 'Hills', draw: rollingHills }, { id: 'moon', name: 'Moon', draw: moon },
 ];
 export function paintBackdrop(c: Ctx, id: string) {
   const backdrop = BACKDROPS.find(b => b.id === id); if (!backdrop) throw new Error(`No backdrop ${id}`);

@@ -1,10 +1,13 @@
 import { CREAM, INK, LINE, box, curve, ellipse, line, shade, shape, type Ctx } from './draw';
+import { ARCADE_PROPS } from './arcade';
 
 /** Library props in the cast's style. Each is drawn centred on the origin in
  * its own size; coins and gems have a six-frame spin, and a brick comes in five
  * colours (`variants`: one picture each, drawn as frames). The game pieces are
  * drawn at the lessons' sizes, so their collisions stay the same. */
-export interface Prop { id: string; name: string; width: number; height: number; frames: number; variants?: string[]; draw(c: Ctx, frame: number): void }
+export interface Prop { id: string; name: string; width: number; height: number; frames: number; variants?: string[]; draw(c: Ctx, frame: number): void;
+  /** What the library says about it, and the animation its frames make (none for a ship's engine off and on). */
+  detail?: string; animation?: string | null }
 
 /** How wide a spinning thing looks in each of six frames. */
 const SPIN = [1, 0.72, 0.22, 0.22, 0.72, 1];
@@ -129,6 +132,7 @@ export const PROPS: Prop[] = [
   { id: 'brick', name: 'Brick', width: 44, height: 14, frames: 5, variants: BRICKS.map(([name]) => name), draw: brick },
   { id: 'pipes', name: 'Pipe pair', width: 26, height: 255, frames: 1, draw: pipes },
   { id: 'flag', name: 'Flag', width: 40, height: 256, frames: 1, draw: flag },
+  ...ARCADE_PROPS.map(prop => ({ ...prop, ...(prop.id === 'ghost' ? { detail: 'Four colours and scared' } : prop.id === 'rock' ? { detail: 'Three shapes' } : prop.frames > 1 ? { detail: 'Engine off and on', animation: null } : {}) })),
 ];
 export function paintProp(c: Ctx, id: string, frame = 0) {
   const prop = PROPS.find(p => p.id === id); if (!prop) throw new Error(`No prop ${id}`);

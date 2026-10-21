@@ -181,9 +181,10 @@ describe('guided builds', () => {
 });
 
 describe('gallery', () => {
-  it('keeps the ten examples and adds the ten guided-build and lesson games, with three things to try', () => {
-    expect(entries).toHaveLength(20);
-    expect(new Set(entries.map(e => e.id)).size).toBe(20);
+  it('keeps the ten examples, five arcade games, and the ten guided-build and lesson games, with three things to try', () => {
+    expect(entries).toHaveLength(25);
+    expect(new Set(entries.map(e => e.id)).size).toBe(25);
+    expect(entries.filter(e => e.project.startsWith('content/examples/')).map(e => e.id)).toEqual(['maze-muncher', 'sky-defenders', 'rock-blaster', 'snake', 'moon-lander']);
     for (const id of ['scene-example', 'scene-motion-example', 'scene-story-example', 'scene-drawing-example', 'scene-behavior-example', 'scene-game-example', 'scene-world-example', 'scene-star-game', 'sound-example', 'scene-input-example']) expect(entries.some(e => e.id === id), id).toBe(true);
     for (const entry of entries) {
       expect(entry.tryChanging, entry.id).toHaveLength(3);
