@@ -1,0 +1,1572 @@
+{
+ "id": "unit-1-4",
+ "kind": "unit",
+ "unit": {
+  "chapter": 1,
+  "number": 4,
+  "capstone": true
+ },
+ "title": "Greeting card",
+ "level": "starter",
+ "minutes": 30,
+ "order": 4,
+ "summary": "The big project for Chapter 1: make a talking, moving greeting card for someone you choose.",
+ "ideas": [],
+ "learn": [
+  "Plan a project and build it a part at a time",
+  "Use signals: the start, taps and keys",
+  "Mix words, costumes, moves and glides"
+ ],
+ "starter": {
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 23,
+  "workspace": {
+   "blocks": {
+    "languageVersion": 0,
+    "blocks": []
+   },
+   "pythonScene": {
+    "version": 1,
+    "background": "#bfe3f2",
+    "assets": [
+     {
+      "id": "stock-fox-idle-1",
+      "name": "Fox idle 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/fox-idle-1@1"
+     },
+     {
+      "id": "stock-fox-happy",
+      "name": "Fox happy",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/fox-happy@1"
+     },
+     {
+      "id": "stock-robot-idle-1",
+      "name": "Robot idle 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/robot-idle-1@1"
+     },
+     {
+      "id": "stock-robot-happy",
+      "name": "Robot happy",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/robot-happy@1"
+     },
+     {
+      "id": "stock-robot-jump",
+      "name": "Robot jump",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/robot-jump@1"
+     },
+     {
+      "id": "stock-rabbit-idle-1",
+      "name": "Rabbit idle 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/rabbit-idle-1@1"
+     },
+     {
+      "id": "stock-rabbit-happy",
+      "name": "Rabbit happy",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/rabbit-happy@1"
+     },
+     {
+      "id": "stock-bee-idle-1",
+      "name": "Bee idle 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/bee-idle-1@1"
+     },
+     {
+      "id": "stock-bee-happy",
+      "name": "Bee happy",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/bee-happy@1"
+     }
+    ],
+    "backdrops": [
+     {
+      "id": "stock-castle",
+      "name": "Castle",
+      "width": 480,
+      "height": 320,
+      "stock": "backdrops/castle@1"
+     }
+    ],
+    "backdrop": "stock-castle",
+    "sprites": [
+     {
+      "id": "fox",
+      "name": "Fox",
+      "x": -150,
+      "y": -50,
+      "direction": 0,
+      "size": 150,
+      "layer": 1,
+      "visible": true,
+      "costume": "stock-fox-idle-1",
+      "rotationStyle": "all",
+      "costumes": [
+       "stock-fox-idle-1",
+       "stock-fox-happy"
+      ],
+      "frameSeconds": 0.2
+     },
+     {
+      "id": "robot",
+      "name": "Robot",
+      "x": 140,
+      "y": -50,
+      "direction": 0,
+      "size": 150,
+      "layer": 1,
+      "visible": true,
+      "costume": "stock-robot-idle-1",
+      "rotationStyle": "all",
+      "costumes": [
+       "stock-robot-idle-1",
+       "stock-robot-happy",
+       "stock-robot-jump"
+      ],
+      "frameSeconds": 0.2
+     },
+     {
+      "id": "rabbit",
+      "name": "Rabbit",
+      "x": 10,
+      "y": -70,
+      "direction": 0,
+      "size": 150,
+      "layer": 1,
+      "visible": true,
+      "costume": "stock-rabbit-idle-1",
+      "rotationStyle": "all",
+      "costumes": [
+       "stock-rabbit-idle-1",
+       "stock-rabbit-happy"
+      ],
+      "frameSeconds": 0.2
+     },
+     {
+      "id": "bee",
+      "name": "Bee",
+      "x": -200,
+      "y": 110,
+      "direction": 0,
+      "size": 110,
+      "layer": 1,
+      "visible": true,
+      "costume": "stock-bee-idle-1",
+      "rotationStyle": "all",
+      "costumes": [
+       "stock-bee-idle-1",
+       "stock-bee-happy"
+      ],
+      "frameSeconds": 0.2
+     }
+    ]
+   }
+  }
+ },
+ "chapters": [
+  {
+   "title": "Play",
+   "idea": "A card for Sam",
+   "steps": 1
+  },
+  {
+   "title": "Build",
+   "idea": "Your card, a part at a time",
+   "steps": 5
+  },
+  {
+   "title": "Make it yours",
+   "idea": "Your own words and surprises",
+   "steps": 1
+  }
+ ],
+ "finish": {
+  "text": "Your card is done! Play it for the person it is for.",
+  "remix": [
+   "Make a card for another friend, with another backdrop.",
+   "Add a sound when someone is tapped."
+  ]
+ },
+ "steps": [
+  {
+   "kind": "play",
+   "title": "A card for Sam",
+   "keys": "both",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       },
+       {
+        "id": "stock-rabbit-idle-1",
+        "name": "Rabbit idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/rabbit-idle-1@1"
+       },
+       {
+        "id": "stock-rabbit-happy",
+        "name": "Rabbit happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/rabbit-happy@1"
+       },
+       {
+        "id": "stock-bee-idle-1",
+        "name": "Bee idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/bee-idle-1@1"
+       },
+       {
+        "id": "stock-bee-happy",
+        "name": "Bee happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/bee-happy@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-castle",
+        "name": "Castle",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/castle@1"
+       }
+      ],
+      "backdrop": "stock-castle",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -150,
+        "y": -50,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 140,
+        "y": -50,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "rabbit",
+        "name": "Rabbit",
+        "x": 10,
+        "y": -70,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-rabbit-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-rabbit-idle-1",
+         "stock-rabbit-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "bee",
+        "name": "Bee",
+        "x": -200,
+        "y": 110,
+        "direction": 0,
+        "size": 110,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-bee-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-bee-idle-1",
+         "stock-bee-happy"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "rabbit",
+   "panel": {
+    "backdrop": "backdrops/castle@1",
+    "art": [
+     [
+      "cast/fox-happy@1",
+      110,
+      236,
+      1.7
+     ],
+     [
+      "cast/robot-idle-1@1",
+      380,
+      236,
+      1.7
+     ],
+     [
+      "cast/bee-happy@1",
+      245,
+      90,
+      1.7
+     ]
+    ],
+    "labels": [
+     [
+      "Happy birthday!",
+      130,
+      150,
+      "say"
+     ],
+     [
+      "Have a great day!",
+      360,
+      160,
+      "say"
+     ]
+    ]
+   },
+   "text": "This card was made for Sam. Press [[Run code]] and watch. Then tap Robot and Rabbit, press [←] [→], and press [space]. Next, you make a card for someone you choose!",
+   "plant": [
+    {
+     "handler": {
+      "kind": "start",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Happy birthday, Sam!"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "3"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "start",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_glide",
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "bee"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "1.5"
+          }
+         }
+        },
+        "X": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "0"
+          }
+         }
+        },
+        "Y": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "110"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "click",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Have a great day!"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "2"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_next_costume",
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "click",
+      "sprite": "$other"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "y"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "rabbit"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "40"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "py_wait",
+       "inputs": {
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "0.3"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "y"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "rabbit"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "-40"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowRight",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "x"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "bee"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "20"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "key",
+      "key": "ArrowLeft",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_change",
+       "fields": {
+        "PROPERTY": "x"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "bee"
+          }
+         }
+        },
+        "VALUE": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "-20"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "key",
+      "key": "Space",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Hooray!"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "1"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "key",
+      "key": "Space",
+      "sprite": "$other"
+     },
+     "stack": [
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "rabbit"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Hooray!"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "1"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "checklist": [
+    {
+     "text": "Press [[Run code]] and try everything",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "ran": true
+   },
+   "why": "A card uses everything from this chapter: signals, saying things in order, costumes, keys, and x and y."
+  },
+  {
+   "kind": "build",
+   "title": "Hello, at the start",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       },
+       {
+        "id": "stock-rabbit-idle-1",
+        "name": "Rabbit idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/rabbit-idle-1@1"
+       },
+       {
+        "id": "stock-rabbit-happy",
+        "name": "Rabbit happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/rabbit-happy@1"
+       },
+       {
+        "id": "stock-bee-idle-1",
+        "name": "Bee idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/bee-idle-1@1"
+       },
+       {
+        "id": "stock-bee-happy",
+        "name": "Bee happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/bee-happy@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-castle",
+        "name": "Castle",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/castle@1"
+       }
+      ],
+      "backdrop": "stock-castle",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -150,
+        "y": -50,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 140,
+        "y": -50,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "rabbit",
+        "name": "Rabbit",
+        "x": 10,
+        "y": -70,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-rabbit-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-rabbit-idle-1",
+         "stock-rabbit-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "bee",
+        "name": "Bee",
+        "x": -200,
+        "y": 110,
+        "direction": 0,
+        "size": 110,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-bee-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-bee-idle-1",
+         "stock-bee-happy"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "highlight": {
+    "category": "events"
+   },
+   "coach": "When game starts is in Events.",
+   "text": "Your card starts empty. Who is it for? When the game starts, make Fox say Happy birthday and their name.",
+   "checklist": [
+    {
+     "text": "Add ((Events#hat:start|when game starts))",
+     "check": {
+      "handler": "start"
+     }
+    },
+    {
+     "text": "Put ((Looks#scene_say_for|sprite Fox say Happy birthday, …! for 2 seconds)) under it, with their name",
+     "check": {
+      "any": [
+       {
+        "handler": "start",
+        "contains": [
+         "scene_say_for"
+        ]
+       },
+       {
+        "handler": "start",
+        "contains": [
+         "scene_say"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "text": "Run it",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "all": [
+     {
+      "any": [
+       {
+        "handler": "start",
+        "contains": [
+         "scene_say_for"
+        ]
+       },
+       {
+        "handler": "start",
+        "contains": [
+         "scene_say"
+        ]
+       }
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "hints": [
+    "Drag ((Events#hat:start|when game starts)) out of {{Events}}.",
+    "Snap ((Looks#scene_say_for|sprite Fox say Happy birthday! for 2 seconds)) under it and type the name."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "start",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Happy birthday!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "kind": "build",
+   "title": "Friends talk back",
+   "select": "robot",
+   "other": "rabbit",
+   "text": "Make two friends say something kind when you tap them.",
+   "checklist": [
+    {
+     "text": "Tap one friend and it talks, like ((Events#hat:click|when Robot clicked))",
+     "check": {
+      "handler": "click",
+      "contains": [
+       "scene_say_for"
+      ]
+     }
+    },
+    {
+     "text": "Tap another friend: it talks too",
+     "check": {
+      "count": [
+       "scene_say_for",
+       3
+      ]
+     }
+    },
+    {
+     "text": "Run it and tap them",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "all": [
+     {
+      "count": [
+       "scene_say_for",
+       3
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "hints": [
+    "Pick a friend under the stage first. Then its when-clicked block is ready in Events.",
+    "Under ((Events#hat:click|when Robot clicked)), add ((Looks#scene_say_for|sprite Robot say Have a great day! for 2 seconds)). Then do the same for Rabbit."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "click",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "robot"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Have a great day!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       }
+      ]
+     },
+     {
+      "handler": {
+       "kind": "click",
+       "sprite": "$other"
+      },
+      "stack": [
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "rabbit"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "You are the best!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "kind": "build",
+   "title": "Bee flies in",
+   "select": "bee",
+   "other": "fox",
+   "text": "When the game starts, make Bee glide in to the top of the card.",
+   "checklist": [
+    {
+     "text": "Use ((Motion#scene_glide|glide sprite Bee for 1 seconds to x 0 y 110)) under a ((Events#hat:start|when game starts))",
+     "check": {
+      "handler": "start",
+      "contains": [
+       "scene_glide"
+      ]
+     }
+    },
+    {
+     "text": "Run it and watch Bee",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "all": [
+     {
+      "handler": "start",
+      "contains": [
+       "scene_glide"
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "hints": [
+    "Pick Bee under the stage. The top of the stage is a big y, like 110.",
+    "Bee gets its own ((Events#hat:start|when game starts)), with ((Motion#scene_glide|glide sprite Bee for 1 seconds to x 0 y 110)) under it."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "start",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_glide",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "bee"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "1"
+           }
+          }
+         },
+         "X": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         },
+         "Y": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "110"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "kind": "build",
+   "title": "A hop on a key",
+   "keys": "space",
+   "select": "rabbit",
+   "other": "fox",
+   "text": "When you press [space], Rabbit hops: it goes up 40, waits a moment, then comes down 40. The wait block is ((Control#py_wait|wait 1 seconds)).",
+   "checklist": [
+    {
+     "text": "Add ((Events#hat:key|when space key pressed))",
+     "check": {
+      "handler": "key"
+     }
+    },
+    {
+     "text": "Up, wait, down: ((Motion#scene_change|change sprite Rabbit y by 40)), a wait, then -40",
+     "check": {
+      "handler": "key",
+      "contains": [
+       "scene_change",
+       "py_wait"
+      ]
+     }
+    },
+    {
+     "text": "Run it. Tap the game, then press [space]",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "all": [
+     {
+      "handler": "key",
+      "contains": [
+       "scene_change",
+       "py_wait"
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "hints": [
+    "You made a jump like this in unit 1.2.",
+    "Under ((Events#hat:key|when space key pressed)): change y by 40, wait 0.3 seconds, change y by -40."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "Space",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_change",
+        "fields": {
+         "PROPERTY": "y"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "rabbit"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "40"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "py_wait",
+        "inputs": {
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "0.3"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "scene_change",
+        "fields": {
+         "PROPERTY": "y"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "rabbit"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "-40"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "kind": "build",
+   "title": "A costume surprise",
+   "select": "robot",
+   "other": "fox",
+   "text": "When you tap Robot, Robot changes costume too. Use ((Looks#scene_next_costume|next costume of sprite Robot)).",
+   "checklist": [
+    {
+     "text": "Robot changes costume when tapped",
+     "check": {
+      "any": [
+       {
+        "handler": "click",
+        "contains": [
+         "scene_next_costume"
+        ]
+       },
+       {
+        "handler": "click",
+        "contains": [
+         "scene_costume_set"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "text": "Run it and tap Robot",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "all": [
+     {
+      "any": [
+       {
+        "handler": "click",
+        "contains": [
+         "scene_next_costume"
+        ]
+       },
+       {
+        "handler": "click",
+        "contains": [
+         "scene_costume_set"
+        ]
+       }
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "hints": [
+    "Add ((Looks#scene_next_costume|next costume of sprite Robot)) under ((Events#hat:click|when Robot clicked)), below the say block or above it."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "click",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_next_costume",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "robot"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "kind": "challenge",
+   "title": "Make it yours",
+   "select": "fox",
+   "other": "robot",
+   "text": "★ Make the card your own! Change the words, add more surprises, then show it to the person it is for. Tick what your card does:",
+   "checklist": [
+    {
+     "text": "It says who the card is for",
+     "check": {
+      "any": [
+       {
+        "handler": "start",
+        "contains": [
+         "scene_say_for"
+        ]
+       },
+       {
+        "handler": "start",
+        "contains": [
+         "scene_say"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "text": "Three friends do something",
+     "check": {
+      "count": [
+       "scene_say_for",
+       3
+      ]
+     }
+    },
+    {
+     "text": "Someone moves with keys or glides",
+     "check": {
+      "any": [
+       {
+        "blocks": [
+         "scene_glide"
+        ]
+       },
+       {
+        "all": [
+         {
+          "handler": "key"
+         },
+         {
+          "blocks": [
+           "scene_change"
+          ]
+         }
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "text": "Someone changes costume",
+     "check": {
+      "any": [
+       {
+        "blocks": [
+         "scene_next_costume"
+        ]
+       },
+       {
+        "blocks": [
+         "scene_costume_set"
+        ]
+       }
+      ]
+     }
+    }
+   ],
+   "check": {
+    "all": []
+   }
+  }
+ ]
+}

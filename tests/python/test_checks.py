@@ -66,5 +66,22 @@ _pb_scene.on("fox", "key:Space", on_space)
         self.assertEqual(result['type'], 'error'); self.assertEqual(result['message'], 'oops')
 
 
+class PlaceTests(unittest.TestCase):
+    def test_a_sprite_can_be_placed_first_and_a_place_is_x_and_y_together(self):
+        follows = HEADER + '''
+async def on_fox_click(payload):
+    (_pb_sprites.named("Fox")).go_to((_pb_sprites.named("Robot")).x, (_pb_sprites.named("Robot")).y)
+
+_pb_scene.on("fox", "click", on_fox_click)
+'''
+        steps = [{'place': 'Robot', 'x': -90, 'y': 70}, {'tap': 'Fox'}, {'wait': 0.2}, {'expect': {'sprite': 'Fox', 'at': [-90, 70]}}]
+        result, reports = check(follows, scene(), steps)
+        self.assertEqual(result['type'], 'done'); self.assertEqual(reports, [{'index': 3, 'ok': True, 'got': [-90, 70]}])
+        # An answer that names Robot's old spot fails once Robot has moved.
+        fixed = follows.replace('(_pb_sprites.named("Robot")).x, (_pb_sprites.named("Robot")).y', '100, 0')
+        _, reports = check(fixed, scene(), steps)
+        self.assertEqual((reports[0]['ok'], reports[0]['got']), (False, [100, 0]))
+
+
 if __name__ == '__main__':
     unittest.main()

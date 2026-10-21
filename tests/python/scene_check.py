@@ -15,6 +15,7 @@ import os
 from pathlib import Path
 import sys
 import tempfile
+import time
 import types
 
 ROOT = Path(__file__).parents[2] / 'src/runtime'
@@ -69,6 +70,14 @@ def check(source, scene, steps, files=None):
 
 
 def _check(source, scene, steps, files):
+    # Glides, timers and animations read the time: they read the virtual clock too.
+    clock, monotonic = VirtualClock(), time.monotonic
+    time.monotonic = lambda: clock.now
+    try: return _run(source, scene, steps, files, clock)
+    finally: time.monotonic = monotonic
+
+
+def _run(source, scene, steps, files, clock):
     execution = load_runtime()
     reports = []
     folder = tempfile.mkdtemp(); here = os.getcwd()
@@ -76,7 +85,6 @@ def _check(source, scene, steps, files):
     os.chdir(folder)
     try:
         async def main():
-            clock = VirtualClock()
             task = asyncio.create_task(execution.check_scene(source, files or {}, steps, lambda text: reports.append(json.loads(text)), sleep=clock.sleep))
             await clock.drive(task)
             return json.loads(await task)

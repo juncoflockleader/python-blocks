@@ -10,14 +10,14 @@ test.beforeEach(({ page }) => { const items: string[] = []; errors.set(page, ite
 test.afterEach(({ page }) => expect(errors.get(page)).toEqual([]));
 
 const KEY = 'python-blocks.academy.v1';
-/** A progress record with the first `count` steps of Unit 1.1 done, so Continue opens the next one. */
-const progress = (count: number) => {
+/** A progress record with the first `count` steps of a unit done, so Continue opens the next one. */
+const progress = (count: number, unit = 'unit-1-1') => {
   const now = Date.now();
   return { format: 'python-blocks-academy', version: 1, learner: { id: 'learner-1', name: 'Juniper' },
-    units: { 'unit-1-1': { started: now - 600_000, updated: now - 60_000, steps: Object.fromEntries(Array.from({ length: count }, (_, i) => [i, { done: true, at: now - 60_000, ms: 30_000, hints: 0 }])) } } };
+    units: { [unit]: { started: now - 600_000, updated: now - 60_000, steps: Object.fromEntries(Array.from({ length: count }, (_, i) => [i, { done: true, at: now - 60_000, ms: 30_000, hints: 0 }])) } } };
 };
-async function continueAt(page: Page, count: number) {
-  await page.addInitScript(([key, value]) => { if (!sessionStorage.getItem('seeded')) { localStorage.setItem(key, value); sessionStorage.setItem('seeded', '1'); } }, [KEY, JSON.stringify(progress(count))]);
+async function continueAt(page: Page, count: number, unit = 'unit-1-1') {
+  await page.addInitScript(([key, value]) => { if (!sessionStorage.getItem('seeded')) { localStorage.setItem(key, value); sessionStorage.setItem('seeded', '1'); } }, [KEY, JSON.stringify(progress(count, unit))]);
   await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
   await page.locator('#academy-open').click();
   await page.locator('#academy-continue-go').click(); await page.locator('#lesson-start-go').click();
@@ -30,7 +30,8 @@ test('the map shows eight chapters, and Unit 1.1 starts in the lesson panel with
   await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
   await page.locator('#academy-open').click();
   await expect(page.locator('.academy-chapter h3')).toHaveText(['Chapter 1 · Signals', 'Chapter 2 · Loops', 'Chapter 3 · Decisions', 'Chapter 4 · Functions', 'Chapter 5 · Collections', 'Chapter 6 · Recursion', 'Chapter 7 · Algorithms', 'Chapter 8 · Systems']);
-  await expect(page.locator('#academy-unit-unit-1-1')).toBeEnabled();
+  for (const id of ['unit-1-1', 'unit-1-2', 'unit-1-3', 'unit-1-4']) await expect(page.locator(`#academy-unit-${id}`)).toBeEnabled();
+  await expect(page.locator('#academy-unit-unit-1-4')).toContainText('1.4Big project: Greeting card');
   await expect(page.locator('.academy-unit-row:disabled').first()).toContainText('Soon');
   await expect(page.locator('#academy-unit h3')).toHaveText('Tap and it talks');
   await expect(page.locator('.academy-parts li')).toHaveText([/Play\s*0 of 1/, /Guide\s*0 of 4/, /Practice\s*0 of 9/, /Challenge\s*0 of 1/, /Mastery\s*0 of 3/]);
@@ -150,4 +151,57 @@ test('Run code in a unit uses the lesson stage, and a guide panel shows the cast
   await expect(page.locator('#puzzle-picture')).toHaveCount(0);
   await openTab(page, 'help');
   await expect(page.locator('#guide-predict-result')).toHaveText(/^You guessed it!/);
+});
+
+test('Unit 1.2: a glide is checked as it slides and where it lands', async ({ page }) => {
+  await continueAt(page, 13, 'unit-1-2');
+  await expect(page.locator('#guide-step-title')).toHaveText('Glide');
+  for (let i = 0; i < 2; i++) await page.locator('#guide-hint').click();
+  await expect(page.locator('#guide-hint')).toHaveText('Show me how'); await page.locator('#guide-hint').click();
+  await page.locator('#guide-check-answer').click();
+  await expect(page.locator('#guide-results-title')).toHaveText('It works! Every check passes.', { timeout: 60_000 });
+  await expect(page.locator('#guide-results-list li')).toHaveText([/✓\s*Robot slides on its way/, /✓\s*and ends at x 100, y 0/]);
+});
+
+test('Unit 1.3: Meet Robot is checked with Robot moved first, so typed numbers are not enough', async ({ page }) => {
+  await continueAt(page, 13, 'unit-1-3');
+  await expect(page.locator('#guide-step-title')).toHaveText('Meet Robot');
+  await page.locator('#guide-check-answer').click();
+  await expect(page.locator('#guide-results-list li').first()).toContainText('Fox was at x -150, y -60.', { timeout: 60_000 });
+  for (let i = 0; i < 3; i++) await page.locator('#guide-hint').click();
+  await page.locator('#guide-check-answer').click();
+  await expect(page.locator('#guide-results-title')).toHaveText('It works! Every check passes.', { timeout: 60_000 });
+  await expect(page.locator('#guide-results-list li')).toHaveText([/✓\s*Tap Fox: Fox goes to Robot/, /✓\s*Robot moves to x -90, y 70: Fox follows/]);
+});
+
+test('Unit 1.4: the big project builds one card, and going back to Play keeps it', async ({ page }) => {
+  await continueAt(page, 0, 'unit-1-4');
+  await expect(page.locator('#guide-build-title')).toHaveText('1.4 · Greeting card');
+  await expect(page.locator('#guide-progress')).toHaveText('Play 1 of 1 · Play it');
+  await expect(page.locator('#puzzle-picture')).toBeAttached();
+  await page.locator('#run').click(); await expect(page.locator('#status')).toHaveText(/Event session running/, { timeout: 60_000 });
+  await page.locator('#stop').click(); await openTab(page, 'help');
+  await page.locator('.pop .pop-close').click({ timeout: 1000 }).catch(() => {});
+  await page.locator('#guide-next').click();
+  await expect(page.locator('#guide-progress')).toHaveText('Build 1 of 5');
+  // The card starts empty: no scripts yet.
+  await expect.poll(() => page.locator('.blocklyMainBackground ~ .blocklyBlockCanvas > g.blocklyDraggable').count().catch(() => -1)).toBe(0);
+  for (let i = 0; i < 3; i++) await page.locator('#guide-hint').click();
+  await expect(page.locator('#guide-checklist li.guide-ticked')).toHaveCount(2);
+  await page.locator('#guide-back').click();
+  await expect(page.locator('#guide-progress')).toHaveText('Play 1 of 1 · Play it');
+  await page.locator('.pop .pop-close').click({ timeout: 1000 }).catch(() => {});
+  await page.locator('#guide-next').click();
+  // The card made so far is back.
+  await expect(page.locator('#guide-checklist li.guide-ticked')).toHaveCount(2);
+  await expect(page.locator('.guide-summary')).toHaveText('Your blocks are in.');
+});
+
+test('a finished big project is starred on the map', async ({ page }) => {
+  const record = progress(7, 'unit-1-4'); (record.units['unit-1-4'] as Record<string, unknown>).finished = Date.now();
+  await page.addInitScript(([key, value]) => localStorage.setItem(key, value), [KEY, JSON.stringify(record)]);
+  await page.goto('/'); await page.locator('#academy-open').click();
+  await expect(page.locator('#academy-unit-unit-1-4 .academy-pip')).toHaveClass(/academy-pip-star/);
+  await page.locator('#academy-unit-unit-1-4').click();
+  await expect(page.locator('#academy-unit')).toContainText('★ Mastered');
 });
