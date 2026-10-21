@@ -14,6 +14,7 @@ import { validAudioCommand } from '../scene/sound';
 import gameSource from './game.py?raw';
 import physicsSource from './physics.py?raw';
 import behaviorsSource from './behaviors.py?raw';
+import checksSource from './checks.py?raw';
 import { createSensing } from './sensing';
 import { isSceneCommand, validateInput, validateScene } from '../scene/model';
 import type { RunnerCommand, RunnerEvent } from './protocol';
@@ -96,6 +97,10 @@ self.onmessage = async (event: MessageEvent<RunnerCommand>) => {
       question_emit: (json: string) => { const command: unknown = JSON.parse(json); if (!validQuestionCommand(command)) throw new Error('Invalid question request.'); send({ type: 'question', command }); },
       scene_sense: sceneSense.query,
       session_ready: () => { ready = true; send({ type: 'ready' }); },
+      check_result: (json: string) => {
+        const result = JSON.parse(json) as { index: number; ok: boolean; got: unknown };
+        send({ type: 'check-result', index: Number(result.index), ok: result.ok === true, got: typeof result.got === 'string' ? result.got.slice(0, 480) : result.got ?? null });
+      },
       test_result: (json: string) => {
         const result = JSON.parse(json) as { index: number; output: string; error?: { message: string; exceptionType?: string; frames?: { file: string; line: number; name: string }[] } };
         send({ type: 'test-result', index: result.index, output: String(result.output).slice(0, 20_000), ...(result.error ? { error: result.error } : {}) });
@@ -112,6 +117,7 @@ self.onmessage = async (event: MessageEvent<RunnerCommand>) => {
     python.FS.writeFile('/home/pyodide/_playground_sounds.py', soundsSource);
     python.FS.writeFile('/home/pyodide/playground.py', playgroundSource);
     python.FS.writeFile('/home/pyodide/_playground_events.py', eventsSource);
+    python.FS.writeFile('/home/pyodide/_playground_checks.py', checksSource);
     python.FS.writeFile('/home/pyodide/event-limits.json', JSON.stringify(eventLimits));
     send({ type: 'status', message: 'Running Python…' });
     send({ type: 'started' });
@@ -152,7 +158,10 @@ self.onmessage = async (event: MessageEvent<RunnerCommand>) => {
       watchTimer = setInterval(() => { if (ready) publishWatches(); }, 100);
     }
     if (command.tests) python.globals.set('_program_tests_json', JSON.stringify(command.tests.slice(0, 32)));
-    const result = await python.runPythonAsync(command.tests
+    if (command.check) python.globals.set('_program_check_json', JSON.stringify(command.check.slice(0, 200)));
+    const result = await python.runPythonAsync(command.check
+      ? 'from _playground_host import check_result\nawait check_scene(_program_source, json.loads(_generated_modules_json), json.loads(_program_check_json), check_result)'
+      : command.tests
       ? 'from _playground_host import test_result\ncheck_program(_program_source, json.loads(_generated_modules_json), json.loads(_program_tests_json), test_result)'
       : command.mode === 'events'
       ? 'from _playground_host import session_ready\nawait run_event_program(_program_source, session_ready, json.loads(_generated_modules_json))'

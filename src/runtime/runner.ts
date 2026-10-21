@@ -2,7 +2,7 @@ import { validQuestionReply, type QuestionHost } from '../scene/questions';
 import { debugAvailable, debugCommands, type DebugAction, type DebugOptions } from './debug';
 import type { AudioHost } from './audio';
 import { validateInput, type SceneInput, type SceneState } from '../scene/model';
-import { encodeHostEvent, eventLimits, type ExecutionMode, type RunnerCommand, type RunnerEvent } from './protocol';
+import { encodeHostEvent, eventLimits, type CheckStep, type ExecutionMode, type RunnerCommand, type RunnerEvent } from './protocol';
 
 export class PythonRunner {
   private worker: Worker | null = null;
@@ -24,8 +24,9 @@ export class PythonRunner {
   private readonly onEvent: (event: RunnerEvent) => void;
   constructor(onEvent: (event: RunnerEvent) => void, audio?: AudioHost, questions?: QuestionHost) { this.onEvent = onEvent; this.audio = audio; this.questions = questions; }
 
-  /** `io.stdin` is what read blocks read; `io.tests` runs the program once per input and reports each (test-result events). */
-  run(code: string, mode: ExecutionMode = 'sequential', files: Record<string, string> = {}, scene?: SceneState, runtimeURL?: string, debug?: DebugOptions, io: { stdin?: string; tests?: string[] } = {}) {
+  /** `io.stdin` is what read blocks read; `io.tests` runs the program once per input and reports each (test-result events);
+   * `io.check` plays an event program with a scripted player and reports each expectation (check-result events). */
+  run(code: string, mode: ExecutionMode = 'sequential', files: Record<string, string> = {}, scene?: SceneState, runtimeURL?: string, debug?: DebugOptions, io: { stdin?: string; tests?: string[]; check?: CheckStep[] } = {}) {
     this.dispose();
     if (debug && !debugAvailable()) { this.onEvent({ type: 'error', message: 'Debugging needs a browser with shared memory and an isolated editor page. See the debugging guide for hosting headers.' }); return; }
     this.mode = mode;
@@ -91,7 +92,7 @@ export class PythonRunner {
       this.dispose();
       this.onEvent({ type: 'error', message: event.message || 'Python could not start. Please try again.' });
     };
-    worker.postMessage({ type: 'run', code, mode, files, ...(runtimeURL ? { runtimeURL } : {}), ...(scene ? { scene } : {}), ...(debug && this.control ? { debug: { ...debug, control: this.control.buffer as SharedArrayBuffer } } : {}), ...(io.stdin !== undefined ? { stdin: io.stdin } : {}), ...(io.tests ? { tests: io.tests } : {}) } satisfies RunnerCommand);
+    worker.postMessage({ type: 'run', code, mode, files, ...(runtimeURL ? { runtimeURL } : {}), ...(scene ? { scene } : {}), ...(debug && this.control ? { debug: { ...debug, control: this.control.buffer as SharedArrayBuffer } } : {}), ...(io.stdin !== undefined ? { stdin: io.stdin } : {}), ...(io.tests ? { tests: io.tests } : {}), ...(io.check ? { check: io.check } : {}) } satisfies RunnerCommand);
   }
 
   async debug(action: DebugAction): Promise<boolean> {

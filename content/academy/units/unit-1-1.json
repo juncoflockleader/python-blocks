@@ -1,0 +1,4922 @@
+{
+ "id": "unit-1-1",
+ "kind": "unit",
+ "unit": {
+  "chapter": 1,
+  "number": 1
+ },
+ "title": "Tap and it talks",
+ "level": "starter",
+ "minutes": 25,
+ "order": 1,
+ "summary": "Make characters talk when you tap them or press a key. Learn signals, top-to-bottom order and costumes.",
+ "ideas": [],
+ "learn": [
+  "Make a sprite do something when you tap it",
+  "Put blocks in order, top to bottom",
+  "Change how a sprite looks with costumes",
+  "Use a key as a signal"
+ ],
+ "starter": {
+  "format": "python-blocks",
+  "formatVersion": 1,
+  "languageVersion": 23,
+  "workspace": {
+   "blocks": {
+    "languageVersion": 0,
+    "blocks": []
+   },
+   "pythonScene": {
+    "version": 1,
+    "background": "#bfe3f2",
+    "assets": [
+     {
+      "id": "stock-fox-idle-1",
+      "name": "Fox idle 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/fox-idle-1@1"
+     },
+     {
+      "id": "stock-fox-happy",
+      "name": "Fox happy",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/fox-happy@1"
+     },
+     {
+      "id": "stock-robot-idle-1",
+      "name": "Robot idle 1",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/robot-idle-1@1"
+     },
+     {
+      "id": "stock-robot-happy",
+      "name": "Robot happy",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/robot-happy@1"
+     },
+     {
+      "id": "stock-robot-jump",
+      "name": "Robot jump",
+      "width": 64,
+      "height": 64,
+      "stock": "cast/robot-jump@1"
+     }
+    ],
+    "backdrops": [
+     {
+      "id": "stock-hills",
+      "name": "Hills",
+      "width": 480,
+      "height": 320,
+      "stock": "backdrops/hills@1"
+     }
+    ],
+    "backdrop": "stock-hills",
+    "sprites": [
+     {
+      "id": "fox",
+      "name": "Fox",
+      "x": -130,
+      "y": -40,
+      "direction": 0,
+      "size": 150,
+      "layer": 1,
+      "visible": true,
+      "costume": "stock-fox-idle-1",
+      "rotationStyle": "all",
+      "costumes": [
+       "stock-fox-idle-1",
+       "stock-fox-happy"
+      ],
+      "frameSeconds": 0.2
+     },
+     {
+      "id": "robot",
+      "name": "Robot",
+      "x": 130,
+      "y": -40,
+      "direction": 0,
+      "size": 150,
+      "layer": 1,
+      "visible": true,
+      "costume": "stock-robot-idle-1",
+      "rotationStyle": "all",
+      "costumes": [
+       "stock-robot-idle-1",
+       "stock-robot-happy",
+       "stock-robot-jump"
+      ],
+      "frameSeconds": 0.2
+     }
+    ]
+   }
+  }
+ },
+ "chapters": [
+  {
+   "title": "Play",
+   "idea": "Play the finished card first",
+   "steps": 1
+  },
+  {
+   "title": "Guide",
+   "idea": "Signals, order and costumes",
+   "steps": 4
+  },
+  {
+   "title": "Practice",
+   "idea": "Nine problems, three levels",
+   "steps": 9
+  },
+  {
+   "title": "Challenge",
+   "idea": "Your own talking card",
+   "steps": 1
+  },
+  {
+   "title": "Mastery",
+   "idea": "Three problems, one try each",
+   "steps": 3
+  }
+ ],
+ "steps": [
+  {
+   "kind": "play",
+   "title": "Play first",
+   "keys": "space",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "Fox and Robot are ready to talk. Press [[Run code]]. Then tap Fox, tap Robot, and press [space]. What does each one do?",
+   "plant": [
+    {
+     "handler": {
+      "kind": "click",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_costume_set",
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "COSTUME": {
+         "block": {
+          "type": "scene_costume",
+          "fields": {
+           "COSTUME_ID": "stock-fox-happy"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Hi! I am Fox!"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "2"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_costume_set",
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "COSTUME": {
+         "block": {
+          "type": "scene_costume",
+          "fields": {
+           "COSTUME_ID": "stock-fox-idle-1"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "click",
+      "sprite": "$other"
+     },
+     "stack": [
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Beep boop!"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "2"
+          }
+         }
+        }
+       }
+      }
+     ]
+    },
+    {
+     "handler": {
+      "kind": "key",
+      "key": "Space",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Hello, Fox!"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "2"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "checklist": [
+    {
+     "text": "Press [[Run code]], then tap and press keys",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "ran": true
+   },
+   "why": "Nothing happens until you tap or press a key. That is a <<signal>>."
+  },
+  {
+   "kind": "predict",
+   "title": "Sprites wait for a signal",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "panel": {
+    "backdrop": "backdrops/hills@1",
+    "art": [
+     [
+      "cast/fox-happy@1",
+      140,
+      238,
+      1.7
+     ],
+     [
+      "cast/robot-idle-1@1",
+      340,
+      238,
+      1.7
+     ]
+    ],
+    "labels": [
+     [
+      "I wait for a tap!",
+      140,
+      100,
+      "say"
+     ],
+     [
+      "Me too!",
+      340,
+      108,
+      "say"
+     ]
+    ]
+   },
+   "text": "Only Fox has blocks now: ((Events#hat:click|when Fox clicked)) with a say block under it. The blocks under it run when you tap Fox.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "click",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "You tapped me!"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "2"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "predict": {
+    "question": "What happens when you tap Robot?",
+    "choices": [
+     "Robot says You tapped me!",
+     "Fox says You tapped me!",
+     "Nothing happens"
+    ],
+    "answer": 2,
+    "explain": "Robot has no blocks, so a tap on Robot does nothing. Only the blocks under when Fox clicked listen for a tap on Fox."
+   },
+   "checklist": [
+    {
+     "text": "Make your guess",
+     "check": {
+      "predicted": true
+     }
+    },
+    {
+     "text": "Press [[Run code]], then tap Robot and Fox",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "all": [
+     {
+      "predicted": true
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "why": "A <<sprite>> only does what its own blocks say, when their signal comes."
+  },
+  {
+   "kind": "predict",
+   "title": "Top to bottom",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "panel": {
+    "backdrop": "backdrops/hills@1",
+    "art": [
+     [
+      "cast/fox-happy@1",
+      140,
+      238,
+      1.7
+     ],
+     [
+      "cast/robot-idle-1@1",
+      340,
+      238,
+      1.7
+     ]
+    ],
+    "labels": [
+     [
+      "I do my blocks in order.",
+      340,
+      100,
+      "say"
+     ]
+    ]
+   },
+   "text": "Robot has three say blocks under one tap block. Each one says something for 1 second.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "click",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "One"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "1"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Two"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "1"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Three"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "1"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "predict": {
+    "question": "You tap Robot. What does Robot say last?",
+    "choices": [
+     "One",
+     "Two",
+     "Three",
+     "All of them at once"
+    ],
+    "answer": 2,
+    "explain": "Blocks run from top to bottom. Each say-for waits before the next one starts, so Three comes last."
+   },
+   "checklist": [
+    {
+     "text": "Make your guess",
+     "check": {
+      "predicted": true
+     }
+    },
+    {
+     "text": "Press [[Run code]], then tap Robot",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "all": [
+     {
+      "predicted": true
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "why": "The computer reads your blocks like you read a page: from the top down."
+  },
+  {
+   "kind": "predict",
+   "title": "Costumes",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "panel": {
+    "backdrop": "backdrops/hills@1",
+    "art": [
+     [
+      "cast/fox-happy@1",
+      140,
+      238,
+      1.7
+     ],
+     [
+      "cast/robot-idle-1@1",
+      340,
+      238,
+      1.7
+     ]
+    ],
+    "labels": [
+     [
+      "Watch me change!",
+      140,
+      100,
+      "say"
+     ]
+    ]
+   },
+   "text": "Fox has two <<costumes|costume>>: its first one and a happy one. ((Looks#scene_next_costume|next costume of sprite Fox)) puts on the next costume.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "click",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_next_costume",
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "predict": {
+    "question": "Fox starts in its first costume. You tap Fox two times. Which costume is Fox wearing?",
+    "choices": [
+     "The first one",
+     "The happy one"
+    ],
+    "answer": 0,
+    "explain": "Tap 1: the happy costume. Tap 2: after the last costume, Fox starts again at the first one."
+   },
+   "checklist": [
+    {
+     "text": "Make your guess",
+     "check": {
+      "predicted": true
+     }
+    },
+    {
+     "text": "Press [[Run code]], then tap Fox two times",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "all": [
+     {
+      "predicted": true
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "why": "Next costume goes round and round, like turning the pages of a tiny flip book."
+  },
+  {
+   "kind": "build",
+   "title": "A key is a signal too",
+   "keys": "space",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "highlight": {
+    "category": "events"
+   },
+   "panel": {
+    "backdrop": "backdrops/hills@1",
+    "art": [
+     [
+      "cast/fox-happy@1",
+      140,
+      238,
+      1.7
+     ],
+     [
+      "cast/robot-idle-1@1",
+      340,
+      238,
+      1.7
+     ]
+    ],
+    "labels": [
+     [
+      "Press space for me!",
+      340,
+      100,
+      "say"
+     ]
+    ]
+   },
+   "coach": "The key block is in Events. Tap it!",
+   "text": "Make Robot say Jump! when you press [space].",
+   "checklist": [
+    {
+     "text": "Add ((Events#hat:key|when space key pressed))",
+     "check": {
+      "handler": "key"
+     }
+    },
+    {
+     "text": "Put ((Looks#scene_say_for|sprite Robot say Jump! for 2 seconds)) under it",
+     "check": {
+      "any": [
+       {
+        "handler": "key",
+        "contains": [
+         "scene_say_for"
+        ]
+       },
+       {
+        "handler": "key",
+        "contains": [
+         "scene_say"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "text": "Run it. Tap the game, then press [space]",
+     "check": {
+      "ran": true
+     }
+    }
+   ],
+   "check": {
+    "all": [
+     {
+      "handler": "key",
+      "contains": [
+       "scene_say_for"
+      ]
+     },
+     {
+      "ran": true
+     }
+    ]
+   },
+   "hints": [
+    "Pick Robot under the stage. Then drag ((Events#hat:key|when space key pressed)) out of {{Events}}.",
+    "Snap ((Looks#scene_say_for|sprite Robot say Jump! for 2 seconds)) from {{Looks}} under it, and type Jump!"
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "Space",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "robot"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Jump!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "why": "Taps, keys and the game starting are all signals. Each \"when\" block waits for its own one."
+  },
+  {
+   "kind": "quiz",
+   "tier": 1,
+   "title": "What will Fox say?",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "Read the blocks, then answer. (You can run it after.)",
+   "plant": [
+    {
+     "handler": {
+      "kind": "click",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Hello!"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "2"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "quiz": {
+    "question": "You tap Fox. What does Fox say?",
+    "choices": [
+     "Hello!",
+     "Beep boop!",
+     "Nothing",
+     "Tap me!"
+    ],
+    "answer": 0,
+    "explain": "The block under when Fox clicked says Hello! for 2 seconds."
+   },
+   "check": {
+    "answered": true
+   },
+   "variants": [
+    {
+     "select": "robot",
+     "other": "fox",
+     "plant": [
+      {
+       "handler": {
+        "kind": "click",
+        "sprite": "$sprite"
+       },
+       "stack": [
+        {
+         "type": "scene_say_for",
+         "fields": {
+          "STYLE": "say"
+         },
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "robot"
+            }
+           }
+          },
+          "TEXT": {
+           "shadow": {
+            "type": "text",
+            "fields": {
+             "TEXT": "Beep boop!"
+            }
+           }
+          },
+          "SECONDS": {
+           "shadow": {
+            "type": "py_number",
+            "fields": {
+             "VALUE": "2"
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     ],
+     "quiz": {
+      "question": "You tap Robot. What does Robot say?",
+      "choices": [
+       "Hello!",
+       "Beep boop!",
+       "Nothing",
+       "Bye!"
+      ],
+      "answer": 1,
+      "explain": "The block under when Robot clicked says Beep boop! for 2 seconds."
+     }
+    },
+    {
+     "plant": [
+      {
+       "handler": {
+        "kind": "click",
+        "sprite": "$sprite"
+       },
+       "stack": [
+        {
+         "type": "scene_say_for",
+         "fields": {
+          "STYLE": "say"
+         },
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "fox"
+            }
+           }
+          },
+          "TEXT": {
+           "shadow": {
+            "type": "text",
+            "fields": {
+             "TEXT": "Hi there!"
+            }
+           }
+          },
+          "SECONDS": {
+           "shadow": {
+            "type": "py_number",
+            "fields": {
+             "VALUE": "2"
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     ],
+     "quiz": {
+      "question": "You tap Robot. What does Fox say?",
+      "choices": [
+       "Hi there!",
+       "Beep!",
+       "Nothing",
+       "Ouch!"
+      ],
+      "answer": 2,
+      "explain": "The blocks belong to Fox and listen for a tap on Fox. Tapping Robot does nothing."
+     }
+    }
+   ]
+  },
+  {
+   "kind": "complete",
+   "tier": 1,
+   "title": "Snap it in",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "Snap the loose say block under ((Events#hat:click|when Fox clicked)), so Fox talks when you tap it.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "click",
+      "sprite": "$sprite"
+     },
+     "stack": []
+    },
+    {
+     "handler": {
+      "kind": "loose"
+     },
+     "stack": [
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Hi!"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "2"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "game": {
+    "script": [
+     {
+      "tap": "Fox"
+     },
+     {
+      "wait": 0.4
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "says": "Hi!"
+      },
+      "label": "Tap Fox: Fox says Hi!"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]]: every check passes",
+     "check": {
+      "solved": true
+     }
+    }
+   ],
+   "check": {
+    "solved": true
+   },
+   "hints": [
+    "Drag the say block by its left edge. Drop it just under the when block until it clicks in."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "click",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Hi!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ],
+    "replacesPlant": 6
+   }
+  },
+  {
+   "kind": "build",
+   "tier": 1,
+   "title": "Make Robot talk",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "highlight": {
+    "category": "events"
+   },
+   "text": "Make Robot say Beep! when you tap Robot.",
+   "game": {
+    "script": [
+     {
+      "tap": "Robot"
+     },
+     {
+      "wait": 0.4
+     },
+     {
+      "expect": {
+       "sprite": "Robot",
+       "says": "Beep!"
+      },
+      "label": "Tap Robot: Robot says Beep!"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]]: every check passes",
+     "check": {
+      "solved": true
+     }
+    }
+   ],
+   "check": {
+    "solved": true
+   },
+   "hints": [
+    "Pick Robot under the stage first. Then drag ((Events#hat:click|when Robot clicked)) out of {{Events}}.",
+    "Under it, add ((Looks#scene_say_for|sprite Robot say Beep! for 2 seconds)) from {{Looks}} and type Beep!"
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "click",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "robot"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Beep!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "kind": "quiz",
+   "tier": 2,
+   "title": "What comes last?",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "Fox says three things when you tap it.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "click",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Ready"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "1"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Set"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "1"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Go!"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "1"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "quiz": {
+    "question": "You tap Fox and wait. What does Fox say last?",
+    "choices": [
+     "Ready",
+     "Set",
+     "Go!",
+     "All three at once"
+    ],
+    "answer": 2,
+    "explain": "Top to bottom: Ready, then Set, then Go! comes last."
+   },
+   "check": {
+    "answered": true
+   },
+   "variants": [
+    {
+     "plant": [
+      {
+       "handler": {
+        "kind": "click",
+        "sprite": "$sprite"
+       },
+       "stack": [
+        {
+         "type": "scene_say_for",
+         "fields": {
+          "STYLE": "say"
+         },
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "fox"
+            }
+           }
+          },
+          "TEXT": {
+           "shadow": {
+            "type": "text",
+            "fields": {
+             "TEXT": "Red"
+            }
+           }
+          },
+          "SECONDS": {
+           "shadow": {
+            "type": "py_number",
+            "fields": {
+             "VALUE": "1"
+            }
+           }
+          }
+         }
+        },
+        {
+         "type": "scene_say_for",
+         "fields": {
+          "STYLE": "say"
+         },
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "fox"
+            }
+           }
+          },
+          "TEXT": {
+           "shadow": {
+            "type": "text",
+            "fields": {
+             "TEXT": "Yellow"
+            }
+           }
+          },
+          "SECONDS": {
+           "shadow": {
+            "type": "py_number",
+            "fields": {
+             "VALUE": "1"
+            }
+           }
+          }
+         }
+        },
+        {
+         "type": "scene_say_for",
+         "fields": {
+          "STYLE": "say"
+         },
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "fox"
+            }
+           }
+          },
+          "TEXT": {
+           "shadow": {
+            "type": "text",
+            "fields": {
+             "TEXT": "Green"
+            }
+           }
+          },
+          "SECONDS": {
+           "shadow": {
+            "type": "py_number",
+            "fields": {
+             "VALUE": "1"
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     ],
+     "quiz": {
+      "question": "You tap Fox and wait. What does Fox say first?",
+      "choices": [
+       "Red",
+       "Yellow",
+       "Green",
+       "All three at once"
+      ],
+      "answer": 0,
+      "explain": "The top block runs first, so Fox says Red first."
+     }
+    },
+    {
+     "plant": [
+      {
+       "handler": {
+        "kind": "click",
+        "sprite": "$sprite"
+       },
+       "stack": [
+        {
+         "type": "scene_say_for",
+         "fields": {
+          "STYLE": "say"
+         },
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "fox"
+            }
+           }
+          },
+          "TEXT": {
+           "shadow": {
+            "type": "text",
+            "fields": {
+             "TEXT": "Three"
+            }
+           }
+          },
+          "SECONDS": {
+           "shadow": {
+            "type": "py_number",
+            "fields": {
+             "VALUE": "1"
+            }
+           }
+          }
+         }
+        },
+        {
+         "type": "scene_say_for",
+         "fields": {
+          "STYLE": "say"
+         },
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "fox"
+            }
+           }
+          },
+          "TEXT": {
+           "shadow": {
+            "type": "text",
+            "fields": {
+             "TEXT": "Two"
+            }
+           }
+          },
+          "SECONDS": {
+           "shadow": {
+            "type": "py_number",
+            "fields": {
+             "VALUE": "1"
+            }
+           }
+          }
+         }
+        },
+        {
+         "type": "scene_say_for",
+         "fields": {
+          "STYLE": "say"
+         },
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "fox"
+            }
+           }
+          },
+          "TEXT": {
+           "shadow": {
+            "type": "text",
+            "fields": {
+             "TEXT": "One"
+            }
+           }
+          },
+          "SECONDS": {
+           "shadow": {
+            "type": "py_number",
+            "fields": {
+             "VALUE": "1"
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     ],
+     "quiz": {
+      "question": "You tap Fox and wait. What does Fox say last?",
+      "choices": [
+       "Three",
+       "Two",
+       "One",
+       "Nothing"
+      ],
+      "answer": 2,
+      "explain": "Top to bottom: Three, Two, then One comes last."
+     }
+    }
+   ]
+  },
+  {
+   "kind": "fix",
+   "tier": 2,
+   "title": "The wrong one talks",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "text": "Tapping Robot should make Robot say Ouch!. But Fox talks instead! Fix the blocks.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "click",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Ouch!"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "2"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "game": {
+    "script": [
+     {
+      "tap": "Robot"
+     },
+     {
+      "wait": 0.4
+     },
+     {
+      "expect": {
+       "sprite": "Robot",
+       "says": "Ouch!"
+      },
+      "label": "Tap Robot: Robot says Ouch!"
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "says": ""
+      },
+      "label": "Fox stays quiet"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]]: every check passes",
+     "check": {
+      "solved": true
+     }
+    }
+   ],
+   "check": {
+    "solved": true
+   },
+   "hints": [
+    "Look at the say block. Which sprite does it name?",
+    "Tap the sprite menu in the say block and choose Robot."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "click",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "robot"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Ouch!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ],
+    "replacesPlant": 9
+   }
+  },
+  {
+   "kind": "complete",
+   "tier": 2,
+   "title": "Put the joke in order",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "Fox’s joke is mixed up. Drag the say blocks so Fox says them in the right order: the question, the answer, then Ha ha!",
+   "plant": [
+    {
+     "handler": {
+      "kind": "click",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "To recharge its batteries!"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "2"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Why did the robot take a nap?"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "2"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Ha ha!"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "2"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "game": {
+    "script": [
+     {
+      "tap": "Fox"
+     },
+     {
+      "wait": 0.6
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "says": "Why did the robot take a nap?"
+      },
+      "label": "First, the question"
+     },
+     {
+      "wait": 2
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "says": "To recharge its batteries!"
+      },
+      "label": "Then, the answer"
+     },
+     {
+      "wait": 2
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "says": "Ha ha!"
+      },
+      "label": "Last, Ha ha!"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]]: every check passes",
+     "check": {
+      "solved": true
+     }
+    }
+   ],
+   "check": {
+    "solved": true
+   },
+   "hints": [
+    "Blocks run top to bottom. Which line should Fox say first?",
+    "Drag the question block to the top, just under the when block. Ha ha! goes last."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "click",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Why did the robot take a nap?"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "To recharge its batteries!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Ha ha!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ],
+    "replacesPlant": 10
+   }
+  },
+  {
+   "kind": "build",
+   "tier": 3,
+   "title": "Happy Fox",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "When you tap Fox, Fox puts on its happy costume and says Yay!",
+   "game": {
+    "script": [
+     {
+      "tap": "Fox"
+     },
+     {
+      "wait": 0.4
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "costume": "stock-fox-happy"
+      },
+      "label": "Tap Fox: Fox looks happy"
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "says": "Yay!"
+      },
+      "label": "and Fox says Yay!"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]]: every check passes",
+     "check": {
+      "solved": true
+     }
+    }
+   ],
+   "check": {
+    "solved": true
+   },
+   "hints": [
+    "Use ((Looks#scene_costume_set|set sprite Fox costume)) and choose Fox happy. It is in {{Looks}}.",
+    "Then add ((Looks#scene_say_for|sprite Fox say Yay! for 2 seconds)) under it."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "click",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_costume_set",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "COSTUME": {
+          "block": {
+           "type": "scene_costume",
+           "fields": {
+            "COSTUME_ID": "stock-fox-happy"
+           }
+          }
+         }
+        }
+       },
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Yay!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "kind": "build",
+   "tier": 3,
+   "title": "Space party",
+   "keys": "space",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "When you press [space], Fox says Party! and Robot says Beep beep!, both at the same time.",
+   "game": {
+    "script": [
+     {
+      "key": "Space"
+     },
+     {
+      "wait": 0.4
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "says": "Party!"
+      },
+      "label": "Press space: Fox says Party!"
+     },
+     {
+      "expect": {
+       "sprite": "Robot",
+       "says": "Beep beep!"
+      },
+      "label": "and Robot says Beep beep! at the same time"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]]: every check passes",
+     "check": {
+      "solved": true
+     }
+    }
+   ],
+   "check": {
+    "solved": true
+   },
+   "hints": [
+    "A say-for block waits before the next block starts. So Robot would talk 2 seconds late.",
+    "Give each sprite its own ((Events#hat:key|when space key pressed)). Then they both start when you press space."
+   ],
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "Space",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Party!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       }
+      ]
+     },
+     {
+      "handler": {
+       "kind": "key",
+       "key": "Space",
+       "sprite": "$other"
+      },
+      "stack": [
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "robot"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Beep beep!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "why": "Two \"when\" blocks with the same signal both start at once. That is how two sprites can talk together."
+  },
+  {
+   "kind": "quiz",
+   "tier": 3,
+   "title": "Count the costumes",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "Fox has two costumes: the first one and a happy one. Each tap runs ((Looks#scene_next_costume|next costume of sprite Fox)).",
+   "plant": [
+    {
+     "handler": {
+      "kind": "click",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_next_costume",
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "fox"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "quiz": {
+    "question": "Fox starts in its first costume. You tap Fox 3 times. Which costume is Fox wearing?",
+    "choices": [
+     "The first one",
+     "The happy one"
+    ],
+    "answer": 1,
+    "explain": "Tap 1: happy. Tap 2: back to the first. Tap 3: happy again."
+   },
+   "check": {
+    "answered": true
+   },
+   "variants": [
+    {
+     "quiz": {
+      "question": "Fox starts in its first costume. You tap Fox 4 times. Which costume is Fox wearing?",
+      "choices": [
+       "The first one",
+       "The happy one"
+      ],
+      "answer": 0,
+      "explain": "Happy, first, happy, first. After 4 taps Fox is back to the first one."
+     }
+    },
+    {
+     "select": "robot",
+     "other": "fox",
+     "text": "Robot has three costumes: first, happy and jump. Each tap runs ((Looks#scene_next_costume|next costume of sprite Robot)).",
+     "plant": [
+      {
+       "handler": {
+        "kind": "click",
+        "sprite": "$sprite"
+       },
+       "stack": [
+        {
+         "type": "scene_next_costume",
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "robot"
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     ],
+     "quiz": {
+      "question": "Robot starts in its first costume. You tap Robot 4 times. Which costume is Robot wearing?",
+      "choices": [
+       "The first one",
+       "The happy one",
+       "The jump one"
+      ],
+      "answer": 1,
+      "explain": "Happy, jump, first, then happy again on tap 4."
+     }
+    }
+   ]
+  },
+  {
+   "kind": "challenge",
+   "title": "Your own talking card",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       },
+       {
+        "id": "stock-rabbit-idle-1",
+        "name": "Rabbit idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/rabbit-idle-1@1"
+       },
+       {
+        "id": "stock-rabbit-happy",
+        "name": "Rabbit happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/rabbit-happy@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "rabbit",
+        "name": "Rabbit",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-rabbit-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-rabbit-idle-1",
+         "stock-rabbit-happy"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "★ Make a card that talks back! Fox, Robot and Rabbit are ready. Try the ideas below, in any order, then press Next step when you are happy with it.",
+   "checklist": [
+    {
+     "text": "Two friends talk when you tap them",
+     "check": {
+      "count": [
+       "scene_say_for",
+       2
+      ]
+     }
+    },
+    {
+     "text": "Someone changes costume",
+     "check": {
+      "any": [
+       {
+        "blocks": [
+         "scene_next_costume"
+        ]
+       },
+       {
+        "blocks": [
+         "scene_costume_set"
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "text": "Press [space] for a surprise",
+     "check": {
+      "handler": "key"
+     }
+    }
+   ],
+   "check": {
+    "all": []
+   }
+  },
+  {
+   "kind": "build",
+   "mastery": true,
+   "title": "Show what you know: tap to talk",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       },
+       {
+        "id": "stock-rabbit-idle-1",
+        "name": "Rabbit idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/rabbit-idle-1@1"
+       },
+       {
+        "id": "stock-rabbit-happy",
+        "name": "Rabbit happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/rabbit-happy@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "rabbit",
+        "name": "Rabbit",
+        "x": 0,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-rabbit-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-rabbit-idle-1",
+         "stock-rabbit-happy"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "When you tap Fox, Fox says Good morning!",
+   "game": {
+    "script": [
+     {
+      "tap": "Fox"
+     },
+     {
+      "wait": 0.4
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "says": "Good morning!"
+      },
+      "label": "Tap Fox: Fox says Good morning!"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]] once",
+     "check": {
+      "tried": true
+     }
+    }
+   ],
+   "check": {
+    "tried": true
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "click",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Good morning!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "variants": [
+    {
+     "select": "robot",
+     "other": "fox",
+     "text": "When you tap Robot, Robot says Hello, world!",
+     "game": {
+      "script": [
+       {
+        "tap": "Robot"
+       },
+       {
+        "wait": 0.4
+       },
+       {
+        "expect": {
+         "sprite": "Robot",
+         "says": "Hello, world!"
+        },
+        "label": "Tap Robot: Robot says Hello, world!"
+       }
+      ]
+     },
+     "solution": {
+      "parts": [
+       {
+        "handler": {
+         "kind": "click",
+         "sprite": "$sprite"
+        },
+        "stack": [
+         {
+          "type": "scene_say_for",
+          "fields": {
+           "STYLE": "say"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "robot"
+             }
+            }
+           },
+           "TEXT": {
+            "shadow": {
+             "type": "text",
+             "fields": {
+              "TEXT": "Hello, world!"
+             }
+            }
+           },
+           "SECONDS": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "2"
+             }
+            }
+           }
+          }
+         }
+        ]
+       }
+      ]
+     }
+    },
+    {
+     "select": "rabbit",
+     "other": "fox",
+     "text": "When you tap Rabbit, Rabbit says Hop hop!",
+     "game": {
+      "script": [
+       {
+        "tap": "Rabbit"
+       },
+       {
+        "wait": 0.4
+       },
+       {
+        "expect": {
+         "sprite": "Rabbit",
+         "says": "Hop hop!"
+        },
+        "label": "Tap Rabbit: Rabbit says Hop hop!"
+       }
+      ]
+     },
+     "solution": {
+      "parts": [
+       {
+        "handler": {
+         "kind": "click",
+         "sprite": "$sprite"
+        },
+        "stack": [
+         {
+          "type": "scene_say_for",
+          "fields": {
+           "STYLE": "say"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "rabbit"
+             }
+            }
+           },
+           "TEXT": {
+            "shadow": {
+             "type": "text",
+             "fields": {
+              "TEXT": "Hop hop!"
+             }
+            }
+           },
+           "SECONDS": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "2"
+             }
+            }
+           }
+          }
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  },
+  {
+   "kind": "quiz",
+   "mastery": true,
+   "title": "Show what you know: in order",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "robot",
+   "other": "fox",
+   "text": "Robot says three things when you tap it.",
+   "plant": [
+    {
+     "handler": {
+      "kind": "click",
+      "sprite": "$sprite"
+     },
+     "stack": [
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Apple"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "1"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Banana"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "1"
+          }
+         }
+        }
+       }
+      },
+      {
+       "type": "scene_say_for",
+       "fields": {
+        "STYLE": "say"
+       },
+       "inputs": {
+        "SPRITE": {
+         "block": {
+          "type": "scene_sprite",
+          "fields": {
+           "SPRITE_ID": "robot"
+          }
+         }
+        },
+        "TEXT": {
+         "shadow": {
+          "type": "text",
+          "fields": {
+           "TEXT": "Cherry"
+          }
+         }
+        },
+        "SECONDS": {
+         "shadow": {
+          "type": "py_number",
+          "fields": {
+           "VALUE": "1"
+          }
+         }
+        }
+       }
+      }
+     ]
+    }
+   ],
+   "quiz": {
+    "question": "You tap Robot and wait. What does Robot say second?",
+    "choices": [
+     "Apple",
+     "Banana",
+     "Cherry",
+     "All three at once"
+    ],
+    "answer": 1,
+    "explain": "Top to bottom: Apple first, Banana second, Cherry last."
+   },
+   "checklist": [
+    {
+     "text": "Answer once",
+     "check": {
+      "tried": true
+     }
+    }
+   ],
+   "check": {
+    "tried": true
+   },
+   "variants": [
+    {
+     "plant": [
+      {
+       "handler": {
+        "kind": "click",
+        "sprite": "$sprite"
+       },
+       "stack": [
+        {
+         "type": "scene_next_costume",
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "robot"
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     ],
+     "text": "Robot has three costumes: first, happy and jump. Each tap runs ((Looks#scene_next_costume|next costume of sprite Robot)).",
+     "quiz": {
+      "question": "Robot starts in its first costume. You tap Robot 2 times. Which costume is Robot wearing?",
+      "choices": [
+       "The first one",
+       "The happy one",
+       "The jump one"
+      ],
+      "answer": 2,
+      "explain": "Tap 1: happy. Tap 2: jump."
+     }
+    },
+    {
+     "plant": [
+      {
+       "handler": {
+        "kind": "click",
+        "sprite": "$sprite"
+       },
+       "stack": [
+        {
+         "type": "scene_say_for",
+         "fields": {
+          "STYLE": "say"
+         },
+         "inputs": {
+          "SPRITE": {
+           "block": {
+            "type": "scene_sprite",
+            "fields": {
+             "SPRITE_ID": "fox"
+            }
+           }
+          },
+          "TEXT": {
+           "shadow": {
+            "type": "text",
+            "fields": {
+             "TEXT": "Ha!"
+            }
+           }
+          },
+          "SECONDS": {
+           "shadow": {
+            "type": "py_number",
+            "fields": {
+             "VALUE": "2"
+            }
+           }
+          }
+         }
+        }
+       ]
+      }
+     ],
+     "text": "These blocks are under when Robot clicked.",
+     "quiz": {
+      "question": "You tap Robot. Who talks?",
+      "choices": [
+       "Robot",
+       "Fox",
+       "Nobody"
+      ],
+      "answer": 1,
+      "explain": "The say block names Fox, so Fox talks when you tap Robot."
+     }
+    }
+   ]
+  },
+  {
+   "kind": "build",
+   "mastery": true,
+   "title": "Show what you know: together",
+   "keys": "space",
+   "project": {
+    "format": "python-blocks",
+    "formatVersion": 1,
+    "languageVersion": 23,
+    "workspace": {
+     "blocks": {
+      "languageVersion": 0,
+      "blocks": []
+     },
+     "pythonScene": {
+      "version": 1,
+      "background": "#bfe3f2",
+      "assets": [
+       {
+        "id": "stock-fox-idle-1",
+        "name": "Fox idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-idle-1@1"
+       },
+       {
+        "id": "stock-fox-happy",
+        "name": "Fox happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/fox-happy@1"
+       },
+       {
+        "id": "stock-robot-idle-1",
+        "name": "Robot idle 1",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-idle-1@1"
+       },
+       {
+        "id": "stock-robot-happy",
+        "name": "Robot happy",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-happy@1"
+       },
+       {
+        "id": "stock-robot-jump",
+        "name": "Robot jump",
+        "width": 64,
+        "height": 64,
+        "stock": "cast/robot-jump@1"
+       }
+      ],
+      "backdrops": [
+       {
+        "id": "stock-hills",
+        "name": "Hills",
+        "width": 480,
+        "height": 320,
+        "stock": "backdrops/hills@1"
+       }
+      ],
+      "backdrop": "stock-hills",
+      "sprites": [
+       {
+        "id": "fox",
+        "name": "Fox",
+        "x": -130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-fox-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-fox-idle-1",
+         "stock-fox-happy"
+        ],
+        "frameSeconds": 0.2
+       },
+       {
+        "id": "robot",
+        "name": "Robot",
+        "x": 130,
+        "y": -40,
+        "direction": 0,
+        "size": 150,
+        "layer": 1,
+        "visible": true,
+        "costume": "stock-robot-idle-1",
+        "rotationStyle": "all",
+        "costumes": [
+         "stock-robot-idle-1",
+         "stock-robot-happy",
+         "stock-robot-jump"
+        ],
+        "frameSeconds": 0.2
+       }
+      ]
+     }
+    }
+   },
+   "select": "fox",
+   "other": "robot",
+   "text": "When you press [space], Fox says Ready! and Robot says Go!, both at the same time.",
+   "game": {
+    "script": [
+     {
+      "key": "Space"
+     },
+     {
+      "wait": 0.4
+     },
+     {
+      "expect": {
+       "sprite": "Fox",
+       "says": "Ready!"
+      },
+      "label": "Press space: Fox says Ready!"
+     },
+     {
+      "expect": {
+       "sprite": "Robot",
+       "says": "Go!"
+      },
+      "label": "and Robot says Go! at the same time"
+     }
+    ]
+   },
+   "checklist": [
+    {
+     "text": "Press [[Check my answer]] once",
+     "check": {
+      "tried": true
+     }
+    }
+   ],
+   "check": {
+    "tried": true
+   },
+   "solution": {
+    "parts": [
+     {
+      "handler": {
+       "kind": "key",
+       "key": "Space",
+       "sprite": "$sprite"
+      },
+      "stack": [
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "fox"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Ready!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       }
+      ]
+     },
+     {
+      "handler": {
+       "kind": "key",
+       "key": "Space",
+       "sprite": "$other"
+      },
+      "stack": [
+       {
+        "type": "scene_say_for",
+        "fields": {
+         "STYLE": "say"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "robot"
+           }
+          }
+         },
+         "TEXT": {
+          "shadow": {
+           "type": "text",
+           "fields": {
+            "TEXT": "Go!"
+           }
+          }
+         },
+         "SECONDS": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "2"
+           }
+          }
+         }
+        }
+       }
+      ]
+     }
+    ]
+   },
+   "variants": [
+    {
+     "text": "When you press [space], Robot says Beep! and Fox puts on its happy costume.",
+     "game": {
+      "script": [
+       {
+        "key": "Space"
+       },
+       {
+        "wait": 0.4
+       },
+       {
+        "expect": {
+         "sprite": "Robot",
+         "says": "Beep!"
+        },
+        "label": "Press space: Robot says Beep!"
+       },
+       {
+        "expect": {
+         "sprite": "Fox",
+         "costume": "stock-fox-happy"
+        },
+        "label": "and Fox looks happy"
+       }
+      ]
+     },
+     "solution": {
+      "parts": [
+       {
+        "handler": {
+         "kind": "key",
+         "key": "Space",
+         "sprite": "$sprite"
+        },
+        "stack": [
+         {
+          "type": "scene_costume_set",
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "fox"
+             }
+            }
+           },
+           "COSTUME": {
+            "block": {
+             "type": "scene_costume",
+             "fields": {
+              "COSTUME_ID": "stock-fox-happy"
+             }
+            }
+           }
+          }
+         },
+         {
+          "type": "scene_say_for",
+          "fields": {
+           "STYLE": "say"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "robot"
+             }
+            }
+           },
+           "TEXT": {
+            "shadow": {
+             "type": "text",
+             "fields": {
+              "TEXT": "Beep!"
+             }
+            }
+           },
+           "SECONDS": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "2"
+             }
+            }
+           }
+          }
+         }
+        ]
+       }
+      ]
+     }
+    }
+   ]
+  }
+ ],
+ "finish": {
+  "text": "You made sprites listen for signals and talk in order!",
+  "remix": [
+   "Make Rabbit tell a joke when you tap it.",
+   "Press space to make everyone change costume."
+  ]
+ }
+}

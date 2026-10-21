@@ -1,5 +1,6 @@
 import { PythonRunner } from '../runtime/runner';
 import type { Compilation } from '../language/compiler';
+import type { CheckStep } from '../runtime/protocol';
 
 /** The checker: runs a program on a list of inputs and compares what it printed
  * with the answers wanted, as a competitive-programming judge does. All inputs
@@ -51,3 +52,35 @@ export function checkProgram(compilation: Compilation, tests: PuzzleTest[], prog
   });
 }
 export function stopChecking() { runner?.dispose(); runner = null; }
+
+/** A game check's expectation, as the script gives it, and how it went. */
+export interface GameResult { index: number; ok: boolean; got: unknown }
+export type GameStep = CheckStep & { label?: string };
+/** Why a game cannot be checked at all, or null. */
+export function gameUncheckable(compilation: Compilation) {
+  if (compilation.source === null || compilation.diagnostics.some(d => d.severity === 'error')) return 'Some blocks have a problem. Fix the blocks marked with a warning, then check again.';
+  return null;
+}
+let gameRunner: PythonRunner | null = null;
+/** Play the game with a scripted player (src/runtime/checks.py): taps, keys and waits, then each expectation judged
+ * on what the game shows. Results arrive through `progress`; the run's error, if it stopped with one, comes with them. */
+export function checkGame(compilation: Compilation, steps: GameStep[], progress: (result: GameResult) => void = () => {}): Promise<{ results: GameResult[]; error?: string; errorLine?: number }> {
+  gameRunner?.dispose();
+  // The script's own waits, and time for Python to start and the game to settle.
+  const limit = 20_000 + steps.reduce((sum, step) => sum + ('wait' in step ? step.wait * 1000 : 'hold' in step ? (step.hold ?? 0) * 1000 : 100), 0);
+  return new Promise(resolve => {
+    const results: GameResult[] = [];
+    let timer = 0;
+    const end = (error?: string, errorLine?: number) => { clearTimeout(timer); if (gameRunner === own) { gameRunner = null; own.dispose(); } resolve({ results, ...(error ? { error } : {}), ...(errorLine ? { errorLine } : {}) }); };
+    const own = new PythonRunner(event => {
+      if (gameRunner !== own) return;
+      if (event.type === 'check-result') { const result = { index: event.index, ok: event.ok, got: event.got }; results.push(result); progress(result); }
+      else if (event.type === 'done') end();
+      else if (event.type === 'error') end(event.message, event.frames?.filter(frame => frame.file === 'program.py').at(-1)?.line);
+    });
+    gameRunner = own;
+    timer = window.setTimeout(() => end('The check took too long. Is there a loop that never waits?'), limit);
+    own.run(compilation.source!, 'events', compilation.files, compilation.scene, undefined, undefined, { check: steps.map(({ label: _label, ...step }) => step as CheckStep) });
+  });
+}
+export function stopGameCheck() { gameRunner?.dispose(); gameRunner = null; }

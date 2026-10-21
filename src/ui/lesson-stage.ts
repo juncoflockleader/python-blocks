@@ -29,9 +29,10 @@ export function installLessonStage() {
   blocks?.addEventListener('pointerdown', building, true);
   apply();
   return {
-    /** A lesson opened or closed, or moved to a step that is (or is not) a puzzle. */
+    /** A lesson opened or closed, or a step opened (a puzzle or not): the learner builds again, so the stage steps back. */
     lesson(on: boolean, isPuzzle: boolean) {
-      if (on !== lesson) { big = false; kept = false; }
+      if (on !== lesson) kept = false;
+      if (!kept) big = false;
       lesson = on; puzzle = isPuzzle; apply();
     },
     /** Run code: the game gets the full stage. */

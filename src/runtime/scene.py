@@ -61,6 +61,7 @@ class Sprite(Appearance):
         self._runtime_world = False
         self._motion = self._animation = 0
         self._speech = 0
+        self._said = ('', 'say')   # what the sprite's bubble shows now, for checks (checks.py)
         self._state.setdefault('rotationStyle', 'all')
         self._state['costumes'] = list(state.get('costumes', [state['costume']]))
         self._state.setdefault('frameSeconds', 0.1)
@@ -273,7 +274,7 @@ class Sprite(Appearance):
         if type(text) is not str: raise TypeError('Speech needs text. Convert numbers to text first.')
         if len(text.encode('utf-16-le', errors='surrogatepass')) > 480: raise ValueError('Speech supports up to 240 text characters.')
         if style not in ('say', 'think'): raise ValueError('Choose say or think.')
-        self._speech += 1
+        self._speech += 1; self._said = (text, style)
         self._owner._send({'type': 'bubble', 'id': self.id, 'text': text, 'style': style})
 
     async def say_for(self, text, seconds, style='say'):

@@ -41,7 +41,7 @@ input[type=checkbox], input[type=radio] { width: 20px; height: 20px; }
 .top-bar > :not(.project-title, .top-spacer) { flex-shrink: 0; }
 .top-bar .run-button { white-space: nowrap; }
 .project-title { min-width: 48px; }
-@media (max-width: 1099px) { .view-option, #examples-open, #lessons-open { font-size: 0; gap: 0; width: 44px; padding: 0; } }
+@media (max-width: 1099px) { .view-option, #examples-open, #lessons-open, #academy-open { font-size: 0; gap: 0; width: 44px; padding: 0; } }
 .top-spacer { flex: 1; }
 .run-button { padding-inline: 22px; font-size: 15px; }
 .top-divider { width: 1px; height: 28px; background: #dce1d2; }
@@ -335,11 +335,11 @@ dialog .example-list li { padding: 0; }
   .sprite-tray { grid-area: tray; } .tab-bar { grid-area: tabs; } .tab-panels { grid-area: panels; }
   .project-title { max-width: 140px; }
 }
-@media (max-width: 760px) and (min-width: 600px) { #examples-open, #lessons-open { display: none; } }
-@media (min-width: 761px) { #menu-examples, #menu-lessons { display: none; } }
+@media (max-width: 760px) and (min-width: 600px) { #examples-open, #lessons-open, #academy-open { display: none; } }
+@media (min-width: 761px) { #menu-examples, #menu-lessons, #menu-academy { display: none; } }
 /* Phones: play only. */
 @media (max-width: 599px) {
-  .shell-body, .shell-notices, .top-history, .level-control, #examples-open, #lessons-open, .top-divider, #run, #stop { display: none !important; }
+  .shell-body, .shell-notices, .top-history, .level-control, #examples-open, #lessons-open, #academy-open, .top-divider, #run, #stop { display: none !important; }
   .phone-message { display: block; padding: 32px 20px; text-align: center; }
   .phone-message h2 { font: 700 22px 'Space Grotesk', system-ui, sans-serif; margin: 0 0 8px; }
   .phone-message p { color: #4e5f49; }

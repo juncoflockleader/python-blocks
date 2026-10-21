@@ -40,6 +40,8 @@ import { installNudges, type FixKind } from './guide/nudges';
 import { installFixes, type RuntimeFault } from './guide/fixes';
 import { installGallery } from './guide/gallery';
 import { installLessons } from './guide/lessons';
+import { installAcademy } from './academy/academy';
+import './academy/academy.css';
 import { atLeast, installLevels, levelNames, findBlock, requiredLevel, storedLevel, toolboxFor, LEVEL_KEY, type Level } from './ui/levels';
 import { installHelpSections, installInputHints, installLevelControl, installMenu, installPaletteHint, installPythonPlacement, installTabs, installViewSwitch, keepShellInPlace, shellMarkup, trackKeyboard } from './ui/shell';
 
@@ -228,6 +230,7 @@ const gallery = installGallery({
 });
 // Lessons and guided builds have their own catalogue, apart from Examples.
 const lessons = installLessons({ start: id => guide.begin(id), play: id => gallery.play(id) });
+const academy = installAcademy({ start: (id, at) => guide.begin(id, at), active: () => guide.active, reveal: () => tabs.activate('help'), download: (name, text) => download(name, text, 'application/json') });
 const ideas = installIdeas({
   ...cards, show: recipe => ideas.show(recipe), reveal: () => showHelp('ideas'),
   askAi: wish => { if (level === 'starter') return null; showHelp('more'); assist?.prepare(wish); element<HTMLDetailsElement>('#assist-panel').scrollIntoView({ block: 'start' }); return 'Your wish is in AI assist (Help → More). Review what will be shared, then Send.'; },
@@ -248,7 +251,8 @@ const guide = installGuide({
   // A guided build works in the blocks, so it starts in Blocks view.
   load(project, title) { if (!installProject(prepareProject(JSON.stringify(project)).project)) return false; setTitle(title); viewSwitch?.show('blocks'); return true; },
   select: id => sceneEditor?.select(id), prefer: id => { preferredTarget = id; }, showRecipe: recipe => ideas.show(recipe), reveal: list => { if (list) showHelp('builds'); else tabs.activate('help'); }, notify: helpDot,
-  finished: () => helpDot(),
+  finished: build => { helpDot(); academy.finished(build); },
+  progress: event => academy.record(event),
   stopped: () => nudges.empty(!workspace.getTopBlocks(false).length),
   download: (name, text) => download(name, text, 'application/json'),
   revision: typeof __APP_REVISION__ === 'string' ? __APP_REVISION__ : 'development (revision unavailable)',
@@ -593,4 +597,4 @@ element<HTMLInputElement>('#project-file').addEventListener('change', async even
     else if (installProject(prepared.project)) { setTitle(file.name.replace(/\.python-blocks\.json$|\.json$/i, '') || 'My project'); offerLevel(); }
   } catch (error) { notice.textContent = `Could not open project: ${error instanceof Error ? error.message : error}. Your current work is unchanged.`; }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeCaptions(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); blockSearch.dispose(); paletteSearch.dispose(); lessonStage.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeCaptions(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); academy.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); blockSearch.dispose(); paletteSearch.dispose(); lessonStage.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });

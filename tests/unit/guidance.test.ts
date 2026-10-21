@@ -4,7 +4,9 @@ import { Blockly } from '../../src/blocks';
 import { prepareProject, restore } from '../../src/project';
 import { compile } from '../../src/language/compiler';
 import { sceneState } from '../../src/scene/state';
-import { builds, buildById, chapterOf, type Build } from '../../src/guide/builds';
+import { builds as everything, buildById, chapterOf, type Build } from '../../src/guide/builds';
+// Guided builds and lessons; academy units have their own tests (academy.test.ts).
+const builds = everything.filter(build => build.kind !== 'unit');
 import { passes, type Check } from '../../src/guide/checks';
 import { GALLERY_KINDS, entries } from '../../src/guide/gallery';
 import { appendRecipe, placement, recipeById, recipes, type Recipe } from '../../src/guide/recipes';

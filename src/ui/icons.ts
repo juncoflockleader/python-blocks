@@ -8,7 +8,7 @@ const actions: Record<string, IconName> = {};
 const actionGroups: Partial<Record<IconName, string>> = {
   save: 'save',
   search: 'block-search-toggle', minus: 'zoom-out stage-zoom-out world-wide-less world-tall-less', more: 'menu-button', book: 'examples-open menu-examples',
-  sliders: 'sprite-more', brush: 'tray-paint world-paint-tile', alert: 'stage-badge', learn: 'lessons-open menu-lessons', notes: 'menu-pilot',
+  sliders: 'sprite-more', brush: 'tray-paint world-paint-tile', alert: 'stage-badge', learn: 'lessons-open menu-lessons', sprout: 'academy-open menu-academy', notes: 'menu-pilot',
   folder: 'open python-recover',
   download: 'export export-playable recover python-download python-recovery-download module-export module-save-copy pilot-download pilot-download-backup pilot-recovery',
   upload: 'module-import scene-import',

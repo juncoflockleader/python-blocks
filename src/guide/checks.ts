@@ -31,11 +31,15 @@ export type Check =
   /** The learner chose an answer to the step's prediction. */
   | { predicted: true }
   /** Every test of the step's puzzle passed (Check my answer). */
-  | { solved: true };
+  | { solved: true }
+  /** The step's quiz was answered right (academy practice). */
+  | { answered: true }
+  /** The step's quiz was answered, or Check my answer was used, once (an academy mastery problem). */
+  | { tried: true };
 /** A check about what a run did (ran, finished, a score, a guess, a solved puzzle) rather than the blocks themselves. */
-export const aboutTheRun = (check: Check): boolean => 'ran' in check || 'finished' in check || 'score' in check || 'predicted' in check || 'solved' in check
+export const aboutTheRun = (check: Check): boolean => 'ran' in check || 'finished' in check || 'score' in check || 'predicted' in check || 'solved' in check || 'answered' in check || 'tried' in check
   || ('all' in check && check.all.some(aboutTheRun)) || ('any' in check && check.any.some(aboutTheRun));
-export interface RunFacts { ran: boolean; finished: null | 'won' | 'lost'; score?: number; predicted?: boolean; solved?: boolean }
+export interface RunFacts { ran: boolean; finished: null | 'won' | 'lost'; score?: number; predicted?: boolean; solved?: boolean; answered?: boolean; tried?: boolean }
 
 export function handlerKind(event: string): HandlerKind {
   if (event === 'start') return 'start';
@@ -65,6 +69,8 @@ export function passes(check: Check, workspace: Blockly.Workspace, facts: RunFac
   if ('score' in check) return (facts.score ?? 0) >= check.score;
   if ('predicted' in check) return !!facts.predicted;
   if ('solved' in check) return !!facts.solved;
+  if ('answered' in check) return !!facts.answered;
+  if ('tried' in check) return !!facts.tried;
   const scene = sceneState(workspace);
   if ('sprites' in check) return scene.sprites.length >= check.sprites;
   if ('costume' in check) {

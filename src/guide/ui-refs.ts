@@ -29,6 +29,7 @@ const CONTROLS: Record<string, { id?: string; icon?: IconName }> = {
   Solid: {},
   'Try it': { id: 'guide-try', icon: 'play' },
   'Check my answer': { id: 'guide-check-answer', icon: 'check' },
+  'Next step': { id: 'guide-next', icon: 'right' },
 };
 const categoryColour = (name: string) => Object.values(palette).flat().find(c => c.name === name)?.colour;
 /** Where a block is in the picker at the learner's level: its category and its number there (the editor
