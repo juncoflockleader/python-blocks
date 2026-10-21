@@ -23,11 +23,11 @@ game.countdown(20, "lose")
 | --- | --- |
 | `game.set("score", value)` / `game.change("score", amount)` | Whole Python integers, from −999,999,999 to 999,999,999. Score starts at zero. |
 | `game.set("lives", value)` / `game.change("lives", amount)` | Whole Python integers, 0–999; initial value is 3. Negative changes clamp at zero. Values above the maximum fail without changing state. |
-| `game.get("score" / "lives" / "seconds")` | Return the native value. Seconds is `None` before the first countdown, then a nonnegative number. |
-| `game.show("score" / "lives" / "countdown", enabled)` | Explicitly show/hide a counter using a Boolean. Counters initially stay hidden; their first set/change/start reveals them unless visibility was explicitly chosen. Subsequent updates preserve a hide/show choice. |
+| `game.get("score" / "lives" / "level" / "seconds")` | Return the native value. Seconds is `None` before the first countdown, then a nonnegative number. Level is the current world's number in the project's list, from 1; it is 0 on the base stage of a project with worlds and 1 in a project without any. It follows the world, so `set` and `change` refuse it. |
+| `game.show("score" / "lives" / "level" / "countdown", enabled)` | Explicitly show/hide a counter using a Boolean. Counters initially stay hidden; their first set/change/start reveals them unless visibility was explicitly chosen. Subsequent updates preserve a hide/show choice. |
 | `game.message(text)` | Set fixed HUD text; empty text clears it. Limit: 120 UTF-16 code units, matching the browser (most emoji use two). |
 
-The HUD stays in screen coordinates while camera movement changes the world underneath. Counters and instructions are HTML text, so they remain readable and accessible without affecting stage pixel sensing. Text is displayed literally, never interpreted as HTML. Result screens expose a heading, message, final score and keyboard-focusable replay button. Counter ticks do not flood a live announcement region. State is session-wide, so switching/restarting a world preserves score, lives and countdown; a new Run resets them.
+The HUD stays in screen coordinates while camera movement changes the world underneath. Counters and instructions are HTML text, so they remain readable and accessible without affecting stage pixel sensing. Text is displayed literally, never interpreted as HTML. Result screens expose a heading, message, final score and keyboard-focusable replay button. Counter ticks do not flood a live announcement region. State is session-wide, so switching/restarting a world preserves score, lives and countdown; a new Run resets them. A shown level (*Level 2*) comes first and updates whenever the world changes.
 
 ## Countdown and zero-life rules
 

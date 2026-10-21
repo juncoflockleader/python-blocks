@@ -4,7 +4,7 @@
  "kind": "lesson",
  "level": "builder",
  "minutes": 35,
- "order": 10,
+ "order": 11,
  "summary": "Eight little puzzles. Your program reads the puzzle, works out the answer and prints it. Then the Chick checks it on every test!",
  "ideas": [
   "input",

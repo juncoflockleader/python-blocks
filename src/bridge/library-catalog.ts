@@ -26,7 +26,7 @@ export const libraryCalls: LibraryCall[] = [
   call('scene_lookup', '_pb_sprites', 'get', ['NAME'], true), call('scene_create', '_pb_sprites', 'create', ['COSTUME'], true), call('scene_of_kind', '_pb_sprites', 'of_kind', ['KIND'], true),
   call('scene_all', '_pb_sprites', 'all', [], true), call('scene_instances', '_pb_sprites', 'instances', ['SPRITE'], true),
   call('scene_background', '_pb_scene', 'background', ['COLOR']), call('scene_backdrop_set', '_pb_scene', 'set_backdrop', ['BACKDROP']), call('scene_backdrop_next', '_pb_scene', 'next_backdrop'),
-  call('scene_world_set', '_pb_scene', 'switch_world', ['WORLD']), call('scene_world_restart', '_pb_scene', 'restart_world'),
+  call('scene_world_set', '_pb_scene', 'switch_world', ['WORLD']), call('scene_world_next', '_pb_scene', 'next_world'), call('scene_world_restart', '_pb_scene', 'restart_world'),
   call('scene_camera_go', '_pb_scene', 'camera_go', ['X', 'Y']), call('scene_camera_follow', '_pb_scene', 'camera_follow', ['SPRITE']), call('scene_camera_clamp', '_pb_scene', 'camera_clamp', ['ENABLED']),
   call('scene_map_get', '_pb_scene', 'map_value', [field('PROPERTY')], true),
   call('scene_tile_get', '_pb_scene', 'tile_get', ['COLUMN', 'ROW'], true), call('scene_tile_at', '_pb_scene', 'tile_at', ['X', 'Y'], true),

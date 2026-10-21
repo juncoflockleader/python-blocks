@@ -7,7 +7,7 @@ class Game:
     def __init__(self, scene, clock=time.monotonic):
         self.scene, self.clock = scene, clock
         self.score, self.lives = 0, 3
-        self.visible = dict(score=False, lives=False, countdown=False)
+        self.visible = dict(score=False, lives=False, level=False, countdown=False)
         self._shown = set()
         self.text = ''
         self.result = None
@@ -24,6 +24,12 @@ class Game:
         return events
 
     @property
+    def level(self):
+        """The active world's place in the project's list (Worlds.level); it follows the world, so it is never set."""
+        worlds = getattr(self.scene, 'worlds', None)
+        return worlds.level if worlds is not None else 1
+
+    @property
     def seconds(self):
         return max(0, self._deadline - self.clock()) if self._deadline is not None else self._remaining
 
@@ -34,15 +40,16 @@ class Game:
     def _send(self):
         seconds = self.seconds
         self._displayed = None if seconds is None else math.ceil(seconds)
-        self.scene._send(dict(type='game', state=dict(score=self.score, lives=self.lives,
+        self.scene._send(dict(type='game', state=dict(score=self.score, lives=self.lives, level=self.level,
             seconds=self._displayed, visible=dict(self.visible), text=self.text, result=self.result)))
 
     def get(self, field):
-        if field not in ('score', 'lives', 'seconds'): raise ValueError('Choose score, lives, or seconds.')
+        if field not in ('score', 'lives', 'level', 'seconds'): raise ValueError('Choose score, lives, level, or seconds.')
         return getattr(self, field)
 
     def set(self, field, value):
         self._check()
+        if field == 'level': raise ValueError('The level follows the world: use next world or switch to world.')
         if field not in ('score', 'lives'): raise ValueError('Choose score or lives.')
         low, high = (-999_999_999, 999_999_999) if field == 'score' else (0, 999)
         if type(value) is not int: raise TypeError('Score and lives need whole Python integers.')
@@ -57,13 +64,14 @@ class Game:
 
     def change(self, field, amount):
         self._check()
+        if field == 'level': raise ValueError('The level follows the world: use next world or switch to world.')
         if field not in ('score', 'lives'): raise ValueError('Choose score or lives.')
         if type(amount) is not int: raise TypeError('Score and lives changes need whole Python integers.')
         self.set(field, max(0, self.lives + amount) if field == 'lives' else self.score + amount)
 
     def show(self, field, enabled):
         self._check()
-        if field not in self.visible: raise ValueError('Choose score, lives, or countdown.')
+        if field not in self.visible: raise ValueError('Choose score, lives, level, or countdown.')
         if type(enabled) is not bool: raise TypeError('HUD visibility needs True or False.')
         self._shown.add(field); self.visible[field] = enabled; self._send()
 

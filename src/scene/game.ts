@@ -1,8 +1,10 @@
 export interface GameState {
   score: number;
   lives: number;
+  /** The current world's number (1 for the first world; 0 on the base stage of a project with worlds). */
+  level: number;
   seconds: number | null;
-  visible: { score: boolean; lives: boolean; countdown: boolean };
+  visible: { score: boolean; lives: boolean; level: boolean; countdown: boolean };
   text: string;
   result: { won: boolean; message: string } | null;
 }
@@ -10,9 +12,9 @@ export type GameEffect = { type: 'game_effect'; kind: 'confetti' | 'sparkles' | 
 const number = (v: unknown, min: number, max: number): v is number => typeof v === 'number' && Number.isFinite(v) && v >= min && v <= max;
 export function validGame(value: unknown): value is GameState {
   const v = value as GameState;
-  return !!v && Number.isInteger(v.score) && number(v.score, -999_999_999, 999_999_999) && Number.isInteger(v.lives) && number(v.lives, 0, 999)
+  return !!v && Number.isInteger(v.score) && number(v.score, -999_999_999, 999_999_999) && Number.isInteger(v.lives) && number(v.lives, 0, 999) && Number.isInteger(v.level) && number(v.level, 0, 8)
     && (v.seconds === null || Number.isInteger(v.seconds) && number(v.seconds, 0, 3600))
-    && !!v.visible && ['score', 'lives', 'countdown'].every(k => typeof v.visible[k as keyof GameState['visible']] === 'boolean')
+    && !!v.visible && ['score', 'lives', 'level', 'countdown'].every(k => typeof v.visible[k as keyof GameState['visible']] === 'boolean')
     && typeof v.text === 'string' && v.text.length <= 120
     && (v.result === null || !!v.result && typeof v.result.won === 'boolean' && typeof v.result.message === 'string' && v.result.message.length <= 240);
 }
@@ -30,7 +32,7 @@ export class GameView {
   state: GameState | null = null;
   constructor(root: HTMLElement, onRestart: () => void) {
     this.root = root;
-    root.innerHTML = `<div id="game-hud" aria-label="Game status" hidden><div class="game-counters"><span id="game-score" hidden></span><span id="game-lives" hidden></span><span id="game-countdown" hidden></span></div><p id="game-message" hidden></p></div><section id="game-result" aria-labelledby="game-result-title" hidden><div class="game-result-card"><h3 id="game-result-title"></h3><p id="game-result-message"></p><p id="game-result-score"></p><button id="game-restart" class="button primary">Play again</button></div></section>`;
+    root.innerHTML = `<div id="game-hud" aria-label="Game status" hidden><div class="game-counters"><span id="game-level" hidden></span><span id="game-score" hidden></span><span id="game-lives" hidden></span><span id="game-countdown" hidden></span></div><p id="game-message" hidden></p></div><section id="game-result" aria-labelledby="game-result-title" hidden><div class="game-result-card"><h3 id="game-result-title"></h3><p id="game-result-message"></p><p id="game-result-score"></p><button id="game-restart" class="button primary">Play again</button></div></section>`;
     this.hud = root.querySelector('#game-hud')!; this.result = root.querySelector('#game-result')!; this.restart = root.querySelector('#game-restart')!;
     this.restart.addEventListener('click', onRestart);
   }
@@ -38,10 +40,10 @@ export class GameView {
   accept(state: GameState) {
     const justFinished = !this.state?.result && !!state.result;
     this.state = structuredClone(state);
-    for (const key of ['score', 'lives', 'countdown'] as const) {
+    for (const key of ['level', 'score', 'lives', 'countdown'] as const) {
       const item = this.root.querySelector<HTMLElement>('#game-' + key)!;
       item.hidden = !state.visible[key];
-      const text = key === 'score' ? `Score ${state.score}` : key === 'lives' ? `Lives ${state.lives}` : `Time ${state.seconds ?? '—'}`;
+      const text = key === 'level' ? `Level ${state.level}` : key === 'score' ? `Score ${state.score}` : key === 'lives' ? `Lives ${state.lives}` : `Time ${state.seconds ?? '—'}`;
       if (item.textContent !== text) item.textContent = text;
     }
     const message = this.root.querySelector<HTMLElement>('#game-message')!;

@@ -1,0 +1,7487 @@
+{
+ "format": "python-blocks",
+ "formatVersion": 1,
+ "languageVersion": 23,
+ "workspace": {
+  "blocks": {
+   "languageVersion": 0,
+   "blocks": [
+    {
+     "type": "py_handler",
+     "id": "on_start_handler_block",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_start_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_motion_set",
+        "fields": {
+         "PROPERTY": "ay"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "hero"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "-1200"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_control",
+          "fields": {
+           "SCHEME": "arrows"
+          },
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "hero"
+             }
+            }
+           },
+           "VX": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "180"
+             }
+            }
+           },
+           "VY": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "0"
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_left_arrow_key_handler_block",
+     "x": 40,
+     "y": 262,
+     "extraState": {
+      "functionId": "on_left_arrow_key_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_set",
+        "fields": {
+         "PROPERTY": "direction"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "hero"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "180"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_right_arrow_key_handler_block",
+     "x": 40,
+     "y": 409,
+     "extraState": {
+      "functionId": "on_right_arrow_key_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_set",
+        "fields": {
+         "PROPERTY": "direction"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "hero"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_space_key_handler_block",
+     "x": 40,
+     "y": 556,
+     "extraState": {
+      "functionId": "on_space_key_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_jump",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "hero"
+           }
+          }
+         },
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "520"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "sound_play",
+          "id": "super_hopper_game_3c_3",
+          "fields": {},
+          "inputs": {
+           "SOUND": {
+            "block": {
+             "type": "sound_asset",
+             "id": "super_hopper_game_3c_1",
+             "fields": {
+              "SOUND_ID": "jump"
+             },
+             "inputs": {}
+            }
+           },
+           "OWNER": {
+            "block": {
+             "type": "py_none",
+             "id": "super_hopper_game_3c_2",
+             "fields": {},
+             "inputs": {}
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_start_2_handler_block",
+     "x": 40,
+     "y": 788,
+     "extraState": {
+      "functionId": "on_start_2_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "game_set",
+        "fields": {
+         "FIELD": "score"
+        },
+        "inputs": {
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "game_set",
+          "fields": {
+           "FIELD": "lives"
+          },
+          "inputs": {
+           "VALUE": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "3"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "game_show",
+            "fields": {
+             "SHOW": "TRUE",
+             "FIELD": "level"
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "play_music_handler_block",
+     "x": 40,
+     "y": 965,
+     "extraState": {
+      "functionId": "play_music_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "sound_loop",
+        "id": "super_hopper_game_3c_21",
+        "fields": {},
+        "inputs": {
+         "SOUND": {
+          "block": {
+           "type": "sound_asset",
+           "id": "super_hopper_game_3c_19",
+           "fields": {
+            "SOUND_ID": "music"
+           },
+           "inputs": {}
+          }
+         },
+         "OWNER": {
+          "block": {
+           "type": "py_none",
+           "id": "super_hopper_game_3c_20",
+           "fields": {},
+           "inputs": {}
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_world_start_handler_block",
+     "x": 40,
+     "y": 1140,
+     "extraState": {
+      "functionId": "on_world_start_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_go",
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "fields": {
+            "SPRITE_ID": "hero"
+           }
+          }
+         },
+         "X": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "-128"
+           }
+          }
+         },
+         "Y": {
+          "shadow": {
+           "type": "py_number",
+           "fields": {
+            "VALUE": "40"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "scene_go",
+          "inputs": {
+           "SPRITE": {
+            "block": {
+             "type": "scene_sprite",
+             "fields": {
+              "SPRITE_ID": "coin"
+             }
+            }
+           },
+           "X": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "-32"
+             }
+            }
+           },
+           "Y": {
+            "shadow": {
+             "type": "py_number",
+             "fields": {
+              "VALUE": "-73"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "controls_repeat_ext",
+            "inputs": {
+             "TIMES": {
+              "shadow": {
+               "type": "py_number",
+               "fields": {
+                "VALUE": "5"
+               }
+              }
+             },
+             "DO": {
+              "block": {
+               "type": "scene_visibility",
+               "fields": {
+                "ACTION": "show"
+               },
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_clone",
+                  "inputs": {
+                   "SPRITE": {
+                    "block": {
+                     "type": "scene_sprite",
+                     "fields": {
+                      "SPRITE_ID": "coin"
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "next": {
+                "block": {
+                 "type": "scene_change",
+                 "fields": {
+                  "PROPERTY": "x"
+                 },
+                 "inputs": {
+                  "SPRITE": {
+                   "block": {
+                    "type": "scene_sprite",
+                    "fields": {
+                     "SPRITE_ID": "coin"
+                    }
+                   }
+                  },
+                  "VALUE": {
+                   "shadow": {
+                    "type": "py_number",
+                    "fields": {
+                     "VALUE": "32"
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "scene_go",
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "fields": {
+                  "SPRITE_ID": "coin"
+                 }
+                }
+               },
+               "X": {
+                "shadow": {
+                 "type": "py_number",
+                 "fields": {
+                  "VALUE": "416"
+                 }
+                }
+               },
+               "Y": {
+                "shadow": {
+                 "type": "py_number",
+                 "fields": {
+                  "VALUE": "16"
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "controls_repeat_ext",
+                "inputs": {
+                 "TIMES": {
+                  "shadow": {
+                   "type": "py_number",
+                   "fields": {
+                    "VALUE": "4"
+                   }
+                  }
+                 },
+                 "DO": {
+                  "block": {
+                   "type": "scene_visibility",
+                   "fields": {
+                    "ACTION": "show"
+                   },
+                   "inputs": {
+                    "SPRITE": {
+                     "block": {
+                      "type": "scene_clone",
+                      "inputs": {
+                       "SPRITE": {
+                        "block": {
+                         "type": "scene_sprite",
+                         "fields": {
+                          "SPRITE_ID": "coin"
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   },
+                   "next": {
+                    "block": {
+                     "type": "scene_change",
+                     "fields": {
+                      "PROPERTY": "x"
+                     },
+                     "inputs": {
+                      "SPRITE": {
+                       "block": {
+                        "type": "scene_sprite",
+                        "fields": {
+                         "SPRITE_ID": "coin"
+                        }
+                       }
+                      },
+                      "VALUE": {
+                       "shadow": {
+                        "type": "py_number",
+                        "fields": {
+                         "VALUE": "32"
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "scene_go",
+                  "inputs": {
+                   "SPRITE": {
+                    "block": {
+                     "type": "scene_sprite",
+                     "fields": {
+                      "SPRITE_ID": "coin"
+                     }
+                    }
+                   },
+                   "X": {
+                    "shadow": {
+                     "type": "py_number",
+                     "fields": {
+                      "VALUE": "1184"
+                     }
+                    }
+                   },
+                   "Y": {
+                    "shadow": {
+                     "type": "py_number",
+                     "fields": {
+                      "VALUE": "-48"
+                     }
+                    }
+                   }
+                  },
+                  "next": {
+                   "block": {
+                    "type": "controls_repeat_ext",
+                    "inputs": {
+                     "TIMES": {
+                      "shadow": {
+                       "type": "py_number",
+                       "fields": {
+                        "VALUE": "3"
+                       }
+                      }
+                     },
+                     "DO": {
+                      "block": {
+                       "type": "scene_visibility",
+                       "fields": {
+                        "ACTION": "show"
+                       },
+                       "inputs": {
+                        "SPRITE": {
+                         "block": {
+                          "type": "scene_clone",
+                          "inputs": {
+                           "SPRITE": {
+                            "block": {
+                             "type": "scene_sprite",
+                             "fields": {
+                              "SPRITE_ID": "coin"
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       },
+                       "next": {
+                        "block": {
+                         "type": "scene_change",
+                         "fields": {
+                          "PROPERTY": "x"
+                         },
+                         "inputs": {
+                          "SPRITE": {
+                           "block": {
+                            "type": "scene_sprite",
+                            "fields": {
+                             "SPRITE_ID": "coin"
+                            }
+                           }
+                          },
+                          "VALUE": {
+                           "shadow": {
+                            "type": "py_number",
+                            "fields": {
+                             "VALUE": "32"
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    },
+                    "next": {
+                     "block": {
+                      "type": "scene_motion_set",
+                      "fields": {
+                       "PROPERTY": "vx"
+                      },
+                      "inputs": {
+                       "SPRITE": {
+                        "block": {
+                         "type": "scene_sprite",
+                         "fields": {
+                          "SPRITE_ID": "beetle"
+                         }
+                        }
+                       },
+                       "VALUE": {
+                        "shadow": {
+                         "type": "py_number",
+                         "fields": {
+                          "VALUE": "-60"
+                         }
+                        }
+                       }
+                      },
+                      "next": {
+                       "block": {
+                        "type": "scene_motion_response",
+                        "fields": {
+                         "MODE": "bounce"
+                        },
+                        "inputs": {
+                         "SPRITE": {
+                          "block": {
+                           "type": "scene_sprite",
+                           "fields": {
+                            "SPRITE_ID": "beetle"
+                           }
+                          }
+                         }
+                        },
+                        "next": {
+                         "block": {
+                          "type": "scene_go",
+                          "inputs": {
+                           "SPRITE": {
+                            "block": {
+                             "type": "scene_sprite",
+                             "fields": {
+                              "SPRITE_ID": "beetle"
+                             }
+                            }
+                           },
+                           "X": {
+                            "shadow": {
+                             "type": "py_number",
+                             "fields": {
+                              "VALUE": "800"
+                             }
+                            }
+                           },
+                           "Y": {
+                            "shadow": {
+                             "type": "py_number",
+                             "fields": {
+                              "VALUE": "-80"
+                             }
+                            }
+                           }
+                          },
+                          "next": {
+                           "block": {
+                            "type": "scene_visibility",
+                            "fields": {
+                             "ACTION": "show"
+                            },
+                            "inputs": {
+                             "SPRITE": {
+                              "block": {
+                               "type": "scene_clone",
+                               "inputs": {
+                                "SPRITE": {
+                                 "block": {
+                                  "type": "scene_sprite",
+                                  "fields": {
+                                   "SPRITE_ID": "beetle"
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            },
+                            "next": {
+                             "block": {
+                              "type": "scene_go",
+                              "inputs": {
+                               "SPRITE": {
+                                "block": {
+                                 "type": "scene_sprite",
+                                 "fields": {
+                                  "SPRITE_ID": "beetle"
+                                 }
+                                }
+                               },
+                               "X": {
+                                "shadow": {
+                                 "type": "py_number",
+                                 "fields": {
+                                  "VALUE": "1600"
+                                 }
+                                }
+                               },
+                               "Y": {
+                                "shadow": {
+                                 "type": "py_number",
+                                 "fields": {
+                                  "VALUE": "-80"
+                                 }
+                                }
+                               }
+                              },
+                              "next": {
+                               "block": {
+                                "type": "scene_visibility",
+                                "fields": {
+                                 "ACTION": "show"
+                                },
+                                "inputs": {
+                                 "SPRITE": {
+                                  "block": {
+                                   "type": "scene_clone",
+                                   "inputs": {
+                                    "SPRITE": {
+                                     "block": {
+                                      "type": "scene_sprite",
+                                      "fields": {
+                                       "SPRITE_ID": "beetle"
+                                      }
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_coin_overlap_handler_block",
+     "x": 700,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_coin_overlap_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "scene_overlaps",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_self"
+             }
+            },
+            "OTHER": {
+             "block": {
+              "type": "scene_sprite",
+              "fields": {
+               "SPRITE_ID": "hero"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "sound_play",
+           "id": "super_hopper_game_3c_6",
+           "fields": {},
+           "inputs": {
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "super_hopper_game_3c_4",
+              "fields": {
+               "SOUND_ID": "coin"
+              },
+              "inputs": {}
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "super_hopper_game_3c_5",
+              "fields": {},
+              "inputs": {}
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "game_change",
+             "fields": {
+              "FIELD": "score"
+             },
+             "inputs": {
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "1"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_destroy",
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_self"
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_hero_update_handler_block",
+     "x": 700,
+     "y": 332,
+     "extraState": {
+      "functionId": "on_hero_update_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "logic_compare",
+           "fields": {
+            "OP": "LT"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "scene_get",
+              "fields": {
+               "PROPERTY": "y"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_self"
+                }
+               }
+              }
+             }
+            },
+            "B": {
+             "shadow": {
+              "type": "py_number",
+              "fields": {
+               "VALUE": "-200"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "sound_play",
+           "id": "super_hopper_game_3c_9",
+           "fields": {},
+           "inputs": {
+            "SOUND": {
+             "block": {
+              "type": "sound_asset",
+              "id": "super_hopper_game_3c_7",
+              "fields": {
+               "SOUND_ID": "hit"
+              },
+              "inputs": {}
+             }
+            },
+            "OWNER": {
+             "block": {
+              "type": "py_none",
+              "id": "super_hopper_game_3c_8",
+              "fields": {},
+              "inputs": {}
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "game_change",
+             "fields": {
+              "FIELD": "lives"
+             },
+             "inputs": {
+              "VALUE": {
+               "shadow": {
+                "type": "py_number",
+                "fields": {
+                 "VALUE": "-1"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "scene_go",
+               "inputs": {
+                "SPRITE": {
+                 "block": {
+                  "type": "scene_sprite",
+                  "fields": {
+                   "SPRITE_ID": "hero"
+                  }
+                 }
+                },
+                "X": {
+                 "shadow": {
+                  "type": "py_number",
+                  "fields": {
+                   "VALUE": "-128"
+                  }
+                 }
+                },
+                "Y": {
+                 "shadow": {
+                  "type": "py_number",
+                  "fields": {
+                   "VALUE": "40"
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_beetle_overlap_handler_block",
+     "x": 700,
+     "y": 700,
+     "extraState": {
+      "functionId": "on_beetle_overlap_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "scene_overlaps",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_self"
+             }
+            },
+            "OTHER": {
+             "block": {
+              "type": "scene_sprite",
+              "fields": {
+               "SPRITE_ID": "hero"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "controls_if",
+           "extraState": {
+            "hasElse": true
+           },
+           "inputs": {
+            "IF0": {
+             "block": {
+              "type": "logic_compare",
+              "fields": {
+               "OP": "LT"
+              },
+              "inputs": {
+               "A": {
+                "block": {
+                 "type": "scene_motion_get",
+                 "fields": {
+                  "PROPERTY": "vy"
+                 },
+                 "inputs": {
+                  "SPRITE": {
+                   "block": {
+                    "type": "scene_sprite",
+                    "fields": {
+                     "SPRITE_ID": "hero"
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "B": {
+                "shadow": {
+                 "type": "py_number",
+                 "fields": {
+                  "VALUE": "0"
+                 }
+                }
+               }
+              }
+             }
+            },
+            "DO0": {
+             "block": {
+              "type": "scene_motion_set",
+              "fields": {
+               "PROPERTY": "vy"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "fields": {
+                  "SPRITE_ID": "hero"
+                 }
+                }
+               },
+               "VALUE": {
+                "shadow": {
+                 "type": "py_number",
+                 "fields": {
+                  "VALUE": "380"
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "sound_play",
+                "id": "super_hopper_game_3c_12",
+                "fields": {},
+                "inputs": {
+                 "SOUND": {
+                  "block": {
+                   "type": "sound_asset",
+                   "id": "super_hopper_game_3c_10",
+                   "fields": {
+                    "SOUND_ID": "pop"
+                   },
+                   "inputs": {}
+                  }
+                 },
+                 "OWNER": {
+                  "block": {
+                   "type": "py_none",
+                   "id": "super_hopper_game_3c_11",
+                   "fields": {},
+                   "inputs": {}
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "game_change",
+                  "fields": {
+                   "FIELD": "score"
+                  },
+                  "inputs": {
+                   "VALUE": {
+                    "shadow": {
+                     "type": "py_number",
+                     "fields": {
+                      "VALUE": "5"
+                     }
+                    }
+                   }
+                  },
+                  "next": {
+                   "block": {
+                    "type": "scene_destroy",
+                    "inputs": {
+                     "SPRITE": {
+                      "block": {
+                       "type": "scene_self"
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            },
+            "ELSE": {
+             "block": {
+              "type": "sound_play",
+              "id": "super_hopper_game_3c_15",
+              "fields": {},
+              "inputs": {
+               "SOUND": {
+                "block": {
+                 "type": "sound_asset",
+                 "id": "super_hopper_game_3c_13",
+                 "fields": {
+                  "SOUND_ID": "hit"
+                 },
+                 "inputs": {}
+                }
+               },
+               "OWNER": {
+                "block": {
+                 "type": "py_none",
+                 "id": "super_hopper_game_3c_14",
+                 "fields": {},
+                 "inputs": {}
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "game_change",
+                "fields": {
+                 "FIELD": "lives"
+                },
+                "inputs": {
+                 "VALUE": {
+                  "shadow": {
+                   "type": "py_number",
+                   "fields": {
+                    "VALUE": "-1"
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "scene_go",
+                  "inputs": {
+                   "SPRITE": {
+                    "block": {
+                     "type": "scene_sprite",
+                     "fields": {
+                      "SPRITE_ID": "hero"
+                     }
+                    }
+                   },
+                   "X": {
+                    "shadow": {
+                     "type": "py_number",
+                     "fields": {
+                      "VALUE": "-128"
+                     }
+                    }
+                   },
+                   "Y": {
+                    "shadow": {
+                     "type": "py_number",
+                     "fields": {
+                      "VALUE": "40"
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_hero_overlap_handler_block",
+     "x": 700,
+     "y": 1351,
+     "extraState": {
+      "functionId": "on_hero_overlap_handler"
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "scene_overlaps",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_self"
+             }
+            },
+            "OTHER": {
+             "block": {
+              "type": "scene_sprite",
+              "fields": {
+               "SPRITE_ID": "flag"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "controls_if",
+           "extraState": {
+            "hasElse": true
+           },
+           "inputs": {
+            "IF0": {
+             "block": {
+              "type": "logic_compare",
+              "fields": {
+               "OP": "EQ"
+              },
+              "inputs": {
+               "A": {
+                "block": {
+                 "type": "game_get",
+                 "fields": {
+                  "FIELD": "level"
+                 }
+                }
+               },
+               "B": {
+                "shadow": {
+                 "type": "py_number",
+                 "fields": {
+                  "VALUE": "3"
+                 }
+                }
+               }
+              }
+             }
+            },
+            "DO0": {
+             "block": {
+              "type": "sound_play",
+              "inputs": {
+               "SOUND": {
+                "block": {
+                 "type": "sound_asset",
+                 "fields": {
+                  "SOUND_ID": "win"
+                 }
+                }
+               },
+               "OWNER": {
+                "block": {
+                 "type": "py_none"
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "game_finish",
+                "fields": {
+                 "WON": "TRUE"
+                },
+                "inputs": {
+                 "TEXT": {
+                  "shadow": {
+                   "type": "text",
+                   "fields": {
+                    "TEXT": "You finished all three levels!"
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            },
+            "ELSE": {
+             "block": {
+              "type": "sound_play",
+              "inputs": {
+               "SOUND": {
+                "block": {
+                 "type": "sound_asset",
+                 "fields": {
+                  "SOUND_ID": "win"
+                 }
+                }
+               },
+               "OWNER": {
+                "block": {
+                 "type": "py_none"
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "scene_world_next"
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    }
+   ]
+  },
+  "pythonScene": {
+   "version": 1,
+   "background": "#80cdef",
+   "assets": [
+    {
+     "id": "stock-explorer-sam-idle-1",
+     "name": "Sam idle 1",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-idle-1@1"
+    },
+    {
+     "id": "stock-explorer-sam-idle-2",
+     "name": "Sam idle 2",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-idle-2@1"
+    },
+    {
+     "id": "stock-explorer-sam-walk-1",
+     "name": "Sam walk 1",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-walk-1@1"
+    },
+    {
+     "id": "stock-explorer-sam-walk-2",
+     "name": "Sam walk 2",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-walk-2@1"
+    },
+    {
+     "id": "stock-explorer-sam-walk-3",
+     "name": "Sam walk 3",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-walk-3@1"
+    },
+    {
+     "id": "stock-explorer-sam-walk-4",
+     "name": "Sam walk 4",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-walk-4@1"
+    },
+    {
+     "id": "stock-explorer-sam-jump",
+     "name": "Sam jump",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-jump@1"
+    },
+    {
+     "id": "stock-explorer-sam-happy",
+     "name": "Sam happy",
+     "width": 64,
+     "height": 64,
+     "stock": "cast/explorer-sam-happy@1"
+    },
+    {
+     "id": "stock-coin-1",
+     "name": "Coin 1",
+     "width": 32,
+     "height": 32,
+     "stock": "props/coin-1@1"
+    },
+    {
+     "id": "stock-coin-2",
+     "name": "Coin 2",
+     "width": 32,
+     "height": 32,
+     "stock": "props/coin-2@1"
+    },
+    {
+     "id": "stock-coin-3",
+     "name": "Coin 3",
+     "width": 32,
+     "height": 32,
+     "stock": "props/coin-3@1"
+    },
+    {
+     "id": "stock-coin-4",
+     "name": "Coin 4",
+     "width": 32,
+     "height": 32,
+     "stock": "props/coin-4@1"
+    },
+    {
+     "id": "stock-coin-5",
+     "name": "Coin 5",
+     "width": 32,
+     "height": 32,
+     "stock": "props/coin-5@1"
+    },
+    {
+     "id": "stock-coin-6",
+     "name": "Coin 6",
+     "width": 32,
+     "height": 32,
+     "stock": "props/coin-6@1"
+    },
+    {
+     "id": "stock-beetle-walk-1",
+     "name": "Beetle walk 1",
+     "width": 36,
+     "height": 30,
+     "stock": "cast/beetle-walk-1@1"
+    },
+    {
+     "id": "stock-beetle-walk-2",
+     "name": "Beetle walk 2",
+     "width": 36,
+     "height": 30,
+     "stock": "cast/beetle-walk-2@1"
+    },
+    {
+     "id": "stock-flag",
+     "name": "Flag",
+     "width": 40,
+     "height": 256,
+     "stock": "props/flag@1"
+    },
+    {
+     "id": "stock-brick-block",
+     "name": "Brick block",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/brick-block@1"
+    },
+    {
+     "id": "stock-grass-left",
+     "name": "Grass left",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/grass-left@1"
+    },
+    {
+     "id": "stock-grass-middle",
+     "name": "Grass middle",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/grass-middle@1"
+    },
+    {
+     "id": "stock-grass-right",
+     "name": "Grass right",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/grass-right@1"
+    },
+    {
+     "id": "stock-grass-top",
+     "name": "Grass top",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/grass-top@1"
+    },
+    {
+     "id": "stock-grass-top-left",
+     "name": "Grass top left",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/grass-top-left@1"
+    },
+    {
+     "id": "stock-grass-top-right",
+     "name": "Grass top right",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/grass-top-right@1"
+    },
+    {
+     "id": "stock-metal-block",
+     "name": "Metal block",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/metal-block@1"
+    },
+    {
+     "id": "stock-cave-top-left",
+     "name": "Cave top left",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-top-left@1"
+    },
+    {
+     "id": "stock-cave-top",
+     "name": "Cave top",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-top@1"
+    },
+    {
+     "id": "stock-cave-top-right",
+     "name": "Cave top right",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-top-right@1"
+    },
+    {
+     "id": "stock-cave-left",
+     "name": "Cave left",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-left@1"
+    },
+    {
+     "id": "stock-cave-middle",
+     "name": "Cave middle",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-middle@1"
+    },
+    {
+     "id": "stock-cave-right",
+     "name": "Cave right",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-right@1"
+    },
+    {
+     "id": "stock-cave-platform",
+     "name": "Cave platform",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-platform@1"
+    },
+    {
+     "id": "stock-cave-block",
+     "name": "Cave block",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/cave-block@1"
+    },
+    {
+     "id": "stock-snow-top-left",
+     "name": "Snow top left",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-top-left@1"
+    },
+    {
+     "id": "stock-snow-top",
+     "name": "Snow top",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-top@1"
+    },
+    {
+     "id": "stock-snow-top-right",
+     "name": "Snow top right",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-top-right@1"
+    },
+    {
+     "id": "stock-snow-left",
+     "name": "Snow left",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-left@1"
+    },
+    {
+     "id": "stock-snow-middle",
+     "name": "Snow middle",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-middle@1"
+    },
+    {
+     "id": "stock-snow-right",
+     "name": "Snow right",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-right@1"
+    },
+    {
+     "id": "stock-snow-platform",
+     "name": "Snow platform",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-platform@1"
+    },
+    {
+     "id": "stock-snow-block",
+     "name": "Snow block",
+     "width": 32,
+     "height": 32,
+     "stock": "tiles/snow-block@1"
+    }
+   ],
+   "backdrops": [
+    {
+     "id": "stock-hills",
+     "name": "Hills",
+     "width": 480,
+     "height": 320,
+     "stock": "backdrops/hills@1"
+    },
+    {
+     "id": "stock-cave",
+     "name": "Cave",
+     "width": 480,
+     "height": 320,
+     "stock": "backdrops/cave@1"
+    },
+    {
+     "id": "stock-snow",
+     "name": "Snow",
+     "width": 480,
+     "height": 320,
+     "stock": "backdrops/snow@1"
+    },
+    {
+     "id": "stock-castle",
+     "name": "Castle",
+     "width": 480,
+     "height": 320,
+     "stock": "backdrops/castle@1"
+    }
+   ],
+   "backdrop": null,
+   "worlds": [
+    {
+     "id": "main",
+     "name": "Level 1",
+     "background": "#80cdef",
+     "backdrop": "stock-hills",
+     "map": {
+      "columns": 75,
+      "rows": 10,
+      "tileSize": 32,
+      "tiles": [
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-brick-block",
+       "stock-brick-block",
+       "stock-brick-block",
+       "stock-brick-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       "stock-metal-block",
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       "stock-metal-block",
+       "stock-metal-block",
+       "stock-metal-block",
+       "stock-metal-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top-right",
+       null,
+       null,
+       null,
+       "stock-grass-top-left",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top-right",
+       null,
+       null,
+       null,
+       "stock-grass-top-left",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-top",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-right",
+       null,
+       null,
+       null,
+       "stock-grass-left",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-right",
+       null,
+       null,
+       null,
+       "stock-grass-left",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle",
+       "stock-grass-middle"
+      ],
+      "walls": [
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ]
+     },
+     "camera": {
+      "x": 0,
+      "y": 0,
+      "follow": "hero",
+      "clamp": true
+     }
+    },
+    {
+     "id": "cave",
+     "name": "Level 2",
+     "background": "#2e2840",
+     "backdrop": "stock-cave",
+     "map": {
+      "columns": 75,
+      "rows": 10,
+      "tileSize": 32,
+      "tiles": [
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       "stock-cave-block",
+       "stock-cave-block",
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       "stock-cave-block",
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       "stock-cave-block",
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       "stock-cave-block",
+       "stock-cave-block",
+       "stock-cave-block",
+       "stock-cave-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top-right",
+       null,
+       null,
+       null,
+       "stock-cave-top-left",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top-right",
+       null,
+       null,
+       "stock-cave-top-left",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top-right",
+       null,
+       null,
+       null,
+       "stock-cave-top-left",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top-right",
+       null,
+       null,
+       "stock-cave-top-left",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-top",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-right",
+       null,
+       null,
+       null,
+       "stock-cave-left",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-right",
+       null,
+       null,
+       "stock-cave-left",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-right",
+       null,
+       null,
+       null,
+       "stock-cave-left",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-right",
+       null,
+       null,
+       "stock-cave-left",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle",
+       "stock-cave-middle"
+      ],
+      "walls": [
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ]
+     },
+     "camera": {
+      "x": 0,
+      "y": 0,
+      "follow": "hero",
+      "clamp": true
+     }
+    },
+    {
+     "id": "snow",
+     "name": "Level 3",
+     "background": "#cfe8f5",
+     "backdrop": "stock-snow",
+     "map": {
+      "columns": 75,
+      "rows": 10,
+      "tileSize": 32,
+      "tiles": [
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-snow-block",
+       "stock-snow-block",
+       "stock-snow-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-snow-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-snow-block",
+       "stock-snow-block",
+       "stock-snow-block",
+       "stock-snow-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-snow-block",
+       "stock-snow-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-snow-block",
+       "stock-snow-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-snow-block",
+       "stock-snow-block",
+       "stock-snow-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-snow-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-snow-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-snow-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-snow-block",
+       null,
+       null,
+       null,
+       "stock-snow-block",
+       "stock-snow-block",
+       "stock-snow-block",
+       "stock-snow-block",
+       null,
+       null,
+       null,
+       null,
+       null,
+       null,
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top-right",
+       null,
+       null,
+       null,
+       "stock-snow-top-left",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top-right",
+       null,
+       null,
+       "stock-snow-top-left",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top-right",
+       null,
+       null,
+       "stock-snow-top-left",
+       "stock-snow-top",
+       "stock-snow-top-right",
+       null,
+       null,
+       null,
+       "stock-snow-top-left",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top-right",
+       null,
+       null,
+       "stock-snow-top-left",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-top",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-right",
+       null,
+       null,
+       null,
+       "stock-snow-left",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-right",
+       null,
+       null,
+       "stock-snow-left",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-right",
+       null,
+       null,
+       "stock-snow-left",
+       "stock-snow-middle",
+       "stock-snow-right",
+       null,
+       null,
+       null,
+       "stock-snow-left",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-right",
+       null,
+       null,
+       "stock-snow-left",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle",
+       "stock-snow-middle"
+      ],
+      "walls": [
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       true,
+       true,
+       true,
+       false,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       false,
+       false,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true,
+       true
+      ]
+     },
+     "camera": {
+      "x": 0,
+      "y": 0,
+      "follow": "hero",
+      "clamp": true
+     }
+    }
+   ],
+   "world": "main",
+   "sprites": [
+    {
+     "id": "hero",
+     "name": "Hero",
+     "x": -128,
+     "y": 40,
+     "direction": 0,
+     "size": 72,
+     "layer": 4,
+     "visible": true,
+     "costume": "stock-explorer-sam-idle-1",
+     "rotationStyle": "left-right",
+     "costumes": [
+      "stock-explorer-sam-walk-1",
+      "stock-explorer-sam-walk-2",
+      "stock-explorer-sam-walk-3",
+      "stock-explorer-sam-walk-4"
+     ],
+     "frameSeconds": 0.12,
+     "animations": [
+      {
+       "name": "idle",
+       "frames": [
+        "stock-explorer-sam-idle-1",
+        "stock-explorer-sam-idle-2"
+       ],
+       "seconds": 0.4
+      },
+      {
+       "name": "walk",
+       "frames": [
+        "stock-explorer-sam-walk-1",
+        "stock-explorer-sam-walk-2",
+        "stock-explorer-sam-walk-3",
+        "stock-explorer-sam-walk-4"
+       ]
+      },
+      {
+       "name": "jump",
+       "frames": [
+        "stock-explorer-sam-jump"
+       ]
+      },
+      {
+       "name": "happy",
+       "frames": [
+        "stock-explorer-sam-happy"
+       ]
+      }
+     ],
+     "autoAnimate": {
+      "moving": "walk",
+      "air": "jump",
+      "still": "idle",
+      "turn": false
+     }
+    },
+    {
+     "id": "coin",
+     "name": "Coin",
+     "x": -32,
+     "y": -73,
+     "direction": 0,
+     "size": 85,
+     "layer": 2,
+     "visible": false,
+     "costume": "stock-coin-1",
+     "rotationStyle": "all",
+     "costumes": [
+      "stock-coin-1",
+      "stock-coin-2",
+      "stock-coin-3",
+      "stock-coin-4",
+      "stock-coin-5",
+      "stock-coin-6"
+     ],
+     "frameSeconds": 0.1,
+     "animations": [
+      {
+       "name": "spin",
+       "frames": [
+        "stock-coin-1",
+        "stock-coin-2",
+        "stock-coin-3",
+        "stock-coin-4",
+        "stock-coin-5",
+        "stock-coin-6"
+       ]
+      }
+     ],
+     "autoAnimate": {
+      "moving": "",
+      "air": "",
+      "still": "spin",
+      "turn": false
+     }
+    },
+    {
+     "id": "beetle",
+     "name": "Beetle",
+     "x": 800,
+     "y": -80,
+     "direction": 0,
+     "size": 100,
+     "layer": 3,
+     "visible": false,
+     "costume": "stock-beetle-walk-1",
+     "rotationStyle": "left-right",
+     "costumes": [
+      "stock-beetle-walk-1",
+      "stock-beetle-walk-2"
+     ],
+     "frameSeconds": 0.15,
+     "animations": [
+      {
+       "name": "walk",
+       "frames": [
+        "stock-beetle-walk-1",
+        "stock-beetle-walk-2"
+       ]
+      }
+     ],
+     "autoAnimate": {
+      "moving": "walk",
+      "air": "",
+      "still": "",
+      "turn": true
+     }
+    },
+    {
+     "id": "flag",
+     "name": "Flag",
+     "x": 2048,
+     "y": 32,
+     "direction": 0,
+     "size": 100,
+     "layer": 1,
+     "visible": true,
+     "costume": "stock-flag",
+     "rotationStyle": "none"
+    }
+   ],
+   "sounds": [
+    {
+     "id": "jump",
+     "name": "Jump",
+     "kind": "clip",
+     "stock": "effects/jump@1"
+    },
+    {
+     "id": "coin",
+     "name": "Coin",
+     "kind": "clip",
+     "stock": "effects/coin@1"
+    },
+    {
+     "id": "pop",
+     "name": "Pop",
+     "kind": "clip",
+     "stock": "effects/pop@1"
+    },
+    {
+     "id": "hit",
+     "name": "Hit",
+     "kind": "clip",
+     "stock": "effects/hit@1"
+    },
+    {
+     "id": "win",
+     "name": "Win",
+     "kind": "clip",
+     "stock": "effects/win@1"
+    },
+    {
+     "id": "music",
+     "name": "Chase",
+     "kind": "song",
+     "tempo": 150,
+     "beats": 16,
+     "notes": [
+      {
+       "at": 0,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 0.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 0.0,
+       "beats": 0.5,
+       "pitch": 45,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 0.0,
+       "beats": 0.5,
+       "pitch": 69,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 0.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 0.5,
+       "beats": 0.5,
+       "pitch": 45,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 0.5,
+       "beats": 0.5,
+       "pitch": 72,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 1,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 1,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 1.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 1.0,
+       "beats": 0.5,
+       "pitch": 45,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 1.0,
+       "beats": 0.5,
+       "pitch": 76,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 1.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 1.5,
+       "beats": 0.5,
+       "pitch": 57,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 1.5,
+       "beats": 0.5,
+       "pitch": 72,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 2,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 2.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 2.0,
+       "beats": 0.5,
+       "pitch": 45,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 2.0,
+       "beats": 0.5,
+       "pitch": 69,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 2.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 2.5,
+       "beats": 0.5,
+       "pitch": 45,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 2.5,
+       "beats": 0.5,
+       "pitch": 72,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 3,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 3,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 3.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 3.0,
+       "beats": 0.5,
+       "pitch": 45,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 3.0,
+       "beats": 0.5,
+       "pitch": 76,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 3.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 3.5,
+       "beats": 0.5,
+       "pitch": 57,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 3.5,
+       "beats": 0.5,
+       "pitch": 72,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 4,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 4.0,
+       "beats": 0.5,
+       "pitch": 41,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 4.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 4.0,
+       "beats": 0.5,
+       "pitch": 65,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 4.5,
+       "beats": 0.5,
+       "pitch": 41,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 4.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 4.5,
+       "beats": 0.5,
+       "pitch": 69,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 5,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 5,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 5.0,
+       "beats": 0.5,
+       "pitch": 41,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 5.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 5.0,
+       "beats": 0.5,
+       "pitch": 72,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 5.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 5.5,
+       "beats": 0.5,
+       "pitch": 53,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 5.5,
+       "beats": 0.5,
+       "pitch": 69,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 6,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 6.0,
+       "beats": 0.5,
+       "pitch": 41,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 6.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 6.0,
+       "beats": 0.5,
+       "pitch": 65,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 6.5,
+       "beats": 0.5,
+       "pitch": 41,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 6.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 6.5,
+       "beats": 0.5,
+       "pitch": 69,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 7,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 7,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 7.0,
+       "beats": 0.5,
+       "pitch": 41,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 7.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 7.0,
+       "beats": 0.5,
+       "pitch": 72,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 7.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 7.5,
+       "beats": 0.5,
+       "pitch": 53,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 7.5,
+       "beats": 0.5,
+       "pitch": 69,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 8,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 8.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 8.0,
+       "beats": 0.5,
+       "pitch": 43,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 8.0,
+       "beats": 0.5,
+       "pitch": 67,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 8.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 8.5,
+       "beats": 0.5,
+       "pitch": 43,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 8.5,
+       "beats": 0.5,
+       "pitch": 71,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 9,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 9,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 9.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 9.0,
+       "beats": 0.5,
+       "pitch": 43,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 9.0,
+       "beats": 0.5,
+       "pitch": 74,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 9.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 9.5,
+       "beats": 0.5,
+       "pitch": 55,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 9.5,
+       "beats": 0.5,
+       "pitch": 71,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 10,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 10.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 10.0,
+       "beats": 0.5,
+       "pitch": 43,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 10.0,
+       "beats": 0.5,
+       "pitch": 67,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 10.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 10.5,
+       "beats": 0.5,
+       "pitch": 43,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 10.5,
+       "beats": 0.5,
+       "pitch": 71,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 11,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 11,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 11.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 11.0,
+       "beats": 0.5,
+       "pitch": 43,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 11.0,
+       "beats": 0.5,
+       "pitch": 74,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 11.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 11.5,
+       "beats": 0.5,
+       "pitch": 55,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 11.5,
+       "beats": 0.5,
+       "pitch": 71,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 12,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 12.0,
+       "beats": 0.5,
+       "pitch": 40,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 12.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 12.0,
+       "beats": 0.5,
+       "pitch": 64,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 12.5,
+       "beats": 0.5,
+       "pitch": 40,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 12.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 12.5,
+       "beats": 0.5,
+       "pitch": 68,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 13,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 13,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 13.0,
+       "beats": 0.5,
+       "pitch": 40,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 13.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 13.0,
+       "beats": 0.5,
+       "pitch": 71,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 13.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 13.5,
+       "beats": 0.5,
+       "pitch": 52,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 13.5,
+       "beats": 0.5,
+       "pitch": 68,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 14,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 14.0,
+       "beats": 0.5,
+       "pitch": 40,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 14.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 14.0,
+       "beats": 0.5,
+       "pitch": 64,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 14.5,
+       "beats": 0.5,
+       "pitch": 40,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 14.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 14.5,
+       "beats": 0.5,
+       "pitch": 68,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 15,
+       "beats": 0.25,
+       "pitch": 36,
+       "instrument": "kick",
+       "volume": 33
+      },
+      {
+       "at": 15,
+       "beats": 0.25,
+       "pitch": 38,
+       "instrument": "snare",
+       "volume": 27
+      },
+      {
+       "at": 15.0,
+       "beats": 0.5,
+       "pitch": 40,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 15.0,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 15.0,
+       "beats": 0.5,
+       "pitch": 71,
+       "instrument": "square",
+       "volume": 27
+      },
+      {
+       "at": 15.5,
+       "beats": 0.25,
+       "pitch": 42,
+       "instrument": "hat",
+       "volume": 15
+      },
+      {
+       "at": 15.5,
+       "beats": 0.5,
+       "pitch": 52,
+       "instrument": "sawtooth",
+       "volume": 18
+      },
+      {
+       "at": 15.5,
+       "beats": 0.5,
+       "pitch": 68,
+       "instrument": "square",
+       "volume": 27
+      }
+     ]
+    }
+   ]
+  },
+  "procedures": [
+   {
+    "id": "on_start_handler",
+    "name": "on_start",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_start_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "start",
+     "order": 0
+    }
+   },
+   {
+    "id": "on_left_arrow_key_handler",
+    "name": "on_left_arrow_key",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_left_arrow_key_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "key:ArrowLeft",
+     "order": 1
+    }
+   },
+   {
+    "id": "on_right_arrow_key_handler",
+    "name": "on_right_arrow_key",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_right_arrow_key_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "key:ArrowRight",
+     "order": 2
+    }
+   },
+   {
+    "id": "on_space_key_handler",
+    "name": "on_space_key",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_space_key_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "key:Space",
+     "order": 3
+    }
+   },
+   {
+    "id": "on_start_2_handler",
+    "name": "on_start_2",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_start_2_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "start",
+     "order": 4
+    }
+   },
+   {
+    "id": "play_music_handler",
+    "name": "play_music",
+    "async": true,
+    "parameters": [
+     {
+      "id": "play_music_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "start",
+     "order": 5
+    }
+   },
+   {
+    "id": "on_world_start_handler",
+    "name": "on_world_start",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_world_start_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "world:enter",
+     "order": 6
+    }
+   },
+   {
+    "id": "on_coin_overlap_handler",
+    "name": "on_coin_overlap",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_coin_overlap_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "overlap",
+     "order": 7,
+     "sprite": "coin"
+    }
+   },
+   {
+    "id": "on_hero_update_handler",
+    "name": "on_hero_update",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_hero_update_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "update",
+     "order": 8,
+     "sprite": "hero"
+    }
+   },
+   {
+    "id": "on_beetle_overlap_handler",
+    "name": "on_beetle_overlap",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_beetle_overlap_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "overlap",
+     "order": 9,
+     "sprite": "beetle"
+    }
+   },
+   {
+    "id": "on_hero_overlap_handler",
+    "name": "on_hero_overlap",
+    "async": true,
+    "parameters": [
+     {
+      "id": "on_hero_overlap_handler_payload",
+      "name": "payload"
+     }
+    ],
+    "handler": {
+     "event": "overlap",
+     "order": 10,
+     "sprite": "hero"
+    }
+   }
+  ]
+ }
+}

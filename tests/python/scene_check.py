@@ -51,7 +51,8 @@ def load_runtime():
     """Fresh runtime modules with a host that only collects what the game sends."""
     host = types.ModuleType('_playground_host')
     for name in ('emit', 'scene_emit', 'audio_emit', 'question_emit'): setattr(host, name, lambda message: None)
-    host.scene_sense = lambda message: False
+    # No pictures are drawn here, so two sprites whose boxes overlap count as touching (touching_pixels checks the boxes first).
+    host.scene_sense = lambda message: json.loads(message).get('kind') == 'overlap'
     sys.modules['_playground_host'] = host
     for name in MODULES: sys.modules.pop(name, None)
     for name, file in MODULES.items():

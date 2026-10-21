@@ -67,7 +67,7 @@ export function installScenePalette(workspace: Blockly.WorkspaceSvg, selected: (
       COSTUME: { shadow: { type: 'scene_costume', fields: { COSTUME_ID: 'box' } } }, ENABLED: { shadow: { type: 'logic_boolean', fields: { BOOL: 'TRUE' } } },
     };
     const specs: [string, string[]][] = [
-      ['scene_world_set', ['WORLD']], ['scene_world_restart', []], ['scene_world_get', []],
+      ['scene_world_next', []], ['scene_world_set', ['WORLD']], ['scene_world_restart', []], ['scene_world_get', []],
       ['scene_camera_go', ['X', 'Y']], ['scene_camera_follow', ['SPRITE']], ['scene_camera_clamp', ['ENABLED']], ['scene_camera_get', []], ['scene_map_get', []],
       ['scene_tile_get', ['COLUMN', 'ROW']], ['scene_tile_at', ['X', 'Y']], ['scene_tile_set', ['COLUMN', 'ROW', 'COSTUME', 'ENABLED']], ['scene_tile_wall', ['COLUMN', 'ROW', 'ENABLED']], ['scene_tiles_of', ['COSTUME']], ['scene_tile_place', ['SPRITE', 'COLUMN', 'ROW']],
     ];

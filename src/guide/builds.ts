@@ -10,6 +10,7 @@ import type { Compilation } from '../language/compiler';
 import { aboutTheRun, passes, type Check, type RunFacts } from './checks';
 import { recipeById, type Recipe, type RecipePart } from './recipes';
 import { atLeast, levelNames, type Level } from '../ui/levels';
+import { handlerSignatures, type FunctionBlock } from '../language/functions';
 
 /** A guided build: a short, checked tutorial that ends in a playable game.
  * Steps are checked against the workspace (and whether it ran or finished),
@@ -45,8 +46,10 @@ export interface BuildStep {
   /** Scripts the lesson writes when a Fix-it step starts: the puzzle to repair. */
   plant?: RecipePart[];
   /** What "Show me how" adds when the step has no idea card; `replacesPlant`
-   * first removes the script the lesson planted in that step. */
-  solution?: { parts: RecipePart[]; replacesPlant?: number; variables?: string[] };
+   * first removes the script the lesson planted in that step, and `replaces` the scripts with these
+   * names (a starter's on_start_2), as when blocks move to another script. `world: "copy"` first duplicates the
+   * starting world, as Duplicate world in Worlds & tilemaps does (a new level). */
+  solution?: { parts: RecipePart[]; replacesPlant?: number; replaces?: string[]; world?: 'copy'; variables?: string[] };
   /** A Play-test goal counted from the score while the game runs. */
   goal?: { score: number; label: string };
   // ── Academy units (kind "unit") ──
@@ -114,6 +117,8 @@ export interface GuideHost {
   /** Save a facilitator's timing record. */
   download(name: string, text: string): void;
   revision: string;
+  /** Duplicate the starting world, as Worlds & tilemaps' Duplicate world does. */
+  copyWorld?(): void;
   /** Add scripts as one Undo step, first removing `replace` (block ids), making `variables` they use; returns the new scripts' ids. */
   insert(parts: RecipePart[], title: string, select?: string, other?: string, replace?: string[], variables?: string[]): string[];
   /** Keep the current project before a lesson replaces it; false when it cannot be kept. */
@@ -137,6 +142,13 @@ export interface GuideHost {
  * how" was used, so tester sessions can be compared with each build's minutes. */
 interface Timing { started: string; steps: number[]; shown: boolean[] }
 interface Saved { id: string; index: number; timing?: Timing; planted?: Record<string, string[]>; answers?: Record<string, number>; variants?: Record<string, number>; mastery?: Record<string, boolean>; reached?: number[] }
+/** The blocks of the scripts with these names, so Show me how can take them away (by name, since a script
+ * that Show me how put in has new block ids but the same name). */
+export function scriptsNamed(workspace: Blockly.Workspace, names: string[]) {
+  if (!names.length) return [];
+  const ids = new Set(handlerSignatures(workspace).filter(h => names.includes(h.name)).map(h => h.id));
+  return workspace.getAllBlocks(false).filter(b => b.type === 'py_handler' && ids.has((b as unknown as FunctionBlock).functionId)).map(b => b.id);
+}
 const minutesText = (ms: number) => { const seconds = Math.round(ms / 1000); return `${Math.floor(seconds / 60)} min ${seconds % 60} s`; };
 const STORAGE = 'python-blocks.guide.v1';
 const item = (tag: string, className: string, text = '') => Object.assign(document.createElement(tag), { className, textContent: text });
@@ -323,7 +335,7 @@ export function installGuide(host: GuideHost) {
     const step = active.steps[index], isLesson = lesson();
     lessonRoom(isLesson, !!step.puzzle);
     // A quiz remembers its answer, and a mastery problem its one try.
-    facts = { ran: false, finished: null, score: 0, predicted: answers[index] !== undefined, answered: !!step.quiz && answers[index] === step.quiz.answer, tried: answers[index] !== undefined || mastery[index] !== undefined, solved: step.mastery && step.game ? mastery[index] === true : false }; done = false; early = false;
+    facts = { ran: false, finished: null, score: 0, level: 0, predicted: answers[index] !== undefined, answered: !!step.quiz && answers[index] === step.quiz.answer, tried: answers[index] !== undefined || mastery[index] !== undefined, solved: step.mastery && step.game ? mastery[index] === true : false }; done = false; early = false;
     el('guide-list').hidden = true; el('guide-active').hidden = false; el('guide-finish').hidden = true;
     el('guide-active').classList.toggle('guide-lesson-active', isLesson);
     el('guide-meter').hidden = isLesson; el('guide-chapters').hidden = !isLesson;
@@ -662,7 +674,9 @@ export function installGuide(host: GuideHost) {
     const recipe = step.recipe && recipeById(step.recipe);
     if (recipe) { host.showRecipe(recipe); return; }
     if (!step.solution) return;
-    const replace = step.solution.replacesPlant === undefined ? [] : planted[step.solution.replacesPlant] ?? [];
+    if (step.solution.world === 'copy') host.copyWorld?.();
+    const replace = [...(step.solution.replacesPlant === undefined ? [] : planted[step.solution.replacesPlant] ?? []), ...scriptsNamed(host.workspace, step.solution.replaces ?? [])];
+    if (!step.solution.parts.length) { save(); return; }
     const ids = host.insert(step.solution.parts, `${active!.title}: step ${index + 1}`, step.select, step.other, replace, step.solution.variables);
     if (step.solution.replacesPlant !== undefined) planted[step.solution.replacesPlant] = ids;
     save();
@@ -825,6 +839,8 @@ export function installGuide(host: GuideHost) {
     input() { return active && lesson() && active.steps[index].puzzle ? el<HTMLTextAreaElement>('guide-try-input').value : undefined; },
     /** The running game's score; Play-test goals count the highest reached. */
     score(value: number) { if (active && value > (facts.score ?? 0)) { facts.score = value; evaluate(); } },
+    /** The running game's level (its world's number); a step can ask for a level reached. */
+    level(value: number) { if (active && value > (facts.level ?? 0)) { facts.level = value; evaluate(); } },
     dispose() {
       save(); clearTimeout(timer); clearTimeout(looseTimer); clearTimeout(coachTimer); stopReading(); closePop(); stopChecking(); stopGameCheck(); stagePicture(null); hideClip(); lessonRoom(false); host.workspace.removeChangeListener(changed); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('pagehide', save);
       clearHighlight(); slot.replaceChildren(); el('guide-active')?.remove(); el('lesson-start')?.remove(); el('lesson-finish')?.remove();

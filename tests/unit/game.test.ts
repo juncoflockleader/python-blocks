@@ -38,9 +38,9 @@ describe('game state, presentation and compiler integration', () => {
     expect(Object.values(result.files)[0]).toContain('_pb_game.countdown(10, "lose")');
   });
   it('validates game messages and bounded presentation commands at the worker bridge', () => {
-    const state: GameState = { score: 0, lives: 3, seconds: null, visible: { score: true, lives: false, countdown: true }, text: '', result: null };
+    const state: GameState = { score: 0, lives: 3, level: 1, seconds: null, visible: { score: true, lives: false, level: true, countdown: true }, text: '', result: null };
     expect(isSceneCommand({ type: 'game', state })).toBe(true);
-    for (const changes of [{ score: Infinity }, { lives: -1 }, { seconds: 1.2 }, { visible: null }, { text: 'x'.repeat(121) }, { result: { won: 1, message: '' } }, { result: { won: true, message: 'x'.repeat(241) } }]) expect(isSceneCommand({ type: 'game', state: { ...state, ...changes } })).toBe(false);
+    for (const changes of [{ score: Infinity }, { lives: -1 }, { level: 9 }, { level: 1.5 }, { seconds: 1.2 }, { visible: null }, { text: 'x'.repeat(121) }, { result: { won: 1, message: '' } }, { result: { won: true, message: 'x'.repeat(241) } }]) expect(isSceneCommand({ type: 'game', state: { ...state, ...changes } })).toBe(false);
     for (const effect of [{ kind: 'sparkles', seconds: 1, at: null }, { kind: 'rings', seconds: 10, at: { x: 1e6, y: -1e6 } }]) expect(isSceneCommand({ type: 'game_effect', ...effect })).toBe(true);
     for (const changes of [{ kind: 'unknown' }, { seconds: 0 }, { at: { x: NaN, y: 0 } }]) expect(isSceneCommand({ type: 'game_effect', kind: 'rings', seconds: 1, at: null, ...changes })).toBe(false);
   });

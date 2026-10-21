@@ -63,6 +63,7 @@ const propertyOptions = ['x', 'y', 'direction', 'size', 'layer'].map(v => [v, v]
 const command = (type: string, message0: string, args0: unknown[], output = false) => ({ type, message0, args0, ...(output ? { output: null } : { previousStatement: null, nextStatement: null }), colour: '#477c9a', inputsInline: false });
 Blockly.common.defineBlocksWithJsonArray([
   command('scene_world_set', 'switch to world %1', [value('WORLD')]),
+  command('scene_world_next', 'next world', []),
   command('scene_world_restart', 'restart current world', []),
   command('scene_world_get', 'current world %1', [menu('PROPERTY', [['name', 'world_name'], ['ID', 'world_id']])], true),
   command('scene_camera_go', 'camera center x %1 y %2', [value('X'), value('Y')]),

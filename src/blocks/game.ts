@@ -8,8 +8,8 @@ const block = (type: string, message0: string, args0: unknown[], output = false,
 Blockly.common.defineBlocksWithJsonArray([
   block('game_set', 'set %1 to %2', [menu('FIELD', fields), value('VALUE')]),
   block('game_change', 'change %1 by %2', [menu('FIELD', fields), value('VALUE')]),
-  block('game_get', 'game %1', [menu('FIELD', [...fields, ['seconds remaining (None before countdown)', 'seconds']])], true),
-  block('game_show', '%1 %2 on HUD', [menu('SHOW', [['show', 'TRUE'], ['hide', 'FALSE']]), menu('FIELD', [...fields, ['countdown', 'countdown']])]),
+  block('game_get', 'game %1', [menu('FIELD', [...fields, ['level', 'level'], ['seconds remaining (None before countdown)', 'seconds']])], true, 'Level is the current world’s number: 1 for the first world in the list.'),
+  block('game_show', '%1 %2 on HUD', [menu('SHOW', [['show', 'TRUE'], ['hide', 'FALSE']]), menu('FIELD', [...fields, ['level', 'level'], ['countdown', 'countdown']])]),
   block('game_message', 'HUD message %1', [value('TEXT')], false, 'Up to 120 characters, fixed to the screen. Empty text clears it.'),
   block('game_lives_rule', 'when lives reach zero %1', [action()], false, 'Event mode sends game:lives_zero once per positive-to-zero transition.'),
   block('game_countdown', 'count down %1 seconds then %2', [value('SECONDS'), action()], false, 'Event mode sends game:countdown once. Starting again replaces the timer.'),
@@ -19,6 +19,10 @@ Blockly.common.defineBlocksWithJsonArray([
   block('game_effect_clear', 'clear game bursts', []),
 ]);
 const text = (s: string) => ({ shadow: { type: 'text', fields: { TEXT: s } } });
+/** The level on the HUD and in a test, ready set to level: Builder's Game shows these with the world blocks (levels.ts). */
+export const levelToolbox: Blockly.utils.toolbox.FlyoutItemInfo[] = [
+  { kind: 'block', type: 'game_show', fields: { FIELD: 'level' } }, { kind: 'block', type: 'game_get', fields: { FIELD: 'level' } },
+];
 export const gameToolbox: Blockly.utils.toolbox.FlyoutItemInfo[] = [
   { kind: 'label', text: 'Score, lives & screen HUD' },
   { kind: 'block', type: 'game_set', inputs: { VALUE: numberInput(0) } },

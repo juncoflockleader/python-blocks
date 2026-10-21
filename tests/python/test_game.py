@@ -38,10 +38,13 @@ class GameTests(unittest.IsolatedAsyncioTestCase):
     def test_values_visibility_validation_and_atomic_failure(self):
         g = self.game; g.set('score', -10); g.change('score', 12); g.set('lives', 5); g.show('score', False); g.message('Find the exit!')
         self.assertEqual((g.get('score'), g.get('lives'), g.get('seconds')), (2, 5, None))
-        state = self.messages[-1]['state']; self.assertEqual(state['visible'], dict(score=False, lives=True, countdown=False)); self.assertEqual(state['text'], 'Find the exit!')
+        state = self.messages[-1]['state']; self.assertEqual(state['visible'], dict(score=False, lives=True, level=False, countdown=False)); self.assertEqual(state['level'], 1); self.assertEqual(state['text'], 'Find the exit!')
         before = len(self.messages)
         for field, value in [('score', True), ('score', 1.5), ('score', 1_000_000_000), ('lives', -1), ('lives', 1000), ('missing', 3)]:
             with self.assertRaises((ValueError, TypeError)): g.set(field, value)
+        # The level follows the world, so it is read and shown but never set.
+        for call in [lambda: g.set('level', 2), lambda: g.change('level', 1)]:
+            with self.assertRaises(ValueError): call()
         for call in [lambda: g.show('score', 1), lambda: g.message('a' * 121), lambda: g.message('😀' * 61), lambda: g.finish(True, '😀' * 121), lambda: g.countdown(float('nan')), lambda: g.countdown(3601), lambda: g.finish(1), lambda: g.finish(True, 'a' * 241), lambda: g.effect('missing'), lambda: g.effect('rings', seconds=11)]:
             with self.assertRaises((ValueError, TypeError)): call()
         self.assertEqual(len(self.messages), before); self.assertEqual((g.score, g.lives), (2, 5))

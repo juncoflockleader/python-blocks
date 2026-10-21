@@ -1,5 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
-import { openHelp, openTab } from './shell';
+import { openHelp, openTab, reveal, setSpriteField } from './shell';
 
 // The lessons, walked through with only what a learner has: the start sheet,
 // the hint ladder ("Show me how" last), idea cards, typing numbers into blocks,
@@ -297,5 +297,51 @@ test('Super Hopper: run, jump, coins, pits, beetles and the flag in a five-scree
   await page.keyboard.down('ArrowRight');
   await expect(page.locator('#status')).toHaveText(/Game over/, { timeout: 40_000 });
   await page.keyboard.up('ArrowRight');
-  await finishLesson(page, 'Super Hopper', 'Maze run', 6);
+  await finishLesson(page, 'Super Hopper', 'Level up', 6);
+});
+
+test('Level up: every level starts the same, the flag goes to the next world, coins in each level, a copied level and a win on the last', async ({ page }) => {
+  test.setTimeout(300_000);
+  const walkUntil = async (level: string) => {
+    await page.locator('#stage').click({ position: { x: 20, y: 20 } }); await page.keyboard.down('ArrowRight');
+    await expect(page.locator('#game-level')).toHaveText(level, { timeout: 15_000 }); await page.keyboard.up('ArrowRight');
+  };
+  await openLesson(page, 'level-up', 'Level up', 5, '1 · Start');
+  // 1. A world script puts the Hero on the left when each level starts.
+  await showMeHow(page); await expect(page.locator('#guide-checklist li.guide-ticked')).toHaveCount(2);
+  await next(page, '2 · Next level');
+  // 2. The flag goes to the next world instead of ending the game.
+  await showMeHow(page); await predict(page, 'A dark cave with no coins and no beetles');
+  await next(page);
+  // 3. The level shows on the HUD.
+  await showMeHow(page); await run(page); await expect(page.locator('#game-level')).toHaveText('Level 1'); await page.locator('#stop').click();
+  await next(page, '3 · Coins');
+  // 4. The coins and beetles are made when each world starts: the start script they were in is gone.
+  await showMeHow(page);
+  await expect.poll(async () => (await saved(page)).workspace.procedures.map((p: { name: string }) => p.name)).not.toContain('on_start_3');
+  await next(page);
+  // 5. Play into Level 2. The flag is five screens away, so the test moves it next to the start, as a learner may.
+  await page.locator('#scene-cards button', { hasText: 'Flag' }).click();
+  await setSpriteField(await reveal(page, '#scene-x'), '-30');
+  await run(page); await walkUntil('Level 2'); await page.locator('#stop').click();
+  await next(page, '4 · Your level');
+  // 6. Builder has Worlds & tilemaps: Duplicate world makes Level 3, the new starting world.
+  // Each new step makes the stage small again, back at its starting layout after the last game, so it can be edited.
+  await expect(page.locator('html')).toHaveAttribute('data-lesson-stage', 'small'); await expect(page.locator('#scene-worlds')).toBeEnabled();
+  await (await reveal(page, '#scene-worlds')).click(); await page.locator('#world-copy').click();
+  await expect(page.locator('#world-select option:checked')).toHaveText('Level 3'); await page.locator('#world-close').click();
+  await next(page, '5 · The end');
+  // 7. After the last world, next world goes round to the first.
+  await openTab(page, 'help'); await page.locator('#guide-choices button', { hasText: 'Back to Level 1' }).click();
+  await run(page); await expect(page.locator('#game-level')).toHaveText('Level 3'); await walkUntil('Level 1');
+  await openTab(page, 'help'); await expect(page.locator('#guide-predict-result')).toContainText('You guessed it!'); await page.locator('#stop').click();
+  await next(page);
+  // 8. If the level is 3, win; else go on.
+  await showMeHow(page); await expect(page.locator('#guide-checklist li.guide-ticked')).toHaveCount(3);
+  await next(page);
+  // 9. From Level 1, through all three levels to the win.
+  await (await reveal(page, '#scene-browse-world')).selectOption({ label: 'Level 1' });
+  await run(page); await page.locator('#stage').click({ position: { x: 20, y: 20 } }); await page.keyboard.down('ArrowRight');
+  await expect(page.locator('#status')).toHaveText('You win!', { timeout: 30_000 }); await page.keyboard.up('ArrowRight');
+  await finishLesson(page, 'Level up', 'Maze run', 5);
 });

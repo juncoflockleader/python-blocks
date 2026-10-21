@@ -8,14 +8,14 @@ import type { FunctionState } from '../blocks/core/functions';
  * workspace: the drop creates an ordinary handler definition (`py_handler`)
  * with the same signature rules as Events → Manage handlers, so generated
  * Python and the Python bridge see exactly what the dialog would produce. */
-export const HAT_KINDS = ['start', 'key', 'click', 'overlap', 'update', 'countdown', 'message', 'backdrop'] as const;
+export const HAT_KINDS = ['start', 'key', 'click', 'overlap', 'update', 'countdown', 'message', 'backdrop', 'world'] as const;
 export type HatKind = typeof HAT_KINDS[number];
 /** The four hats a Starter palette shows; Builder and Pro show every kind. */
 export const STARTER_HATS: readonly HatKind[] = ['start', 'key', 'click', 'overlap'];
 export const HAT_TYPE = 'py_event_hat';
 const SPRITE_HATS = new Set<HatKind>(['click', 'overlap', 'update']);
 export const needsSprite = (kind: HatKind) => SPRITE_HATS.has(kind);
-export interface HatTemplate { kind: HatKind; key?: string; sprite?: string; other?: string; message?: string; backdrop?: string }
+export interface HatTemplate { kind: HatKind; key?: string; sprite?: string; other?: string; message?: string; backdrop?: string; world?: string }
 type State = Blockly.serialization.blocks.State;
 interface HatBlock extends Blockly.Block { hatKind: HatKind; build(this: HatBlock): void }
 /** A palette event hat (it becomes a handler when dropped). */
@@ -38,10 +38,15 @@ const tooltips: Record<HatKind, string> = {
   countdown: 'Runs when a game countdown reaches zero.',
   message: 'Runs each time this message is sent.',
   backdrop: 'Runs when the stage switches to this backdrop, or to any backdrop.',
+  world: 'Runs when this world (a level) starts, or any world: when the game starts in it, and each time the game switches to it.',
 };
 function backdropMenu(this: Blockly.FieldDropdown): Blockly.MenuOption[] {
   const block = this.getSourceBlock();
   return [['any backdrop', ''], ...(block ? backdrops(sceneState(block.workspace)).map(a => [a.name, a.id] as [string, string]) : [])];
+}
+function worldMenu(this: Blockly.FieldDropdown): Blockly.MenuOption[] {
+  const block = this.getSourceBlock();
+  return [['any world', ''], ...(block ? (sceneState(block.workspace).worlds ?? []).map(w => [w.name, w.id] as [string, string]) : [])];
 }
 
 Blockly.Blocks[HAT_TYPE] = {
@@ -62,6 +67,7 @@ Blockly.Blocks[HAT_TYPE] = {
     if (kind === 'countdown') header.appendField('countdown ends');
     if (kind === 'message') header.appendField('I receive').appendField(new Blockly.FieldTextInput('message'), 'MESSAGE');
     if (kind === 'backdrop') header.appendField('backdrop switches to').appendField(new Blockly.FieldDropdown(backdropMenu), 'BACKDROP');
+    if (kind === 'world') header.appendField(new Blockly.FieldDropdown(worldMenu), 'WORLD').appendField('starts');
     this.appendStatementInput('BODY');
     this.setTooltip(`${tooltips[kind]} Dropping it creates an event handler; Events → Manage handlers edits its payload and order.`);
   },
@@ -95,7 +101,7 @@ export function templateOf(state: State): HatTemplate {
   const kind = (state.extraState as { kind?: HatKind } | undefined)?.kind;
   if (!kind || !HAT_KINDS.includes(kind)) throw new Error('Unknown event block.');
   const fields = (state.fields ?? {}) as Record<string, string>;
-  return { kind, key: fields.KEY, sprite: fields.SPRITE, other: fields.OTHER, message: fields.MESSAGE, backdrop: fields.BACKDROP };
+  return { kind, key: fields.KEY, sprite: fields.SPRITE, other: fields.OTHER, message: fields.MESSAGE, backdrop: fields.BACKDROP, world: fields.WORLD };
 }
 /** Palette entry for one hat, with defaults drawn from the current scene. */
 export function hatItem(kind: HatKind, sprite = '', other = ''): Blockly.utils.toolbox.BlockInfo {
@@ -105,6 +111,7 @@ export function hatItem(kind: HatKind, sprite = '', other = ''): Blockly.utils.t
   if (kind === 'overlap') fields.OTHER = other;
   if (kind === 'message') fields.MESSAGE = 'message';
   if (kind === 'backdrop') fields.BACKDROP = '';
+  if (kind === 'world') fields.WORLD = '';
   return { kind: 'block', type: HAT_TYPE, extraState: { kind }, fields };
 }
 
@@ -127,6 +134,7 @@ export function handlerSignature(workspace: Blockly.Workspace, template: HatTemp
   const owner = sprite ? slug(sprite.name) || 'sprite' : '';
   const key = keys.find(([, value]) => value === template.key);
   const backdrop = template.backdrop ? backdrops(scene).find(a => a.id === template.backdrop) : undefined;
+  const world = template.world ? scene.worlds?.find(w => w.id === template.world) : undefined;
   if (template.kind === 'key' && !key) throw new Error('Choose a key for this event block.');
   const [event, base]: [string, string] = {
     start: ['start', 'on_start'],
@@ -137,6 +145,7 @@ export function handlerSignature(workspace: Blockly.Workspace, template: HatTemp
     countdown: ['game:countdown', 'on_countdown_end'],
     message: [message, `on_${slug(message) || 'message'}`],
     backdrop: backdrop ? [`backdrop:${backdrop.id}`, `on_backdrop_${slug(backdrop.name) || 'change'}`] : ['backdrop:change', 'on_backdrop_change'],
+    world: world ? [`world:${world.id}`, `on_${slug(world.name) || 'world'}_start`] : ['world:enter', 'on_world_start'],
   }[template.kind] as [string, string];
   const handler: Handler = { event, order: Math.max(-1, ...handlerSignatures(workspace).map(h => h.handler!.order)) + 1, ...(sprite ? { sprite: sprite.id } : {}) };
   return { id: Blockly.utils.idGenerator.genUid(), name: handlerName(workspace, base), async: true, parameters: [{ id: Blockly.utils.idGenerator.genUid(), name: 'payload' }], handler };
