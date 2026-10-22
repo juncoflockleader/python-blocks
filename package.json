@@ -12,6 +12,8 @@
     "dev": "pnpm assets && vite --host 127.0.0.1",
     "build": "pnpm assets && tsc --noEmit && vite build",
     "preview": "vite preview --host 127.0.0.1",
+    "serve": "node server/main.ts",
+    "accounts": "node server/cli.ts",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:python": "python3 -m unittest discover -s tests/python -v",

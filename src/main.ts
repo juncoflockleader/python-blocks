@@ -42,6 +42,7 @@ import { installFixes, type RuntimeFault } from './guide/fixes';
 import { installGallery } from './guide/gallery';
 import { installLessons } from './guide/lessons';
 import { installAcademy } from './academy/academy';
+import { installAccount } from './account/ui';
 import './academy/academy.css';
 import { atLeast, installLevels, levelNames, findBlock, requiredLevel, storedLevel, toolboxFor, LEVEL_KEY, type Level } from './ui/levels';
 import { installHelpSections, installInputHints, installLevelControl, installMenu, installPaletteHint, installPythonPlacement, installTabs, installViewSwitch, keepShellInPlace, shellMarkup, trackKeyboard } from './ui/shell';
@@ -69,6 +70,8 @@ const tabs = installTabs(tab => { if (tab === 'output') badge.hidden = true; });
 const help = installHelpSections();
 // The title is cosmetic editor state, kept with the autosave so a reload shows the same name.
 const TITLE_KEY = 'python-blocks.title.v1';
+/** A new, empty program (My projects → New project). */
+const EMPTY_PROJECT = { format: 'python-blocks', formatVersion: 1, languageVersion: 23, workspace: { blocks: { languageVersion: 0, blocks: [] } } };
 const projectTitle = element('#project-title');
 /** A lesson keeps the project it replaced here until the learner returns to it. */
 const KEPT_KEY = 'python-blocks.guide.kept.v1';
@@ -253,8 +256,8 @@ const guide = installGuide({
   // A guided build works in the blocks, so it starts in Blocks view.
   load(project, title) { if (!installProject(prepareProject(JSON.stringify(project)).project)) return false; setTitle(title); viewSwitch?.show('blocks'); return true; },
   select: id => sceneEditor?.select(id), prefer: id => { preferredTarget = id; }, showRecipe: recipe => ideas.show(recipe), reveal: list => { if (list) showHelp('builds'); else tabs.activate('help'); }, notify: helpDot,
-  finished: build => { helpDot(); academy.finished(build); },
-  progress: event => academy.record(event),
+  finished: build => { helpDot(); academy.finished(build); accountControls.finished(build); },
+  progress: event => { academy.record(event); if (academy.mastered(event.build)) accountControls.mastered(event.build); },
   stopped: () => nudges.empty(!workspace.getTopBlocks(false).length),
   download: (name, text) => download(name, text, 'application/json'),
   revision: typeof __APP_REVISION__ === 'string' ? __APP_REVISION__ : 'development (revision unavailable)',
@@ -269,12 +272,12 @@ const guide = installGuide({
   },
   keep() {
     saveCurrentProject();
-    try { localStorage.setItem(KEPT_KEY, JSON.stringify({ title: projectTitle.textContent ?? '', project: snapshot(workspace) })); return true; } catch { return false; }
+    try { localStorage.setItem(KEPT_KEY, JSON.stringify({ title: projectTitle.textContent ?? '', project: snapshot(workspace), cloud: accountControls.identity() })); return true; } catch { return false; }
   },
   restore() {
-    let kept: { title: string; project: unknown } | null = null;
+    let kept: { title: string; project: unknown; cloud?: string | null } | null = null;
     try { kept = JSON.parse(localStorage.getItem(KEPT_KEY) ?? 'null'); } catch { kept = null; }
-    if (!kept || !installProject(prepareProject(JSON.stringify(kept.project)).project)) return false;
+    if (!kept || !installProject(prepareProject(JSON.stringify(kept.project)).project, kept.cloud ?? null)) return false;
     setTitle(kept.title || 'My project'); offerLevel();
     try { localStorage.removeItem(KEPT_KEY); } catch { /* the kept copy stays until it can be removed */ }
     return true;
@@ -282,6 +285,24 @@ const guide = installGuide({
   kept() { try { return localStorage.getItem(KEPT_KEY) !== null; } catch { return false; } },
   play() { element('#run').click(); },
   tabLabel(text) { const label = element('#tab-help').firstChild; if (label) label.textContent = text; },
+});
+// Signed in (served by the Python Blocks server): coins and the learner's menu, My projects and Profile.
+const accountControls = installAccount({
+  open(project, title, id) {
+    const prepared = prepareProject(JSON.stringify(project));
+    if (prepared.migrationStacks.length) { migrationIdentity = id; showMigration(prepared); return true; }
+    if (!installProject(prepared.project, id)) return false;
+    setTitle(title); offerLevel(); return true;
+  },
+  fresh() {
+    if (!installProject(prepareProject(JSON.stringify(EMPTY_PROJECT)).project)) return false;
+    setTitle('My project'); return true;
+  },
+  rename: title => setTitle(title),
+  title: () => projectTitle.textContent ?? '',
+  lessonActive: () => !!guide.active,
+  status: text => { notice.textContent = text; },
+  stopSaving: () => { autosaveEnabled = false; },
 });
 // A block's "!" at Starter and Builder offers a step-by-step fix instead of Blockly's plain bubble.
 const fixes = installFixes({
@@ -307,6 +328,8 @@ function offerLevel() { try { levelControl.offer(requiredLevel(workspace)); } ca
 let autosaveEnabled = true;
 let recoveryText: string | null = null;
 let pendingMigration: PreparedProject | null = null;
+/** The saved program a project being migrated came from (none for a file). */
+let migrationIdentity: string | null = null;
 let migrationOrder: string[] = [];
 const notice = element('#save-state');
 const exportButton = element<HTMLButtonElement>('#export');
@@ -387,14 +410,15 @@ function updateCode(save = true) {
 function saveCurrentProject() {
   if (!autosaveEnabled) return;
   if (pythonEditor?.unstored) { notice.textContent = 'The latest Python text could not be saved. Download the draft before leaving or opening another project.'; return; }
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot(workspace))); notice.textContent = 'Saved in this browser'; }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot(workspace))); notice.textContent = accountControls.signedIn ? 'Saving…' : 'Saved in this browser'; }
   catch { notice.textContent = 'Browser save unavailable. Use Save project to keep a file.'; }
 }
 // Blockly delivers change notifications asynchronously. Preserve the current
 // model even when reload immediately follows an edit or undo/redo.
 window.addEventListener('pagehide', saveCurrentProject);
 
-function installProject(project: ReturnType<typeof snapshot>) {
+/** Put a project in the editor; `cloud` is the saved program (My projects) it is, if any. */
+function installProject(project: ReturnType<typeof snapshot>, cloud: string | null = null) {
   if (!pythonEditor?.flush()) return false;
   soundEditor.close();
   pythonEditor?.reset();
@@ -403,6 +427,7 @@ function installProject(project: ReturnType<typeof snapshot>) {
   autosaveEnabled = true; recoveryText = null; element('#recover').hidden = true;
   output.textContent = ''; outputPanel.hidden = true; element('#error-details').hidden = true; badge.hidden = true; tabs.mark('output', false);
   status.textContent = 'Ready'; updateCode();
+  accountControls.replaced(cloud);
   return true;
 }
 
@@ -432,11 +457,11 @@ function renderMigration() {
 }
 element('#migration-apply').addEventListener('click', () => {
   try {
-    installProject(confirmMigration(pendingMigration!, migrationOrder));
-    pendingMigration = null; element<HTMLDialogElement>('#migration-dialog').close(); offerLevel();
+    installProject(confirmMigration(pendingMigration!, migrationOrder), migrationIdentity);
+    pendingMigration = null; migrationIdentity = null; element<HTMLDialogElement>('#migration-dialog').close(); offerLevel();
   } catch (error) { element('#migration-error').textContent = error instanceof Error ? error.message : String(error); }
 });
-element('#migration-cancel').addEventListener('click', () => { pendingMigration = null; element<HTMLDialogElement>('#migration-dialog').close(); });
+element('#migration-cancel').addEventListener('click', () => { pendingMigration = null; migrationIdentity = null; element<HTMLDialogElement>('#migration-dialog').close(); });
 
 Blockly.serialization.workspaces.load(squareProject, workspace);
 try {
@@ -444,7 +469,7 @@ try {
   if (saved) {
     recoveryText = saved;
     const prepared = prepareProject(saved);
-    if (prepared.migrationStacks.length) { autosaveEnabled = false; showMigration(prepared); }
+    if (prepared.migrationStacks.length) { autosaveEnabled = false; migrationIdentity = accountControls.identity(); showMigration(prepared); }
     else { restore(workspace, prepared.project); recoveryText = null; }
     projectTitle.textContent = localStorage.getItem(TITLE_KEY) || 'My project';
   } else projectTitle.textContent = 'My first drawing';
@@ -455,6 +480,8 @@ try {
 }
 sceneEditor.restore(); soundList.refresh();
 updateCode(autosaveEnabled);
+// The project the editor starts with is not a new edit: My projects saves it only once it changes.
+accountControls.replaced(accountControls.identity());
 // A browser that has never chosen a level gets a one-time offer for its saved project.
 try { if (localStorage.getItem(LEVEL_KEY) === null && !element<HTMLDialogElement>('#migration-dialog').open) offerLevel(); } catch { /* storage unavailable */ }
 let assist: ReturnType<typeof installAssist> | undefined;
@@ -596,7 +623,7 @@ element<HTMLInputElement>('#project-file').addEventListener('change', async even
     const prepared = prepareProject(await file.text());
     await validateSceneImages(prepared.project.workspace.pythonScene ?? emptyScene());
     if (beforeOpen !== JSON.stringify(snapshot(workspace))) throw new Error('The project changed while loading this file. Open it again when ready.');
-    if (prepared.migrationStacks.length) showMigration(prepared);
+    if (prepared.migrationStacks.length) { migrationIdentity = null; showMigration(prepared); }
     else if (installProject(prepared.project)) { setTitle(file.name.replace(/\.python-blocks\.json$|\.json$/i, '') || 'My project'); offerLevel(); }
   } catch (error) { notice.textContent = `Could not open project: ${error instanceof Error ? error.message : error}. Your current work is unchanged.`; }
 });

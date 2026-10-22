@@ -15,6 +15,10 @@ pnpm dev
 
 Open http://127.0.0.1:5173. Click **Run code** to draw a square, change the repeat count or a distance block, and run again. **Stop** terminates the Python worker immediately. Each run starts with fresh Python state.
 
+### Accounts, saved programs and coins
+
+Served by the [Python Blocks server](docs/server.md) (`pnpm build`, then `ADMIN_USERNAME=… ADMIN_PASSWORD=… pnpm serve`), the app is private: only the sign-in page loads before signing in, and there is no sign-up. An admin adds learners on the admin page. A signed-in learner's work follows them to any computer, the programs they make are saved in **My projects** as they work, and finishing a lesson, guided build or Academy unit earns coins, shown in the top bar with what earned them in **Profile**. Opened without the server (`pnpm dev`), the app runs on its own, with work kept in that browser.
+
 ### The editor screen
 
 The editor fits one tablet screen (designed for an iPad in landscape, 1024 × 700 and up) and never scrolls the page:
@@ -121,12 +125,14 @@ Use this scaffold locally with your own projects. A worker provides responsivene
 | --- | --- |
 | `pnpm dev` | Prepare runtime assets and start Vite |
 | `pnpm build` | Prepare assets, check types, and create `dist/` |
-| `pnpm preview` | Serve the production build at port 4173 |
+| `pnpm preview` | Serve the production build at port 4173 (no accounts) |
+| `pnpm serve` | Run the Python Blocks server: the production build behind sign-in, with accounts, saved programs and coins ([docs/server.md](docs/server.md)) |
+| `pnpm accounts add-user <name>` | Add an account on the command line (also `set-password`, `list-users`) |
 | `pnpm check` | TypeScript checks, compiler/runner tests, Python tests, production build |
 | `pnpm exec playwright install chromium` | Install the browser used by end-to-end tests |
 | `pnpm test:e2e` | Test the production app (run `pnpm build` first) |
 
-The production host must serve the complete `dist/` directory, including `pyodide/`, from the site root, with `.wasm` files served as `application/wasm`. No deployment is configured.
+Deploy with the server: it serves `dist/` (including `pyodide/`) only to signed-in learners, with the cross-origin isolation headers and `.wasm` types the editor needs. See [docs/server.md](docs/server.md) for settings, HTTPS behind a reverse proxy, and backups.
 
 ## Design and source map
 

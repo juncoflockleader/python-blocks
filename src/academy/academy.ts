@@ -148,6 +148,8 @@ export function installAcademy(host: AcademyHost) {
     /** A step was done or tried in a unit. */
     record(event: ProgressEvent) { record(progress, event); saveProgress(progress); },
     finished(build: Build) { if (build.kind === 'unit') { finishUnit(progress, build); saveProgress(progress); } },
+    /** Two of a unit's three mastery problems right (a big project is mastered by finishing it). */
+    mastered(build: Build) { return build.kind === 'unit' && unitStatus(build, progress.units[build.id]).mastered; },
     dispose() { dialog.remove(); },
   };
 }
