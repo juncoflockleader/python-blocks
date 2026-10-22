@@ -588,6 +588,21 @@ The owner asked for more examples: a Pac-Man, a Space Invaders and other old arc
 
 New library art for them (Characters, Objects, Tiles and a Moon backdrop) is in the library for every project: [arcade.ts](../src/art/arcade.ts). The projects are built from blocks with the editor's own functions (so every block is real) and checked by a [unit test](../tests/unit/arcade.test.ts) that plays each one with the academy's scripted player: the controls do what they say, nothing fails, and each can be lost.
 
+### 3.21 Accounts, saved programs and coins (built 2026-10-21)
+
+The owner asked for a backend before more content: a sign-in with no sign-up (an admin gives out usernames and passwords), nothing for someone not signed in, a profile and saved programs, and coins for finishing lessons and units, to spend later in a shop of cosmetic items with full refunds. Decisions: a Node server with SQLite in this repository; only the sign-in page before signing in; an admin web page; coins of 100 for a lesson, 30 for a guided build, 30 for an Academy unit and 20 for its mastery star, 100 for a chapter's big project, each earned once.
+
+| Part | What | Where |
+| --- | --- | --- |
+| Server | Serves the app only to signed-in learners, with an API for accounts, synced work, saved programs, coins and the admin page. No dependencies beyond Node; one SQLite file. | [server/](../server), [server guide](server.md) |
+| Sign in | A page with the logo, username and password (with Show), clear messages for a wrong password, an account turned off, or too many tries, and a line saying who gives out accounts. | [login.html](../login.html), [login.ts](../src/login/login.ts) |
+| In the editor | Coins and the learner's initial in the top bar; the menu has My projects, Profile, Admin (for admins) and Sign out. A cheer, “+100 coins!”, says what earned them. Profile has the name, the coins with what earned each, and a password change. | [account/ui.ts](../src/account/ui.ts) |
+| Work that follows | Everything the editor kept in the browser (the project, its title, lesson positions, Academy progress, the level) is copied to the account and loaded at sign-in, so a learner continues on any computer; signing out leaves nothing behind. | [account/sync.ts](../src/account/sync.ts) |
+| My projects | Programs are saved as the learner works, once they change something. Open, rename, delete, new. | [account/ui.ts](../src/account/ui.ts) |
+| Admin page | Add learners (with a made-up password a child can type, such as maple-otter-42), see each account's coins, finished things, programs and last sign-in, reset passwords, turn accounts off, make admins, give coins with a note. | [admin.html](../admin.html), [admin.ts](../src/admin/admin.ts) |
+
+Not built yet: the shop and its items (the coin ledger already takes purchases and refunds as entries); a grown-ups' view of the Academy from the server's progress (the admin page lists finished awards; the Academy's own For grown-ups view still reads the browser's copy); several learners at once on one computer without signing out.
+
 ## 4. Track C: academy
 
 ### 4.1 Model

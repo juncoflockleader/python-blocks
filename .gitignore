@@ -12,3 +12,5 @@ __pycache__/
 .env.*
 !.env.example
 public/player/
+/data/
+/.test-server-data/

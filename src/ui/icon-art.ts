@@ -101,6 +101,8 @@ export const iconArt = {
   grid: '<rect x="2" y="4" width="20" height="16" rx="2"/><path d="M12 4v16M2 12h20"/>',
   hint: '<path d="M9.5 18h5M10.5 21h3M12 3a6 6 0 0 0-3.6 10.8c.9.7 1.6 1.7 1.6 2.9v.3h4v-.3c0-1.2.7-2.2 1.6-2.9A6 6 0 0 0 12 3Z"/>',
   leave: '<path d="M13 3H4v18h9M9 12h11m-4-4 4 4-4 4"/>',
+  coin: '<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.6"/>',
+  user: '<circle cx="12" cy="8" r="3.6"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/>',
   people: '<circle cx="9" cy="8" r="3.2"/><path d="M3 20c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M15.6 14.4A5 5 0 0 1 21 19"/>',
 } as const;
 export type IconName = keyof typeof iconArt;

@@ -1,0 +1,56 @@
+/* The account in the top bar, My projects, Profile and the coin cheer (account/ui.ts). */
+.account-slot { display: flex; align-items: center; gap: 6px; }
+.account-slot[hidden] { display: none; }
+.coin-chip { display: inline-flex; align-items: center; gap: 5px; min-height: 40px; padding: 0 12px 0 9px; border: 1px solid #e5c76b; border-radius: 999px; background: linear-gradient(#fff6d6, #ffe9a6); color: #6b4d0f; font: 700 15px 'DM Sans', system-ui, sans-serif; cursor: pointer; }
+.coin-chip svg { color: #c98e2e; }
+.coin-chip:focus-visible, .account-button:focus-visible { outline: 3px solid #267c70; outline-offset: 2px; }
+.coin-chip-cheer { animation: coin-cheer 0.9s ease-out; }
+@keyframes coin-cheer { 0% { transform: scale(1); } 30% { transform: scale(1.18) rotate(-4deg); box-shadow: 0 0 0 6px #ffe28a80; } 60% { transform: scale(0.97) rotate(2deg); } 100% { transform: scale(1); } }
+@media (prefers-reduced-motion: reduce) { .coin-chip-cheer { animation: none; } }
+.account-button { width: 42px; height: 42px; padding: 0; border: 2px solid #cfe3dd; border-radius: 50%; background: #267c70; cursor: pointer; display: grid; place-items: center; }
+.account-avatar { color: #ffffff; font: 700 17px 'Space Grotesk', system-ui, sans-serif; }
+.account-menu { width: 240px; }
+.account-who { display: grid; gap: 2px; padding: 6px 10px 10px; border-bottom: 1px solid #e4e7dd; }
+.account-who strong { font: 700 16px 'DM Sans', system-ui, sans-serif; color: #26382f; overflow-wrap: anywhere; }
+.account-who span { font-size: 13px; color: #5d6d57; }
+.account-menu .button { display: flex; align-items: center; justify-content: flex-start; gap: 10px; text-decoration: none; }
+.account-menu .button svg { flex: none; }
+/* Signed in, the top bar also holds coins and the learner's button: the lesson buttons show only their icons sooner. */
+@media (max-width: 1379px) { :root[data-account] #examples-open, :root[data-account] #lessons-open, :root[data-account] #academy-open { font-size: 0; gap: 0; width: 44px; padding: 0; } }
+@media (max-width: 1179px) { :root[data-account] .view-option { font-size: 0; gap: 0; width: 44px; padding: 0; } }
+.coin-toast { position: fixed; top: 64px; right: 16px; z-index: 90; display: flex; align-items: center; gap: 10px; max-width: min(380px, calc(100vw - 32px)); padding: 12px 16px; border: 1px solid #e5c76b; border-radius: 14px; background: #fffaf0; box-shadow: 0 14px 34px #26382f33; color: #4a3a12; font-size: 15px; }
+.coin-toast[hidden] { display: none; }
+.coin-toast svg { color: #c98e2e; flex: none; }
+.coin-toast strong { color: #8a5f0c; }
+
+.account-dialog { width: min(760px, calc(100vw - 24px)); }
+.account-dialog h2 { display: flex; align-items: center; gap: 8px; }
+.account-dialog > header { gap: 8px; }
+.account-status:empty { display: none; }
+.account-status { color: #8a3b2b; }
+.account-note { color: #5d6d57; font-size: 13px; }
+.account-projects { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 8px; max-height: min(60dvh, 560px); overflow: auto; }
+.account-project { display: flex; align-items: center; gap: 12px; padding: 10px 12px; border: 1px solid #dfe4d3; border-radius: 12px; background: #ffffff; }
+.account-project-words { flex: 1; min-width: 0; display: grid; gap: 2px; }
+.account-project-words strong { font: 700 15px 'DM Sans', system-ui, sans-serif; color: #26382f; overflow-wrap: anywhere; }
+.account-project-words span { font-size: 12px; color: #5d6d57; }
+.account-project-actions { display: flex; gap: 6px; flex-wrap: wrap; justify-content: flex-end; }
+.account-rename { min-height: 40px; padding: 0 10px; border: 1px solid #b9c7a8; border-radius: 8px; font-size: 15px; }
+.account-danger { border-color: #d98b7a !important; color: #8a3b2b !important; }
+.profile-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px; margin-top: 10px; }
+.profile-card { padding: 12px 14px; border: 1px solid #dfe4d3; border-radius: 12px; background: #ffffff; }
+.profile-card h3 { margin: 0 0 8px; font: 700 16px 'Space Grotesk', system-ui, sans-serif; color: #26382f; }
+.profile-form { display: grid; gap: 8px; }
+.profile-form label { display: grid; gap: 4px; font-size: 13px; color: #4e5f49; }
+.profile-form input { min-height: 40px; padding: 0 10px; border: 1px solid #b9c7a8; border-radius: 8px; font-size: 15px; }
+.profile-balance { display: flex; align-items: center; gap: 8px; margin: 0; color: #8a5f0c; }
+.profile-balance svg { color: #c98e2e; }
+.profile-balance strong { font: 700 30px 'Space Grotesk', system-ui, sans-serif; }
+.profile-coins { grid-row: span 2; }
+.profile-history { list-style: none; margin: 8px 0 0; padding: 0; display: grid; gap: 4px; max-height: 280px; overflow: auto; font-size: 13px; }
+.profile-history li { display: grid; grid-template-columns: 44px 1fr auto; gap: 6px; align-items: baseline; }
+.profile-history small { color: #7a8873; }
+.profile-history li.account-note { display: block; }
+.account-menu .menu-group { border-bottom: 0; padding-bottom: 0; }
+.profile-amount { font-weight: 700; color: #8a5f0c; text-align: right; }
+@media (max-width: 899px) { .coin-chip { min-height: 36px; padding: 0 9px 0 7px; font-size: 14px; } .account-button { width: 38px; height: 38px; } }
