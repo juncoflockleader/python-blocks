@@ -6,6 +6,7 @@ import { installPythonVariables } from '../language/variables';
 import { moduleState, utf8Size } from '../language/modules';
 import { validateModuleDefinitions } from '../language/module-format';
 import { validateLambdaIdentities } from '../language/lambdas';
+import { spreadScripts } from './spread';
 import '../bridge/draft-state';
 
 export const STORAGE_KEY = 'python-blocks.project.v1';
@@ -86,6 +87,9 @@ export function restore(workspace: Blockly.Workspace, project: Project) {
   try {
     try { loadWorkspace(prepared.project.workspace, workspace); }
     catch (error) { loadWorkspace(before, workspace); throw error; }
+    // On screen, no script of a project just opened sits on top of another; but a Python draft records the
+    // project it began from, layout included, so moving its scripts would make the draft look out of date.
+    if (workspace.rendered && !prepared.project.workspace.pythonBridge?.draft) spreadScripts(workspace as Blockly.WorkspaceSvg);
     workspace.clearUndo();
   } finally { Blockly.Events.enable(); }
 }

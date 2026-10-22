@@ -65,10 +65,10 @@ test('Examples holds finished projects to play and change, with thumbnails and t
   await expect(card.locator('img')).toHaveJSProperty('complete', true);
   expect(await card.locator('img').evaluate((img: HTMLImageElement) => img.naturalWidth)).toBe(480); // the stage's own size, rendered on a 2× screen
   // The games that lessons build are under Lessons, not here.
-  await expect(page.locator('#examples-dialog .example-card')).toHaveCount(15);
+  await expect(page.locator('#examples-dialog .example-card')).toHaveCount(16);
   await expect(page.locator('#examples-dialog [data-example="catch-the-star-game"]')).toHaveCount(0);
   // The arcade games are among them.
-  for (const id of ['maze-muncher', 'sky-defenders', 'rock-blaster', 'snake', 'moon-lander']) await expect(page.locator(`#examples-dialog [data-example="${id}"]`)).toHaveCount(1);
+  for (const id of ['maze-muncher', 'sky-defenders', 'rock-blaster', 'snake', 'moon-lander', 'flappy-pipe']) await expect(page.locator(`#examples-dialog [data-example="${id}"]`)).toHaveCount(1);
   await expect(page.locator('#examples-dialog [data-filter="build"]')).toHaveCount(0);
   await page.locator('#scene-story-example').click();
   await expect(page.locator('#project-title')).toHaveText('Story');

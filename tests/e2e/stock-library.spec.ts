@@ -27,11 +27,11 @@ test('stock sprites have real previews, searchable categories and atomic reusabl
   await page.locator('#project-file').setInputFiles({name:'existing-art.json',mimeType:'application/json',buffer:Buffer.from(JSON.stringify(project))});
   await expect.poll(() => saved(page)).toEqual(project.workspace.pythonScene);
   const before = await saved(page);
-  await page.locator('#scene-stock').click(); await expect(page.locator('.stock-card')).toHaveCount(53); await expect(page.locator('.stock-thumbnail canvas')).toHaveCount(53);
+  await page.locator('#scene-stock').click(); await expect(page.locator('.stock-card')).toHaveCount(54); await expect(page.locator('.stock-thumbnail canvas')).toHaveCount(54);
   const coverage = await page.locator('.stock-thumbnail canvas').evaluateAll(canvases => canvases.map(canvas => { const c=canvas as HTMLCanvasElement; return Array.from(c.getContext('2d')!.getImageData(0,0,c.width,c.height).data).filter((v,i) => i%4===3 && v>0).length; }));
   expect(coverage.every(n => n>200)).toBe(true);
   await page.locator('#stock-dialog').screenshot({path:info.outputPath('stock-sprites-desktop.png')});
-  await page.locator('#stock-category').selectOption('Characters'); await expect(page.locator('.stock-card')).toHaveCount(14);
+  await page.locator('#stock-category').selectOption('Characters'); await expect(page.locator('.stock-card')).toHaveCount(15);
   await page.locator('#stock-search').fill('cat'); await expect(page.locator('.stock-card')).toHaveCount(1); await add(page,'cat');
   const first = await saved(page), cat = first.sprites.at(-1); expect(cat.name).toBe('Cat 1'); expect(cat.costume).not.toBe('cat'); expect(first.assets[0]).toEqual(before.assets[0]);
   await page.locator('#scene-stock').click(); await add(page,'cat'); const second = await saved(page);

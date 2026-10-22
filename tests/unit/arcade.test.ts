@@ -52,4 +52,10 @@ describe('arcade examples', () => {
   it('Moon Lander: the engine pushes up, and without it the lander crashes', () => {
     play('moon-lander', [{ wait: 0.3 }, { key: 'ArrowUp', hold: 1.5 }, { expect: { sprite: 'Lander', y: [125, 160] } }, { wait: 8 }, { expect: { finished: 'lost' } }]);
   }, 60_000);
+  it('Flappy Pipe: gravity pulls the pipe down, Space flaps it up, and a pipe that stops flapping is lost', () => {
+    play('flappy-pipe', [
+      { wait: 0.3 }, { expect: { sprite: 'Pipe', y: [-40, 0] } }, { key: 'Space' }, { wait: 0.3 }, { expect: { sprite: 'Pipe', y: [5, 60] } },
+      { wait: 4 }, { expect: { finished: 'lost' } },
+    ]);
+  }, 60_000);
 });

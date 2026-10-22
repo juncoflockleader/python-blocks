@@ -74,7 +74,7 @@ export const palette: Record<Level, CategorySpec[]> = {
     category('control', 'Control', { items: control(false) }, label('Check'), starterSensing),
     category('draw', 'Draw', { items: draw }, label('Sprite pen'), { callback: 'PY_PEN' }),
     category('variables', 'Variables', { callback: 'PY_VARIABLES' }),
-    category('game', 'Game', { items: gameToolbox }, label('Sprites'), { callback: 'PY_SPRITES', types: ['scene_self', 'scene_clone', 'scene_destroy'] }),
+    category('game', 'Game', { items: gameToolbox }, label('Sprites'), { callback: 'PY_SPRITES', types: ['scene_sprite', 'scene_self', 'scene_clone', 'scene_destroy'] }),
   ],
   builder: [
     category('events', 'Events', { items: program }, { callback: 'PB_HATS_ALL' }, { callback: 'PY_EVENTS' }),

@@ -17,7 +17,7 @@ The former long Sprites palette is split into smaller categories (the Pro level 
 | Worlds | World transitions, camera and tile operations. |
 | Sounds / Game | Audio/music and HUD/game-flow operations. |
 
-Sprite inputs in newly opened palettes default to the selected authored sprite. Object/world reference blocks use dropdowns, so a large project does not create dozens of duplicate palette entries. Every existing block remains supported; saved programs do not change during palette navigation.
+The plain sprite block, **sprite** [Fox ▾], is one sprite on its own, to keep in a variable or put in an empty slot: it is the first block in Sprites at Pro, and the first under the Sprites heading of Game at Starter and Builder; typing *sprite* in Find blocks lists it first. Sprite inputs in newly opened palettes default to the selected authored sprite. Object/world reference blocks use dropdowns, so a large project does not create dozens of duplicate palette entries. Every existing block remains supported; saved programs do not change during palette navigation.
 
 The sprite tray shows a thumbnail for every sprite. **Find sprite** in the Sprite tab filters it by name, kind or world. Cards and the existing Sprite dropdown select the same stable object. **Edit costume** opens that sprite's current artwork, even if the artwork editor previously showed a backdrop or another costume. An unfinished artwork draft is preserved with an explanatory message; selecting another sprite does not discard it.
 

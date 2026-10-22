@@ -11,6 +11,15 @@ describe('block search matching', () => {
     expect(matchingBlocks(entries,'motion count')).toEqual([]);
     expect(matchingBlocks(entries,'   ')).toEqual([]);
   });
+  it('puts the block named just the words first, then blocks whose name has them, in palette order', () => {
+    const sprites = [
+      { category: 'Motion', label: 'move sprite Fox by 10 steps', description: '', terms: 'Motion move sprite Fox', keyword: 'move' },
+      { category: 'Game', label: 'this sprite', description: 'The sprite running this script', terms: 'Game this sprite', keyword: 'this sprite' },
+      { category: 'Game', label: 'sprite Fox', description: 'A sprite', terms: 'Game sprite Fox', keyword: 'a sprite' },
+      { category: 'Motion', label: 'glide Fox', description: 'Glide a sprite', terms: 'Motion glide Fox sprite', keyword: 'glide' },
+    ];
+    expect(matchingBlocks(sprites, 'Sprite').map(e => e.label)).toEqual(['sprite Fox', 'this sprite', 'move sprite Fox by 10 steps', 'glide Fox']);
+  });
   it('treats punctuation literally, without regex interpretation', () => {
     expect(matchingBlocks(entries,'.*')).toEqual([]);
     expect(matchingBlocks(entries,'[')).toEqual([]);
