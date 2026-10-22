@@ -1,7 +1,7 @@
-import { CREAM, INK, LINE, box, curve, ellipse, line, shade, shape, type Ctx } from './draw';
+import { BLUSH, CREAM, INK, LINE, box, curve, ellipse, line, shade, shape, type Ctx } from './draw';
 
 /** Library art for the arcade examples (a maze muncher, defenders, a rock
- * blaster, a snake and a moon lander), in the cast's soft style. Everything is
+ * blaster, a snake, a moon lander and a flappy pipe), in the cast's soft style. Everything is
  * original: the games are only modelled on old arcade games. */
 
 /** A round muncher facing right; its mouth opens wide, half and shut (chomp 1–3). 30 × 30. */
@@ -132,6 +132,49 @@ export function pad(c: Ctx) {
   box(c, -24, 4, 6, 4, 1, '#7d8b8f'); box(c, 18, 4, 6, 4, 1, '#7d8b8f');
 }
 
+/** A silly pipe that flies: a green pipe with googly eyes, a buck tooth and two little wings,
+ * which beat up, level and down (flap 1–3); bonk is dizzy, with crossed eyes and stars. 44 × 52. */
+export const PIPE_FRAMES = ['flap-1', 'flap-2', 'flap-3', 'bonk'];
+export function flappyPipe(c: Ctx, frame: number) {
+  const bonk = frame === 3, swing = [-0.75, 0, 0.65, 0.9][frame];
+  // A pipe is round: lit on the left, in shadow on the right.
+  const green = (left: number, right: number) => {
+    const g = c.createLinearGradient(left, 0, right, 0);
+    g.addColorStop(0, '#3f9c4a'); g.addColorStop(0.28, '#9be283'); g.addColorStop(0.62, '#5dbb57'); g.addColorStop(1, '#2f7d3b'); return g;
+  };
+  for (const side of [-1, 1]) {
+    c.save(); c.translate(side * 9.5, -1); c.scale(side, 1); c.rotate(swing);
+    c.beginPath(); c.moveTo(0, -2.5); c.quadraticCurveTo(5, -7, 10.5, -4); c.quadraticCurveTo(9.2, -1.5, 10.2, 0.4);
+    c.quadraticCurveTo(7.5, 0.3, 7.6, 2.7); c.quadraticCurveTo(5, 2.3, 4.6, 4.5); c.quadraticCurveTo(1.9, 4, 0, 2.5); c.closePath();
+    c.fillStyle = shade(c, -7, 5, '#ffffff', '#d9e4ec'); c.fill(); c.strokeStyle = INK; c.lineWidth = LINE; c.stroke();
+    line(c, [[2.5, -0.5], [7.5, -2.8]], '#b9c8d4', 1);
+    c.restore();
+  }
+  box(c, -10, -12, 20, 36, 2, green(-10, 10));
+  box(c, -13, -22, 26, 11, 2.5, green(-13, 13));
+  ellipse(c, 0, -22, 11, 2.3, '#1d4a2a', INK, 1.2);
+  for (const x of [-7.5, 7.8]) ellipse(c, x, 5, 2.2, 1.3, BLUSH, null);
+  // Googly eyes that do not match, looking two ways at once.
+  const eyes: [number, number, number, number, number][] = [[-4.5, -3, 4.6, -1.6, -1.5], [5, -4, 5.4, 2, 1.6]];
+  for (const [x, y, r, px, py] of eyes) {
+    ellipse(c, x, y, r, r, '#ffffff');
+    if (bonk) { line(c, [[x - 2.3, y - 2.3], [x + 2.3, y + 2.3]], INK, 1.4); line(c, [[x - 2.3, y + 2.3], [x + 2.3, y - 2.3]], INK, 1.4); }
+    else { ellipse(c, x + px, y + py, r * 0.46, r * 0.46, '#253e43', null); ellipse(c, x + px - 0.8, y + py - 0.9, 0.7, 0.7, '#ffffff', null); }
+  }
+  if (bonk) {
+    line(c, [[-6, 9.5], [-3, 7.8], [0, 9.5], [3, 7.8], [6, 9.5]], INK, 1.3);
+    ellipse(c, 3.6, 12, 2.2, 2.8, '#f08aa0', INK, 1);
+    // Stars go round its head.
+    for (const [x, y, r] of [[-17, -16, 2.6], [17, -18, 2.3], [-8, -24.4, 1.5]] as const) {
+      shape(c, [0, 1, 2, 3, 4, 5, 6, 7].map(i => { const a = i * Math.PI / 4 - Math.PI / 2, d = i % 2 ? r * 0.42 : r; return [x + Math.cos(a) * d, y + Math.sin(a) * d] as [number, number]; }), '#ffd84a', INK, 0.9);
+    }
+    return;
+  }
+  c.beginPath(); c.moveTo(-6, 7); c.quadraticCurveTo(0, 17, 6, 7); c.closePath(); c.fillStyle = '#7a2e3b'; c.fill(); c.strokeStyle = INK; c.lineWidth = 1.2; c.stroke();
+  ellipse(c, 1.5, 11.6, 2.6, 1.5, '#f08aa0', null);
+  box(c, -2, 6.6, 3.2, 2.8, 0.6, '#ffffff', INK, 0.8);
+}
+
 /** Maze walls: a hollow blue line from the tile's middle to each side it joins (N 1, E 2, S 4, W 8),
  * so walls painted side by side connect. The hollow is the maze's floor colour. */
 export const MAZE_FLOOR = '#141a3c';
@@ -167,6 +210,7 @@ export function moon(c: Ctx) {
 export const ARCADE_CHARACTERS: { id: string; name: string; width: number; height: number; frames: string[]; animations: Record<string, string[]>; detail: string; draw(c: Ctx, frame: number): void }[] = [
   { id: 'muncher', name: 'Muncher', width: 30, height: 30, frames: ['chomp-1', 'chomp-2', 'chomp-3'], animations: { chomp: ['chomp-1', 'chomp-2', 'chomp-3', 'chomp-2'] }, detail: 'Chomps', draw: muncher },
   { id: 'alien', name: 'Alien', width: 30, height: 22, frames: ALIEN_FRAMES, animations: { squid: ['squid-1', 'squid-2'], crab: ['crab-1', 'crab-2'], octopus: ['octopus-1', 'octopus-2'] }, detail: 'Three aliens, two poses each', draw: alien },
+  { id: 'flappy-pipe', name: 'Flappy pipe', width: 44, height: 52, frames: PIPE_FRAMES, animations: { flap: ['flap-1', 'flap-2', 'flap-3', 'flap-2'], bonk: ['bonk'] }, detail: 'Flaps its wings, and bonks', draw: flappyPipe },
 ];
 export const ARCADE_PROPS = [
   { id: 'ghost', name: 'Ghost', width: 28, height: 28, frames: GHOSTS.length, variants: GHOST_COLOURS, draw: ghost },

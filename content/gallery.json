@@ -469,6 +469,57 @@
     ]
   },
   {
+    "id": "flappy-pipe",
+    "title": "Flappy Pipe",
+    "description": "Flappy Flight the other way round: you are the pipe, and the birds are in the way. Space to flap.",
+    "kind": "game",
+    "project": "content/examples/flappy-pipe.json",
+    "level": "builder",
+    "tags": [
+      "motion",
+      "loop",
+      "collision"
+    ],
+    "tryChanging": [
+      "A floatier pipe: change ay from −900 to −500.",
+      "Bigger flaps: set vy to 400 when Space is pressed.",
+      "Huge birds: pick their size from 120 to 200 instead of 50 to 100."
+    ],
+    "demo": [
+      {
+        "wait": 400
+      },
+      {
+        "key": "Space",
+        "ms": 60
+      },
+      {
+        "wait": 560
+      },
+      {
+        "key": "Space",
+        "ms": 60
+      },
+      {
+        "wait": 560
+      },
+      {
+        "key": "Space",
+        "ms": 60
+      },
+      {
+        "wait": 560
+      },
+      {
+        "key": "Space",
+        "ms": 60
+      },
+      {
+        "wait": 560
+      }
+    ]
+  },
+  {
     "id": "catch-the-star-game",
     "title": "Catch the star",
     "description": "Fly a bird with the arrow keys and catch a star five times.",

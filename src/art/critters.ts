@@ -44,9 +44,10 @@ export const CRITTERS: Critter[] = [
   { id: 'chick', name: 'Chick', width: 52, height: 40, frames: ['idle-1', 'idle-2', 'flap-1', 'flap-2', 'flap-3', 'flap-4', 'jump', 'happy'],
     animations: { idle: ['idle-1', 'idle-2'], flap: ['flap-1', 'flap-2', 'flap-3', 'flap-4'], jump: ['jump'], happy: ['happy'] }, detail: 'Idle, flap, jump and happy', draw: chick },
   { id: 'beetle', name: 'Beetle', width: 36, height: 30, frames: ['walk-1', 'walk-2'], animations: { walk: ['walk-1', 'walk-2'] }, detail: 'Walks', draw: beetle },
-  // The arcade examples' characters: a muncher that chomps as it moves, and three aliens.
+  // The arcade examples' characters: a muncher that chomps as it moves, three aliens, and a pipe that flaps all the time.
   { ...ARCADE_CHARACTERS[0], autoAnimate: { moving: 'chomp', air: '', still: '', turn: false } },
   { ...ARCADE_CHARACTERS[1], autoAnimate: { moving: '', air: '', still: '', turn: false } },
+  { ...ARCADE_CHARACTERS[2], autoAnimate: { moving: 'flap', air: 'flap', still: 'flap', turn: false } },
 ];
 export function paintCritter(c: Ctx, id: string, frame: number) {
   const critter = CRITTERS.find(x => x.id === id); if (!critter) throw new Error(`No character ${id}`);

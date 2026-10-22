@@ -21,13 +21,16 @@ describe('library catalogue', () => {
 
   it('has the cast with eight poses each, a chick and a beetle, spinning props, the lessons’ and arcade games’ pieces, nine tile sets and eleven backdrops', () => {
     const characters = LIBRARY.filter(e => e.category === 'Characters');
-    expect(characters.map(e => e.name)).toEqual(['Fox', 'Cat', 'Rabbit', 'Robot', 'Turtle', 'Bee', 'Fish', 'Sam', 'Ruby', 'Chick', 'Beetle', 'Muncher', 'Alien']);
+    expect(characters.map(e => e.name)).toEqual(['Fox', 'Cat', 'Rabbit', 'Robot', 'Turtle', 'Bee', 'Fish', 'Sam', 'Ruby', 'Chick', 'Beetle', 'Muncher', 'Alien', 'Flappy pipe']);
     for (const c of characters.slice(0, 9)) { expect(c.assets).toHaveLength(FRAMES.length); expect(c.frames).toHaveLength(4); expect(c.autoAnimate).toEqual({ moving: 'walk', air: 'jump', still: 'idle', turn: true }); }
     const chick = LIBRARY.find(e => e.id === 'chick')!, beetle = LIBRARY.find(e => e.id === 'beetle')!;
     expect([chick.width, chick.height, chick.assets.length, chick.animations!.map(a => a.name)]).toEqual([52, 40, 8, ['idle', 'flap', 'jump', 'happy']]);
     expect(chick.autoAnimate).toEqual({ moving: 'flap', air: 'flap', still: 'idle', turn: true });
     expect([beetle.width, beetle.height, beetle.frames, beetle.autoAnimate]).toEqual([36, 30, ['cast/beetle-walk-1@1', 'cast/beetle-walk-2@1'], { moving: 'walk', air: '', still: '', turn: true }]);
     expect(LIBRARY.find(e => e.id === 'coin')!.frames).toHaveLength(6);
+    // The flappy pipe flaps all the time, and bonks when an animation block says so.
+    const pipe = LIBRARY.find(e => e.id === 'flappy-pipe')!;
+    expect([pipe.width, pipe.height, pipe.assets.length, pipe.animations!.map(a => a.name), pipe.autoAnimate]).toEqual([44, 52, 4, ['flap', 'bonk'], { moving: 'flap', air: 'flap', still: 'flap', turn: false }]);
     // The lessons' pieces, at the lessons' sizes so their collisions stay the same.
     expect(['paddle', 'little-ball', 'brick', 'pipes', 'flag'].map(id => { const e = LIBRARY.find(x => x.id === id)!; return [e.width, e.height, e.assets.length]; }))
       .toEqual([[80, 12, 1], [14, 14, 1], [44, 14, 5], [26, 255, 1], [40, 256, 1]]);

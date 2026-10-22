@@ -4,21 +4,34 @@ type ButtonInfo = Blockly.utils.toolbox.ButtonInfo;
 type ToolboxInfo = Blockly.utils.toolbox.ToolboxInfo;
 import './block-search.css';
 import { insertHat, isHatState, templateOf } from '../language/hats';
+import { keyword } from './block-captions';
 
 export interface SearchEntry {
   category: string;
   label: string;
   description: string;
   terms: string;
+  /** The block's short name, as its palette caption shows it ("a sprite"). */
+  keyword?: string;
   block?: BlockInfo;
   action?: ButtonInfo;
   id?: string;
 }
 const normalize = (text: string) => text.normalize('NFKD').replace(/\p{M}/gu, '').toLocaleLowerCase().replace(/_/g, ' ');
+/** The blocks whose words include every word of the query, the best first: the block named just that
+ * ("sprite" finds the plain sprite block before the many blocks that take a sprite), then blocks whose
+ * name has the words, then whose text has them, then the rest, each in palette order. */
 export function matchingBlocks(entries: SearchEntry[], query: string) {
   const words = normalize(query.trim()).split(/\s+/).filter(Boolean);
   if (!words.length) return [];
-  return entries.filter(entry => words.every(word => normalize(entry.terms).includes(word)));
+  const all = (text: string) => words.every(word => text.includes(word));
+  const rank = (entry: SearchEntry) => {
+    const name = normalize(entry.keyword ?? '').replace(/^(a|an|the) /, '');
+    return name && name === words.join(' ') ? 0 : name && all(name) ? 1 : all(normalize(entry.label)) ? 2 : 3;
+  };
+  return entries.filter(entry => all(normalize(entry.terms)))
+    .map((entry, index) => ({ entry, index, rank: rank(entry) }))
+    .sort((a, b) => a.rank - b.rank || a.index - b.index).map(match => match.entry);
 }
 
 function describe(block: Blockly.Block) {
@@ -57,7 +70,7 @@ export function blockCatalog(workspace: Blockly.WorkspaceSvg, toolbox: ToolboxIn
           const definition = structuredClone(item) as BlockInfo;
           const block = Blockly.serialization.blocks.append(definition as Blockly.serialization.blocks.State, preview);
           const text = describe(block);
-          entries.push({ ...text, terms: `${name} ${text.terms}`, category: name, block: definition });
+          entries.push({ ...text, terms: `${name} ${text.terms}`, keyword: keyword(definition), category: name, block: definition });
           block.dispose(false);
         }
       }
