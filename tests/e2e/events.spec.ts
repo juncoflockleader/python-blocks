@@ -7,7 +7,7 @@ async function run(page: Page) { await page.getByRole('button', { name: 'Run cod
 async function send(page: Page, event: string, payload = 'null') { await (await reveal(page, '#event-name')).fill(event); await (await reveal(page, '#event-payload')).fill(payload); await (await reveal(page, page.getByRole('button', { name: 'Send event', exact: true }))).click(); }
 async function manage(page: Page) { await menu(page, 'Event handlers'); }
 async function saved(page: Page) {
-  const downloading = page.waitForEvent('download'); await (await reveal(page, page.getByRole('button', { name: 'Save project', exact: true }))).click();
+  const downloading = page.waitForEvent('download'); await (await reveal(page, page.getByRole('button', { name: 'Export project', exact: true }))).click();
   const download = await downloading; let content = ''; for await (const chunk of (await download.createReadStream())!) content += chunk; return JSON.parse(content);
 }
 

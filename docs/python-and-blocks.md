@@ -23,7 +23,7 @@ Tab moves from the textarea to the controls. It does not insert indentation or t
 
 ## Drafts and errors
 
-Unfinished and invalid Python is still saved. Browser autosave and **Save project** include the exact draft and its last accepted checkpoint. Reloading or reopening that file resumes the draft. **Download draft** saves the exact submitted text as a `.py` file, including comments, formatting and untouched line endings.
+Unfinished and invalid Python is still saved. Autosave, **Save project** (to My projects, signed in) and **Export project** (a file) include the exact draft and its last accepted checkpoint. Reloading or reopening the project resumes the draft. **Download draft** saves the exact submitted text as a `.py` file, including comments, formatting and untouched line endings.
 
 Apply, Run and exports report syntax errors or unsupported constructs without replacing the blocks. Click a diagnostic's line/column link to select the relevant text. Cancel conversion if needed; later edits or another Apply invalidate the earlier request.
 
@@ -47,7 +47,7 @@ Text typed after Apply is preserved even if you subsequently Undo or Redo the bl
 
 For scene projects, retain the generated `scene.json` load and optional motion-activation prelude. Authored assets remain outside Python. Sprite names and literal asset/world/sound IDs must refer to the captured project. Use the scene and asset editors to create or rename those objects, then start a fresh draft when the project revision changes.
 
-Source exports contain the accepted generated program and its required module/scene files. Use **Download draft** for your exact written source, and **Save project** to preserve both representations and recovery entries. **Export playable** packages the runtime and a captured project, including the exact accepted draft. Later typing, asset changes and runtime movement do not change that archive. Follow its README to run it independently; the player executes the generated program and uses its source map for errors. Verification is recorded in the [implementation plan](blocks-python-bridge-plan.md).
+Source exports contain the accepted generated program and its required module/scene files. Use **Download draft** for your exact written source, and **Export project** to preserve both representations and recovery entries. **Export playable** packages the runtime and a captured project, including the exact accepted draft. Later typing, asset changes and runtime movement do not change that archive. Follow its README to run it independently; the player executes the generated program and uses its source map for errors. Verification is recorded in the [implementation plan](blocks-python-bridge-plan.md).
 
 ## Supported language
 

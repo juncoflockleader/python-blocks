@@ -1,0 +1,36 @@
+# Fly.io: one machine with a volume for the SQLite database (see docs/server.md).
+app = 'python-blocks'
+primary_region = 'sjc'
+
+[build]
+
+[env]
+  HOST = '0.0.0.0'
+  PORT = '8080'
+  DATA_DIR = '/data'
+  TRUST_PROXY = '1'
+  CANONICAL_HOST = 'pythonblocks.org'
+
+[[mounts]]
+  source = 'pb_data'
+  destination = '/data'
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  # The machine sleeps when nobody is using it and wakes on the next visit (a second or two).
+  auto_stop_machines = 'stop'
+  auto_start_machines = true
+  min_machines_running = 0
+
+  [[http_service.checks]]
+    grace_period = '10s'
+    interval = '30s'
+    method = 'GET'
+    path = '/api/health'
+    timeout = '5s'
+
+[[vm]]
+  memory = '512mb'
+  cpu_kind = 'shared'
+  cpus = 1

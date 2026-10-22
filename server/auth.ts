@@ -3,21 +3,29 @@ import type { Database } from './db.ts';
 import type { AccountUser } from '../src/account/shared.ts';
 
 /** Passwords are stored as scrypt hashes with their own salt; sessions as a random token in an
- * HttpOnly cookie, of which the database keeps only a SHA-256 hash. */
-const KEY_LENGTH = 32, COST = { N: 16384, r: 8, p: 1, maxmem: 64 * 1024 * 1024 };
-const derive = (password: string, salt: Buffer) => new Promise<Buffer>((resolve, reject) =>
-  scrypt(password.normalize('NFKC'), salt, KEY_LENGTH, COST, (error, key) => error ? reject(error) : resolve(key)));
+ * HttpOnly cookie, of which the database keeps only a SHA-256 hash. Each hash records the cost it
+ * was made at, so raising COST keeps older passwords working; they are redone at the next sign-in. */
+interface Cost { N: number; r: number; p: number }
+const KEY_LENGTH = 32, COST: Cost = { N: 32768, r: 8, p: 1 };
+// scrypt needs 128·N·r bytes of memory (32 MB at COST); allow twice that.
+const derive = (password: string, salt: Buffer, cost: Cost) => new Promise<Buffer>((resolve, reject) =>
+  scrypt(password.normalize('NFKC'), salt, KEY_LENGTH, { ...cost, maxmem: 256 * cost.N * cost.r }, (error, key) => error ? reject(error) : resolve(key)));
+const prefix = (cost: Cost) => `scrypt$${cost.N}$${cost.r}$${cost.p}$`;
 
 export async function hashPassword(password: string) {
   const salt = randomBytes(16);
-  return `scrypt$${COST.N}$${COST.r}$${COST.p}$${salt.toString('base64')}$${(await derive(password, salt)).toString('base64')}`;
+  return `${prefix(COST)}${salt.toString('base64')}$${(await derive(password, salt, COST)).toString('base64')}`;
 }
 export async function verifyPassword(password: string, stored: string) {
-  const [scheme, , , , salt, key] = stored.split('$');
-  if (scheme !== 'scrypt' || !salt || !key) return false;
-  const expected = Buffer.from(key, 'base64'), actual = await derive(password, Buffer.from(salt, 'base64'));
+  const [scheme, N, r, p, salt, key] = stored.split('$');
+  const cost = { N: Number(N), r: Number(r), p: Number(p) };
+  const sane = Number.isInteger(Math.log2(cost.N)) && cost.N >= 1024 && cost.N <= 1 << 20 && cost.r >= 1 && cost.r <= 32 && cost.p >= 1 && cost.p <= 16;
+  if (scheme !== 'scrypt' || !sane || !salt || !key) return false;
+  const expected = Buffer.from(key, 'base64'), actual = await derive(password, Buffer.from(salt, 'base64'), cost);
   return expected.length === actual.length && timingSafeEqual(expected, actual);
 }
+/** Whether a stored hash was made at another cost than a new one would be. */
+export const needsRehash = (stored: string) => !stored.startsWith(prefix(COST));
 /** A hash to compare against when a username does not exist, so a missing name takes as long as a wrong password. */
 let dummy: Promise<string> | null = null;
 export const dummyHash = () => (dummy ??= hashPassword(randomBytes(12).toString('hex')));

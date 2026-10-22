@@ -5,7 +5,7 @@ import path from 'node:path';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { TLSSocket } from 'node:tls';
 import { transaction, type Database } from './db.ts';
-import { SESSION_COOKIE, SESSION_DAYS, Throttle, createSession, dummyHash, endAllSessions, endSession, hashPassword, sessionUser, verifyPassword } from './auth.ts';
+import { SESSION_COOKIE, SESSION_DAYS, Throttle, createSession, dummyHash, endAllSessions, endSession, hashPassword, needsRehash, sessionUser, verifyPassword } from './auth.ts';
 import { loadRewards } from './rewards.ts';
 import { addUser } from './accounts.ts';
 import { LIMITS, isSyncedKey, validDisplayName, validPassword, validUsername, type AccountUser, type CoinEntry, type ProjectSummary } from '../src/account/shared.ts';
@@ -23,6 +23,8 @@ export interface AppOptions {
   secureCookies?: boolean | 'auto';
   /** Trust X-Forwarded-For and X-Forwarded-Proto from a reverse proxy. */
   trustProxy?: boolean;
+  /** The site's own address (pythonblocks.org): www.<it> is sent there, so sign-in cookies belong to one address. */
+  canonicalHost?: string;
   now?: () => number;
   log?: (line: string) => void;
 }
@@ -102,6 +104,8 @@ export function createApp(options: AppOptions) {
     if (!row || !right) { throttle.miss(username, from, at); throw new HttpError(401, 'That username and password do not match.'); }
     if (row.disabled) throw new HttpError(403, 'This account is turned off. Ask your teacher.');
     throttle.clear(username);
+    // A password hashed at an older cost is hashed again at the current one.
+    if (needsRehash(row.password_hash)) db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(await hashPassword(String(password)), row.id);
     const token = createSession(db, row.id, at);
     db.prepare('UPDATE users SET last_login_at = ? WHERE id = ?').run(at, row.id);
     ctx.res.setHeader('Set-Cookie', cookie(ctx.req, token, SESSION_DAYS * 24 * 3600));
@@ -278,6 +282,9 @@ export function createApp(options: AppOptions) {
   return async function handle(req: IncomingMessage, res: ServerResponse) {
     let url: URL;
     try { url = new URL(req.url ?? '/', 'http://localhost'); } catch { return send(res, 400, { error: 'Bad address.' }); }
+    if (options.canonicalHost && req.headers.host === `www.${options.canonicalHost}`) {
+      res.writeHead(301, { Location: `https://${options.canonicalHost}${url.pathname}${url.search}`, 'Cache-Control': 'no-store' }); res.end(); return;
+    }
     const token = readCookie(req), at = now();
     const session = sessionUser(db, token, at);
     if (session?.extended) res.setHeader('Set-Cookie', cookie(req, token!, SESSION_DAYS * 24 * 3600));

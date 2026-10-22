@@ -66,6 +66,8 @@ export interface Sync {
   replaced(id: string | null): void;
   /** Send what has changed now (before opening another program, or signing out). */
   flush(): Promise<void>;
+  /** Save project: save the project in the editor to My projects now; rejects when it cannot. */
+  save(): Promise<void>;
   /** Sign out: send what is left, then clear this learner's work from the browser. */
   signOut(): Promise<void>;
 }
@@ -91,22 +93,24 @@ export function startSync(host: SyncHost, start: StartState): Sync {
     markPending(changed, false);
     if (changed.includes(PROJECT_KEY)) host.status('Saved to your account');
   }
-  async function saveProgram(leaving: boolean) {
+  /** Save the project in the editor as its program; `now` is Save project, which saves even an
+   * unchanged or empty project, and one opened a moment ago. */
+  async function saveProgram(leaving: boolean, now = false): Promise<void> {
     if (host.lessonActive()) return;
     const data = read(PROJECT_KEY), title = read(TITLE_KEY) || 'My project';
-    if (!data || (data === program.saved && title === program.title)) return;
+    if (!data || (!now && data === program.saved && title === program.title)) return;
     // A project just opened settles for a moment (titles, scene checks) before edits count.
-    if (Date.now() - program.replacedAt < 2000) { program.saved = data; program.title = title; return; }
+    if (!now && Date.now() - program.replacedAt < 2000) { program.saved = data; program.title = title; return; }
     const id = identity(), keepalive = leaving && data.length < 60_000;
     try {
       if (id) await api('PUT', `/api/projects/${id}`, data === program.saved ? { title } : { title, data: JSON.parse(data) }, { keepalive });
       else {
-        if (!worthSaving(data)) return;
+        if (!now && !worthSaving(data)) return;
         setIdentity((await api<{ id: string }>('POST', '/api/projects', { title, data: JSON.parse(data) })).id);
       }
     } catch (error) {
-      // Deleted on another device: save it as a new program next time.
-      if (error instanceof ApiError && error.status === 404) { setIdentity(null); return; }
+      // Deleted on another device: save it as a new program (next time, or now for Save project).
+      if (error instanceof ApiError && error.status === 404) { setIdentity(null); return now ? saveProgram(leaving, now) : undefined; }
       throw error;
     }
     program.saved = data; program.title = title;
@@ -129,6 +133,13 @@ export function startSync(host: SyncHost, start: StartState): Sync {
     identity,
     replaced(id) { setIdentity(id); program.saved = read(PROJECT_KEY); program.title = read(TITLE_KEY); program.replacedAt = Date.now(); },
     async flush() { await busy; await tick(); },
+    async save() {
+      while (busy) await busy;
+      let failure: unknown = null;
+      busy = (async () => { try { await pushKeys(false); await saveProgram(false, true); } catch (error) { failure = error; } finally { busy = null; } })();
+      await busy;
+      if (failure) throw failure;
+    },
     async signOut() {
       await busy; await tick();
       stopped = true; clearInterval(timer); host.stopSaving();

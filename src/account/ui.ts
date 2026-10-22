@@ -7,7 +7,8 @@ import type { Build } from '../guide/builds';
 import './account.css';
 
 /** The account in the editor: coins and the learner's menu in the top bar (My projects, Profile,
- * Admin, Sign out), the My projects and Profile dialogs, and a cheer when coins are earned.
+ * Admin, Sign out), Save project and Open project in the More actions menu, the Save, My projects
+ * and Profile dialogs, and a cheer when coins are earned.
  * In local mode (no server) there is no account, and all of this stays out of the way. */
 export interface AccountHost {
   /** Open a saved program in the editor; false when the editor cannot change projects now. */
@@ -16,6 +17,8 @@ export interface AccountHost {
   fresh(): boolean;
   rename(title: string): void;
   title(): string;
+  /** Put the editor's project in the browser's storage now; false when its Python draft cannot be applied. */
+  store(): boolean;
   lessonActive(): boolean;
   status(text: string): void;
   stopSaving(): void;
@@ -24,6 +27,10 @@ export interface AccountControls {
   signedIn: boolean;
   identity(): string | null;
   replaced(id: string | null): void;
+  /** Save project: to My projects, asking for a name the first time. */
+  save(): Promise<void>;
+  /** Open project: the My projects dialog. */
+  openProjects(): void;
   /** A lesson, guided build or Academy unit was finished. */
   finished(build: Build): void;
   /** An Academy unit was mastered (two of its three mastery problems right). */
@@ -37,11 +44,13 @@ const ago = (time: number) => {
   const hours = Math.round(minutes / 60); if (hours < 24) return `${hours} h ago`;
   return new Date(time).toLocaleDateString(undefined, { day: 'numeric', month: 'short', year: 'numeric' });
 };
+const message = (error: unknown) => error instanceof Error ? error.message : String(error);
+const DEFAULT_TITLE = 'My project';
 const size = (bytes: number) => bytes < 1024 * 1024 ? `${Math.max(1, Math.round(bytes / 1024))} KB` : `${(bytes / 1024 / 1024).toFixed(1)} MB`;
 
 export function installAccount(host: AccountHost): AccountControls {
   const state = account();
-  if (state.mode !== 'signed-in') return { signedIn: false, identity: () => null, replaced() {}, finished() {}, mastered() {} };
+  if (state.mode !== 'signed-in') return { signedIn: false, identity: () => null, replaced() {}, save: async () => {}, openProjects() {}, finished() {}, mastered() {} };
   const { user } = state;
   let coins = state.coins;
   const sync: Sync = startSync({ lessonActive: host.lessonActive, status: host.status, stopSaving: host.stopSaving }, state.start);
@@ -62,6 +71,7 @@ export function installAccount(host: AccountHost): AccountControls {
       </div></div>
     <div id="coin-toast" class="coin-toast" role="status" aria-live="polite" hidden></div>`;
   const $ = <T extends HTMLElement>(id: string) => document.getElementById(id) as T;
+  for (const id of ['save', 'open']) $(id).hidden = false;
   const menu = $('account-menu'), button = $('account-button');
   const showName = (name: string) => { $('account-name').textContent = name; slot.querySelector('.account-avatar')!.textContent = name.trim().charAt(0).toUpperCase(); button.title = name; };
   const showCoins = () => { $('account-coin-count').textContent = String(coins); };
@@ -90,7 +100,12 @@ export function installAccount(host: AccountHost): AccountControls {
   }
 
   // ── Dialogs ──
-  document.body.insertAdjacentHTML('beforeend', `<dialog id="projects-dialog" class="examples-dialog account-dialog" aria-labelledby="projects-title">
+  document.body.insertAdjacentHTML('beforeend', `<dialog id="save-dialog" class="examples-dialog account-dialog save-dialog" aria-labelledby="save-title">
+      <header><h2 id="save-title">${icon('save', 22)}Save project</h2><span class="academy-spacer"></span><button id="save-cancel" class="button secondary" type="button">Cancel</button></header>
+      <form id="save-form" class="profile-form"><label>Name your project <input id="save-name" maxlength="${LIMITS.title}" placeholder="${DEFAULT_TITLE}" autocomplete="off"></label><button id="save-confirm" class="button primary" type="submit">Save</button></form>
+      <p class="account-note">It goes in My projects, so you can open it on any computer you sign in on. After this, it saves as you work.</p>
+      <p id="save-status" class="account-status" role="status"></p></dialog>
+    <dialog id="projects-dialog" class="examples-dialog account-dialog" aria-labelledby="projects-title">
       <header><h2 id="projects-title">${icon('folder', 22)}My projects</h2><span class="academy-spacer"></span><button id="projects-new" class="button secondary">${icon('plus', 16)}New project</button><button id="projects-close" class="button secondary">Close</button></header>
       <p>Your programs are saved to your account as you work, so they are here on any computer you sign in on.</p>
       <p id="projects-status" class="account-status" role="status"></p><ul id="projects-list" class="account-projects"></ul></dialog>
@@ -107,11 +122,36 @@ export function installAccount(host: AccountHost): AccountControls {
             <label>New password <input id="profile-password-next" type="password" autocomplete="new-password" minlength="${LIMITS.password.min}" maxlength="${LIMITS.password.max}" required></label>
             <button class="button secondary" type="submit">Change password</button></form><p id="profile-password-status" class="account-status" role="status"></p></section>
       </div></dialog>`);
-  const projectsDialog = $<HTMLDialogElement>('projects-dialog'), profileDialog = $<HTMLDialogElement>('profile-dialog');
+  const projectsDialog = $<HTMLDialogElement>('projects-dialog'), profileDialog = $<HTMLDialogElement>('profile-dialog'), saveDialog = $<HTMLDialogElement>('save-dialog');
   $('projects-close').addEventListener('click', () => projectsDialog.close());
   $('profile-close').addEventListener('click', () => profileDialog.close());
   $('account-projects').addEventListener('click', () => { closeMenu(); void openProjects(); });
   $('account-profile').addEventListener('click', () => { closeMenu(); void openProfile(); });
+
+  // ── Save project: the first time (or while it has no name), ask for one; after that, save at once ──
+  async function save() {
+    if (host.lessonActive()) { await sync.flush(); host.status('Lesson work is saved to your account as you go'); return; }
+    if (!host.store()) { host.status('Apply or fix your Python draft first, then save.'); return; }
+    const title = host.title().trim();
+    if (sync.identity() && title && title !== DEFAULT_TITLE) { await saveAs(title); return; }
+    $<HTMLInputElement>('save-name').value = title === DEFAULT_TITLE ? '' : title; $('save-status').textContent = '';
+    saveDialog.showModal(); $<HTMLInputElement>('save-name').select();
+  }
+  /** Save under `title`; false (with the reason shown) when it could not be saved. */
+  async function saveAs(title: string) {
+    const say = (text: string) => { if (saveDialog.open) $('save-status').textContent = text; else host.status(text); };
+    if (!host.store()) { say('Apply or fix your Python draft first, then save.'); return false; }
+    host.rename(title);
+    try { await sync.save(); host.status('Saved to My projects'); return true; }
+    catch (error) { say(`Not saved yet: ${message(error)}`); return false; }
+  }
+  $('save-cancel').addEventListener('click', () => saveDialog.close());
+  $('save-form').addEventListener('submit', async event => {
+    event.preventDefault();
+    const confirm = $<HTMLButtonElement>('save-confirm'); confirm.disabled = true;
+    try { if (await saveAs($<HTMLInputElement>('save-name').value.trim() || DEFAULT_TITLE)) saveDialog.close(); }
+    finally { confirm.disabled = false; }
+  });
 
   async function openProjects() {
     if (!projectsDialog.open) projectsDialog.showModal();
@@ -202,6 +242,8 @@ export function installAccount(host: AccountHost): AccountControls {
     signedIn: true,
     identity: sync.identity,
     replaced: id => sync.replaced(id),
+    save,
+    openProjects: () => void openProjects(),
     finished(build) { void award(`${build.kind === 'lesson' ? 'lesson' : build.kind === 'unit' ? 'unit' : 'build'}:${build.id}`); },
     mastered(build) { if (build.kind === 'unit' && !build.unit?.capstone) void award(`mastery:${build.id}`); },
   };

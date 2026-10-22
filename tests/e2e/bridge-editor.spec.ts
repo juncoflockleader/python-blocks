@@ -33,7 +33,7 @@ test('edits Python, applies one undoable change, runs, and saves/reopens an unfi
   await page.locator('#language-redo').click(); await expect(page.locator('#python')).toHaveText('count = 2\nprint(count)\n');
   const unfinished = '# unfinished 雪🙂\nif count:\n    print('; await (await reveal(page, '#python-editor')).fill(unfinished); await page.reload();
   await expect(page.locator('#python-editor')).toHaveValue(unfinished); await expect(page.locator('#run')).toContainText('Run Python');
-  const file = await download(page, '#save'), project = JSON.parse(file); expect(project.formatVersion).toBe(2); expect(project.workspace.pythonBridge.draft.source).toBe(unfinished);
+  const file = await download(page, '#export-project'), project = JSON.parse(file); expect(project.formatVersion).toBe(2); expect(project.workspace.pythonBridge.draft.source).toBe(unfinished);
   await (await reveal(page, '#example')).click(); await page.locator('#project-file').setInputFiles({ name: 'saved.json', mimeType: 'application/json', buffer: Buffer.from(file) });
   await expect(page.locator('#python-editor')).toHaveValue(unfinished); await expect(page.locator('#python')).toHaveText('count = 2\nprint(count)\n');
   const downloads: string[] = []; page.on('download', file => downloads.push(file.suggestedFilename()));

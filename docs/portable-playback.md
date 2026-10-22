@@ -21,7 +21,7 @@ Use a modern browser with module Workers, WebAssembly, OffscreenCanvas and Web A
 | `index.html`, `assets/` | Standalone play UI, renderer, input/audio/question hosts and Python worker. No Blockly/editor dependency. |
 | `pyodide/` | Pinned runtime, WebAssembly and Python standard library. |
 | `serve.py`, `README.txt` | Local launcher and instructions. |
-| `project.python-blocks.json` | Editable blocks, module pins and authored assets. Use **Open project** in Python Blocks to continue creating. |
+| `project.python-blocks.json` | Editable blocks, module pins and authored assets. Use **Import project** in Python Blocks to continue creating. |
 | `program.py`, `_pb_module_*.py` | Exact compiled sources used by the player, loaded as text without being inserted into HTML. |
 | `scene.json` | Captured starting scene and embedded images/audio, when present. |
 | `player.json` | Versioned execution mode and generated-module filename list. |
@@ -32,7 +32,7 @@ Use a modern browser with module Workers, WebAssembly, OffscreenCanvas and Web A
 
 The player displays output and error details but has no authoring controls or autosave. Its **Editable project** link downloads the original captured project. Keep all files and relative paths together. An incomplete or invalid manifest, missing source or invalid scene disables Run and shows recovery instructions. Reloading reads project files afresh. Editing a source file outside the player requires a reload; it does not update the editable blocks.
 
-**Export Python** remains the small source-only option: one `.py` file for a simple program or a ZIP with modules/scene assets. It does not include the browser host. **Save project** remains the editable JSON option. Choose **Export playable** when the recipient needs to run the project independently.
+**Export Python** remains the small source-only option: one `.py` file for a simple program or a ZIP with modules/scene assets. It does not include the browser host. **Export project** remains the editable JSON option. Choose **Export playable** when the recipient needs to run the project independently.
 
 The player bundle currently contains about 14 MB before compression. Export fetches at most four files concurrently, verifies their exact sizes and SHA-256 digests, then uses cancellable background ZIP compression. A missing file or stale/mixed build fails preparation rather than downloading an incomplete player; reload the app and retry. Preparation has a two-minute timeout. These checks catch incomplete transfers and mixed builds, not signatures from a trusted publisher.
 

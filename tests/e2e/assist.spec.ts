@@ -24,7 +24,7 @@ test('requires preview and explicit send, shares only chosen context, and leaves
   expect(Object.keys(input.context)).toEqual(['python']); expect(JSON.stringify(requests[0])).not.toContain(key);
   await expect(page.locator('#assist-usage')).toContainText('100 input + 20 output'); await expect(page.locator('#assist-usage')).toContainText('$0.000140');
   expect(await project(page)).toEqual(before); await expect(page.locator('#status')).toHaveText('Ready');
-  const pending = page.waitForEvent('download'); await (await reveal(page, '#save')).click();
+  const pending = page.waitForEvent('download'); await (await reveal(page, '#export-project')).click();
   expect(readFileSync((await (await pending).path())!, 'utf8')).not.toContain(key);
   expect(await page.evaluate(() => JSON.stringify({ ...localStorage, ...sessionStorage }))).not.toContain(key);
   await page.setViewportSize({ width: 744, height: 1000 }); expect(await page.locator('#assist-panel').evaluate(e => e.scrollWidth <= e.clientWidth)).toBe(true);

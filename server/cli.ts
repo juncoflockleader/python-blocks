@@ -9,14 +9,40 @@ import { validPassword } from '../src/account/shared.ts';
  *   node server/cli.ts add-user <username> [--name "Display name"] [--admin]
  *   node server/cli.ts set-password <username>
  *   node server/cli.ts list-users
- * The password is read from PASSWORD, or asked for. DATA_DIR chooses the database as for the server. */
+ * The password is read from PASSWORD, or asked for twice without being shown. DATA_DIR chooses the database as for the server. */
 const [command, username, ...rest] = process.argv.slice(2);
 const db = openDatabase(path.resolve(process.cwd(), process.env.DATA_DIR ?? 'data', 'python-blocks.sqlite'));
 const option = (name: string) => { const i = rest.indexOf(name); return i >= 0 ? rest[i + 1] : undefined; };
+/** Read one line from the terminal without showing it. */
+function hidden(prompt: string) {
+  const { stdin, stdout } = process;
+  stdout.write(prompt);
+  stdin.setRawMode(true); stdin.setEncoding('utf8'); stdin.resume();
+  return new Promise<string>((resolve, reject) => {
+    let typed = '';
+    const finish = (done: () => void) => { stdin.off('data', read); stdin.setRawMode(false); stdin.pause(); stdout.write('\n'); done(); };
+    const read = (chunk: string) => {
+      if (chunk.startsWith('\u001b')) return; // arrow keys and the like
+      for (const char of chunk) {
+        if (char === '\r' || char === '\n' || char === '\u0004') return finish(() => resolve(typed));
+        if (char === '\u0003') return finish(() => reject(new Error('Cancelled.')));
+        if (char === '\u007f' || char === '\b') typed = Array.from(typed).slice(0, -1).join('');
+        else if (char >= ' ') typed += char;
+      }
+    };
+    stdin.on('data', read);
+  });
+}
+/** The password from PASSWORD, from a pipe, or typed twice at the terminal without being shown. */
 async function password() {
   if (process.env.PASSWORD) return process.env.PASSWORD;
-  const rl = createInterface({ input: process.stdin, output: process.stdout });
-  try { return await rl.question('Password: '); } finally { rl.close(); }
+  if (!process.stdin.isTTY) {
+    const rl = createInterface({ input: process.stdin });
+    try { for await (const line of rl) return line; return ''; } finally { rl.close(); }
+  }
+  const first = await hidden('Password (not shown as you type): ');
+  if (first !== await hidden('Type it again: ')) throw new Error('The two passwords are not the same. Nothing was changed.');
+  return first;
 }
 try {
   if (command === 'add-user' && username) {

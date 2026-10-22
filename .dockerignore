@@ -1,0 +1,14 @@
+.git
+.claude
+node_modules
+.pnpm-store
+dist
+data
+.test-server-data
+test-results
+playwright-report
+public/pyodide
+public/blockly
+public/player
+**/__pycache__
+.DS_Store

@@ -104,7 +104,7 @@ Browser implementation references: [keyboard key and code semantics](https://dev
 - At most 10,000 sprite pen marks (segments, dots and stamps) within that scene-command budget. Erasing does not replenish the budget. Pen width is 1–1200 pixels; opacity is 0–100. See the pen/effects guide for effect bounds.
 - Costume PNGs are at most 256 × 256 pixels and 350,000 data-URL characters; backdrop PNGs are at most 480 × 320 and 900,000 characters. The scene has a 12 MB UTF-8 limit and must also fit within the complete 16 MB project limit.
 
-Scene projects export a Python source ZIP containing the captured main/module files and **scene.json**, including imported image data. Keep these together. Source archives need the playground runtime and browser host. **Export playable** bundles both with a local launcher; see [portable playback](portable-playback.md). **Save project** remains the editable format.
+Scene projects export a Python source ZIP containing the captured main/module files and **scene.json**, including imported image data. Keep these together. Source archives need the playground runtime and browser host. **Export playable** bundles both with a local launcher; see [portable playback](portable-playback.md). **Export project** remains the editable format.
 
 ## Verification and further work
 

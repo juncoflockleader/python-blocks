@@ -8,6 +8,8 @@ import type { AccountUser } from './shared';
 export type Account = { mode: 'local' } | { mode: 'signed-in'; user: AccountUser; coins: number; start: StartState };
 let current: Account = { mode: 'local' };
 export const account = () => current;
+/** The menu item that keeps a learner's project: Save project (My projects) when signed in, Export project (a file) without the server. */
+export const keepAction = () => current.mode === 'signed-in' ? 'Save project' : 'Export project';
 
 /** Read the account the server put in the page, and bring the learner's work into the browser. */
 export function startAccount(): Account {

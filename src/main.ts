@@ -300,6 +300,7 @@ const accountControls = installAccount({
   },
   rename: title => setTitle(title),
   title: () => projectTitle.textContent ?? '',
+  store: () => { if (!pythonEditor?.flush()) return false; saveCurrentProject(); return autosaveEnabled && !pythonEditor.unstored; },
   lessonActive: () => !!guide.active,
   status: text => { notice.textContent = text; },
   stopSaving: () => { autosaveEnabled = false; },
@@ -410,8 +411,13 @@ function updateCode(save = true) {
 function saveCurrentProject() {
   if (!autosaveEnabled) return;
   if (pythonEditor?.unstored) { notice.textContent = 'The latest Python text could not be saved. Download the draft before leaving or opening another project.'; return; }
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(snapshot(workspace))); notice.textContent = accountControls.signedIn ? 'Saving…' : 'Saved in this browser'; }
-  catch { notice.textContent = 'Browser save unavailable. Use Save project to keep a file.'; }
+  try {
+    const project = JSON.stringify(snapshot(workspace)), changed = localStorage.getItem(STORAGE_KEY) !== project;
+    localStorage.setItem(STORAGE_KEY, project);
+    // Signed in, the account sync says when a change is saved; an unchanged project has nothing to wait for.
+    if (!accountControls.signedIn) notice.textContent = 'Saved in this browser'; else if (changed) notice.textContent = 'Saving…';
+  }
+  catch { notice.textContent = 'Browser save unavailable. Use Export project to keep a file.'; }
 }
 // Blockly delivers change notifications asynchronously. Preserve the current
 // model even when reload immediately follows an edit or undo/redo.
@@ -610,9 +616,17 @@ playableButton.addEventListener('click', async () => {
   }
 });
 element('#export-cancel').addEventListener('click', () => exportController?.abort());
-element('#save').addEventListener('click', () => { if (pythonEditor?.flush()) download('my-project.python-blocks.json', JSON.stringify(snapshot(workspace)), 'application/json'); });
+// Save project and Open project use My projects (signed in); Export project and Import project use files.
+element('#save').addEventListener('click', () => void accountControls.save());
+element('#open').addEventListener('click', () => accountControls.openProjects());
+element('#export-project').addEventListener('click', () => {
+  if (!pythonEditor?.flush()) return;
+  // Named after the project, so Import project gives it the same title back.
+  const name = (projectTitle.textContent ?? '').replace(/[\\/:*?"<>|\u0000-\u001f]+/g, ' ').replace(/\s+/g, ' ').trim().slice(0, 80) || 'My project';
+  download(`${name}.python-blocks.json`, JSON.stringify(snapshot(workspace)), 'application/json');
+});
 element('#recover').addEventListener('click', () => { if (recoveryText) download('recovered-project.json', recoveryText, 'application/json'); });
-element('#open').addEventListener('click', () => element<HTMLInputElement>('#project-file').click());
+element('#import-project').addEventListener('click', () => element<HTMLInputElement>('#project-file').click());
 element<HTMLInputElement>('#project-file').addEventListener('change', async event => {
   const input = event.target as HTMLInputElement;
   const file = input.files?.[0]; input.value = '';

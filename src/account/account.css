@@ -23,7 +23,10 @@
 .coin-toast svg { color: #c98e2e; flex: none; }
 .coin-toast strong { color: #8a5f0c; }
 
-.account-dialog { width: min(760px, calc(100vw - 24px)); }
+/* Narrower than the Examples dialog they share a look with (shell.css loads after this file). */
+.examples-dialog.account-dialog { width: min(760px, calc(100vw - 24px)); }
+.examples-dialog.save-dialog { width: min(480px, calc(100vw - 24px)); }
+.save-dialog .profile-form .button { justify-self: end; min-width: 120px; }
 .account-dialog h2 { display: flex; align-items: center; gap: 8px; }
 .account-dialog > header { gap: 8px; }
 .account-status:empty { display: none; }

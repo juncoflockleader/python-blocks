@@ -27,7 +27,7 @@ export function installPilot(options: PilotOptions) {
       <label>End discussion: surprises, expectations, next change <textarea id="pilot-discussion" maxlength="4000" rows="2"></textarea></label>
     </div></details>
     <div class="learning-actions"><button id="pilot-download" class="button secondary">Download observations</button><button id="pilot-finish" class="button secondary">Finish session</button></div>
-    <details><summary>Saved project checkpoints & session data</summary><p>Download a checkpoint to reopen with Open project. Returning saves the current project as an end checkpoint before restoring your original.</p><label>Checkpoint <select id="pilot-backup"></select></label><button id="pilot-download-backup" class="button secondary">Download checkpoint</button><button id="pilot-return" class="button secondary">Return to original project</button></details></div>
+    <details><summary>Saved project checkpoints & session data</summary><p>Download a checkpoint to reopen with Import project. Returning saves the current project as an end checkpoint before restoring your original.</p><label>Checkpoint <select id="pilot-backup"></select></label><button id="pilot-download-backup" class="button secondary">Download checkpoint</button><button id="pilot-return" class="button secondary">Return to original project</button></details></div>
     <p id="pilot-status" role="status"></p><button id="pilot-recovery" class="button secondary" hidden>Download saved pilot data</button>
     <button id="pilot-clear" class="button secondary" hidden>Clear pilot notes & checkpoints</button>`;
   document.querySelector('#help-slot')!.append(panel);

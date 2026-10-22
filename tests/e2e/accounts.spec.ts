@@ -55,6 +55,23 @@ test('an admin adds a learner, whose programs, work and coins follow them to ano
   await expect(page.locator('.account-project')).toContainText('Open now');
   await page.locator('#projects-close').click();
 
+  // In More actions, Save project saves a named program at once and asks a new one for its name;
+  // Open project is My projects. Import project and Export project use files.
+  const more = async (item: string) => { await page.locator('#menu-button').click(); await page.locator(item).click(); };
+  await page.locator('#menu-button').click();
+  for (const item of ['#save', '#open', '#import-project', '#export-project']) await expect(page.locator(item)).toBeVisible();
+  await page.locator('#save').click();
+  await expect(page.locator('#save-dialog')).toBeHidden(); await expect(page.locator('#save-state')).toHaveText('Saved to My projects');
+  await more('#open'); await expect(page.locator('#projects-dialog')).toBeVisible();
+  await page.locator('#projects-new').click(); await expect(page.locator('#project-title')).toHaveText('My project');
+  await more('#save'); await expect(page.locator('#save-dialog')).toBeVisible(); await expect(page.locator('#save-name')).toHaveValue('');
+  await page.fill('#save-name', 'Empty start'); await page.locator('#save-confirm').click();
+  await expect(page.locator('#save-dialog')).toBeHidden(); await expect(page.locator('#project-title')).toHaveText('Empty start');
+  await expect(page.locator('#save-state')).toHaveText('Saved to My projects');
+  await more('#open'); await expect(page.locator('.account-project strong')).toHaveText(['Empty start', 'Snake']);
+  await page.locator('.account-project', { hasText: 'Snake' }).locator('button', { hasText: 'Open' }).click();
+  await expect(page.locator('#project-title')).toHaveText('Snake');
+
   // Finishing a guided build earns coins, once.
   await openHelp(page, 'builds'); await page.locator('#guide-start-catch-the-star').click(); await page.locator('#guide-confirm-start').click();
   await page.locator('#scene-stock').click(); await page.locator('#stock-dialog .stock-card[data-stock-id="star"]').click();
@@ -87,7 +104,7 @@ test('an admin adds a learner, whose programs, work and coins follow them to ano
   await expect(other.locator('#account-coin-count')).toHaveText('30');
   await expect(other.locator('#project-title')).toHaveText('Catch the star');
   // The finished build is theirs too: once the build is over, it is saved like any program.
-  await menu(other, '#account-projects'); await expect(other.locator('.account-project strong')).toHaveText(['Catch the star', 'Snake']);
+  await menu(other, '#account-projects'); await expect(other.locator('.account-project strong')).toHaveText(['Catch the star', 'Empty start', 'Snake']);
   await other.locator('.account-project', { hasText: 'Snake' }).locator('button', { hasText: 'Open' }).click();
   await expect(other.locator('#project-title')).toHaveText('Snake');
   await expect.poll(() => other.evaluate(() => JSON.parse(localStorage.getItem('python-blocks.project.v1')!).workspace.pythonScene.sprites.find((s: { id: string }) => s.id === 'head').x)).toBe(-90);
