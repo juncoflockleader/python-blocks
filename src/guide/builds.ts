@@ -11,6 +11,7 @@ import { aboutTheRun, passes, type Check, type RunFacts } from './checks';
 import { recipeById, type Recipe, type RecipePart } from './recipes';
 import { atLeast, levelNames, type Level } from '../ui/levels';
 import { handlerSignatures, type FunctionBlock } from '../language/functions';
+import { keepAction } from '../account/session';
 
 /** A guided build: a short, checked tutorial that ends in a playable game.
  * Steps are checked against the workspace (and whether it ran or finished),
@@ -273,7 +274,7 @@ export function installGuide(host: GuideHost) {
     const build = starting; if (!build) return;
     const force = el('lesson-start-go').dataset.force === 'yes';
     if (host.workspace.getTopBlocks(false).length && !force && !host.keep()) {
-      el('lesson-start-note').textContent = 'Your current project could not be kept in this browser. Save it first (⋯ menu → Save project), or start anyway and replace it.';
+      el('lesson-start-note').textContent = `Your current project could not be kept in this browser. Save it first (⋯ menu → ${keepAction()}), or start anyway and replace it.`;
       el('lesson-start-go').textContent = 'Start anyway'; el('lesson-start-go').dataset.force = 'yes';
       return;
     }
@@ -292,7 +293,7 @@ export function installGuide(host: GuideHost) {
       // (the confirmation's button, or choosing the same build again).
       if (host.workspace.getTopBlocks(false).length && !confirmed && pending?.id !== build.id) {
         pending = build; el('guide-confirm').hidden = false;
-        el('guide-confirm-text').textContent = `Starting “${build.title}” replaces the project in the editor. To keep your project, save it first (⋯ menu → Save project).`;
+        el('guide-confirm-text').textContent = `Starting “${build.title}” replaces the project in the editor. To keep your project, save it first (⋯ menu → ${keepAction()}).`;
         host.reveal(true); scrollWithin(el('guide-confirm'));
         return;
       }

@@ -13,7 +13,7 @@ test('saved project reloads and exports a complete block project', async ({ page
   await expect(page.locator('#status')).toHaveText('Finished', { timeout: 60_000 });
   await expect(page.locator('#output')).toHaveText('9007199254740993\n');
   const downloading = page.waitForEvent('download');
-  await (await reveal(page, page.getByRole('button', { name: 'Save project', exact: true }))).click();
+  await (await reveal(page, page.getByRole('button', { name: 'Export project', exact: true }))).click();
   const file = await downloading; let content = '';
   for await (const chunk of (await file.createReadStream())!) content += chunk;
   const saved = JSON.parse(content);

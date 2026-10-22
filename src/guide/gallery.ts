@@ -2,6 +2,7 @@ import gallery from '../../content/gallery.json';
 import { concepts } from '../assist/catalog';
 import { levelNames, type Level } from '../ui/levels';
 import { loopThumb } from './loop-thumb';
+import { keepAction } from '../account/session';
 
 /** One gallery record: a project fixture plus what to notice and try. The
  * academy can reuse the same loader. Ids double as the Open buttons' ids. */
@@ -38,7 +39,7 @@ const examples = entries.filter(entry => !entry.build);
 
 export function installGallery(host: GalleryHost) {
   document.body.insertAdjacentHTML('beforeend', `<dialog id="examples-dialog" class="examples-dialog" aria-labelledby="examples-title"><header><h2 id="examples-title">Examples</h2><button id="examples-close" class="button secondary">Close</button></header>
-    <p>Play an example, or open it to explore and change it. Opening replaces the project in the editor; Save project first to keep yours.</p>
+    <p>Play an example, or open it to explore and change it. Opening replaces the project in the editor; ${keepAction()} first to keep yours.</p>
     <div class="example-filters"><div class="idea-chips" id="examples-filters" role="group" aria-label="Show">${FILTERS.map(([id, label], index) => `<button type="button" class="idea-chip" data-filter="${id}" aria-pressed="${index === 0}">${label}</button>`).join('')}</div>
       <label class="example-search"><span class="visually-hidden">Search examples</span><input id="examples-search" type="search" placeholder="Search" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false"></label></div>
     <p id="examples-status" role="status"></p><ul class="example-list"></ul></dialog>`);

@@ -37,7 +37,7 @@ OffscreenCanvas and Web Audio. It contains the same run limits and Stop
 behavior as the editor. Its UI does not edit or save your project.
 
 project.python-blocks.json preserves the editable blocks and original assets;
-use Open project in Python Blocks to continue creating. program.py and the
+use Import project in Python Blocks to continue creating. program.py and the
 _pb_module_*.py files are the exact compiled sources. scene.json (when present)
 contains captured images, sounds, worlds, controls and watches. player.json
 selects execution mode and source files. modules.json records module pins;

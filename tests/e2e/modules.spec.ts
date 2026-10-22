@@ -54,7 +54,7 @@ test('removing a module retains calls and Undo restores the pinned copy across r
   await expect(page.locator('#diagnostics')).toContainText('Restore this pinned module'); await expect(page.locator('#run')).toBeDisabled();
   await expect(page.locator('g[data-id="difference-call"]')).toContainText('tools.difference');
   await page.getByRole('button', { name: 'Undo', exact: true }).click(); await page.reload(); await run(page); await expect(page.locator('#output')).toHaveText('7\n');
-  const project = JSON.parse((await download(page, 'Save project')).data.toString()); expect(project.languageVersion).toBe(23); expect(project.workspace.pythonModules.imports[0].id).toBe('arithmetic-import');
+  const project = JSON.parse((await download(page, 'Export project')).data.toString()); expect(project.languageVersion).toBe(23); expect(project.workspace.pythonModules.imports[0].id).toBe('arithmetic-import');
 });
 
 test('rejects incompatible pins and missing dependencies without changing the project', async ({ page }) => {
@@ -101,14 +101,14 @@ test('rendered module call duplication keeps pinned targets and arguments throug
   await open(page, 'consumer.json');
   await page.locator('g[data-id="difference-call"] > g.blocklyLabelField').filter({ hasText: 'tools.difference' }).click({ button: 'right' });
   await page.getByRole('menuitem', { name: /^Duplicate/ }).click();
-  let project = JSON.parse((await download(page, 'Save project')).data.toString());
+  let project = JSON.parse((await download(page, 'Export project')).data.toString());
   let copied = project.workspace.blocks.blocks.find((b: { type: string }) => b.type === 'py_module_call_value');
   expect(copied.extraState).toMatchObject({ importId: 'arithmetic-import', moduleId: 'arithmetic-module', revision: 'revision-1' });
   expect(copied.inputs['ARG_left-param'].block.fields.VALUE).toBe('10');
   await page.getByRole('button', { name: 'Undo', exact: true }).click();
   await expect(page.locator('#diagnostics')).not.toContainText('draft');
   await page.getByRole('button', { name: 'Redo', exact: true }).click(); await page.reload();
-  project = JSON.parse((await download(page, 'Save project')).data.toString());
+  project = JSON.parse((await download(page, 'Export project')).data.toString());
   copied = project.workspace.blocks.blocks.find((b: { type: string }) => b.type === 'py_module_call_value');
   expect(copied.extraState.importId).toBe('arithmetic-import');
   await run(page); await expect(page.locator('#output')).toHaveText('7\n');

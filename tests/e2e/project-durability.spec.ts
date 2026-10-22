@@ -17,7 +17,7 @@ test('a near-limit project with sounds and full maps saves a file it can reopen'
   expect(Buffer.byteLength(JSON.stringify(project,null,2))).toBeGreaterThan(16_000_000);
   await page.goto('/'); await page.locator('#project-file').setInputFiles({name:'large.json',mimeType:'application/json',buffer:bytes});
   await expect(page.locator('#scene-selection')).toHaveValue('player'); await expect(page.locator('#save-state')).not.toContainText('could not');
-  const pending = page.waitForEvent('download'); await (await reveal(page, '#save')).click(); const download = await pending;
+  const pending = page.waitForEvent('download'); await (await reveal(page, '#export-project')).click(); const download = await pending;
   const chunks: Buffer[] = []; for await (const chunk of (await download.createReadStream())!) chunks.push(Buffer.from(chunk));
   const saved = Buffer.concat(chunks); expect(saved.length).toBeLessThanOrEqual(16_000_000);
   const captured = JSON.parse(saved.toString()); expect(captured.workspace.pythonScene).toEqual(scene);

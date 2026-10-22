@@ -118,7 +118,10 @@ test('levels filter the palette and menus, persist, and prompt once for a projec
   expect(await categories(page)).toHaveLength(8);
   await page.locator('#menu-button').click();
   for (const hidden of ['#export-playable', '#debug-start', '#language-manage', '#menu-pilot']) await expect(page.locator(hidden)).toBeHidden();
-  await expect(page.locator('#save')).toBeVisible(); await page.keyboard.press('Escape'); await expect(page.locator('#app-menu')).toBeHidden();
+  // Without an account (no server) there is no My projects: Save and Open give way to Import and Export.
+  for (const hidden of ['#save', '#open']) await expect(page.locator(hidden)).toBeHidden();
+  for (const shown of ['#import-project', '#export-project']) await expect(page.locator(shown)).toBeVisible();
+  await page.keyboard.press('Escape'); await expect(page.locator('#app-menu')).toBeHidden();
   await page.locator('#level-select').selectOption('builder');
   expect(await categories(page)).toEqual(['Events', 'Motion', 'Looks', 'Sounds', 'Control', 'Logic', 'Numbers', 'Text', 'Draw', 'Variables', 'Functions', 'Game', 'Sensing & input', 'Physics']);
   await page.locator('#menu-button').click(); await expect(page.locator('#language-manage')).toBeVisible(); await expect(page.locator('#debug-start')).toBeHidden(); await expect(page.locator('#modules-manage')).toBeHidden();
@@ -224,7 +227,7 @@ test('tablet portrait stacks the stage above the workspace; phones get play-only
 test('the menu and examples dialog are keyboard friendly and every shell control is touch sized', async ({ page }) => {
   await page.goto('/'); await page.locator('#level-select').selectOption('pro');
   await page.locator('#menu-button').focus(); await page.keyboard.press('Enter');
-  await expect(page.locator('#save')).toBeFocused(); await page.keyboard.press('Escape'); await expect(page.locator('#menu-button')).toBeFocused();
+  await expect(page.locator('#import-project')).toBeFocused(); await page.keyboard.press('Escape'); await expect(page.locator('#menu-button')).toBeFocused();
   await menu(page, 'Learner pilot'); await expect(page.locator('#panel-help')).toBeVisible(); await expect(page.locator('#pilot-panel')).toHaveAttribute('open', '');
   await page.locator('#tab-help').focus(); await page.keyboard.press('ArrowLeft'); await expect(page.locator('#tab-output')).toBeFocused(); await expect(page.locator('#panel-output')).toBeVisible();
   const small = await page.evaluate(() => [...document.querySelectorAll('.top-bar button, .workspace-tools button, .stage-toolbar button, .sprite-tray button, .tab-bar button, .blocklyToolboxCategory, #panel-sprite input:not([type=checkbox]), #panel-sprite select, .help-nav-button')]

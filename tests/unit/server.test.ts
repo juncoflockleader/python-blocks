@@ -7,7 +7,8 @@ import { openDatabase } from '../../server/db';
 import { createApp } from '../../server/app';
 import { addUser } from '../../server/accounts';
 import { COINS } from '../../server/rewards';
-import { hashPassword, verifyPassword } from '../../server/auth';
+import { scryptSync } from 'node:crypto';
+import { hashPassword, needsRehash, verifyPassword } from '../../server/auth';
 
 /** The server, run on a free port with a fresh database and a small stand-in for the built app:
  * signing in, what is served before and after, saved programs, synced state, coins and the admin API. */
@@ -25,7 +26,7 @@ beforeAll(async () => {
   await addUser(db, 'ada', 'Ada', 'bananas', 'learner');
   await addUser(db, 'bob', 'Bob', 'cherries', 'learner');
   await addUser(db, 'teacher', 'Ms Lee', 'apples!', 'admin');
-  const app = createApp({ db, dist: dir, content: path.resolve('content'), secureCookies: false });
+  const app = createApp({ db, dist: dir, content: path.resolve('content'), secureCookies: false, canonicalHost: 'blocks.test' });
   server = createServer((req, res) => { void app(req, res); });
   await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));
   const address = server.address(); base = `http://127.0.0.1:${typeof address === 'object' && address ? address.port : 0}`;
@@ -43,10 +44,28 @@ const as = (cookie: string) => ({
 });
 
 describe('server', () => {
+  it('sends www.<the site> to the site itself, keeping the path', async () => {
+    const { request } = await import('node:http');
+    const res = await new Promise<import('node:http').IncomingMessage>(resolve => request(`${base}/login?next=%2F`, { headers: { host: 'www.blocks.test' } }, resolve).end());
+    expect([res.statusCode, res.headers.location]).toEqual([301, 'https://blocks.test/login?next=%2F']);
+  });
+
   it('stores passwords as salted scrypt hashes', async () => {
     const one = await hashPassword('bananas'), two = await hashPassword('bananas');
-    expect(one).toMatch(/^scrypt\$16384\$8\$1\$/); expect(one).not.toBe(two);
+    expect(one).toMatch(/^scrypt\$32768\$8\$1\$/); expect(one).not.toBe(two);
     expect(await verifyPassword('bananas', one)).toBe(true); expect(await verifyPassword('banana', one)).toBe(false);
+  });
+
+  it('keeps passwords hashed at an older cost working, and hashes them again at sign-in', async () => {
+    const salt = Buffer.alloc(16, 3), old = `scrypt$16384$8$1$${salt.toString('base64')}$${scryptSync('plums', salt, 32, { N: 16384, r: 8, p: 1 }).toString('base64')}`;
+    expect(await verifyPassword('plums', old)).toBe(true); expect(await verifyPassword('plum', old)).toBe(false);
+    expect(await verifyPassword('plums', old.replace('$16384$', '$123$'))).toBe(false);
+    const id = await addUser(db, 'dee', 'Dee', 'plums', 'learner');
+    db.prepare('UPDATE users SET password_hash = ? WHERE id = ?').run(old, id);
+    expect((await signIn('dee', 'plums')).res.status).toBe(200);
+    const now = (db.prepare('SELECT password_hash FROM users WHERE id = ?').get(id) as { password_hash: string }).password_hash;
+    expect([needsRehash(old), needsRehash(now)]).toEqual([true, false]);
+    expect((await signIn('dee', 'plums')).res.status).toBe(200);
   });
 
   it('shows only the sign-in page and its files before signing in', async () => {
@@ -155,7 +174,7 @@ describe('server', () => {
     expect((await admin.send('POST', '/api/admin/users', { username: 'CYD', displayName: 'Again', password: 'grapes' })).status).toBe(409);
     expect((await admin.send('POST', '/api/admin/users', { username: 'no spaces', displayName: 'X', password: 'grapes' })).status).toBe(400);
     const list = (await (await admin.get('/api/admin/users')).json()).users as { username: string; coins: number; id: number }[];
-    expect(list.map(u => u.username)).toEqual(['teacher', 'ada', 'bob', 'cyd']);
+    expect(list.map(u => u.username)).toEqual(['teacher', 'ada', 'bob', 'cyd', 'dee']);
     const adaId = list.find(u => u.username === 'ada')!.id;
     expect(list.find(u => u.username === 'ada')!.coins).toBe(280);
     // A new password signs the learner out everywhere; turning the account off stops them signing in.

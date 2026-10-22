@@ -2,6 +2,7 @@ import { defineConfig, type Plugin } from 'vitest/config';
 import { execFileSync } from 'node:child_process';
 
 function revision() {
+  if (process.env.APP_REVISION) return process.env.APP_REVISION;
   try { return execFileSync('git', ['describe', '--always', '--dirty'], { encoding: 'utf8' }).trim(); }
   catch { return 'unavailable'; }
 }
