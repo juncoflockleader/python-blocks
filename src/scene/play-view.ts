@@ -9,9 +9,11 @@ export function installPlayView(release: () => void) {
   const observer = new MutationObserver(sync); for (const node of [run, stop, el('status'), el('output')]) observer.observe(node, {attributes:true,childList:true,characterData:true,subtree:true});
   el('play-expand').addEventListener('click', () => {
     release();
-    for (const selector of ['.stage-wrap','#watch-readouts','#audio-controls']) {
+    // Sound, mute and the controller toggle go up in the header, away from the on-screen controller
+    // under the stage: right below its arrows, a tap a little too low hid the whole controller.
+    for (const [selector, place] of [['.stage-wrap', (node: HTMLElement) => el('play-body').append(node)], ['#watch-readouts', (node: HTMLElement) => el('play-body').append(node)], ['#audio-controls', (node: HTMLElement) => el('play-status').after(node)]] as const) {
       const node = document.querySelector<HTMLElement>(selector); if (!node) continue;
-      const slot = document.createComment('play-view'); node.before(slot); slots.push([node,slot]); el('play-body').append(node);
+      const slot = document.createComment('play-view'); node.before(slot); slots.push([node,slot]); place(node);
     }
     sync(); dialog.showModal();
     (el<HTMLFormElement>('question-form').hidden ? el('stage') : el('question-answer')).focus({preventScroll:true});
