@@ -203,7 +203,7 @@ input[type=checkbox], input[type=radio] { width: 20px; height: 20px; }
 .audio-controls { display: flex; align-items: center; gap: 6px; }
 #touch-toggle[aria-expanded=true], #audio-mute[aria-pressed=true] { border-color: #267c70; box-shadow: inset 0 0 0 1px #267c70; }
 #touch-toggle { font-size: 0; gap: 0; width: 44px; padding: 0; }
-#play-dialog .audio-controls { padding: 0 20px 12px; }
+#play-dialog .audio-controls { padding: 0; }
 
 /* Sprite tray */
 .sprite-tray { flex: none; display: flex; align-items: center; gap: 6px; padding: 3px 8px; border-bottom: 1px solid #e4e7dd; }
