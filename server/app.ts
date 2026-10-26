@@ -252,8 +252,10 @@ export function createApp(options: AppOptions) {
     const values = Object.fromEntries((db.prepare('SELECT key, value FROM user_data WHERE user_id = ?').all(user.id) as { key: string; value: string }[]).map(row => [row.key, row.value]));
     const data = JSON.stringify({ user, coins: balance(user.id), values }).replace(/</g, '\\u003c');
     const script = `<script id="pb-account" type="application/json">${data}</script>`;
-    // Before the app's own scripts: in the head, or straight after the doctype.
-    const page = Buffer.from(html.includes('</head>') ? html.replace('</head>', `${script}</head>`) : html.replace(/^(<!doctype html>)?/i, start => start + script));
+    // Before the app's own scripts: in the head, or straight after the doctype. Both insert with a function:
+    // a replacement string would read $` $' $& and $$ in the learner's work (Blockly's block ids have them)
+    // as patterns, and paste parts of the page into the data, ending its script early.
+    const page = Buffer.from(html.includes('</head>') ? html.replace('</head>', () => `${script}</head>`) : html.replace(/^(<!doctype html>)?/i, start => start + script));
     ctx.res.writeHead(200, { ...HEADERS, 'Content-Type': MIME['.html'], 'Cache-Control': 'no-store', 'Content-Length': String(page.length) });
     ctx.res.end(ctx.req.method === 'HEAD' ? undefined : page);
   }
