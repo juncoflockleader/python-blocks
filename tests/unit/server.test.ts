@@ -17,7 +17,7 @@ const db = openDatabase(':memory:');
 beforeAll(async () => {
   dir = mkdtempSync(path.join(tmpdir(), 'pb-server-'));
   mkdirSync(path.join(dir, 'assets'));
-  writeFileSync(path.join(dir, 'index.html'), '<!doctype html><script type="module" src="/assets/app-1.js"></script>');
+  writeFileSync(path.join(dir, 'index.html'), '<!doctype html><html><head><script type="module" src="/assets/app-1.js"></script></head><body></body></html>');
   writeFileSync(path.join(dir, 'login.html'), '<!doctype html><link rel="icon" href="/assets/logo-1.svg"><script type="module" src="/assets/login-1.js"></script>');
   writeFileSync(path.join(dir, 'admin.html'), '<!doctype html><script type="module" src="/assets/admin-1.js"></script>');
   for (const name of ['app-1.js', 'login-1.js', 'admin-1.js']) writeFileSync(path.join(dir, 'assets', name), `// ${name}`);
@@ -95,6 +95,14 @@ describe('server', () => {
     const boot = JSON.parse(/<script id="pb-account" type="application\/json">(.*?)<\/script>/.exec(await page.text())![1]);
     expect(boot).toEqual({ user: { id: 1, username: 'ada', displayName: 'Ada', role: 'learner' }, coins: 0, values: {} });
     expect((await me.get('/assets/app-1.js')).status).toBe(200);
+    // Saved work goes in the page exactly as it is: block ids have $ and ` in them, which a replacement
+    // string would take for $` (the page before), $' (the page after), $& and $$.
+    const work = 'ids a$`b c$\'d e$&f g$$h </script> <!-- end';
+    expect((await me.send('PUT', '/api/data', { values: { 'python-blocks.title.v1': work } })).status).toBe(204);
+    const html = await (await me.get('/')).text();
+    expect(JSON.parse(/<script id="pb-account" type="application\/json">(.*?)<\/script>/.exec(html)![1]).values['python-blocks.title.v1']).toBe(work);
+    expect(html.match(/<script/g)).toHaveLength(2);
+    expect((await me.send('PUT', '/api/data', { values: { 'python-blocks.title.v1': null } })).status).toBe(204);
     expect((await me.get('/login')).headers.get('location')).toBe('/');
     // Learners do not get the admin page.
     expect((await me.get('/admin')).headers.get('location')).toBe('/');
