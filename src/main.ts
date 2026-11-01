@@ -195,10 +195,10 @@ element('#zoom-out').addEventListener('click', () => workspace.zoomCenter(-1));
 element('#zoom-reset').addEventListener('click', () => { workspace.setScale(startScale); workspace.scrollCenter(); });
 const soundEditor = installSoundEditor(workspace, { canEdit: () => sceneEditor?.canEdit() ?? true });
 const disposeLanguageEditor = installLanguageEditor(workspace);
-sceneEditor = installSceneEditor(workspace, stage, value => runner.input(value), { spriteAdded: name => nudges.spriteAdded(name) });
+sceneEditor = installSceneEditor(workspace, stage, value => runner.input(value), { spriteAdded: name => nudges.spriteAdded(name), stopRun: () => { if (!stop.disabled) stop.click(); } });
 // Sounds: the tray button, and a list in the Sprite tab under the sprite's buttons.
 const soundList = installSoundList(workspace, element('#scene-edit-costume').closest<HTMLElement>('.scene-toolbar')!, sound => soundEditor.open({ sound }));
-element('#tray-sounds').addEventListener('click', () => soundEditor.open());
+element('#tray-sounds').addEventListener('click', () => { sceneEditor?.resumeEditing(); soundEditor.open(); });
 installLevels(workspace, () => sceneEditor?.selected() ?? '');
 // Every command and event block carries its family's symbol; installed before any project loads.
 installBlockIcons(workspace);

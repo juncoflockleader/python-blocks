@@ -27,6 +27,10 @@ The sprite tray shows a thumbnail for every sprite. **Find sprite** in the Sprit
 
 The workspace corner also provides **Find blocks** for the current level's palette and the current project. **Debug code** adds real Python pause/step controls and local/global values. See [block search and debugging](debugging-and-search.md).
 
+## Editing after a run
+
+After Run the stage keeps the game's last picture (or the game keeps running, for a game that listens for keys). The sprite tools stay usable all the time: Add sprite, Duplicate, Delete, Sprites (library), Paint, Sounds, Worlds & tilemaps, the backdrop and colour, Find on stage, Edit costume and every property in the Sprite tab. Using one stops a game that is still running (as Stop does), puts the stage back to the starting layout (as Reset stage does), and then does what was asked; a property typed during a run keeps the learner's value. The note at the top of the Sprite tab says so: *Running … Changing a sprite stops the game* and *Run result. Change a sprite, or Reset stage, to edit the starting layout.* Picking a sprite in the tray only selects it and never stops a game. (Before, every tool stayed greyed out until Reset stage, which learners did not find.)
+
 ## Script tabs and the magic book
 
 A finished game, such as an arcade example, can have a dozen long scripts; in one workspace they are one big blob. Two tools let a learner keep track of a big project and find the numbers worth changing.

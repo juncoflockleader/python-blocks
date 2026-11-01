@@ -37,10 +37,38 @@ test('two sprites run independently with keyboard and click input and a fresh re
   await page.keyboard.down('Space'); await expect(page.locator('#output')).toContainText('True'); await page.keyboard.up('Space');
   await (await reveal(page, '#scene-selection')).selectOption('friend'); await expect.poll(async () => (await page.locator('#scene-live').textContent()) !== 'Friend: x 100, y 0').toBe(true);
   await page.screenshot({ path: info.outputPath('sprite-running.png'), fullPage: true });
-  await page.locator('#stop').click(); await expect(page.locator('#scene-add')).toBeDisabled();
+  // After a run the stage shows the game's last picture, and the sprite tools stay usable.
+  await page.locator('#stop').click(); await expect(page.locator('#scene-add')).toBeEnabled();
+  await expect(page.locator('#scene-mode')).toHaveText(/Change a sprite, or Reset stage/);
   expect((await saved(page)).sprites[0].x).toBe(-100);
   await (await reveal(page, '#scene-selection')).selectOption('player'); await run(page, true); await expect(page.locator('#scene-live')).toContainText('x -100');
   await page.locator('#stop').click(); await page.locator('#scene-reset').click(); await expect(page.locator('#scene-x')).toHaveValue('-100');
+});
+
+test('the sprite tools work after a run and during one: using one stops the game and edits the starting layout', async ({ page }) => {
+  const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
+  await page.goto('/'); await (await reveal(page, '#scene-example')).click();
+  const sprites = (await saved(page)).sprites.length;
+  // During a run: Add sprite stops the game, goes back to editing and adds the sprite.
+  await run(page, true);
+  await expect(page.locator('#scene-add')).toBeEnabled();
+  await (await reveal(page, '#scene-add')).click();
+  await expect(page.locator('#status')).not.toHaveText('Event session running');
+  await expect(page.locator('#scene-mode')).toHaveText(/Drag sprites on the stage/);
+  await expect.poll(async () => (await saved(page)).sprites.length).toBe(sprites + 1);
+  // After a run: typing a new x goes back to editing and keeps what was typed.
+  await (await reveal(page, '#scene-selection')).selectOption('player');
+  await run(page, true); await page.locator('#stop').click();
+  await expect(page.locator('#scene-mode')).toHaveText(/Change a sprite, or Reset stage/);
+  await (await reveal(page, '#scene-x')).fill('42'); await page.keyboard.press('Enter');
+  await expect(page.locator('#scene-mode')).toHaveText(/Drag sprites on the stage/);
+  await expect.poll(async () => (await saved(page)).sprites.find((s: { id: string }) => s.id === 'player').x).toBe(42);
+  await expect(page.locator('#scene-x')).toHaveValue('42');
+  // The library and Paint open straight after a run.
+  await run(page, true); await page.locator('#stop').click();
+  await (await reveal(page, '#tray-paint')).click();
+  await expect(page.locator('#paint-dialog')).toBeVisible();
+  expect(errors).toEqual([]);
 });
 
 test('runtime transforms stay out of saved projects and scene assets travel in source exports', async ({ page }) => {

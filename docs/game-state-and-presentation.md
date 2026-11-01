@@ -52,7 +52,7 @@ Select **send game event** on the respective rule block to use these signals. A 
 
 The last scene remains visible. **Play again** starts a fresh Python worker with the exact source, module files, scene and assets captured for that run. Runtime mutations, destroyed objects, timer state, keyboard state and previous bursts are reset. Editing blocks during play does not change this replay. **Run code** uses the current edited project. Replay does not rewrite the editor or autosave the runtime result.
 
-**Stop** cancels the worker and visual bursts; it leaves the last HUD/scene visible for inspection without showing a win/loss screen. **Reset stage** returns to the authored layout and hides runtime presentation. Opening another project or example resets presentation too.
+**Stop** cancels the worker and visual bursts; it leaves the last HUD/scene visible for inspection without showing a win/loss screen. **Reset stage** returns to the authored layout and hides runtime presentation; so does using any sprite tool (Add sprite, the library, Paint, Sounds, a Sprite tab property), which first stops a game that is still running, so the tools never sit greyed out after a run. Opening another project or example resets presentation too.
 
 ## Cosmetic bursts
 
