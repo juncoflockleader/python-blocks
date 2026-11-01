@@ -21,10 +21,10 @@ test('a big example opens in tabs, one part on screen at a time, and Find blocks
   const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
   await openExample(page, 'sky-defenders');
-  await expect.poll(() => tabNames(page)).toEqual(['Game rules', 'Cannon & laser', 'Aliens', 'Bombs & lives']);
-  await expect(tab(page, 'Game rules')).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(() => tabNames(page)).toEqual(['Settings', 'Game rules', 'Cannon & laser', 'Aliens', 'Bombs & lives']);
+  await expect(tab(page, 'Settings')).toHaveAttribute('aria-pressed', 'true');
   await expect(tab(page, 'Aliens').locator('.script-tab-count')).toHaveText('2');
-  await expect.poll(() => onScreen(page)).toEqual(['on_start_handler_block']);
+  await expect.poll(() => onScreen(page)).toEqual(['settings_program_block']);
   await tab(page, 'Aliens').click();
   await expect.poll(() => onScreen(page)).toEqual(['make_aliens_function_block', 'on_alien_overlap_handler_block']);
   // Every script still runs: Python lists them all.
@@ -96,16 +96,16 @@ test('move a script with its menu, rename and reorder a tab, and delete one with
   await page.locator('.script-tab-icon-choice[data-icon="star"]').click();
   await page.locator('#script-tab-left').click();
   await page.locator('#script-tab-done').click();
-  await expect.poll(() => tabNames(page)).toEqual(['Laser', 'Game rules', 'Aliens', 'Bombs & lives']);
+  await expect.poll(() => tabNames(page)).toEqual(['Settings', 'Laser', 'Game rules', 'Aliens', 'Bombs & lives']);
   // Deleting asks first, and its scripts move to the first tab left.
   await page.locator('#script-tab-edit').click();
   await page.locator('#script-tab-delete').click();
-  await expect(page.locator('#script-tab-delete-note')).toContainText('Its script moves to Game rules. Nothing is deleted from your program.');
+  await expect(page.locator('#script-tab-delete-note')).toContainText('Its script moves to Settings. Nothing is deleted from your program.');
   await page.locator('#script-tab-delete').click();
-  await expect.poll(() => tabNames(page)).toEqual(['Game rules', 'Aliens', 'Bombs & lives']);
-  await expect.poll(() => onScreen(page)).toEqual(['on_laser_update_handler_block', 'on_start_handler_block']);
+  await expect.poll(() => tabNames(page)).toEqual(['Settings', 'Game rules', 'Aliens', 'Bombs & lives']);
+  await expect.poll(() => onScreen(page)).toEqual(['on_laser_update_handler_block', 'settings_program_block']);
   await page.locator('#language-undo').click();
-  await expect.poll(() => tabNames(page)).toEqual(['Laser', 'Game rules', 'Aliens', 'Bombs & lives']);
+  await expect.poll(() => tabNames(page)).toEqual(['Settings', 'Laser', 'Game rules', 'Aliens', 'Bombs & lives']);
 });
 
 test('hidden scripts stay put: Clean up and new scripts in one tab never nudge another tab', async ({ page }) => {
@@ -129,24 +129,28 @@ test('the magic book: notes become a guide to the numbers, ready to change', asy
   await expect(page.locator('#tab-magic .tab-dot')).toBeVisible();
   await openTab(page, 'magic');
   await expect(page.locator('#magic-says')).toContainText('found its magic numbers');
-  await expect(page.locator('.magic-tab-heading')).toHaveText(['Game rules', 'Cannon & laser', 'Aliens', 'Bombs & lives']);
+  await expect(page.locator('.magic-tab-heading')).toHaveText(['Settings', 'Game rules']);
   const lives = page.locator('.magic-entry', { hasText: 'Lives at the start' });
-  await expect(lives.locator('label')).toHaveText('set lives to');
+  await expect(lives.locator('label')).toHaveText('set LIVES to');
   await expect(lives.locator('input')).toHaveValue('3');
-  await lives.getByRole('button', { name: 'More: set lives to' }).click();
+  await lives.getByRole('button', { name: 'More: set LIVES to' }).click();
   await expect(lives.locator('input')).toHaveValue('4');
   const laser = page.locator('.magic-entry', { hasText: 'Laser speed and direction' });
   await laser.locator('input').fill('-20'); await laser.locator('input').press('Enter');
   await laser.locator('input').fill('fast'); await laser.locator('input').press('Tab');
   await expect(laser.locator('.magic-error')).toHaveText('Use a number, such as 5, -3 or 0.5.');
   await expect(laser.locator('input')).toHaveValue('-20');
+  // A look is a costume to pick: the laser now shoots stars, set in one place.
+  await page.locator('.magic-entry', { hasText: 'Laser look' }).locator('select').selectOption('star');
   await openTab(page, 'python');
-  await expect(page.locator('#python')).toContainText('_pb_game.set("lives", 4)');
-  await expect(page.locator('#python')).toContainText('(_pb_sprites.named("Laser")).change("y", -20)');
+  await expect(page.locator('#python')).toContainText('LIVES = 4');
+  await expect(page.locator('#python')).toContainText('LASER_SPEED = -20');
+  await expect(page.locator('#python')).toContainText('LASER_LOOK = "star"');
+  await expect(page.locator('#python')).toContainText('_pb_game.set("lives", LIVES)');
   // Show me opens the block's tab and selects it.
   await openTab(page, 'magic');
-  await page.locator('.magic-entry', { hasText: 'Bomb speed' }).getByRole('button', { name: 'Show me: Bomb speed' }).click();
-  await expect(tab(page, 'Bombs & lives')).toHaveAttribute('aria-pressed', 'true');
+  await page.locator('.magic-entry', { hasText: 'Alien march timing' }).getByRole('button', { name: 'Show me: Alien march timing' }).click();
+  await expect(tab(page, 'Game rules')).toHaveAttribute('aria-pressed', 'true');
   await expect(page.locator('#blockly .blocklySelected')).toHaveCount(1);
   expect(errors).toEqual([]);
 });

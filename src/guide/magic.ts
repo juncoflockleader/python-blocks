@@ -48,6 +48,20 @@ export function installMagic(host: MagicHost) {
     const id = `magic-${entry.blockId}-${index}`.replace(/[^A-Za-z0-9_-]/g, '_');
     const label = document.createElement('label');
     label.htmlFor = id; label.textContent = value.label || (value.kind === 'number' ? 'number' : 'words');
+    if (value.kind === 'choice') {
+      // A costume picker: pick a new look and the block changes at once (one Undo step).
+      const select = document.createElement('select');
+      select.id = id; select.className = 'magic-choice-select'; select.dataset.block = value.blockId; select.dataset.field = value.field;
+      select.append(...(value.options ?? []).map(([label, option]) => new Option(label, option)));
+      select.value = value.value;
+      select.addEventListener('change', () => {
+        const field = host.workspace.getBlockById(value.blockId)?.getField(value.field);
+        if (field && acceptValue('choice', select.value, value.options) !== null) field.setValue(select.value);
+      });
+      label.textContent = value.label || 'look';
+      row.classList.add('magic-text'); row.append(label, select);
+      return row;
+    }
     const input = document.createElement('input');
     input.id = id; input.value = value.value; input.dataset.block = value.blockId; input.dataset.field = value.field; input.dataset.kind = value.kind;
     input.autocomplete = 'off'; input.spellcheck = false;
@@ -145,7 +159,7 @@ export function installMagic(host: MagicHost) {
     if (!host.visible()) { dirty = true; return; }
     if (typing()) {
       // Update the other fields in place; the one being typed in keeps the learner's text.
-      for (const input of panel.querySelectorAll<HTMLInputElement>('input[data-block]')) {
+      for (const input of panel.querySelectorAll<HTMLInputElement | HTMLSelectElement>('input[data-block], select[data-block]')) {
         if (input === document.activeElement) continue;
         const value = host.workspace.getBlockById(input.dataset.block!)?.getField(input.dataset.field!)?.getValue();
         if (value !== undefined) input.value = String(value);

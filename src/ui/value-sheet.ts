@@ -1,6 +1,6 @@
 import * as Blockly from 'blockly/core';
 import { isPythonNumber } from '../language/compiler';
-import { stepValue } from '../guide/magic-notes';
+import { stepValue, valueLabel } from '../guide/magic-notes';
 import { iconSvg } from './icon-art';
 import './value-sheet.css';
 
@@ -11,14 +11,10 @@ import './value-sheet.css';
 type Kind = 'number' | 'text';
 let editing: { field: Blockly.Field; kind: Kind; context: string } | null = null;
 
-const plain = (text: string) => text.replace(/[‎‏]/g, '').replace(/\s*\((project|local)\)/g, '').replace(/\s+/g, ' ').trim();
-/** What the value belongs to, in the block's words: "set lives to", "say". */
+/** What the value belongs to, in the block's words ("set LIVES to", "say"), as the magic book names it. */
 function contextOf(field: Blockly.Field) {
-  const block = field.getSourceBlock(), parent = block?.getParent();
-  if (!block) return '';
-  const input = parent?.inputList.find(i => i.connection?.targetBlock() === block);
-  const words = input ? plain(input.fieldRow.filter(f => f.isVisible() && !(f instanceof Blockly.FieldImage)).map(f => f.getText()).join(' ')) : '';
-  return (words && /[A-Za-z]/.test(words) ? words : plain((parent ?? block).toString(40))).slice(0, 60);
+  const block = field.getSourceBlock();
+  return block ? valueLabel(block).slice(0, 60) : '';
 }
 
 export function installValueSheet() {

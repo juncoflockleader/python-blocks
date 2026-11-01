@@ -54,19 +54,19 @@ describe('script tabs', () => {
     // Deleting a tab moves its scripts to the first tab left: nothing is deleted from the program.
     changeTabs(w, { tabs: tabs.filter(t => t.id !== 'aliens'), moves: Object.fromEntries(aliens.map(id => [id, 'game'])) });
     await flush();
-    expect(scriptTabs(w).tabs.map(t => t.id)).toEqual(['game', 'cannon', 'bombs']);
+    expect(scriptTabs(w).tabs.map(t => t.id)).toEqual(['settings', 'game', 'cannon', 'bombs']);
     expect(ids(w, 'game')).toEqual([...aliens, 'on_start_handler_block'].sort());
     w.undo(false); await flush();
-    expect(scriptTabs(w).tabs.map(t => t.id)).toEqual(['game', 'cannon', 'aliens', 'bombs']);
+    expect(scriptTabs(w).tabs.map(t => t.id)).toEqual(['settings', 'game', 'cannon', 'aliens', 'bombs']);
     expect(ids(w, 'aliens')).toEqual(aliens);
     w.undo(true); await flush();
-    expect(scriptTabs(w).tabs.map(t => t.id)).toEqual(['game', 'cannon', 'bombs']);
+    expect(scriptTabs(w).tabs.map(t => t.id)).toEqual(['settings', 'game', 'cannon', 'bombs']);
   });
 
   it('send the scripts of a removed tab to the first tab, even when the change does not say so', () => {
     const w = open('content/examples/sky-defenders.json');
     changeTabs(w, { tabs: scriptTabs(w).tabs.filter(t => t.id !== 'bombs') });
-    expect(ids(w, 'game')).toContain('on_bomb_update_handler_block');
+    expect(ids(w, 'settings')).toContain('on_bomb_update_handler_block');
   });
 
   it('place a block pulled out of a script in that script’s tab, without an Undo step', async () => {

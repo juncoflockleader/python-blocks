@@ -7,6 +7,414 @@
    "languageVersion": 0,
    "blocks": [
     {
+     "type": "py_program",
+     "id": "settings_program_block",
+     "x": 40,
+     "y": 30,
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "py_set",
+        "id": "sky-defenders-set-lives",
+        "fields": {
+         "SYMBOL": "~=}B%Tr7Q9f;fy^f5vL}"
+        },
+        "inputs": {
+         "VALUE": {
+          "block": {
+           "type": "py_number",
+           "id": "sky-defenders-lives",
+           "fields": {
+            "VALUE": "3"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "py_set",
+          "id": "sky-defenders-set-cannon-speed",
+          "fields": {
+           "SYMBOL": "8xsuUjSO-+MVa6B+P1!e"
+          },
+          "inputs": {
+           "VALUE": {
+            "block": {
+             "type": "py_number",
+             "id": "sky-defenders-cannon-speed",
+             "fields": {
+              "VALUE": "220"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "py_set",
+            "id": "sky-defenders-set-laser-speed",
+            "fields": {
+             "SYMBOL": "Jt3w_Alzensf{mIx8fW@"
+            },
+            "inputs": {
+             "VALUE": {
+              "block": {
+               "type": "py_number",
+               "id": "sky-defenders-laser-speed",
+               "fields": {
+                "VALUE": "10"
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "py_set",
+              "id": "sky-defenders-set-aliens-per-row",
+              "fields": {
+               "SYMBOL": "oif:MLfrY?+vTOheBDgT"
+              },
+              "inputs": {
+               "VALUE": {
+                "block": {
+                 "type": "py_number",
+                 "id": "sky-defenders-aliens-per-row",
+                 "fields": {
+                  "VALUE": "8"
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "py_set",
+                "id": "sky-defenders-set-alien-step",
+                "fields": {
+                 "SYMBOL": "N@DhoI=JO%V:?~FY_U~G"
+                },
+                "inputs": {
+                 "VALUE": {
+                  "block": {
+                   "type": "py_number",
+                   "id": "sky-defenders-alien-step",
+                   "fields": {
+                    "VALUE": "8"
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "py_set",
+                  "id": "sky-defenders-set-alien-drop",
+                  "fields": {
+                   "SYMBOL": "^I?a[8NM9lqEvoGm[a=1"
+                  },
+                  "inputs": {
+                   "VALUE": {
+                    "block": {
+                     "type": "py_number",
+                     "id": "sky-defenders-alien-drop",
+                     "fields": {
+                      "VALUE": "16"
+                     }
+                    }
+                   }
+                  },
+                  "next": {
+                   "block": {
+                    "type": "py_set",
+                    "id": "sky-defenders-set-bomb-speed",
+                    "fields": {
+                     "SYMBOL": "!0..TS/tWf$F:[_5U=1z"
+                    },
+                    "inputs": {
+                     "VALUE": {
+                      "block": {
+                       "type": "py_number",
+                       "id": "sky-defenders-bomb-speed",
+                       "fields": {
+                        "VALUE": "5"
+                       }
+                      }
+                     }
+                    },
+                    "next": {
+                     "block": {
+                      "type": "py_set",
+                      "id": "sky-defenders-set-bomb-chance",
+                      "fields": {
+                       "SYMBOL": "QC)-.?,eo2|Y4;{%(A2R"
+                      },
+                      "inputs": {
+                       "VALUE": {
+                        "block": {
+                         "type": "py_number",
+                         "id": "sky-defenders-bomb-chance",
+                         "fields": {
+                          "VALUE": "40"
+                         }
+                        }
+                       }
+                      },
+                      "next": {
+                       "block": {
+                        "type": "py_set",
+                        "id": "sky-defenders-set-most-bombs",
+                        "fields": {
+                         "SYMBOL": "Qst1XxC#=HO:m$%r,5oq"
+                        },
+                        "inputs": {
+                         "VALUE": {
+                          "block": {
+                           "type": "py_number",
+                           "id": "sky-defenders-most-bombs",
+                           "fields": {
+                            "VALUE": "3"
+                           }
+                          }
+                         }
+                        },
+                        "next": {
+                         "block": {
+                          "type": "py_set",
+                          "id": "sky-defenders-set-points-per-alien",
+                          "fields": {
+                           "SYMBOL": "(,NGPat}~?pZ*,nR?iLZ"
+                          },
+                          "inputs": {
+                           "VALUE": {
+                            "block": {
+                             "type": "py_number",
+                             "id": "sky-defenders-points-per-alien",
+                             "fields": {
+                              "VALUE": "10"
+                             }
+                            }
+                           }
+                          },
+                          "next": {
+                           "block": {
+                            "type": "py_set",
+                            "id": "sky-defenders-set-damage",
+                            "fields": {
+                             "SYMBOL": "$G1Znz!$O}0wKPUSH{hT"
+                            },
+                            "inputs": {
+                             "VALUE": {
+                              "block": {
+                               "type": "py_number",
+                               "id": "sky-defenders-damage",
+                               "fields": {
+                                "VALUE": "1"
+                               }
+                              }
+                             }
+                            },
+                            "next": {
+                             "block": {
+                              "type": "py_set",
+                              "id": "sky-defenders-set-cannon-look",
+                              "fields": {
+                               "SYMBOL": ":g*qeU%ibfX5KVo:u=uU"
+                              },
+                              "inputs": {
+                               "VALUE": {
+                                "block": {
+                                 "type": "scene_costume",
+                                 "id": "sky-defenders-cannon-look",
+                                 "fields": {
+                                  "COSTUME_ID": "stock-cannon"
+                                 }
+                                }
+                               }
+                              },
+                              "next": {
+                               "block": {
+                                "type": "py_set",
+                                "id": "sky-defenders-set-laser-look",
+                                "fields": {
+                                 "SYMBOL": "*bD@/ndZlJ4[GD9O1a2i"
+                                },
+                                "inputs": {
+                                 "VALUE": {
+                                  "block": {
+                                   "type": "scene_costume",
+                                   "id": "sky-defenders-laser-look",
+                                   "fields": {
+                                    "COSTUME_ID": "stock-laser"
+                                   }
+                                  }
+                                 }
+                                },
+                                "next": {
+                                 "block": {
+                                  "type": "py_set",
+                                  "id": "sky-defenders-set-bomb-look",
+                                  "fields": {
+                                   "SYMBOL": ".R!mP#T(gi=t}@%,_}I0"
+                                  },
+                                  "inputs": {
+                                   "VALUE": {
+                                    "block": {
+                                     "type": "scene_costume",
+                                     "id": "sky-defenders-bomb-look",
+                                     "fields": {
+                                      "COSTUME_ID": "stock-bomb"
+                                     }
+                                    }
+                                   }
+                                  },
+                                  "icons": {
+                                   "comment": {
+                                    "text": "Bomb look\nPick what the aliens drop.",
+                                    "pinned": false,
+                                    "height": 120,
+                                    "width": 260
+                                   }
+                                  }
+                                 }
+                                },
+                                "icons": {
+                                 "comment": {
+                                  "text": "Laser look\nWant to shoot stars or hearts instead? Pick a costume for the laser here.",
+                                  "pinned": false,
+                                  "height": 120,
+                                  "width": 260
+                                 }
+                                }
+                               }
+                              },
+                              "icons": {
+                               "comment": {
+                                "text": "Cannon look\nPick any costume for the cannon: a rocket, a cat, a robot. The game reads it from here, so this is the only place to change it.",
+                                "pinned": false,
+                                "height": 120,
+                                "width": 260
+                               }
+                              }
+                             }
+                            },
+                            "icons": {
+                             "comment": {
+                              "text": "Damage\nLives a bomb takes away. Try 2 for a hard game, or 0 and nothing can hurt you.",
+                              "pinned": false,
+                              "height": 120,
+                              "width": 260
+                             }
+                            }
+                           }
+                          },
+                          "icons": {
+                           "comment": {
+                            "text": "Points for an alien\nWhat each alien you hit is worth.",
+                            "pinned": false,
+                            "height": 120,
+                            "width": 260
+                           }
+                          }
+                         }
+                        },
+                        "icons": {
+                         "comment": {
+                          "text": "Most bombs at once\nOnly this many bombs can fall at the same time.",
+                          "pinned": false,
+                          "height": 120,
+                          "width": 260
+                         }
+                        }
+                       }
+                      },
+                      "icons": {
+                       "comment": {
+                        "text": "Bomb chance\nEach step, every alien has 1 chance in this many to drop a bomb. A smaller number makes a bomb storm.",
+                        "pinned": false,
+                        "height": 120,
+                        "width": 260
+                       }
+                      }
+                     }
+                    },
+                    "icons": {
+                     "comment": {
+                      "text": "Bomb speed\nHow fast bombs fall. Try 10 for fast bombs.",
+                      "pinned": false,
+                      "height": 120,
+                      "width": 260
+                     }
+                    }
+                   }
+                  },
+                  "icons": {
+                   "comment": {
+                    "text": "Alien drop\nHow far the aliens come down when they reach the edge.",
+                    "pinned": false,
+                    "height": 120,
+                    "width": 260
+                   }
+                  }
+                 }
+                },
+                "icons": {
+                 "comment": {
+                  "text": "Alien march step\nHow far the aliens step sideways each time. Bigger is faster and scarier.",
+                  "pinned": false,
+                  "height": 120,
+                  "width": 260
+                 }
+                }
+               }
+              },
+              "icons": {
+               "comment": {
+                "text": "Aliens in a row\nEach of the three rows has this many aliens. Up to 10 fit across the sky.",
+                "pinned": false,
+                "height": 120,
+                "width": 260
+               }
+              }
+             }
+            },
+            "icons": {
+             "comment": {
+              "text": "Laser speed and direction\nHow far the laser flies up each step. Try 20 for a super laser. A minus number would shoot it down!",
+              "pinned": false,
+              "height": 120,
+              "width": 260
+             }
+            }
+           }
+          },
+          "icons": {
+           "comment": {
+            "text": "Cannon speed\nHow fast the arrow keys slide the cannon. Try 400 for a zippy cannon.",
+            "pinned": false,
+            "height": 120,
+            "width": 260
+           }
+          }
+         }
+        },
+        "icons": {
+         "comment": {
+          "text": "Lives at the start\nHow many bombs can hit you before the game is over. Try 5 for an easier game, or 1 if you are brave.",
+          "pinned": false,
+          "height": 120,
+          "width": 260
+         }
+        }
+       }
+      }
+     },
+     "icons": {
+      "comment": {
+       "text": "Settings\nThe numbers and looks that make this game what it is. Every script reads them from here, so one change is all it takes. Programmers call a place like this a config.",
+       "pinned": false,
+       "height": 120,
+       "width": 260
+      }
+     }
+    },
+    {
      "type": "py_function",
      "id": "make_aliens_function_block",
      "x": 40,
@@ -35,11 +443,22 @@
           }
          },
          "X": {
-          "shadow": {
-           "type": "py_number",
-           "id": "sky-defenders-3",
+          "block": {
+           "type": "py_unary",
+           "id": "9ce2da87-485d-4af9-b5e8-94b9a9f27ebc",
            "fields": {
-            "VALUE": "-140"
+            "OP": "-"
+           },
+           "inputs": {
+            "VALUE": {
+             "block": {
+              "type": "py_number",
+              "id": "07a2791a-3c48-4ee8-ac46-038424d6456a",
+              "fields": {
+               "VALUE": "140"
+              }
+             }
+            }
            }
           }
          },
@@ -59,11 +478,11 @@
           "id": "sky-defenders-5",
           "inputs": {
            "TIMES": {
-            "shadow": {
-             "type": "py_number",
-             "id": "sky-defenders-6",
+            "block": {
+             "type": "py_get",
+             "id": "280db75d-9838-4a8f-9102-49894e069058",
              "fields": {
-              "VALUE": "8"
+              "SYMBOL": "oif:MLfrY?+vTOheBDgT"
              }
             }
            },
@@ -195,14 +614,6 @@
                       }
                      }
                     }
-                   },
-                   "icons": {
-                    "comment": {
-                     "text": "Space between aliens\nHow far apart the aliens in a row are.",
-                     "pinned": false,
-                     "height": 120,
-                     "width": 260
-                    }
                    }
                   }
                  }
@@ -228,11 +639,22 @@
               }
              },
              "X": {
-              "shadow": {
-               "type": "py_number",
-               "id": "sky-defenders-23",
+              "block": {
+               "type": "py_unary",
+               "id": "e541fef4-21c8-45ab-aa17-2f13247e0035",
                "fields": {
-                "VALUE": "-140"
+                "OP": "-"
+               },
+               "inputs": {
+                "VALUE": {
+                 "block": {
+                  "type": "py_number",
+                  "id": "bb97e2b4-0988-4c00-8dc4-75b179e32e82",
+                  "fields": {
+                   "VALUE": "140"
+                  }
+                 }
+                }
                }
               }
              },
@@ -252,11 +674,11 @@
               "id": "sky-defenders-25",
               "inputs": {
                "TIMES": {
-                "shadow": {
-                 "type": "py_number",
-                 "id": "sky-defenders-26",
+                "block": {
+                 "type": "py_get",
+                 "id": "a7e1bf5e-d0f0-4df8-89fd-7059cd2e6b6b",
                  "fields": {
-                  "VALUE": "8"
+                  "SYMBOL": "oif:MLfrY?+vTOheBDgT"
                  }
                 }
                },
@@ -413,11 +835,22 @@
                   }
                  },
                  "X": {
-                  "shadow": {
-                   "type": "py_number",
-                   "id": "sky-defenders-43",
+                  "block": {
+                   "type": "py_unary",
+                   "id": "bf47a5f6-1516-4a1d-8de7-b25b1792e246",
                    "fields": {
-                    "VALUE": "-140"
+                    "OP": "-"
+                   },
+                   "inputs": {
+                    "VALUE": {
+                     "block": {
+                      "type": "py_number",
+                      "id": "7f8216b1-f0f7-4938-ac59-bfe53ee6b609",
+                      "fields": {
+                       "VALUE": "140"
+                      }
+                     }
+                    }
                    }
                   }
                  },
@@ -437,11 +870,11 @@
                   "id": "sky-defenders-45",
                   "inputs": {
                    "TIMES": {
-                    "shadow": {
-                     "type": "py_number",
-                     "id": "sky-defenders-46",
+                    "block": {
+                     "type": "py_get",
+                     "id": "293d7b5d-1fda-4b91-bb67-863af64ec128",
                      "fields": {
-                      "VALUE": "8"
+                      "SYMBOL": "oif:MLfrY?+vTOheBDgT"
                      }
                     }
                    },
@@ -625,1332 +1058,6 @@
              }
             }
            }
-          },
-          "icons": {
-           "comment": {
-            "text": "Aliens in a row\nThe first row has this many squid aliens; the next two rows have their own repeat. Up to 10 fit across the sky.",
-            "pinned": false,
-            "height": 120,
-            "width": 260
-           }
-          }
-         }
-        }
-       }
-      }
-     }
-    },
-    {
-     "type": "py_handler",
-     "id": "on_start_handler_block",
-     "x": 40,
-     "y": 30,
-     "extraState": {
-      "functionId": "on_start_handler",
-      "signature": {
-       "id": "on_start_handler",
-       "name": "on_start",
-       "parameters": [
-        {
-         "id": "on_start_handler_payload",
-         "name": "payload"
-        }
-       ],
-       "async": true,
-       "handler": {
-        "event": "start",
-        "order": 0
-       }
-      }
-     },
-     "inputs": {
-      "BODY": {
-       "block": {
-        "type": "game_set",
-        "id": "sky-defenders-65",
-        "fields": {
-         "FIELD": "score"
-        },
-        "inputs": {
-         "VALUE": {
-          "shadow": {
-           "type": "py_number",
-           "id": "sky-defenders-66",
-           "fields": {
-            "VALUE": "0"
-           }
-          }
-         }
-        },
-        "next": {
-         "block": {
-          "type": "game_set",
-          "id": "sky-defenders-67",
-          "fields": {
-           "FIELD": "lives"
-          },
-          "inputs": {
-           "VALUE": {
-            "shadow": {
-             "type": "py_number",
-             "id": "sky-defenders-68",
-             "fields": {
-              "VALUE": "3"
-             }
-            }
-           }
-          },
-          "next": {
-           "block": {
-            "type": "scene_control",
-            "id": "sky-defenders-69",
-            "fields": {
-             "SCHEME": "arrows"
-            },
-            "inputs": {
-             "SPRITE": {
-              "block": {
-               "type": "scene_sprite",
-               "id": "sky-defenders-70",
-               "fields": {
-                "SPRITE_ID": "cannon"
-               }
-              }
-             },
-             "VX": {
-              "shadow": {
-               "type": "py_number",
-               "id": "sky-defenders-71",
-               "fields": {
-                "VALUE": "220"
-               }
-              }
-             },
-             "VY": {
-              "shadow": {
-               "type": "py_number",
-               "id": "sky-defenders-72",
-               "fields": {
-                "VALUE": "0"
-               }
-              }
-             }
-            },
-            "next": {
-             "block": {
-              "type": "scene_motion_edges",
-              "id": "sky-defenders-73",
-              "fields": {
-               "MODE": "stop"
-              },
-              "inputs": {
-               "SPRITE": {
-                "block": {
-                 "type": "scene_sprite",
-                 "id": "sky-defenders-74",
-                 "fields": {
-                  "SPRITE_ID": "cannon"
-                 }
-                }
-               }
-              },
-              "next": {
-               "block": {
-                "type": "py_set",
-                "id": "sky-defenders-75",
-                "fields": {
-                 "SYMBOL": "sky-defenders-246"
-                },
-                "inputs": {
-                 "VALUE": {
-                  "shadow": {
-                   "type": "py_number",
-                   "id": "sky-defenders-76",
-                   "fields": {
-                    "VALUE": "8"
-                   }
-                  }
-                 }
-                },
-                "next": {
-                 "block": {
-                  "type": "py_set",
-                  "id": "sky-defenders-77",
-                  "fields": {
-                   "SYMBOL": "sky-defenders-247"
-                  },
-                  "inputs": {
-                   "VALUE": {
-                    "shadow": {
-                     "type": "py_number",
-                     "id": "sky-defenders-78",
-                     "fields": {
-                      "VALUE": "0"
-                     }
-                    }
-                   }
-                  },
-                  "next": {
-                   "block": {
-                    "type": "py_set",
-                    "id": "sky-defenders-79",
-                    "fields": {
-                     "SYMBOL": "sky-defenders-248"
-                    },
-                    "inputs": {
-                     "VALUE": {
-                      "shadow": {
-                       "type": "py_number",
-                       "id": "sky-defenders-80",
-                       "fields": {
-                        "VALUE": "0"
-                       }
-                      }
-                     }
-                    },
-                    "next": {
-                     "block": {
-                      "type": "py_call",
-                      "id": "sky-defenders-81",
-                      "extraState": {
-                       "functionId": "make_aliens_function",
-                       "signature": {
-                        "id": "make_aliens_function",
-                        "name": "make_aliens",
-                        "parameters": []
-                       }
-                      },
-                      "next": {
-                       "block": {
-                        "type": "controls_whileUntil",
-                        "id": "sky-defenders-82",
-                        "fields": {
-                         "MODE": "WHILE"
-                        },
-                        "inputs": {
-                         "BOOL": {
-                          "shadow": {
-                           "type": "logic_boolean",
-                           "id": "sky-defenders-83",
-                           "fields": {
-                            "BOOL": "TRUE"
-                           }
-                          }
-                         },
-                         "DO": {
-                          "block": {
-                           "type": "py_wait",
-                           "id": "sky-defenders-84",
-                           "inputs": {
-                            "SECONDS": {
-                             "block": {
-                              "type": "py_binary",
-                              "id": "sky-defenders-85",
-                              "fields": {
-                               "OP": "+"
-                              },
-                              "inputs": {
-                               "A": {
-                                "shadow": {
-                                 "type": "py_number",
-                                 "id": "sky-defenders-86",
-                                 "fields": {
-                                  "VALUE": "0.1"
-                                 }
-                                }
-                               },
-                               "B": {
-                                "block": {
-                                 "type": "py_binary",
-                                 "id": "sky-defenders-87",
-                                 "fields": {
-                                  "OP": "*"
-                                 },
-                                 "inputs": {
-                                  "A": {
-                                   "shadow": {
-                                    "type": "py_number",
-                                    "id": "sky-defenders-88",
-                                    "fields": {
-                                     "VALUE": "0.025"
-                                    }
-                                   }
-                                  },
-                                  "B": {
-                                   "block": {
-                                    "type": "py_get",
-                                    "id": "sky-defenders-89",
-                                    "fields": {
-                                     "SYMBOL": "sky-defenders-247"
-                                    }
-                                   }
-                                  }
-                                 }
-                                }
-                               }
-                              }
-                             }
-                            }
-                           },
-                           "next": {
-                            "block": {
-                             "type": "py_set",
-                             "id": "sky-defenders-90",
-                             "fields": {
-                              "SYMBOL": "sky-defenders-249"
-                             },
-                             "inputs": {
-                              "VALUE": {
-                               "block": {
-                                "type": "logic_boolean",
-                                "id": "sky-defenders-91",
-                                "fields": {
-                                 "BOOL": "FALSE"
-                                }
-                               }
-                              }
-                             },
-                             "next": {
-                              "block": {
-                               "type": "py_for_each",
-                               "id": "sky-defenders-92",
-                               "fields": {
-                                "SYMBOL": "sky-defenders-250"
-                               },
-                               "inputs": {
-                                "ITERABLE": {
-                                 "block": {
-                                  "type": "scene_of_kind",
-                                  "id": "sky-defenders-93",
-                                  "inputs": {
-                                   "KIND": {
-                                    "shadow": {
-                                     "type": "text",
-                                     "id": "sky-defenders-94",
-                                     "fields": {
-                                      "TEXT": "alien"
-                                     }
-                                    }
-                                   }
-                                  }
-                                 }
-                                },
-                                "DO": {
-                                 "block": {
-                                  "type": "controls_if",
-                                  "id": "sky-defenders-95",
-                                  "inputs": {
-                                   "IF0": {
-                                    "block": {
-                                     "type": "scene_get",
-                                     "id": "sky-defenders-96",
-                                     "fields": {
-                                      "PROPERTY": "is_clone"
-                                     },
-                                     "inputs": {
-                                      "SPRITE": {
-                                       "block": {
-                                        "type": "py_get",
-                                        "id": "sky-defenders-97",
-                                        "fields": {
-                                         "SYMBOL": "sky-defenders-250"
-                                        }
-                                       }
-                                      }
-                                     }
-                                    }
-                                   },
-                                   "DO0": {
-                                    "block": {
-                                     "type": "scene_change",
-                                     "id": "sky-defenders-98",
-                                     "fields": {
-                                      "PROPERTY": "x"
-                                     },
-                                     "inputs": {
-                                      "SPRITE": {
-                                       "block": {
-                                        "type": "py_get",
-                                        "id": "sky-defenders-99",
-                                        "fields": {
-                                         "SYMBOL": "sky-defenders-250"
-                                        }
-                                       }
-                                      },
-                                      "VALUE": {
-                                       "block": {
-                                        "type": "py_get",
-                                        "id": "sky-defenders-100",
-                                        "fields": {
-                                         "SYMBOL": "sky-defenders-246"
-                                        }
-                                       }
-                                      }
-                                     },
-                                     "next": {
-                                      "block": {
-                                       "type": "controls_if",
-                                       "id": "sky-defenders-101",
-                                       "inputs": {
-                                        "IF0": {
-                                         "block": {
-                                          "type": "py_logic",
-                                          "id": "sky-defenders-102",
-                                          "fields": {
-                                           "OP": "or"
-                                          },
-                                          "inputs": {
-                                           "A": {
-                                            "block": {
-                                             "type": "logic_compare",
-                                             "id": "sky-defenders-103",
-                                             "fields": {
-                                              "OP": "GT"
-                                             },
-                                             "inputs": {
-                                              "A": {
-                                               "block": {
-                                                "type": "scene_get",
-                                                "id": "sky-defenders-104",
-                                                "fields": {
-                                                 "PROPERTY": "x"
-                                                },
-                                                "inputs": {
-                                                 "SPRITE": {
-                                                  "block": {
-                                                   "type": "py_get",
-                                                   "id": "sky-defenders-105",
-                                                   "fields": {
-                                                    "SYMBOL": "sky-defenders-250"
-                                                   }
-                                                  }
-                                                 }
-                                                }
-                                               }
-                                              },
-                                              "B": {
-                                               "shadow": {
-                                                "type": "py_number",
-                                                "id": "sky-defenders-106",
-                                                "fields": {
-                                                 "VALUE": "215"
-                                                }
-                                               }
-                                              }
-                                             }
-                                            }
-                                           },
-                                           "B": {
-                                            "block": {
-                                             "type": "logic_compare",
-                                             "id": "sky-defenders-107",
-                                             "fields": {
-                                              "OP": "LT"
-                                             },
-                                             "inputs": {
-                                              "A": {
-                                               "block": {
-                                                "type": "scene_get",
-                                                "id": "sky-defenders-108",
-                                                "fields": {
-                                                 "PROPERTY": "x"
-                                                },
-                                                "inputs": {
-                                                 "SPRITE": {
-                                                  "block": {
-                                                   "type": "py_get",
-                                                   "id": "sky-defenders-109",
-                                                   "fields": {
-                                                    "SYMBOL": "sky-defenders-250"
-                                                   }
-                                                  }
-                                                 }
-                                                }
-                                               }
-                                              },
-                                              "B": {
-                                               "shadow": {
-                                                "type": "py_number",
-                                                "id": "sky-defenders-110",
-                                                "fields": {
-                                                 "VALUE": "-215"
-                                                }
-                                               }
-                                              }
-                                             }
-                                            }
-                                           }
-                                          }
-                                         }
-                                        },
-                                        "DO0": {
-                                         "block": {
-                                          "type": "py_set",
-                                          "id": "sky-defenders-111",
-                                          "fields": {
-                                           "SYMBOL": "sky-defenders-249"
-                                          },
-                                          "inputs": {
-                                           "VALUE": {
-                                            "block": {
-                                             "type": "logic_boolean",
-                                             "id": "sky-defenders-112",
-                                             "fields": {
-                                              "BOOL": "TRUE"
-                                             }
-                                            }
-                                           }
-                                          }
-                                         }
-                                        }
-                                       },
-                                       "next": {
-                                        "block": {
-                                         "type": "controls_if",
-                                         "id": "sky-defenders-113",
-                                         "inputs": {
-                                          "IF0": {
-                                           "block": {
-                                            "type": "py_logic",
-                                            "id": "sky-defenders-114",
-                                            "fields": {
-                                             "OP": "and"
-                                            },
-                                            "inputs": {
-                                             "A": {
-                                              "block": {
-                                               "type": "logic_compare",
-                                               "id": "sky-defenders-115",
-                                               "fields": {
-                                                "OP": "EQ"
-                                               },
-                                               "inputs": {
-                                                "A": {
-                                                 "block": {
-                                                  "type": "math_random_int",
-                                                  "id": "sky-defenders-116",
-                                                  "inputs": {
-                                                   "FROM": {
-                                                    "shadow": {
-                                                     "type": "py_number",
-                                                     "id": "sky-defenders-117",
-                                                     "fields": {
-                                                      "VALUE": "1"
-                                                     }
-                                                    }
-                                                   },
-                                                   "TO": {
-                                                    "shadow": {
-                                                     "type": "py_number",
-                                                     "id": "sky-defenders-118",
-                                                     "fields": {
-                                                      "VALUE": "40"
-                                                     }
-                                                    }
-                                                   }
-                                                  },
-                                                  "icons": {
-                                                   "comment": {
-                                                    "text": "Bomb chance\nEach step, every alien has 1 chance in 40 to drop a bomb. Make 40 smaller for a bomb storm.",
-                                                    "pinned": false,
-                                                    "height": 120,
-                                                    "width": 260
-                                                   }
-                                                  }
-                                                 }
-                                                },
-                                                "B": {
-                                                 "shadow": {
-                                                  "type": "py_number",
-                                                  "id": "sky-defenders-119",
-                                                  "fields": {
-                                                   "VALUE": "1"
-                                                  }
-                                                 }
-                                                }
-                                               }
-                                              }
-                                             },
-                                             "B": {
-                                              "block": {
-                                               "type": "logic_compare",
-                                               "id": "sky-defenders-120",
-                                               "fields": {
-                                                "OP": "LT"
-                                               },
-                                               "inputs": {
-                                                "A": {
-                                                 "block": {
-                                                  "type": "py_get",
-                                                  "id": "sky-defenders-121",
-                                                  "fields": {
-                                                   "SYMBOL": "sky-defenders-248"
-                                                  }
-                                                 }
-                                                },
-                                                "B": {
-                                                 "shadow": {
-                                                  "type": "py_number",
-                                                  "id": "sky-defenders-122",
-                                                  "fields": {
-                                                   "VALUE": "3"
-                                                  }
-                                                 }
-                                                }
-                                               },
-                                               "icons": {
-                                                "comment": {
-                                                 "text": "Most bombs at once\nOnly this many bombs can fall at the same time.",
-                                                 "pinned": false,
-                                                 "height": 120,
-                                                 "width": 260
-                                                }
-                                               }
-                                              }
-                                             }
-                                            }
-                                           }
-                                          },
-                                          "DO0": {
-                                           "block": {
-                                            "type": "scene_go",
-                                            "id": "sky-defenders-123",
-                                            "inputs": {
-                                             "SPRITE": {
-                                              "block": {
-                                               "type": "scene_sprite",
-                                               "id": "sky-defenders-124",
-                                               "fields": {
-                                                "SPRITE_ID": "bomb"
-                                               }
-                                              }
-                                             },
-                                             "X": {
-                                              "block": {
-                                               "type": "scene_get",
-                                               "id": "sky-defenders-125",
-                                               "fields": {
-                                                "PROPERTY": "x"
-                                               },
-                                               "inputs": {
-                                                "SPRITE": {
-                                                 "block": {
-                                                  "type": "py_get",
-                                                  "id": "sky-defenders-126",
-                                                  "fields": {
-                                                   "SYMBOL": "sky-defenders-250"
-                                                  }
-                                                 }
-                                                }
-                                               }
-                                              }
-                                             },
-                                             "Y": {
-                                              "block": {
-                                               "type": "scene_get",
-                                               "id": "sky-defenders-127",
-                                               "fields": {
-                                                "PROPERTY": "y"
-                                               },
-                                               "inputs": {
-                                                "SPRITE": {
-                                                 "block": {
-                                                  "type": "py_get",
-                                                  "id": "sky-defenders-128",
-                                                  "fields": {
-                                                   "SYMBOL": "sky-defenders-250"
-                                                  }
-                                                 }
-                                                }
-                                               }
-                                              }
-                                             }
-                                            },
-                                            "next": {
-                                             "block": {
-                                              "type": "scene_visibility",
-                                              "id": "sky-defenders-129",
-                                              "fields": {
-                                               "ACTION": "show"
-                                              },
-                                              "inputs": {
-                                               "SPRITE": {
-                                                "block": {
-                                                 "type": "scene_clone",
-                                                 "id": "sky-defenders-130",
-                                                 "inputs": {
-                                                  "SPRITE": {
-                                                   "block": {
-                                                    "type": "scene_sprite",
-                                                    "id": "sky-defenders-131",
-                                                    "fields": {
-                                                     "SPRITE_ID": "bomb"
-                                                    }
-                                                   }
-                                                  }
-                                                 }
-                                                }
-                                               }
-                                              },
-                                              "next": {
-                                               "block": {
-                                                "type": "py_set",
-                                                "id": "sky-defenders-132",
-                                                "fields": {
-                                                 "SYMBOL": "sky-defenders-248"
-                                                },
-                                                "inputs": {
-                                                 "VALUE": {
-                                                  "block": {
-                                                   "type": "py_binary",
-                                                   "id": "sky-defenders-133",
-                                                   "fields": {
-                                                    "OP": "+"
-                                                   },
-                                                   "inputs": {
-                                                    "A": {
-                                                     "block": {
-                                                      "type": "py_get",
-                                                      "id": "sky-defenders-134",
-                                                      "fields": {
-                                                       "SYMBOL": "sky-defenders-248"
-                                                      }
-                                                     }
-                                                    },
-                                                    "B": {
-                                                     "shadow": {
-                                                      "type": "py_number",
-                                                      "id": "sky-defenders-135",
-                                                      "fields": {
-                                                       "VALUE": "1"
-                                                      }
-                                                     }
-                                                    }
-                                                   }
-                                                  }
-                                                 }
-                                                }
-                                               }
-                                              }
-                                             }
-                                            }
-                                           }
-                                          }
-                                         }
-                                        }
-                                       }
-                                      }
-                                     }
-                                    }
-                                   }
-                                  }
-                                 }
-                                }
-                               },
-                               "next": {
-                                "block": {
-                                 "type": "controls_if",
-                                 "id": "sky-defenders-136",
-                                 "inputs": {
-                                  "IF0": {
-                                   "block": {
-                                    "type": "py_get",
-                                    "id": "sky-defenders-137",
-                                    "fields": {
-                                     "SYMBOL": "sky-defenders-249"
-                                    }
-                                   }
-                                  },
-                                  "DO0": {
-                                   "block": {
-                                    "type": "py_set",
-                                    "id": "sky-defenders-138",
-                                    "fields": {
-                                     "SYMBOL": "sky-defenders-246"
-                                    },
-                                    "inputs": {
-                                     "VALUE": {
-                                      "block": {
-                                       "type": "py_binary",
-                                       "id": "sky-defenders-139",
-                                       "fields": {
-                                        "OP": "-"
-                                       },
-                                       "inputs": {
-                                        "A": {
-                                         "shadow": {
-                                          "type": "py_number",
-                                          "id": "sky-defenders-140",
-                                          "fields": {
-                                           "VALUE": "0"
-                                          }
-                                         }
-                                        },
-                                        "B": {
-                                         "block": {
-                                          "type": "py_get",
-                                          "id": "sky-defenders-141",
-                                          "fields": {
-                                           "SYMBOL": "sky-defenders-246"
-                                          }
-                                         }
-                                        }
-                                       }
-                                      }
-                                     }
-                                    },
-                                    "next": {
-                                     "block": {
-                                      "type": "py_for_each",
-                                      "id": "sky-defenders-142",
-                                      "fields": {
-                                       "SYMBOL": "sky-defenders-250"
-                                      },
-                                      "inputs": {
-                                       "ITERABLE": {
-                                        "block": {
-                                         "type": "scene_of_kind",
-                                         "id": "sky-defenders-143",
-                                         "inputs": {
-                                          "KIND": {
-                                           "shadow": {
-                                            "type": "text",
-                                            "id": "sky-defenders-144",
-                                            "fields": {
-                                             "TEXT": "alien"
-                                            }
-                                           }
-                                          }
-                                         }
-                                        }
-                                       },
-                                       "DO": {
-                                        "block": {
-                                         "type": "controls_if",
-                                         "id": "sky-defenders-145",
-                                         "inputs": {
-                                          "IF0": {
-                                           "block": {
-                                            "type": "scene_get",
-                                            "id": "sky-defenders-146",
-                                            "fields": {
-                                             "PROPERTY": "is_clone"
-                                            },
-                                            "inputs": {
-                                             "SPRITE": {
-                                              "block": {
-                                               "type": "py_get",
-                                               "id": "sky-defenders-147",
-                                               "fields": {
-                                                "SYMBOL": "sky-defenders-250"
-                                               }
-                                              }
-                                             }
-                                            }
-                                           }
-                                          },
-                                          "DO0": {
-                                           "block": {
-                                            "type": "scene_change",
-                                            "id": "sky-defenders-148",
-                                            "fields": {
-                                             "PROPERTY": "y"
-                                            },
-                                            "inputs": {
-                                             "SPRITE": {
-                                              "block": {
-                                               "type": "py_get",
-                                               "id": "sky-defenders-149",
-                                               "fields": {
-                                                "SYMBOL": "sky-defenders-250"
-                                               }
-                                              }
-                                             },
-                                             "VALUE": {
-                                              "shadow": {
-                                               "type": "py_number",
-                                               "id": "sky-defenders-150",
-                                               "fields": {
-                                                "VALUE": "-16"
-                                               }
-                                              }
-                                             }
-                                            },
-                                            "next": {
-                                             "block": {
-                                              "type": "controls_if",
-                                              "id": "sky-defenders-151",
-                                              "inputs": {
-                                               "IF0": {
-                                                "block": {
-                                                 "type": "logic_compare",
-                                                 "id": "sky-defenders-152",
-                                                 "fields": {
-                                                  "OP": "LT"
-                                                 },
-                                                 "inputs": {
-                                                  "A": {
-                                                   "block": {
-                                                    "type": "scene_get",
-                                                    "id": "sky-defenders-153",
-                                                    "fields": {
-                                                     "PROPERTY": "y"
-                                                    },
-                                                    "inputs": {
-                                                     "SPRITE": {
-                                                      "block": {
-                                                       "type": "py_get",
-                                                       "id": "sky-defenders-154",
-                                                       "fields": {
-                                                        "SYMBOL": "sky-defenders-250"
-                                                       }
-                                                      }
-                                                     }
-                                                    }
-                                                   }
-                                                  },
-                                                  "B": {
-                                                   "shadow": {
-                                                    "type": "py_number",
-                                                    "id": "sky-defenders-155",
-                                                    "fields": {
-                                                     "VALUE": "-100"
-                                                    }
-                                                   }
-                                                  }
-                                                 }
-                                                }
-                                               },
-                                               "DO0": {
-                                                "block": {
-                                                 "type": "sound_play",
-                                                 "id": "sky-defenders-156",
-                                                 "inputs": {
-                                                  "SOUND": {
-                                                   "block": {
-                                                    "type": "sound_asset",
-                                                    "id": "sky-defenders-157",
-                                                    "fields": {
-                                                     "SOUND_ID": "lose"
-                                                    }
-                                                   }
-                                                  },
-                                                  "OWNER": {
-                                                   "block": {
-                                                    "type": "py_none",
-                                                    "id": "sky-defenders-158"
-                                                   }
-                                                  }
-                                                 },
-                                                 "next": {
-                                                  "block": {
-                                                   "type": "game_finish",
-                                                   "id": "sky-defenders-159",
-                                                   "fields": {
-                                                    "WON": "FALSE"
-                                                   },
-                                                   "inputs": {
-                                                    "TEXT": {
-                                                     "shadow": {
-                                                      "type": "text",
-                                                      "id": "sky-defenders-160",
-                                                      "fields": {
-                                                       "TEXT": "The aliens landed!"
-                                                      }
-                                                     }
-                                                    }
-                                                   }
-                                                  }
-                                                 }
-                                                }
-                                               }
-                                              }
-                                             }
-                                            },
-                                            "icons": {
-                                             "comment": {
-                                              "text": "Alien drop\nHow far the aliens come down when they reach the edge. Minus means down.",
-                                              "pinned": false,
-                                              "height": 120,
-                                              "width": 260
-                                             }
-                                            }
-                                           }
-                                          }
-                                         }
-                                        }
-                                       }
-                                      }
-                                     }
-                                    }
-                                   }
-                                  }
-                                 }
-                                }
-                               }
-                              }
-                             }
-                            }
-                           },
-                           "icons": {
-                            "comment": {
-                             "text": "Alien march timing\nThe wait between steps: 0.1 seconds, plus 0.025 for every alien still flying. Fewer aliens means a faster march!",
-                             "pinned": false,
-                             "height": 120,
-                             "width": 260
-                            }
-                           }
-                          }
-                         }
-                        }
-                       }
-                      }
-                     }
-                    }
-                   }
-                  }
-                 }
-                },
-                "icons": {
-                 "comment": {
-                  "text": "Alien march step\nHow far the aliens step sideways each time. Bigger is faster and scarier.",
-                  "pinned": false,
-                  "height": 120,
-                  "width": 260
-                 }
-                }
-               }
-              }
-             }
-            },
-            "icons": {
-             "comment": {
-              "text": "Cannon speed\nHow fast the arrow keys slide the cannon. Try 400 for a zippy cannon.",
-              "pinned": false,
-              "height": 120,
-              "width": 260
-             }
-            }
-           }
-          },
-          "icons": {
-           "comment": {
-            "text": "Lives at the start\nHow many bombs can hit you before the game is over. Try 5 for an easier game, or 1 if you are brave.",
-            "pinned": false,
-            "height": 120,
-            "width": 260
-           }
-          }
-         }
-        }
-       }
-      }
-     }
-    },
-    {
-     "type": "py_handler",
-     "id": "on_space_key_handler_block",
-     "x": 40,
-     "y": 30,
-     "extraState": {
-      "functionId": "on_space_key_handler",
-      "signature": {
-       "id": "on_space_key_handler",
-       "name": "on_space_key",
-       "parameters": [
-        {
-         "id": "on_space_key_handler_payload",
-         "name": "payload"
-        }
-       ],
-       "async": true,
-       "handler": {
-        "event": "key:Space",
-        "order": 1
-       }
-      }
-     },
-     "inputs": {
-      "BODY": {
-       "block": {
-        "type": "controls_if",
-        "id": "sky-defenders-161",
-        "inputs": {
-         "IF0": {
-          "block": {
-           "type": "py_not",
-           "id": "sky-defenders-162",
-           "inputs": {
-            "VALUE": {
-             "block": {
-              "type": "scene_get",
-              "id": "sky-defenders-163",
-              "fields": {
-               "PROPERTY": "visible"
-              },
-              "inputs": {
-               "SPRITE": {
-                "block": {
-                 "type": "scene_sprite",
-                 "id": "sky-defenders-164",
-                 "fields": {
-                  "SPRITE_ID": "laser"
-                 }
-                }
-               }
-              }
-             }
-            }
-           }
-          }
-         },
-         "DO0": {
-          "block": {
-           "type": "scene_go",
-           "id": "sky-defenders-165",
-           "inputs": {
-            "SPRITE": {
-             "block": {
-              "type": "scene_sprite",
-              "id": "sky-defenders-166",
-              "fields": {
-               "SPRITE_ID": "laser"
-              }
-             }
-            },
-            "X": {
-             "block": {
-              "type": "scene_get",
-              "id": "sky-defenders-167",
-              "fields": {
-               "PROPERTY": "x"
-              },
-              "inputs": {
-               "SPRITE": {
-                "block": {
-                 "type": "scene_sprite",
-                 "id": "sky-defenders-168",
-                 "fields": {
-                  "SPRITE_ID": "cannon"
-                 }
-                }
-               }
-              }
-             }
-            },
-            "Y": {
-             "shadow": {
-              "type": "py_number",
-              "id": "sky-defenders-169",
-              "fields": {
-               "VALUE": "-122"
-              }
-             }
-            }
-           },
-           "next": {
-            "block": {
-             "type": "scene_visibility",
-             "id": "sky-defenders-170",
-             "fields": {
-              "ACTION": "show"
-             },
-             "inputs": {
-              "SPRITE": {
-               "block": {
-                "type": "scene_sprite",
-                "id": "sky-defenders-171",
-                "fields": {
-                 "SPRITE_ID": "laser"
-                }
-               }
-              }
-             },
-             "next": {
-              "block": {
-               "type": "sound_play",
-               "id": "sky-defenders-172",
-               "inputs": {
-                "SOUND": {
-                 "block": {
-                  "type": "sound_asset",
-                  "id": "sky-defenders-173",
-                  "fields": {
-                   "SOUND_ID": "laser"
-                  }
-                 }
-                },
-                "OWNER": {
-                 "block": {
-                  "type": "py_none",
-                  "id": "sky-defenders-174"
-                 }
-                }
-               }
-              }
-             }
-            }
-           }
-          }
-         }
-        }
-       }
-      }
-     }
-    },
-    {
-     "type": "py_handler",
-     "id": "on_laser_update_handler_block",
-     "x": 40,
-     "y": 276,
-     "extraState": {
-      "functionId": "on_laser_update_handler",
-      "signature": {
-       "id": "on_laser_update_handler",
-       "name": "on_laser_update",
-       "parameters": [
-        {
-         "id": "on_laser_update_handler_payload",
-         "name": "payload"
-        }
-       ],
-       "async": true,
-       "handler": {
-        "event": "update",
-        "order": 2,
-        "sprite": "laser"
-       }
-      }
-     },
-     "inputs": {
-      "BODY": {
-       "block": {
-        "type": "controls_if",
-        "id": "sky-defenders-175",
-        "inputs": {
-         "IF0": {
-          "block": {
-           "type": "scene_get",
-           "id": "sky-defenders-176",
-           "fields": {
-            "PROPERTY": "visible"
-           },
-           "inputs": {
-            "SPRITE": {
-             "block": {
-              "type": "scene_sprite",
-              "id": "sky-defenders-177",
-              "fields": {
-               "SPRITE_ID": "laser"
-              }
-             }
-            }
-           }
-          }
-         },
-         "DO0": {
-          "block": {
-           "type": "scene_change",
-           "id": "sky-defenders-178",
-           "fields": {
-            "PROPERTY": "y"
-           },
-           "inputs": {
-            "SPRITE": {
-             "block": {
-              "type": "scene_sprite",
-              "id": "sky-defenders-179",
-              "fields": {
-               "SPRITE_ID": "laser"
-              }
-             }
-            },
-            "VALUE": {
-             "shadow": {
-              "type": "py_number",
-              "id": "sky-defenders-180",
-              "fields": {
-               "VALUE": "10"
-              }
-             }
-            }
-           },
-           "next": {
-            "block": {
-             "type": "controls_if",
-             "id": "sky-defenders-181",
-             "inputs": {
-              "IF0": {
-               "block": {
-                "type": "logic_compare",
-                "id": "sky-defenders-182",
-                "fields": {
-                 "OP": "GT"
-                },
-                "inputs": {
-                 "A": {
-                  "block": {
-                   "type": "scene_get",
-                   "id": "sky-defenders-183",
-                   "fields": {
-                    "PROPERTY": "y"
-                   },
-                   "inputs": {
-                    "SPRITE": {
-                     "block": {
-                      "type": "scene_sprite",
-                      "id": "sky-defenders-184",
-                      "fields": {
-                       "SPRITE_ID": "laser"
-                      }
-                     }
-                    }
-                   }
-                  }
-                 },
-                 "B": {
-                  "shadow": {
-                   "type": "py_number",
-                   "id": "sky-defenders-185",
-                   "fields": {
-                    "VALUE": "170"
-                   }
-                  }
-                 }
-                }
-               }
-              },
-              "DO0": {
-               "block": {
-                "type": "scene_visibility",
-                "id": "sky-defenders-186",
-                "fields": {
-                 "ACTION": "hide"
-                },
-                "inputs": {
-                 "SPRITE": {
-                  "block": {
-                   "type": "scene_sprite",
-                   "id": "sky-defenders-187",
-                   "fields": {
-                    "SPRITE_ID": "laser"
-                   }
-                  }
-                 }
-                }
-               }
-              }
-             }
-            }
-           },
-           "icons": {
-            "comment": {
-             "text": "Laser speed and direction\nHow far the laser flies up each step. Try 20 for a super laser. A minus number would shoot it down!",
-             "pinned": false,
-             "height": 120,
-             "width": 260
-            }
-           }
           }
          }
         }
@@ -2059,11 +1166,11 @@
                },
                "inputs": {
                 "VALUE": {
-                 "shadow": {
-                  "type": "py_number",
-                  "id": "sky-defenders-198",
+                 "block": {
+                  "type": "py_get",
+                  "id": "5296540e-a5e4-43e6-96a4-cfed1eaa03f2",
                   "fields": {
-                   "VALUE": "10"
+                   "SYMBOL": "(,NGPat}~?pZ*,nR?iLZ"
                   }
                  }
                 }
@@ -2201,202 +1308,9 @@
                   }
                  }
                 }
-               },
-               "icons": {
-                "comment": {
-                 "text": "Points for an alien\nWhat each alien you hit is worth.",
-                 "pinned": false,
-                 "height": 120,
-                 "width": 260
-                }
                }
               }
              }
-            }
-           }
-          }
-         }
-        }
-       }
-      }
-     }
-    },
-    {
-     "type": "py_handler",
-     "id": "on_bomb_update_handler_block",
-     "x": 40,
-     "y": 30,
-     "extraState": {
-      "functionId": "on_bomb_update_handler",
-      "signature": {
-       "id": "on_bomb_update_handler",
-       "name": "on_bomb_update",
-       "parameters": [
-        {
-         "id": "on_bomb_update_handler_payload",
-         "name": "payload"
-        }
-       ],
-       "async": true,
-       "handler": {
-        "event": "update",
-        "order": 4,
-        "sprite": "bomb"
-       }
-      }
-     },
-     "inputs": {
-      "BODY": {
-       "block": {
-        "type": "controls_if",
-        "id": "sky-defenders-214",
-        "inputs": {
-         "IF0": {
-          "block": {
-           "type": "scene_get",
-           "id": "sky-defenders-215",
-           "fields": {
-            "PROPERTY": "is_clone"
-           },
-           "inputs": {
-            "SPRITE": {
-             "block": {
-              "type": "scene_self",
-              "id": "sky-defenders-216"
-             }
-            }
-           }
-          }
-         },
-         "DO0": {
-          "block": {
-           "type": "scene_change",
-           "id": "sky-defenders-217",
-           "fields": {
-            "PROPERTY": "y"
-           },
-           "inputs": {
-            "SPRITE": {
-             "block": {
-              "type": "scene_self",
-              "id": "sky-defenders-218"
-             }
-            },
-            "VALUE": {
-             "shadow": {
-              "type": "py_number",
-              "id": "sky-defenders-219",
-              "fields": {
-               "VALUE": "-5"
-              }
-             }
-            }
-           },
-           "next": {
-            "block": {
-             "type": "controls_if",
-             "id": "sky-defenders-220",
-             "inputs": {
-              "IF0": {
-               "block": {
-                "type": "logic_compare",
-                "id": "sky-defenders-221",
-                "fields": {
-                 "OP": "LT"
-                },
-                "inputs": {
-                 "A": {
-                  "block": {
-                   "type": "scene_get",
-                   "id": "sky-defenders-222",
-                   "fields": {
-                    "PROPERTY": "y"
-                   },
-                   "inputs": {
-                    "SPRITE": {
-                     "block": {
-                      "type": "scene_self",
-                      "id": "sky-defenders-223"
-                     }
-                    }
-                   }
-                  }
-                 },
-                 "B": {
-                  "shadow": {
-                   "type": "py_number",
-                   "id": "sky-defenders-224",
-                   "fields": {
-                    "VALUE": "-170"
-                   }
-                  }
-                 }
-                }
-               }
-              },
-              "DO0": {
-               "block": {
-                "type": "py_set",
-                "id": "sky-defenders-225",
-                "fields": {
-                 "SYMBOL": "sky-defenders-248"
-                },
-                "inputs": {
-                 "VALUE": {
-                  "block": {
-                   "type": "py_binary",
-                   "id": "sky-defenders-226",
-                   "fields": {
-                    "OP": "-"
-                   },
-                   "inputs": {
-                    "A": {
-                     "block": {
-                      "type": "py_get",
-                      "id": "sky-defenders-227",
-                      "fields": {
-                       "SYMBOL": "sky-defenders-248"
-                      }
-                     }
-                    },
-                    "B": {
-                     "shadow": {
-                      "type": "py_number",
-                      "id": "sky-defenders-228",
-                      "fields": {
-                       "VALUE": "1"
-                      }
-                     }
-                    }
-                   }
-                  }
-                 }
-                },
-                "next": {
-                 "block": {
-                  "type": "scene_destroy",
-                  "id": "sky-defenders-229",
-                  "inputs": {
-                   "SPRITE": {
-                    "block": {
-                     "type": "scene_self",
-                     "id": "sky-defenders-230"
-                    }
-                   }
-                  }
-                 }
-                }
-               }
-              }
-             }
-            }
-           },
-           "icons": {
-            "comment": {
-             "text": "Bomb speed\nHow fast bombs fall. Minus means down. Try -10 for fast bombs.",
-             "pinned": false,
-             "height": 120,
-             "width": 260
             }
            }
           }
@@ -2489,11 +1403,22 @@
              },
              "inputs": {
               "VALUE": {
-               "shadow": {
-                "type": "py_number",
-                "id": "sky-defenders-239",
+               "block": {
+                "type": "py_unary",
+                "id": "a10358c6-d46e-4d2a-ac86-2fa0b9776458",
                 "fields": {
-                 "VALUE": "-1"
+                 "OP": "-"
+                },
+                "inputs": {
+                 "VALUE": {
+                  "block": {
+                   "type": "py_get",
+                   "id": "6bf04930-08f2-427d-a5a0-2643a6da3f90",
+                   "fields": {
+                    "SYMBOL": "$G1Znz!$O}0wKPUSH{hT"
+                   }
+                  }
+                 }
                 }
                }
               }
@@ -2551,13 +1476,1588 @@
                 }
                }
               }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_bomb_update_handler_block",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_bomb_update_handler",
+      "signature": {
+       "id": "on_bomb_update_handler",
+       "name": "on_bomb_update",
+       "parameters": [
+        {
+         "id": "on_bomb_update_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "update",
+        "order": 4,
+        "sprite": "bomb"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "sky-defenders-214",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "scene_get",
+           "id": "sky-defenders-215",
+           "fields": {
+            "PROPERTY": "is_clone"
+           },
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_self",
+              "id": "sky-defenders-216"
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "scene_change",
+           "id": "sky-defenders-217",
+           "fields": {
+            "PROPERTY": "y"
+           },
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_self",
+              "id": "sky-defenders-218"
+             }
+            },
+            "VALUE": {
+             "block": {
+              "type": "py_unary",
+              "id": "7d6a06c6-1cd1-4cf7-b6ac-fee216323934",
+              "fields": {
+               "OP": "-"
+              },
+              "inputs": {
+               "VALUE": {
+                "block": {
+                 "type": "py_get",
+                 "id": "cce1fd1f-6648-4886-94fb-7ffcdcb6efe0",
+                 "fields": {
+                  "SYMBOL": "!0..TS/tWf$F:[_5U=1z"
+                 }
+                }
+               }
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "controls_if",
+             "id": "sky-defenders-220",
+             "inputs": {
+              "IF0": {
+               "block": {
+                "type": "logic_compare",
+                "id": "sky-defenders-221",
+                "fields": {
+                 "OP": "LT"
+                },
+                "inputs": {
+                 "A": {
+                  "block": {
+                   "type": "scene_get",
+                   "id": "sky-defenders-222",
+                   "fields": {
+                    "PROPERTY": "y"
+                   },
+                   "inputs": {
+                    "SPRITE": {
+                     "block": {
+                      "type": "scene_self",
+                      "id": "sky-defenders-223"
+                     }
+                    }
+                   }
+                  }
+                 },
+                 "B": {
+                  "block": {
+                   "type": "py_unary",
+                   "id": "09f4bbca-2482-4bc8-bd16-d31d0b5667cb",
+                   "fields": {
+                    "OP": "-"
+                   },
+                   "inputs": {
+                    "VALUE": {
+                     "block": {
+                      "type": "py_number",
+                      "id": "a290519c-7199-4629-8799-508673894331",
+                      "fields": {
+                       "VALUE": "170"
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "DO0": {
+               "block": {
+                "type": "py_set",
+                "id": "sky-defenders-225",
+                "fields": {
+                 "SYMBOL": "sky-defenders-248"
+                },
+                "inputs": {
+                 "VALUE": {
+                  "block": {
+                   "type": "py_binary",
+                   "id": "sky-defenders-226",
+                   "fields": {
+                    "OP": "-"
+                   },
+                   "inputs": {
+                    "A": {
+                     "block": {
+                      "type": "py_get",
+                      "id": "sky-defenders-227",
+                      "fields": {
+                       "SYMBOL": "sky-defenders-248"
+                      }
+                     }
+                    },
+                    "B": {
+                     "shadow": {
+                      "type": "py_number",
+                      "id": "sky-defenders-228",
+                      "fields": {
+                       "VALUE": "1"
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "scene_destroy",
+                  "id": "sky-defenders-229",
+                  "inputs": {
+                   "SPRITE": {
+                    "block": {
+                     "type": "scene_self",
+                     "id": "sky-defenders-230"
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_laser_update_handler_block",
+     "x": 40,
+     "y": 276,
+     "extraState": {
+      "functionId": "on_laser_update_handler",
+      "signature": {
+       "id": "on_laser_update_handler",
+       "name": "on_laser_update",
+       "parameters": [
+        {
+         "id": "on_laser_update_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "update",
+        "order": 2,
+        "sprite": "laser"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "sky-defenders-175",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "scene_get",
+           "id": "sky-defenders-176",
+           "fields": {
+            "PROPERTY": "visible"
+           },
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_sprite",
+              "id": "sky-defenders-177",
+              "fields": {
+               "SPRITE_ID": "laser"
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "scene_change",
+           "id": "sky-defenders-178",
+           "fields": {
+            "PROPERTY": "y"
+           },
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_sprite",
+              "id": "sky-defenders-179",
+              "fields": {
+               "SPRITE_ID": "laser"
+              }
+             }
+            },
+            "VALUE": {
+             "block": {
+              "type": "py_get",
+              "id": "99013b94-2cf7-4aaf-bcce-9ddc76aa6694",
+              "fields": {
+               "SYMBOL": "Jt3w_Alzensf{mIx8fW@"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "controls_if",
+             "id": "sky-defenders-181",
+             "inputs": {
+              "IF0": {
+               "block": {
+                "type": "logic_compare",
+                "id": "sky-defenders-182",
+                "fields": {
+                 "OP": "GT"
+                },
+                "inputs": {
+                 "A": {
+                  "block": {
+                   "type": "scene_get",
+                   "id": "sky-defenders-183",
+                   "fields": {
+                    "PROPERTY": "y"
+                   },
+                   "inputs": {
+                    "SPRITE": {
+                     "block": {
+                      "type": "scene_sprite",
+                      "id": "sky-defenders-184",
+                      "fields": {
+                       "SPRITE_ID": "laser"
+                      }
+                     }
+                    }
+                   }
+                  }
+                 },
+                 "B": {
+                  "shadow": {
+                   "type": "py_number",
+                   "id": "sky-defenders-185",
+                   "fields": {
+                    "VALUE": "170"
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "DO0": {
+               "block": {
+                "type": "scene_visibility",
+                "id": "sky-defenders-186",
+                "fields": {
+                 "ACTION": "hide"
+                },
+                "inputs": {
+                 "SPRITE": {
+                  "block": {
+                   "type": "scene_sprite",
+                   "id": "sky-defenders-187",
+                   "fields": {
+                    "SPRITE_ID": "laser"
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_space_key_handler_block",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_space_key_handler",
+      "signature": {
+       "id": "on_space_key_handler",
+       "name": "on_space_key",
+       "parameters": [
+        {
+         "id": "on_space_key_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "key:Space",
+        "order": 1
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "sky-defenders-161",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "py_not",
+           "id": "sky-defenders-162",
+           "inputs": {
+            "VALUE": {
+             "block": {
+              "type": "scene_get",
+              "id": "sky-defenders-163",
+              "fields": {
+               "PROPERTY": "visible"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "id": "sky-defenders-164",
+                 "fields": {
+                  "SPRITE_ID": "laser"
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "scene_go",
+           "id": "sky-defenders-165",
+           "inputs": {
+            "SPRITE": {
+             "block": {
+              "type": "scene_sprite",
+              "id": "sky-defenders-166",
+              "fields": {
+               "SPRITE_ID": "laser"
+              }
+             }
+            },
+            "X": {
+             "block": {
+              "type": "scene_get",
+              "id": "sky-defenders-167",
+              "fields": {
+               "PROPERTY": "x"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "id": "sky-defenders-168",
+                 "fields": {
+                  "SPRITE_ID": "cannon"
+                 }
+                }
+               }
+              }
+             }
+            },
+            "Y": {
+             "block": {
+              "type": "py_unary",
+              "id": "e8c8f9af-9ef6-4bcc-8d16-feadc2492fc4",
+              "fields": {
+               "OP": "-"
+              },
+              "inputs": {
+               "VALUE": {
+                "block": {
+                 "type": "py_number",
+                 "id": "40ec5d64-4330-4227-a33e-d17f449b564d",
+                 "fields": {
+                  "VALUE": "122"
+                 }
+                }
+               }
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "scene_visibility",
+             "id": "sky-defenders-170",
+             "fields": {
+              "ACTION": "show"
              },
-             "icons": {
-              "comment": {
-               "text": "Damage\nLives a bomb takes away. Try -2 for a hard game, or 0 and nothing can hurt you.",
-               "pinned": false,
-               "height": 120,
-               "width": 260
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "id": "sky-defenders-171",
+                "fields": {
+                 "SPRITE_ID": "laser"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "sound_play",
+               "id": "sky-defenders-172",
+               "inputs": {
+                "SOUND": {
+                 "block": {
+                  "type": "sound_asset",
+                  "id": "sky-defenders-173",
+                  "fields": {
+                   "SOUND_ID": "laser"
+                  }
+                 }
+                },
+                "OWNER": {
+                 "block": {
+                  "type": "py_none",
+                  "id": "sky-defenders-174"
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_start_handler_block",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_start_handler",
+      "signature": {
+       "id": "on_start_handler",
+       "name": "on_start",
+       "parameters": [
+        {
+         "id": "on_start_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "start",
+        "order": 0
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "game_set",
+        "id": "sky-defenders-65",
+        "fields": {
+         "FIELD": "score"
+        },
+        "inputs": {
+         "VALUE": {
+          "shadow": {
+           "type": "py_number",
+           "id": "sky-defenders-66",
+           "fields": {
+            "VALUE": "0"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "game_set",
+          "id": "sky-defenders-67",
+          "fields": {
+           "FIELD": "lives"
+          },
+          "inputs": {
+           "VALUE": {
+            "block": {
+             "type": "py_get",
+             "id": "95ce0210-ae4a-459d-bf5b-162d98a6bad9",
+             "fields": {
+              "SYMBOL": "~=}B%Tr7Q9f;fy^f5vL}"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "scene_costume_set",
+            "id": "53b730ae-f734-43d7-8603-97564f1d9614",
+            "inputs": {
+             "SPRITE": {
+              "block": {
+               "type": "scene_sprite",
+               "id": "sky-defenders-70",
+               "fields": {
+                "SPRITE_ID": "cannon"
+               }
+              }
+             },
+             "COSTUME": {
+              "block": {
+               "type": "py_get",
+               "id": "489ba376-00e5-4cf9-a6df-56075d9fa293",
+               "fields": {
+                "SYMBOL": ":g*qeU%ibfX5KVo:u=uU"
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "scene_costume_set",
+              "id": "6de2cea5-5a2f-417e-989b-da0219da9c29",
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "id": "46ae1435-cc7f-44f8-8756-d40e3bb34735",
+                 "fields": {
+                  "SPRITE_ID": "laser"
+                 }
+                }
+               },
+               "COSTUME": {
+                "block": {
+                 "type": "py_get",
+                 "id": "d1520cee-a49d-4f81-8bf4-74c1c348f904",
+                 "fields": {
+                  "SYMBOL": "*bD@/ndZlJ4[GD9O1a2i"
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "scene_costume_set",
+                "id": "4570cbb8-f791-40f2-97bb-79834403518d",
+                "inputs": {
+                 "SPRITE": {
+                  "block": {
+                   "type": "scene_sprite",
+                   "id": "sky-defenders-124",
+                   "fields": {
+                    "SPRITE_ID": "bomb"
+                   }
+                  }
+                 },
+                 "COSTUME": {
+                  "block": {
+                   "type": "py_get",
+                   "id": "cdfe229e-b0f9-4e92-b9bf-09b2c854a30e",
+                   "fields": {
+                    "SYMBOL": ".R!mP#T(gi=t}@%,_}I0"
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "scene_control",
+                  "id": "c46c5b73-aa9c-4336-aded-a4e77453ac6a",
+                  "fields": {
+                   "SCHEME": "arrows"
+                  },
+                  "inputs": {
+                   "SPRITE": {
+                    "block": {
+                     "type": "scene_sprite",
+                     "id": "sky-defenders-74",
+                     "fields": {
+                      "SPRITE_ID": "cannon"
+                     }
+                    }
+                   },
+                   "VX": {
+                    "block": {
+                     "type": "py_get",
+                     "id": "c9fb9c10-cebd-4f7c-91da-eefd317386a9",
+                     "fields": {
+                      "SYMBOL": "8xsuUjSO-+MVa6B+P1!e"
+                     }
+                    }
+                   },
+                   "VY": {
+                    "block": {
+                     "type": "py_number",
+                     "id": "sky-defenders-72",
+                     "fields": {
+                      "VALUE": "0"
+                     }
+                    }
+                   }
+                  },
+                  "next": {
+                   "block": {
+                    "type": "scene_motion_edges",
+                    "id": "sky-defenders-73",
+                    "fields": {
+                     "MODE": "stop"
+                    },
+                    "inputs": {
+                     "SPRITE": {
+                      "block": {
+                       "type": "scene_sprite",
+                       "id": "48c9fec9-e3a4-4011-942b-7ca1a9a22573",
+                       "fields": {
+                        "SPRITE_ID": "cannon"
+                       }
+                      }
+                     }
+                    },
+                    "next": {
+                     "block": {
+                      "type": "py_set",
+                      "id": "sky-defenders-75",
+                      "fields": {
+                       "SYMBOL": "sky-defenders-246"
+                      },
+                      "inputs": {
+                       "VALUE": {
+                        "block": {
+                         "type": "py_get",
+                         "id": "e45464d6-fe4f-447c-8366-5d5775812807",
+                         "fields": {
+                          "SYMBOL": "N@DhoI=JO%V:?~FY_U~G"
+                         }
+                        }
+                       }
+                      },
+                      "next": {
+                       "block": {
+                        "type": "py_set",
+                        "id": "sky-defenders-77",
+                        "fields": {
+                         "SYMBOL": "sky-defenders-247"
+                        },
+                        "inputs": {
+                         "VALUE": {
+                          "shadow": {
+                           "type": "py_number",
+                           "id": "sky-defenders-78",
+                           "fields": {
+                            "VALUE": "0"
+                           }
+                          }
+                         }
+                        },
+                        "next": {
+                         "block": {
+                          "type": "py_set",
+                          "id": "sky-defenders-79",
+                          "fields": {
+                           "SYMBOL": "sky-defenders-248"
+                          },
+                          "inputs": {
+                           "VALUE": {
+                            "shadow": {
+                             "type": "py_number",
+                             "id": "sky-defenders-80",
+                             "fields": {
+                              "VALUE": "0"
+                             }
+                            }
+                           }
+                          },
+                          "next": {
+                           "block": {
+                            "type": "py_call",
+                            "id": "sky-defenders-81",
+                            "extraState": {
+                             "functionId": "make_aliens_function",
+                             "signature": {
+                              "id": "make_aliens_function",
+                              "name": "make_aliens",
+                              "parameters": []
+                             }
+                            },
+                            "next": {
+                             "block": {
+                              "type": "controls_whileUntil",
+                              "id": "sky-defenders-82",
+                              "fields": {
+                               "MODE": "WHILE"
+                              },
+                              "inputs": {
+                               "BOOL": {
+                                "shadow": {
+                                 "type": "logic_boolean",
+                                 "id": "sky-defenders-83",
+                                 "fields": {
+                                  "BOOL": "TRUE"
+                                 }
+                                }
+                               },
+                               "DO": {
+                                "block": {
+                                 "type": "py_wait",
+                                 "id": "sky-defenders-84",
+                                 "inputs": {
+                                  "SECONDS": {
+                                   "block": {
+                                    "type": "py_binary",
+                                    "id": "sky-defenders-85",
+                                    "fields": {
+                                     "OP": "+"
+                                    },
+                                    "inputs": {
+                                     "A": {
+                                      "shadow": {
+                                       "type": "py_number",
+                                       "id": "sky-defenders-86",
+                                       "fields": {
+                                        "VALUE": "0.1"
+                                       }
+                                      }
+                                     },
+                                     "B": {
+                                      "block": {
+                                       "type": "py_binary",
+                                       "id": "sky-defenders-87",
+                                       "fields": {
+                                        "OP": "*"
+                                       },
+                                       "inputs": {
+                                        "A": {
+                                         "shadow": {
+                                          "type": "py_number",
+                                          "id": "sky-defenders-88",
+                                          "fields": {
+                                           "VALUE": "0.025"
+                                          }
+                                         }
+                                        },
+                                        "B": {
+                                         "block": {
+                                          "type": "py_get",
+                                          "id": "sky-defenders-89",
+                                          "fields": {
+                                           "SYMBOL": "sky-defenders-247"
+                                          }
+                                         }
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   }
+                                  }
+                                 },
+                                 "next": {
+                                  "block": {
+                                   "type": "py_set",
+                                   "id": "sky-defenders-90",
+                                   "fields": {
+                                    "SYMBOL": "sky-defenders-249"
+                                   },
+                                   "inputs": {
+                                    "VALUE": {
+                                     "block": {
+                                      "type": "logic_boolean",
+                                      "id": "sky-defenders-91",
+                                      "fields": {
+                                       "BOOL": "FALSE"
+                                      }
+                                     }
+                                    }
+                                   },
+                                   "next": {
+                                    "block": {
+                                     "type": "py_for_each",
+                                     "id": "sky-defenders-92",
+                                     "fields": {
+                                      "SYMBOL": "sky-defenders-250"
+                                     },
+                                     "inputs": {
+                                      "ITERABLE": {
+                                       "block": {
+                                        "type": "scene_of_kind",
+                                        "id": "sky-defenders-93",
+                                        "inputs": {
+                                         "KIND": {
+                                          "shadow": {
+                                           "type": "text",
+                                           "id": "sky-defenders-94",
+                                           "fields": {
+                                            "TEXT": "alien"
+                                           }
+                                          }
+                                         }
+                                        }
+                                       }
+                                      },
+                                      "DO": {
+                                       "block": {
+                                        "type": "controls_if",
+                                        "id": "sky-defenders-95",
+                                        "inputs": {
+                                         "IF0": {
+                                          "block": {
+                                           "type": "scene_get",
+                                           "id": "sky-defenders-96",
+                                           "fields": {
+                                            "PROPERTY": "is_clone"
+                                           },
+                                           "inputs": {
+                                            "SPRITE": {
+                                             "block": {
+                                              "type": "py_get",
+                                              "id": "sky-defenders-97",
+                                              "fields": {
+                                               "SYMBOL": "sky-defenders-250"
+                                              }
+                                             }
+                                            }
+                                           }
+                                          }
+                                         },
+                                         "DO0": {
+                                          "block": {
+                                           "type": "scene_change",
+                                           "id": "sky-defenders-98",
+                                           "fields": {
+                                            "PROPERTY": "x"
+                                           },
+                                           "inputs": {
+                                            "SPRITE": {
+                                             "block": {
+                                              "type": "py_get",
+                                              "id": "sky-defenders-99",
+                                              "fields": {
+                                               "SYMBOL": "sky-defenders-250"
+                                              }
+                                             }
+                                            },
+                                            "VALUE": {
+                                             "block": {
+                                              "type": "py_get",
+                                              "id": "sky-defenders-100",
+                                              "fields": {
+                                               "SYMBOL": "sky-defenders-246"
+                                              }
+                                             }
+                                            }
+                                           },
+                                           "next": {
+                                            "block": {
+                                             "type": "controls_if",
+                                             "id": "sky-defenders-101",
+                                             "inputs": {
+                                              "IF0": {
+                                               "block": {
+                                                "type": "py_logic",
+                                                "id": "sky-defenders-102",
+                                                "fields": {
+                                                 "OP": "or"
+                                                },
+                                                "inputs": {
+                                                 "A": {
+                                                  "block": {
+                                                   "type": "logic_compare",
+                                                   "id": "sky-defenders-103",
+                                                   "fields": {
+                                                    "OP": "GT"
+                                                   },
+                                                   "inputs": {
+                                                    "A": {
+                                                     "block": {
+                                                      "type": "scene_get",
+                                                      "id": "sky-defenders-104",
+                                                      "fields": {
+                                                       "PROPERTY": "x"
+                                                      },
+                                                      "inputs": {
+                                                       "SPRITE": {
+                                                        "block": {
+                                                         "type": "py_get",
+                                                         "id": "sky-defenders-105",
+                                                         "fields": {
+                                                          "SYMBOL": "sky-defenders-250"
+                                                         }
+                                                        }
+                                                       }
+                                                      }
+                                                     }
+                                                    },
+                                                    "B": {
+                                                     "shadow": {
+                                                      "type": "py_number",
+                                                      "id": "sky-defenders-106",
+                                                      "fields": {
+                                                       "VALUE": "215"
+                                                      }
+                                                     }
+                                                    }
+                                                   }
+                                                  }
+                                                 },
+                                                 "B": {
+                                                  "block": {
+                                                   "type": "logic_compare",
+                                                   "id": "sky-defenders-107",
+                                                   "fields": {
+                                                    "OP": "LT"
+                                                   },
+                                                   "inputs": {
+                                                    "A": {
+                                                     "block": {
+                                                      "type": "scene_get",
+                                                      "id": "sky-defenders-108",
+                                                      "fields": {
+                                                       "PROPERTY": "x"
+                                                      },
+                                                      "inputs": {
+                                                       "SPRITE": {
+                                                        "block": {
+                                                         "type": "py_get",
+                                                         "id": "sky-defenders-109",
+                                                         "fields": {
+                                                          "SYMBOL": "sky-defenders-250"
+                                                         }
+                                                        }
+                                                       }
+                                                      }
+                                                     }
+                                                    },
+                                                    "B": {
+                                                     "block": {
+                                                      "type": "py_unary",
+                                                      "id": "efde095c-ae74-41f7-a2c5-12e064befdb1",
+                                                      "fields": {
+                                                       "OP": "-"
+                                                      },
+                                                      "inputs": {
+                                                       "VALUE": {
+                                                        "block": {
+                                                         "type": "py_number",
+                                                         "id": "f6efdd29-7a09-447b-97e4-6bf1daefd019",
+                                                         "fields": {
+                                                          "VALUE": "215"
+                                                         }
+                                                        }
+                                                       }
+                                                      }
+                                                     }
+                                                    }
+                                                   }
+                                                  }
+                                                 }
+                                                }
+                                               }
+                                              },
+                                              "DO0": {
+                                               "block": {
+                                                "type": "py_set",
+                                                "id": "sky-defenders-111",
+                                                "fields": {
+                                                 "SYMBOL": "sky-defenders-249"
+                                                },
+                                                "inputs": {
+                                                 "VALUE": {
+                                                  "block": {
+                                                   "type": "logic_boolean",
+                                                   "id": "sky-defenders-112",
+                                                   "fields": {
+                                                    "BOOL": "TRUE"
+                                                   }
+                                                  }
+                                                 }
+                                                }
+                                               }
+                                              }
+                                             },
+                                             "next": {
+                                              "block": {
+                                               "type": "controls_if",
+                                               "id": "sky-defenders-113",
+                                               "inputs": {
+                                                "IF0": {
+                                                 "block": {
+                                                  "type": "py_logic",
+                                                  "id": "sky-defenders-114",
+                                                  "fields": {
+                                                   "OP": "and"
+                                                  },
+                                                  "inputs": {
+                                                   "A": {
+                                                    "block": {
+                                                     "type": "logic_compare",
+                                                     "id": "sky-defenders-115",
+                                                     "fields": {
+                                                      "OP": "EQ"
+                                                     },
+                                                     "inputs": {
+                                                      "A": {
+                                                       "block": {
+                                                        "type": "math_random_int",
+                                                        "id": "sky-defenders-116",
+                                                        "inputs": {
+                                                         "FROM": {
+                                                          "shadow": {
+                                                           "type": "py_number",
+                                                           "id": "sky-defenders-117",
+                                                           "fields": {
+                                                            "VALUE": "1"
+                                                           }
+                                                          }
+                                                         },
+                                                         "TO": {
+                                                          "block": {
+                                                           "type": "py_get",
+                                                           "id": "0f1a51eb-6bed-406a-9e8e-9019e338e52d",
+                                                           "fields": {
+                                                            "SYMBOL": "QC)-.?,eo2|Y4;{%(A2R"
+                                                           }
+                                                          }
+                                                         }
+                                                        }
+                                                       }
+                                                      },
+                                                      "B": {
+                                                       "shadow": {
+                                                        "type": "py_number",
+                                                        "id": "sky-defenders-119",
+                                                        "fields": {
+                                                         "VALUE": "1"
+                                                        }
+                                                       }
+                                                      }
+                                                     }
+                                                    }
+                                                   },
+                                                   "B": {
+                                                    "block": {
+                                                     "type": "logic_compare",
+                                                     "id": "sky-defenders-120",
+                                                     "fields": {
+                                                      "OP": "LT"
+                                                     },
+                                                     "inputs": {
+                                                      "A": {
+                                                       "block": {
+                                                        "type": "py_get",
+                                                        "id": "sky-defenders-121",
+                                                        "fields": {
+                                                         "SYMBOL": "sky-defenders-248"
+                                                        }
+                                                       }
+                                                      },
+                                                      "B": {
+                                                       "block": {
+                                                        "type": "py_get",
+                                                        "id": "ba4938ba-9683-43aa-90a9-af236b98ad73",
+                                                        "fields": {
+                                                         "SYMBOL": "Qst1XxC#=HO:m$%r,5oq"
+                                                        }
+                                                       }
+                                                      }
+                                                     }
+                                                    }
+                                                   }
+                                                  }
+                                                 }
+                                                },
+                                                "DO0": {
+                                                 "block": {
+                                                  "type": "scene_go",
+                                                  "id": "sky-defenders-123",
+                                                  "inputs": {
+                                                   "SPRITE": {
+                                                    "block": {
+                                                     "type": "scene_sprite",
+                                                     "id": "sky-defenders-131",
+                                                     "fields": {
+                                                      "SPRITE_ID": "bomb"
+                                                     }
+                                                    }
+                                                   },
+                                                   "X": {
+                                                    "block": {
+                                                     "type": "scene_get",
+                                                     "id": "sky-defenders-125",
+                                                     "fields": {
+                                                      "PROPERTY": "x"
+                                                     },
+                                                     "inputs": {
+                                                      "SPRITE": {
+                                                       "block": {
+                                                        "type": "py_get",
+                                                        "id": "sky-defenders-126",
+                                                        "fields": {
+                                                         "SYMBOL": "sky-defenders-250"
+                                                        }
+                                                       }
+                                                      }
+                                                     }
+                                                    }
+                                                   },
+                                                   "Y": {
+                                                    "block": {
+                                                     "type": "scene_get",
+                                                     "id": "sky-defenders-127",
+                                                     "fields": {
+                                                      "PROPERTY": "y"
+                                                     },
+                                                     "inputs": {
+                                                      "SPRITE": {
+                                                       "block": {
+                                                        "type": "py_get",
+                                                        "id": "sky-defenders-128",
+                                                        "fields": {
+                                                         "SYMBOL": "sky-defenders-250"
+                                                        }
+                                                       }
+                                                      }
+                                                     }
+                                                    }
+                                                   }
+                                                  },
+                                                  "next": {
+                                                   "block": {
+                                                    "type": "scene_visibility",
+                                                    "id": "sky-defenders-129",
+                                                    "fields": {
+                                                     "ACTION": "show"
+                                                    },
+                                                    "inputs": {
+                                                     "SPRITE": {
+                                                      "block": {
+                                                       "type": "scene_clone",
+                                                       "id": "sky-defenders-130",
+                                                       "inputs": {
+                                                        "SPRITE": {
+                                                         "block": {
+                                                          "type": "scene_sprite",
+                                                          "id": "2777a5a3-2237-48ee-a0ee-402ddf7d6b5b",
+                                                          "fields": {
+                                                           "SPRITE_ID": "bomb"
+                                                          }
+                                                         }
+                                                        }
+                                                       }
+                                                      }
+                                                     }
+                                                    },
+                                                    "next": {
+                                                     "block": {
+                                                      "type": "py_set",
+                                                      "id": "sky-defenders-132",
+                                                      "fields": {
+                                                       "SYMBOL": "sky-defenders-248"
+                                                      },
+                                                      "inputs": {
+                                                       "VALUE": {
+                                                        "block": {
+                                                         "type": "py_binary",
+                                                         "id": "sky-defenders-133",
+                                                         "fields": {
+                                                          "OP": "+"
+                                                         },
+                                                         "inputs": {
+                                                          "A": {
+                                                           "block": {
+                                                            "type": "py_get",
+                                                            "id": "sky-defenders-134",
+                                                            "fields": {
+                                                             "SYMBOL": "sky-defenders-248"
+                                                            }
+                                                           }
+                                                          },
+                                                          "B": {
+                                                           "shadow": {
+                                                            "type": "py_number",
+                                                            "id": "sky-defenders-135",
+                                                            "fields": {
+                                                             "VALUE": "1"
+                                                            }
+                                                           }
+                                                          }
+                                                         }
+                                                        }
+                                                       }
+                                                      }
+                                                     }
+                                                    }
+                                                   }
+                                                  }
+                                                 }
+                                                }
+                                               }
+                                              }
+                                             }
+                                            }
+                                           }
+                                          }
+                                         }
+                                        }
+                                       }
+                                      }
+                                     },
+                                     "next": {
+                                      "block": {
+                                       "type": "controls_if",
+                                       "id": "sky-defenders-136",
+                                       "inputs": {
+                                        "IF0": {
+                                         "block": {
+                                          "type": "py_get",
+                                          "id": "sky-defenders-137",
+                                          "fields": {
+                                           "SYMBOL": "sky-defenders-249"
+                                          }
+                                         }
+                                        },
+                                        "DO0": {
+                                         "block": {
+                                          "type": "py_set",
+                                          "id": "sky-defenders-138",
+                                          "fields": {
+                                           "SYMBOL": "sky-defenders-246"
+                                          },
+                                          "inputs": {
+                                           "VALUE": {
+                                            "block": {
+                                             "type": "py_binary",
+                                             "id": "sky-defenders-139",
+                                             "fields": {
+                                              "OP": "-"
+                                             },
+                                             "inputs": {
+                                              "A": {
+                                               "shadow": {
+                                                "type": "py_number",
+                                                "id": "sky-defenders-140",
+                                                "fields": {
+                                                 "VALUE": "0"
+                                                }
+                                               }
+                                              },
+                                              "B": {
+                                               "block": {
+                                                "type": "py_get",
+                                                "id": "sky-defenders-141",
+                                                "fields": {
+                                                 "SYMBOL": "sky-defenders-246"
+                                                }
+                                               }
+                                              }
+                                             }
+                                            }
+                                           }
+                                          },
+                                          "next": {
+                                           "block": {
+                                            "type": "py_for_each",
+                                            "id": "sky-defenders-142",
+                                            "fields": {
+                                             "SYMBOL": "sky-defenders-250"
+                                            },
+                                            "inputs": {
+                                             "ITERABLE": {
+                                              "block": {
+                                               "type": "scene_of_kind",
+                                               "id": "sky-defenders-143",
+                                               "inputs": {
+                                                "KIND": {
+                                                 "shadow": {
+                                                  "type": "text",
+                                                  "id": "sky-defenders-144",
+                                                  "fields": {
+                                                   "TEXT": "alien"
+                                                  }
+                                                 }
+                                                }
+                                               }
+                                              }
+                                             },
+                                             "DO": {
+                                              "block": {
+                                               "type": "controls_if",
+                                               "id": "sky-defenders-145",
+                                               "inputs": {
+                                                "IF0": {
+                                                 "block": {
+                                                  "type": "scene_get",
+                                                  "id": "sky-defenders-146",
+                                                  "fields": {
+                                                   "PROPERTY": "is_clone"
+                                                  },
+                                                  "inputs": {
+                                                   "SPRITE": {
+                                                    "block": {
+                                                     "type": "py_get",
+                                                     "id": "sky-defenders-147",
+                                                     "fields": {
+                                                      "SYMBOL": "sky-defenders-250"
+                                                     }
+                                                    }
+                                                   }
+                                                  }
+                                                 }
+                                                },
+                                                "DO0": {
+                                                 "block": {
+                                                  "type": "scene_change",
+                                                  "id": "sky-defenders-148",
+                                                  "fields": {
+                                                   "PROPERTY": "y"
+                                                  },
+                                                  "inputs": {
+                                                   "SPRITE": {
+                                                    "block": {
+                                                     "type": "py_get",
+                                                     "id": "sky-defenders-149",
+                                                     "fields": {
+                                                      "SYMBOL": "sky-defenders-250"
+                                                     }
+                                                    }
+                                                   },
+                                                   "VALUE": {
+                                                    "block": {
+                                                     "type": "py_unary",
+                                                     "id": "5a37eaa1-5aa2-4b2d-9c3a-0dc4d9d87bf4",
+                                                     "fields": {
+                                                      "OP": "-"
+                                                     },
+                                                     "inputs": {
+                                                      "VALUE": {
+                                                       "block": {
+                                                        "type": "py_get",
+                                                        "id": "a6f1956f-e156-44e9-918a-7a2bb920ab74",
+                                                        "fields": {
+                                                         "SYMBOL": "^I?a[8NM9lqEvoGm[a=1"
+                                                        }
+                                                       }
+                                                      }
+                                                     }
+                                                    }
+                                                   }
+                                                  },
+                                                  "next": {
+                                                   "block": {
+                                                    "type": "controls_if",
+                                                    "id": "sky-defenders-151",
+                                                    "inputs": {
+                                                     "IF0": {
+                                                      "block": {
+                                                       "type": "logic_compare",
+                                                       "id": "sky-defenders-152",
+                                                       "fields": {
+                                                        "OP": "LT"
+                                                       },
+                                                       "inputs": {
+                                                        "A": {
+                                                         "block": {
+                                                          "type": "scene_get",
+                                                          "id": "sky-defenders-153",
+                                                          "fields": {
+                                                           "PROPERTY": "y"
+                                                          },
+                                                          "inputs": {
+                                                           "SPRITE": {
+                                                            "block": {
+                                                             "type": "py_get",
+                                                             "id": "sky-defenders-154",
+                                                             "fields": {
+                                                              "SYMBOL": "sky-defenders-250"
+                                                             }
+                                                            }
+                                                           }
+                                                          }
+                                                         }
+                                                        },
+                                                        "B": {
+                                                         "block": {
+                                                          "type": "py_unary",
+                                                          "id": "bd02f253-170a-4150-8d70-19a21c72ac9d",
+                                                          "fields": {
+                                                           "OP": "-"
+                                                          },
+                                                          "inputs": {
+                                                           "VALUE": {
+                                                            "block": {
+                                                             "type": "py_number",
+                                                             "id": "d0bcf850-397f-4b6f-b90f-ad820aef5a5f",
+                                                             "fields": {
+                                                              "VALUE": "100"
+                                                             }
+                                                            }
+                                                           }
+                                                          }
+                                                         }
+                                                        }
+                                                       }
+                                                      }
+                                                     },
+                                                     "DO0": {
+                                                      "block": {
+                                                       "type": "sound_play",
+                                                       "id": "sky-defenders-156",
+                                                       "inputs": {
+                                                        "SOUND": {
+                                                         "block": {
+                                                          "type": "sound_asset",
+                                                          "id": "sky-defenders-157",
+                                                          "fields": {
+                                                           "SOUND_ID": "lose"
+                                                          }
+                                                         }
+                                                        },
+                                                        "OWNER": {
+                                                         "block": {
+                                                          "type": "py_none",
+                                                          "id": "sky-defenders-158"
+                                                         }
+                                                        }
+                                                       },
+                                                       "next": {
+                                                        "block": {
+                                                         "type": "game_finish",
+                                                         "id": "sky-defenders-159",
+                                                         "fields": {
+                                                          "WON": "FALSE"
+                                                         },
+                                                         "inputs": {
+                                                          "TEXT": {
+                                                           "shadow": {
+                                                            "type": "text",
+                                                            "id": "sky-defenders-160",
+                                                            "fields": {
+                                                             "TEXT": "The aliens landed!"
+                                                            }
+                                                           }
+                                                          }
+                                                         }
+                                                        }
+                                                       }
+                                                      }
+                                                     }
+                                                    }
+                                                   }
+                                                  }
+                                                 }
+                                                }
+                                               }
+                                              }
+                                             }
+                                            }
+                                           }
+                                          }
+                                         }
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   }
+                                  }
+                                 },
+                                 "icons": {
+                                  "comment": {
+                                   "text": "Alien march timing\nThe wait between steps: 0.1 seconds, plus 0.025 for every alien still flying. Fewer aliens means a faster march!",
+                                   "pinned": false,
+                                   "height": 120,
+                                   "width": 260
+                                  }
+                                 }
+                                }
+                               }
+                              }
+                             }
+                            }
+                           }
+                          }
+                         }
+                        }
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               }
               }
              }
             }
@@ -2600,6 +3100,76 @@
    {
     "name": "new_alien",
     "id": "sky-defenders-251",
+    "type": "py:module"
+   },
+   {
+    "name": "ALIENS_PER_ROW",
+    "id": "oif:MLfrY?+vTOheBDgT",
+    "type": "py:module"
+   },
+   {
+    "name": "POINTS_PER_ALIEN",
+    "id": "(,NGPat}~?pZ*,nR?iLZ",
+    "type": "py:module"
+   },
+   {
+    "name": "DAMAGE",
+    "id": "$G1Znz!$O}0wKPUSH{hT",
+    "type": "py:module"
+   },
+   {
+    "name": "BOMB_SPEED",
+    "id": "!0..TS/tWf$F:[_5U=1z",
+    "type": "py:module"
+   },
+   {
+    "name": "LASER_SPEED",
+    "id": "Jt3w_Alzensf{mIx8fW@",
+    "type": "py:module"
+   },
+   {
+    "name": "LIVES",
+    "id": "~=}B%Tr7Q9f;fy^f5vL}",
+    "type": "py:module"
+   },
+   {
+    "name": "CANNON_LOOK",
+    "id": ":g*qeU%ibfX5KVo:u=uU",
+    "type": "py:module"
+   },
+   {
+    "name": "LASER_LOOK",
+    "id": "*bD@/ndZlJ4[GD9O1a2i",
+    "type": "py:module"
+   },
+   {
+    "name": "BOMB_LOOK",
+    "id": ".R!mP#T(gi=t}@%,_}I0",
+    "type": "py:module"
+   },
+   {
+    "name": "CANNON_SPEED",
+    "id": "8xsuUjSO-+MVa6B+P1!e",
+    "type": "py:module"
+   },
+   {
+    "name": "ALIEN_STEP",
+    "id": "N@DhoI=JO%V:?~FY_U~G",
+    "type": "py:module"
+   },
+   {
+    "name": "BOMB_CHANCE",
+    "id": "QC)-.?,eo2|Y4;{%(A2R",
+    "type": "py:module"
+   },
+   {
+    "name": "MOST_BOMBS",
+    "id": "Qst1XxC#=HO:m$%r,5oq",
+    "type": "py:module"
+   },
+   {
+    "name": "ALIEN_DROP",
+    "id": "^I?a[8NM9lqEvoGm[a=1",
     "type": "py:module"
    },
    {
@@ -2827,55 +3397,6 @@
     "returnTypes": null
    },
    {
-    "id": "on_start_handler",
-    "name": "on_start",
-    "returnTypes": null,
-    "async": true,
-    "handler": {
-     "event": "start",
-     "order": 0
-    },
-    "parameters": [
-     {
-      "id": "on_start_handler_payload",
-      "name": "payload"
-     }
-    ]
-   },
-   {
-    "id": "on_space_key_handler",
-    "name": "on_space_key",
-    "returnTypes": null,
-    "async": true,
-    "handler": {
-     "event": "key:Space",
-     "order": 1
-    },
-    "parameters": [
-     {
-      "id": "on_space_key_handler_payload",
-      "name": "payload"
-     }
-    ]
-   },
-   {
-    "id": "on_laser_update_handler",
-    "name": "on_laser_update",
-    "returnTypes": null,
-    "async": true,
-    "handler": {
-     "event": "update",
-     "order": 2,
-     "sprite": "laser"
-    },
-    "parameters": [
-     {
-      "id": "on_laser_update_handler_payload",
-      "name": "payload"
-     }
-    ]
-   },
-   {
     "id": "on_alien_overlap_handler",
     "name": "on_alien_overlap",
     "returnTypes": null,
@@ -2888,6 +3409,23 @@
     "parameters": [
      {
       "id": "on_alien_overlap_handler_payload",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "on_bomb_overlap_handler",
+    "name": "on_bomb_overlap",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "overlap",
+     "order": 5,
+     "sprite": "bomb"
+    },
+    "parameters": [
+     {
+      "id": "on_bomb_overlap_handler_payload",
       "name": "payload"
      }
     ]
@@ -2910,18 +3448,50 @@
     ]
    },
    {
-    "id": "on_bomb_overlap_handler",
-    "name": "on_bomb_overlap",
+    "id": "on_laser_update_handler",
+    "name": "on_laser_update",
     "returnTypes": null,
     "async": true,
     "handler": {
-     "event": "overlap",
-     "order": 5,
-     "sprite": "bomb"
+     "event": "update",
+     "order": 2,
+     "sprite": "laser"
     },
     "parameters": [
      {
-      "id": "on_bomb_overlap_handler_payload",
+      "id": "on_laser_update_handler_payload",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "on_space_key_handler",
+    "name": "on_space_key",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "key:Space",
+     "order": 1
+    },
+    "parameters": [
+     {
+      "id": "on_space_key_handler_payload",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "on_start_handler",
+    "name": "on_start",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 0
+    },
+    "parameters": [
+     {
+      "id": "on_start_handler_payload",
       "name": "payload"
      }
     ]
@@ -2929,6 +3499,11 @@
   ],
   "scriptTabs": {
    "tabs": [
+    {
+     "id": "settings",
+     "name": "Settings",
+     "icon": "wand"
+    },
     {
      "id": "game",
      "name": "Game rules",
@@ -2957,7 +3532,8 @@
     "make_aliens_function_block": "aliens",
     "on_alien_overlap_handler_block": "aliens",
     "on_bomb_update_handler_block": "bombs",
-    "on_bomb_overlap_handler_block": "bombs"
+    "on_bomb_overlap_handler_block": "bombs",
+    "settings_program_block": "settings"
    }
   }
  }

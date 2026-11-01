@@ -12,23 +12,31 @@ const open = (path: string) => { const w = createWorkspace(); workspaces.push(w)
 
 describe('the magic book', () => {
   it('turns each note into a page, in tab order, with the numbers in its block', () => {
-    const w = open('content/examples/sky-defenders.json'), pages = magicEntries(w);
-    expect(pages.every(p => p.source === 'note' || p.source === 'spotted')).toBe(true);
+    const w = open('content/examples/rock-blaster.json'), pages = magicEntries(w);
     const notes = pages.filter(p => p.source === 'note');
-    expect(notes).toHaveLength(13);
-    expect([...new Set(notes.map(p => p.tab))]).toEqual(['game', 'cannon', 'aliens', 'bombs']);
+    expect(notes).toHaveLength(10);
+    expect([...new Set(notes.map(p => p.tab))]).toEqual(['game', 'ship', 'shots', 'rocks']);
     const lives = notes.find(p => p.title === 'Lives at the start')!;
-    expect(lives.note).toMatch(/^How many bombs can hit you/);
+    expect(lives.note).toMatch(/^How many rocks can hit the ship/);
     expect(lives.values).toEqual([expect.objectContaining({ kind: 'number', value: '3', label: 'set lives to', field: 'VALUE' })]);
     expect(lives.script).toBe('when game starts');
-    expect(notes.find(p => p.title === 'Cannon speed')!.values.map(v => [v.label, v.value])).toEqual([['with arrow keys horizontal speed', '220'], ['vertical speed', '0']]);
-    expect(notes.find(p => p.title === 'Alien march step')!.values.map(v => v.label)).toEqual(['set dx to']);
-    expect(notes.find(p => p.title === 'Alien march timing')!.values.map(v => [v.label, v.value])).toEqual([['await wait (first number)', '0.1'], ['await wait (second number)', '0.025']]);
-    expect(notes.find(p => p.title === 'Most bombs at once')!.values.map(v => [v.label, v.value])).toEqual([['bombs < 3', '3']]);
-    expect(notes.find(p => p.title === 'Laser speed and direction')!.values.map(v => v.label)).toEqual(['change sprite y by']);
-    // A note has no stack under it: the repeat's number, not the blocks inside it.
-    expect(notes.find(p => p.title === 'Aliens in a row')!.values.map(v => v.value)).toEqual(['8']);
+    expect(notes.find(p => p.title === 'Turning speed')!.values.map(v => v.value)).toEqual(['-6']);
+    expect(notes.find(p => p.title === 'Rocks that split')!.values.map(v => [v.label, v.value])).toEqual([[expect.stringMatching(/size > 30$/), '30']]);
+    // A note without numbers is still a page of the guide.
+    expect(notes.find(p => p.title === 'Shot direction')!.values).toEqual([]);
     // Numbers that already have a note are not spotted again.
+    expect(pages.filter(p => p.source === 'spotted').map(p => p.title)).toEqual([]);
+  });
+
+  it('reads a settings tab as a config: each setting a page, costumes as looks to pick', () => {
+    const w = open('content/examples/sky-defenders.json'), pages = magicEntries(w);
+    const settings = pages.filter(p => p.tab === 'settings');
+    expect(settings[0]).toMatchObject({ title: 'Settings', values: [] });
+    expect(settings.slice(1).map(p => p.values[0].label)).toEqual(['LIVES', 'CANNON_SPEED', 'LASER_SPEED', 'ALIENS_PER_ROW', 'ALIEN_STEP', 'ALIEN_DROP', 'BOMB_SPEED', 'BOMB_CHANCE', 'MOST_BOMBS', 'POINTS_PER_ALIEN', 'DAMAGE', 'CANNON_LOOK', 'LASER_LOOK', 'BOMB_LOOK'].map(name => `set ${name} to`));
+    const laser = settings.find(p => p.title === 'Laser look')!.values[0];
+    expect(laser).toMatchObject({ kind: 'choice', value: 'stock-laser', field: 'COSTUME_ID' });
+    expect(laser.options).toEqual(expect.arrayContaining([['Star', 'star']]));
+    // The cannon's speed comes from CANNON_SPEED, so it is not spotted again in the control block.
     expect(pages.filter(p => p.source === 'spotted').map(p => p.title)).toEqual(['Game over message', 'Winning message']);
   });
 
@@ -61,6 +69,8 @@ describe('the magic book', () => {
     expect(acceptValue('number', 'fast')).toBeNull();
     expect(acceptValue('number', '1,5')).toBeNull();
     expect(acceptValue('text', 'You win!')).toBe('You win!');
+    expect(acceptValue('choice', 'star', [['Star', 'star']])).toBe('star');
+    expect(acceptValue('choice', 'banana', [['Star', 'star']])).toBeNull();
     expect([stepValue('3', 1), stepValue('220', 1), stepValue('-1200', -1), stepValue('-5', 1), stepValue('0', -1)]).toEqual(['4', '230', '-1300', '-4', '-1']);
     expect([stepValue('0.1', 1), stepValue('0.025', 1), stepValue('1.5', -1), stepValue('12.5', 1)]).toEqual(['0.11', '0.026', '1.4', '13.5']);
     expect(stepValue('abc', 1)).toBeNull();

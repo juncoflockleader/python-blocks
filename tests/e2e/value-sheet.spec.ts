@@ -13,11 +13,11 @@ test('tapping a number opens a big sheet with − and +, a ± button, and a chec
   const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
   await openExample(page, 'sky-defenders');
-  await field(page, 'sky-defenders-68').tap();
+  await field(page, 'sky-defenders-lives').tap();
   const sheet = page.locator('#value-sheet');
   await expect(sheet).toBeVisible();
   await expect(page.locator('#value-sheet-title')).toHaveText('Change the number');
-  await expect(page.locator('#value-sheet-context')).toHaveText('set lives to');
+  await expect(page.locator('#value-sheet-context')).toHaveText('set LIVES to');
   await expect(page.locator('#value-sheet-input')).toHaveValue('3');
   await expect(page.locator('#value-sheet-input')).toHaveAttribute('inputmode', 'decimal');
   for (const id of ['#value-sheet-less', '#value-sheet-more', '#value-sheet-done', '#value-sheet-cancel']) {
@@ -28,14 +28,14 @@ test('tapping a number opens a big sheet with − and +, a ± button, and a chec
   await expect(page.locator('#value-sheet-input')).toHaveValue('5');
   await page.locator('#value-sheet-done').tap();
   await expect(sheet).toBeHidden();
-  await openTab(page, 'python'); await expect(page.locator('#python')).toContainText('_pb_game.set("lives", 5)');
+  await openTab(page, 'python'); await expect(page.locator('#python')).toContainText('LIVES = 5');
   // ± makes it minus; words that are not a number keep the sheet open with a hint.
-  await field(page, 'sky-defenders-68').tap();
+  await field(page, 'sky-defenders-lives').tap();
   await page.locator('#value-sheet-sign').tap(); await expect(page.locator('#value-sheet-input')).toHaveValue('-5');
   await page.locator('#value-sheet-input').fill('lots'); await page.locator('#value-sheet-done').tap();
   await expect(page.locator('#value-sheet-error')).toHaveText('Use a number, such as 5, -3 or 0.5.'); await expect(sheet).toBeVisible();
   await page.locator('#value-sheet-cancel').tap(); await expect(sheet).toBeHidden();
-  await expect(page.locator('#python')).toContainText('_pb_game.set("lives", 5)');
+  await expect(page.locator('#python')).toContainText('LIVES = 5');
   expect(errors).toEqual([]);
 });
 

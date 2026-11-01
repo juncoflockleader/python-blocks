@@ -10,8 +10,10 @@ import { scriptTabs, tabOf } from '../scripts/tabs';
 export interface MagicValue {
   blockId: string;
   field: string;
-  kind: 'number' | 'text';
+  kind: 'number' | 'text' | 'choice';
   value: string;
+  /** For a choice (a costume): what can be picked, as [shown name, value]. */
+  options?: [string, string][];
   /** The words beside it in the block, such as "set lives to" or "horizontal speed". */
   label: string;
 }
@@ -33,8 +35,15 @@ const MAX_TITLE = 80;
 /** Words the player reads (a message, a speech bubble, a question) can be changed freely; other text,
  * such as a sprite data key or a kind, names something and would break the program if it changed. */
 const SHOWN_TEXT = /^(TEXT|MESSAGE|ADD\d+)$/;
+/** Costume pickers are choices: a setting such as LASER_LOOK swaps a sprite's look in one place. */
+const CHOICES: Record<string, string> = { scene_costume: 'COSTUME_ID' };
 const literal = (block: Blockly.Block, input = 'TEXT'): MagicValue | null => {
   if (block.type === 'py_number') return { blockId: block.id, field: 'VALUE', kind: 'number', value: block.getFieldValue('VALUE'), label: '' };
+  if (CHOICES[block.type]) {
+    const field = block.getField(CHOICES[block.type]) as Blockly.FieldDropdown | null;
+    const options = (field?.getOptions(false) ?? []).flatMap(([label, value]) => typeof label === 'string' && typeof value === 'string' ? [[label, value] as [string, string]] : []);
+    return field && options.length ? { blockId: block.id, field: CHOICES[block.type], kind: 'choice', value: String(field.getValue()), label: '', options } : null;
+  }
   if (block.type === 'text' && SHOWN_TEXT.test(input)) return { blockId: block.id, field: 'TEXT', kind: 'text', value: block.getFieldValue('TEXT'), label: '' };
   return null;
 };
@@ -46,23 +55,30 @@ function rowWords(input: Blockly.Input) {
   return /[A-Za-z]/.test(words) ? words.replace(/\s*[:→]\s*$/, '') : '';
 }
 /** The numbers and words typed into a block and the blocks in its slots (not the stack under it). */
+// A short row ("to", "y by") borrows the words before it that name the thing: the variable of
+// "set dx to", or "change sprite" before "y by". A value slot's own row, such as "from", is not borrowed.
+function rowLabel(owner: Blockly.Block, index: number) {
+  const own = rowWords(owner.inputList[index]);
+  if (!own || own.split(' ').length > 2) return own;
+  const before: string[] = [];
+  for (let i = index - 1; i >= 0; i--) {
+    const input = owner.inputList[i];
+    if (input.type !== Blockly.inputs.inputTypes.DUMMY && input.name !== 'SPRITE') break;
+    before.unshift(rowWords(input));
+  }
+  return plain([...before, own].join(' '));
+}
+/** The words beside a value in the block it sits in ("set LIVES to", "set lives to"), or that block's text. */
+export function valueLabel(value: Blockly.Block) {
+  const owner = value.getParent();
+  if (!owner) return '';
+  const index = owner.inputList.findIndex(input => input.connection?.targetBlock() === value);
+  return (index >= 0 && rowLabel(owner, index)) || plain(owner.toString(40));
+}
 export function blockValues(block: Blockly.Block): MagicValue[] {
   const own = literal(block);
   if (own) return [{ ...own, label: '' }];
   const values: MagicValue[] = [];
-  // A short row ("to", "y by") borrows the words before it that name the thing: the variable of
-  // "set dx to", or "change sprite" before "y by". A value slot's own row, such as "from", is not borrowed.
-  const rowLabel = (owner: Blockly.Block, index: number) => {
-    const own = rowWords(owner.inputList[index]);
-    if (!own || own.split(' ').length > 2) return own;
-    const before: string[] = [];
-    for (let i = index - 1; i >= 0; i--) {
-      const input = owner.inputList[i];
-      if (input.type !== Blockly.inputs.inputTypes.DUMMY && input.name !== 'SPRITE') break;
-      before.unshift(rowWords(input));
-    }
-    return plain([...before, own].join(' '));
-  };
   const visit = (owner: Blockly.Block, label: string) => {
     for (const [index, input] of owner.inputList.entries()) {
       if (input.type !== Blockly.inputs.inputTypes.VALUE || !input.connection?.targetBlock()) continue;
@@ -90,7 +106,9 @@ export function scriptName(root: Blockly.Block) {
   return (words.split(/\s*→\s*|\s+\(/)[0] || root.toString(40)).slice(0, 60);
 }
 
-interface Spot { type: string; when?: (block: Blockly.Block) => boolean; title: string | ((block: Blockly.Block) => string); note: string }
+/** `input` is the slot that holds the spotted value; when that value comes from elsewhere (a setting such
+ * as CANNON_SPEED), the number is not in this block and nothing is spotted. */
+interface Spot { type: string; input?: string; when?: (block: Blockly.Block) => boolean; title: string | ((block: Blockly.Block) => string); note: string }
 const field = (name: string, value: string) => (block: Blockly.Block) => block.getFieldValue(name) === value;
 /** Numbers every game has, found without a note. */
 export const SPOTS: Spot[] = [
@@ -98,12 +116,13 @@ export const SPOTS: Spot[] = [
   { type: 'game_change', when: field('FIELD', 'lives'), title: 'Lives lost (or won)', note: 'A minus number takes lives away. Try -2 for a harder game, or 0 for no damage at all.' },
   { type: 'game_change', when: field('FIELD', 'score'), title: 'Points', note: 'How many points this gives. Bigger numbers make the score climb faster.' },
   { type: 'scene_jump', title: 'Jump strength', note: 'A bigger number jumps higher. Too big and you fly off the screen!' },
-  { type: 'scene_control', title: 'Move speed', note: 'How fast the keys move this sprite. Bigger is faster.' },
+  { type: 'scene_control', input: 'VX', title: 'Move speed', note: 'How fast the keys move this sprite. Bigger is faster.' },
   { type: 'scene_motion_set', when: field('PROPERTY', 'ay'), title: 'Gravity', note: 'How hard things fall. More minus falls faster; closer to 0 floats like on the moon.' },
-  { type: 'game_countdown', title: 'Time on the clock', note: 'How many seconds the countdown starts from.' },
-  { type: 'game_finish', title: block => block.getFieldValue('WON') === 'TRUE' ? 'Winning message' : 'Game over message', note: 'The words shown when the game ends. Make them your own!' },
+  { type: 'game_countdown', input: 'SECONDS', title: 'Time on the clock', note: 'How many seconds the countdown starts from.' },
+  { type: 'game_finish', input: 'TEXT', title: block => block.getFieldValue('WON') === 'TRUE' ? 'Winning message' : 'Game over message', note: 'The words shown when the game ends. Make them your own!' },
 ];
 
+const typedHere = (block: Blockly.Block, input: string) => ['py_number', 'text'].includes(block.getInputTargetBlock(input)?.type ?? '');
 /** The comment's first line, as the page's title, and the rest as its note. */
 export function readNote(text: string) {
   const lines = text.replace(/\r/g, '').split('\n').map(line => line.trim());
@@ -123,7 +142,7 @@ export function magicEntries(workspace: Blockly.Workspace): MagicEntry[] {
     for (const block of root.getDescendants(true)) {
       if (block.isShadow()) continue;
       const comment = block.getCommentText(), note = comment ? readNote(comment) : null;
-      const spot = note ? null : SPOTS.find(s => s.type === block.type && (!s.when || s.when(block)));
+      const spot = note ? null : SPOTS.find(s => s.type === block.type && (!s.when || s.when(block)) && typedHere(block, s.input ?? 'VALUE'));
       if (!note && !spot) continue;
       const values = blockValues(block);
       if (spot && !values.length) continue;
@@ -138,8 +157,9 @@ export function magicEntries(workspace: Blockly.Workspace): MagicEntry[] {
 }
 
 /** A value typed in the magic book, checked the way the block checks it. */
-export function acceptValue(kind: MagicValue['kind'], text: string): string | null {
+export function acceptValue(kind: MagicValue['kind'], text: string, options?: [string, string][]): string | null {
   if (kind === 'text') return text.slice(0, 500);
+  if (kind === 'choice') return options?.some(([, value]) => value === text) ? text : null;
   const value = text.trim().replace(/^\+/, '').replace(/^−/, '-');
   return isPythonNumber(value) ? value : null;
 }
