@@ -11,16 +11,16 @@ const levelDescriptions: Record<Level, string> = {
   pro: 'Every block group, worlds and modules',
 };
 
-export const TABS = ['sprite', 'python', 'output', 'help'] as const;
+export const TABS = ['sprite', 'magic', 'python', 'output', 'help'] as const;
 export type Tab = typeof TABS[number];
-const tabLabels: Record<Tab, string> = { sprite: 'Sprite', python: 'Python', output: 'Output', help: 'Help' };
+const tabLabels: Record<Tab, string> = { sprite: 'Sprite', magic: 'Magic', python: 'Python', output: 'Output', help: 'Help' };
 /** The Help tab is split so ideas, guided builds and the rest never scroll past each other. */
 export const HELP_SECTIONS = ['ideas', 'builds', 'more'] as const;
 export type HelpSection = typeof HELP_SECTIONS[number];
 const helpLabels: Record<HelpSection, string> = { ideas: 'Ideas', builds: 'Lessons', more: 'More' };
 
 /** The one-screen shell: a top bar, the blocks panel and a right column with the
- * stage, sprite tray and four tabs. Feature modules mount into the named slots. */
+ * stage, sprite tray and five tabs. Feature modules mount into the named slots. */
 export const shellMarkup = `
   <div class="app-shell" id="shell">
     <header class="top-bar" aria-label="Project">
@@ -50,7 +50,9 @@ export const shellMarkup = `
     <div class="shell-notices" id="shell-notices"><p id="export-state" class="project-notice" role="status"></p><button id="export-cancel" class="button secondary" hidden>Cancel export</button><button id="recover" class="button secondary" hidden>Download recovery file</button></div>
     <main class="shell-body" id="shell-body">
       <section class="blocks-panel" aria-labelledby="blocks-title"><h2 id="blocks-title" class="visually-hidden">Build with blocks</h2>
+        <div class="script-tabs" id="script-tabs"><div class="script-tab-list" id="script-tab-list" role="group" aria-label="Script tabs"></div><button id="script-tab-add" class="script-tab-add" type="button" title="New tab: give some scripts a tab of their own"><span>New tab</span></button></div>
         <div id="blockly" aria-label="Visual programming workspace"></div>
+        <p class="script-tabs-empty" id="script-tabs-empty" hidden><strong></strong> has no scripts yet. Drag blocks here from the palette, or drop a script on this tab’s name to move it here.</p>
         <div class="workspace-tools" id="workspace-tools" aria-label="Workspace tools"><button id="block-search-toggle" class="button secondary ui-icon-only" aria-expanded="false" aria-controls="block-search" title="Find blocks">Find blocks</button><button id="zoom-in" class="button secondary ui-icon-only" title="Zoom in">Zoom in</button><button id="zoom-out" class="button secondary ui-icon-only" title="Zoom out">Zoom out</button><button id="zoom-reset" class="button secondary ui-icon-only" title="Center blocks">Center blocks</button></div>
       </section>
       <section class="python-side" id="python-side" aria-label="Python beside blocks" hidden></section>
@@ -67,6 +69,7 @@ export const shellMarkup = `
         <div class="tab-bar" role="tablist" aria-label="Editor panels">${TABS.map((tab, index) => `<button role="tab" id="tab-${tab}" class="tab" aria-controls="panel-${tab}" aria-selected="${index === 0}" tabindex="${index === 0 ? 0 : -1}">${tabLabels[tab]}<span class="tab-dot" hidden></span></button>`).join('')}</div>
         <div class="tab-panels">
           <section role="tabpanel" id="panel-sprite" class="tab-panel scene-editor" aria-labelledby="tab-sprite"></section>
+          <section role="tabpanel" id="panel-magic" class="tab-panel magic-panel" aria-labelledby="tab-magic" hidden></section>
           <section role="tabpanel" id="panel-python" class="tab-panel" aria-labelledby="tab-python" hidden><div class="python-tab-tools"><span>program.py · follows the selected block</span><button id="python-side-toggle" class="button secondary" aria-pressed="false">Side by side</button></div><div id="python-home"><section class="python-panel" aria-label="Python"></section></div><p id="python-side-note" class="tab-note" hidden>Python is shown beside the blocks. Use Side by side again to bring it back here.</p></section>
           <section role="tabpanel" id="panel-output" class="tab-panel" aria-labelledby="tab-output" hidden>
             <p id="output-empty" class="tab-note">Run your program. Printed text and error messages appear here.</p>

@@ -9,8 +9,8 @@
     {
      "type": "py_function",
      "id": "place_apple_function_block",
-     "x": 2484,
-     "y": 30,
+     "x": 40,
+     "y": 684,
      "extraState": {
       "functionId": "place_apple_function",
       "signature": {
@@ -819,9 +819,25 @@
                                 }
                                }
                               }
+                             },
+                             "icons": {
+                              "comment": {
+                               "text": "Snake body\nEach body piece lasts length \u00d7 0.12 seconds, so the body is as long as the snake. Keep 0.12 the same as the snake speed.",
+                               "pinned": false,
+                               "height": 120,
+                               "width": 260
+                              }
                              }
                             }
                            }
+                          }
+                         },
+                         "icons": {
+                          "comment": {
+                           "text": "Snake speed\nThe wait between moves: smaller is faster. Try 0.06! The body block below uses 0.12 too, so change both.",
+                           "pinned": false,
+                           "height": 120,
+                           "width": 260
                           }
                          }
                         }
@@ -833,6 +849,14 @@
                   }
                  }
                 }
+               }
+              },
+              "icons": {
+               "comment": {
+                "text": "Starting length\nHow long the snake is at the start.",
+                "pinned": false,
+                "height": 120,
+                "width": 260
                }
               }
              }
@@ -848,7 +872,7 @@
     {
      "type": "py_handler",
      "id": "on_left_key_handler_block",
-     "x": 1796,
+     "x": 40,
      "y": 30,
      "extraState": {
       "functionId": "on_left_key_handler",
@@ -980,8 +1004,8 @@
     {
      "type": "py_handler",
      "id": "on_right_key_handler_block",
-     "x": 1796,
-     "y": 308,
+     "x": 40,
+     "y": 276,
      "extraState": {
       "functionId": "on_right_key_handler",
       "signature": {
@@ -1112,8 +1136,8 @@
     {
      "type": "py_handler",
      "id": "on_up_key_handler_block",
-     "x": 1796,
-     "y": 586,
+     "x": 40,
+     "y": 522,
      "extraState": {
       "functionId": "on_up_key_handler",
       "signature": {
@@ -1244,8 +1268,8 @@
     {
      "type": "py_handler",
      "id": "on_down_key_handler_block",
-     "x": 1796,
-     "y": 864,
+     "x": 40,
+     "y": 768,
      "extraState": {
       "functionId": "on_down_key_handler",
       "signature": {
@@ -1376,8 +1400,8 @@
     {
      "type": "py_handler",
      "id": "on_head_overlap_handler_block",
-     "x": 1796,
-     "y": 1142,
+     "x": 40,
+     "y": 30,
      "extraState": {
       "functionId": "on_head_overlap_handler",
       "signature": {
@@ -1502,6 +1526,14 @@
                      }
                     }
                    }
+                  },
+                  "icons": {
+                   "comment": {
+                    "text": "Growing\nHow much longer the snake gets for each apple. Try 3 for a snake that grows fast.",
+                    "pinned": false,
+                    "height": 120,
+                    "width": 260
+                   }
                   }
                  }
                 }
@@ -1520,6 +1552,14 @@
                  }
                 }
                }
+              }
+             },
+             "icons": {
+              "comment": {
+               "text": "Points for an apple\nWhat each apple is worth.",
+               "pinned": false,
+               "height": 120,
+               "width": 260
               }
              }
             }
@@ -1802,6 +1842,34 @@
      }
     ]
    }
-  ]
+  ],
+  "scriptTabs": {
+   "tabs": [
+    {
+     "id": "game",
+     "name": "Game",
+     "icon": "game"
+    },
+    {
+     "id": "keys",
+     "name": "Arrow keys",
+     "icon": "keyboard"
+    },
+    {
+     "id": "eat",
+     "name": "Eating",
+     "icon": "coin"
+    }
+   ],
+   "scripts": {
+    "on_start_handler_block": "game",
+    "place_apple_function_block": "game",
+    "on_left_key_handler_block": "keys",
+    "on_right_key_handler_block": "keys",
+    "on_up_key_handler_block": "keys",
+    "on_down_key_handler_block": "keys",
+    "on_head_overlap_handler_block": "eat"
+   }
+  }
  }
 }

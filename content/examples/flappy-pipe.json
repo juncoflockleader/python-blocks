@@ -427,9 +427,25 @@
                                 }
                                }
                               }
+                             },
+                             "icons": {
+                              "comment": {
+                               "text": "Bird speed\nBirds fly at -150, and 5 faster for every bird you dodge. Minus means to the left.",
+                               "pinned": false,
+                               "height": 120,
+                               "width": 260
+                              }
                              }
                             }
                            }
+                          }
+                         },
+                         "icons": {
+                          "comment": {
+                           "text": "Bird sizes\nEach bird gets a random size from 50% to 100%.",
+                           "pinned": false,
+                           "height": 120,
+                           "width": 260
                           }
                          }
                         }
@@ -437,12 +453,28 @@
                       }
                      }
                     }
+                   },
+                   "icons": {
+                    "comment": {
+                     "text": "Time between birds\nA random wait from 1.0 to 1.8 seconds (10 to 18, divided by 10). Smaller numbers send birds more often.",
+                     "pinned": false,
+                     "height": 120,
+                     "width": 260
+                    }
                    }
                   }
                  }
                 }
                }
               }
+             }
+            },
+            "icons": {
+             "comment": {
+              "text": "Gravity\nHow hard the pipe falls. Try -500 to float, or -1500 for a heavy pipe.",
+              "pinned": false,
+              "height": 120,
+              "width": 260
              }
             }
            }
@@ -456,7 +488,7 @@
     {
      "type": "py_handler",
      "id": "on_space_key_handler_block",
-     "x": 802,
+     "x": 40,
      "y": 30,
      "extraState": {
       "functionId": "on_space_key_handler",
@@ -526,6 +558,14 @@
            }
           }
          }
+        },
+        "icons": {
+         "comment": {
+          "text": "Flap power\nHow hard each flap pushes the pipe up.",
+          "pinned": false,
+          "height": 120,
+          "width": 260
+         }
         }
        }
       }
@@ -534,8 +574,8 @@
     {
      "type": "py_handler",
      "id": "on_pipe_update_handler_block",
-     "x": 802,
-     "y": 266,
+     "x": 40,
+     "y": 208,
      "extraState": {
       "functionId": "on_pipe_update_handler",
       "signature": {
@@ -724,6 +764,14 @@
            }
           }
          }
+        },
+        "icons": {
+         "comment": {
+          "text": "Pipe lean\nThe pipe tips with its speed. Try -0.2 for a very wobbly pipe, or 0 to stay straight.",
+          "pinned": false,
+          "height": 120,
+          "width": 260
+         }
         }
        }
       }
@@ -732,8 +780,8 @@
     {
      "type": "py_handler",
      "id": "on_pipe_overlap_handler_block",
-     "x": 802,
-     "y": 677,
+     "x": 40,
+     "y": 488,
      "extraState": {
       "functionId": "on_pipe_overlap_handler",
       "signature": {
@@ -822,8 +870,8 @@
     {
      "type": "py_handler",
      "id": "on_bird_update_handler_block",
-     "x": 802,
-     "y": 914,
+     "x": 40,
+     "y": 30,
      "extraState": {
       "functionId": "on_bird_update_handler",
       "signature": {
@@ -1014,6 +1062,14 @@
                       "VALUE": "20"
                      }
                     }
+                   }
+                  },
+                  "icons": {
+                   "comment": {
+                    "text": "Birds to win\nDodge this many birds to win.",
+                    "pinned": false,
+                    "height": 120,
+                    "width": 260
                    }
                   }
                  }
@@ -1407,6 +1463,32 @@
      }
     ]
    }
-  ]
+  ],
+  "scriptTabs": {
+   "tabs": [
+    {
+     "id": "game",
+     "name": "Start & birds",
+     "icon": "game"
+    },
+    {
+     "id": "pipe",
+     "name": "Pipe",
+     "icon": "sprite"
+    },
+    {
+     "id": "score",
+     "name": "Score",
+     "icon": "flag"
+    }
+   ],
+   "scripts": {
+    "on_start_handler_block": "game",
+    "on_space_key_handler_block": "pipe",
+    "on_pipe_update_handler_block": "pipe",
+    "on_pipe_overlap_handler_block": "pipe",
+    "on_bird_update_handler_block": "score"
+   }
+  }
  }
 }

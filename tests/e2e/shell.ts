@@ -3,7 +3,7 @@ import { iconArt, type IconName } from '../../src/ui/icon-art';
 
 /** Helpers for the one-screen shell: the ⋯ menu, the right-column tabs, the
  * Examples dialog, the sprite More settings sheet and the corner block search. */
-export type Tab = 'sprite' | 'python' | 'output' | 'help';
+export type Tab = 'sprite' | 'magic' | 'python' | 'output' | 'help';
 export type HelpSection = 'ideas' | 'builds' | 'more';
 export async function openTab(page: Page, tab: Tab) {
   await closeSpriteSettings(page);
@@ -58,7 +58,7 @@ export async function reveal(page: Page, target: string | Locator): Promise<Loca
   const locator = typeof target === 'string' ? page.locator(target) : target;
   // Role-based locators cannot see controls in a closed menu or hidden tab, so look in each place in turn.
   if (typeof target !== 'string' && !await locator.count()) {
-    const places = [() => page.locator('#menu-button').click(), ...(['sprite', 'python', 'output', 'help'] as const).map(tab => async () => { if (!await page.locator('#app-menu').isHidden()) await page.keyboard.press('Escape'); await openTab(page, tab); }), () => openSpriteSettings(page)];
+    const places = [() => page.locator('#menu-button').click(), ...(['sprite', 'magic', 'python', 'output', 'help'] as const).map(tab => async () => { if (!await page.locator('#app-menu').isHidden()) await page.keyboard.press('Escape'); await openTab(page, tab); }), () => openSpriteSettings(page)];
     for (const open of places) { await open(); if (await locator.count()) return locator; }
     return locator;
   }
