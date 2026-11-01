@@ -1,0 +1,40 @@
+/* The magic book (Magic tab): Wren the Wizard reads the project's notes as a guide to its numbers. */
+.magic-panel { padding: 12px; }
+.magic-intro { display: flex; align-items: flex-end; gap: 6px; margin-bottom: 12px; }
+.magic-wizard { flex: none; width: 76px; height: 76px; }
+.magic-bubble { position: relative; flex: 1; min-width: 0; padding: 9px 12px; border: 1px solid #d8d0f0; border-radius: 14px 14px 14px 4px; background: #f6f3ff; color: #2f2950; }
+.magic-bubble strong { display: block; font: 700 13px 'Space Grotesk', system-ui, sans-serif; color: #4a3c8c; }
+.magic-bubble p { margin: 2px 0 0; font-size: 13px; line-height: 1.4; }
+.magic-book { display: grid; gap: 14px; }
+.magic-section { display: grid; gap: 8px; }
+.magic-heading { margin: 4px 0 0; font: 700 14px 'Space Grotesk', system-ui, sans-serif; color: #4a3c8c; }
+.magic-tab-heading { display: flex; align-items: center; gap: 6px; margin: 6px 0 0; font: 700 13px 'DM Sans', system-ui, sans-serif; color: #35483b; text-transform: none; }
+.magic-tab-heading svg { width: 18px; height: 18px; color: #267c70; }
+.magic-entry { display: grid; gap: 6px; padding: 10px 12px; border: 1px solid #d6dfca; border-radius: 12px; background: #fffef9; }
+.magic-entry.magic-spotted { border-style: dashed; background: #fbfcf8; }
+.magic-entry header { display: flex; align-items: flex-start; gap: 8px; }
+.magic-entry h3 { flex: 1; min-width: 0; margin: 0; padding-top: 2px; font-size: 15px; line-height: 1.3; color: #26382f; }
+.magic-show { flex: none; display: inline-flex; align-items: center; gap: 4px; min-height: 36px !important; padding: 0 10px !important; font-size: 12px !important; }
+.magic-show svg { width: 16px; height: 16px; }
+.magic-note { margin: 0; font-size: 13px; line-height: 1.45; color: #4e5f49; }
+.magic-values { display: grid; gap: 6px; }
+.magic-value { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 4px 10px; }
+.magic-value label { font-size: 12px; color: #5d6b52; overflow-wrap: anywhere; }
+.magic-value.magic-text { grid-template-columns: minmax(0, 1fr); }
+.magic-stepper { display: inline-flex; align-items: stretch; border: 1px solid #c9b8f0; border-radius: 12px; overflow: hidden; background: #fff; }
+.magic-step { width: 44px; min-height: 44px; padding: 12px; border: 0; background: #f1ecff; color: #4a3c8c; cursor: pointer; touch-action: manipulation; }
+.magic-step:hover { background: #e6ddff; }
+.magic-step svg { width: 100%; height: 100%; }
+.magic-number-input { width: 76px; min-height: 44px; padding: 0 6px; border: 0; border-inline: 1px solid #e3dafa; font: 700 17px 'DM Sans', system-ui, sans-serif; text-align: center; color: #2f2950; }
+.magic-text-input { min-height: 44px; padding: 0 10px; border: 1px solid #c9b8f0; border-radius: 10px; font: inherit; font-size: 14px; }
+.magic-number-input:focus, .magic-text-input:focus { outline: 3px solid #dd9250; outline-offset: -3px; }
+.magic-error { grid-column: 1 / -1; font-size: 12px; color: #a13824; }
+.magic-error:empty { display: none; }
+.magic-where { margin: 0; font-size: 11px; color: #6a7860; }
+.magic-keep { justify-self: start; min-height: 36px; padding: 0 10px; border: 1px dashed #b9c4ab; border-radius: 9px; background: transparent; color: #4e5f49; font: 600 12px 'DM Sans', system-ui, sans-serif; cursor: pointer; }
+.magic-keep:hover { background: #eef1e6; }
+.magic-how { margin-top: 14px; padding: 10px 12px; border: 1px solid #e4e7dd; border-radius: 12px; background: #f6f8f1; font-size: 13px; }
+.magic-how summary { cursor: pointer; font-weight: 700; color: #35483b; min-height: 28px; display: flex; align-items: center; }
+.magic-how ol { margin: 6px 0; padding-left: 20px; line-height: 1.5; }
+@keyframes magic-flash { 0%, 100% { box-shadow: none; } 30% { box-shadow: 0 0 0 4px #c9b8f0; } }
+.magic-entry.magic-flash { animation: magic-flash 1s ease-out; }

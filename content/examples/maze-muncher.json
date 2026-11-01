@@ -9,7 +9,7 @@
     {
      "type": "py_function",
      "id": "open_at_function_block",
-     "x": 1974,
+     "x": 40,
      "y": 30,
      "extraState": {
       "functionId": "open_at_function",
@@ -93,8 +93,8 @@
     {
      "type": "py_function",
      "id": "at_center_function_block",
-     "x": 1974,
-     "y": 202,
+     "x": 40,
+     "y": 174,
      "extraState": {
       "functionId": "at_center_function",
       "signature": {
@@ -293,8 +293,8 @@
     {
      "type": "py_function",
      "id": "eat_function_block",
-     "x": 1974,
-     "y": 376,
+     "x": 40,
+     "y": 548,
      "extraState": {
       "functionId": "eat_function",
       "signature": {
@@ -565,6 +565,14 @@
                   }
                  }
                 }
+               },
+               "icons": {
+                "comment": {
+                 "text": "Points for a dot",
+                 "pinned": false,
+                 "height": 120,
+                 "width": 260
+                }
                }
               }
              }
@@ -789,11 +797,27 @@
                           }
                          }
                         }
+                       },
+                       "icons": {
+                        "comment": {
+                         "text": "Power time\nHow long the ghosts stay blue after a power dot: 200 steps is about 6 seconds.",
+                         "pinned": false,
+                         "height": 120,
+                         "width": 260
+                        }
                        }
                       }
                      }
                     }
                    }
+                  }
+                 },
+                 "icons": {
+                  "comment": {
+                   "text": "Points for a power dot",
+                   "pinned": false,
+                   "height": 120,
+                   "width": 260
                   }
                  }
                 }
@@ -892,8 +916,8 @@
     {
      "type": "py_function",
      "id": "move_muncher_function_block",
-     "x": 1974,
-     "y": 1521,
+     "x": 40,
+     "y": 30,
      "extraState": {
       "functionId": "move_muncher_function",
       "signature": {
@@ -1616,6 +1640,14 @@
              }
             }
            }
+          },
+          "icons": {
+           "comment": {
+            "text": "Muncher speed\nHow many pixels the muncher moves each step. The maze squares are 32 pixels, so use 1, 2, 4 or 8, and change the y block under it to match.",
+            "pinned": false,
+            "height": 120,
+            "width": 260
+           }
           }
          }
         }
@@ -1626,8 +1658,8 @@
     {
      "type": "py_function",
      "id": "move_ghost_function_block",
-     "x": 1974,
-     "y": 2369,
+     "x": 40,
+     "y": 30,
      "extraState": {
       "functionId": "move_ghost_function",
       "signature": {
@@ -2660,6 +2692,14 @@
                                   }
                                  }
                                 }
+                               },
+                               "icons": {
+                                "comment": {
+                                 "text": "Ghost guessing\nHow much the ghosts guess where to go. 0 chases you perfectly; 200 wanders.",
+                                 "pinned": false,
+                                 "height": 120,
+                                 "width": 260
+                                }
                                }
                               }
                              }
@@ -3042,6 +3082,14 @@
                                }
                               }
                              }
+                            },
+                            "icons": {
+                             "comment": {
+                              "text": "Scared ghost speed\nHow fast blue ghosts run away. Use 1, 2, 4 or 8 so they fit the 32-pixel squares.",
+                              "pinned": false,
+                              "height": 120,
+                              "width": 260
+                             }
                             }
                            }
                           },
@@ -3119,6 +3167,14 @@
                                 }
                                }
                               }
+                             }
+                            },
+                            "icons": {
+                             "comment": {
+                              "text": "Ghost speed\nHow fast the ghosts chase you. Use 1, 2, 4 or 8 so they fit the 32-pixel squares.",
+                              "pinned": false,
+                              "height": 120,
+                              "width": 260
                              }
                             }
                            }
@@ -3314,8 +3370,8 @@
     {
      "type": "py_function",
      "id": "reset_function_block",
-     "x": 1974,
-     "y": 4476,
+     "x": 40,
+     "y": 616,
      "extraState": {
       "functionId": "reset_function",
       "signature": {
@@ -3756,8 +3812,8 @@
     {
      "type": "py_function",
      "id": "caught_function_block",
-     "x": 1974,
-     "y": 5450,
+     "x": 40,
+     "y": 990,
      "extraState": {
       "functionId": "caught_function",
       "signature": {
@@ -4063,6 +4119,14 @@
                  }
                 }
                }
+              }
+             },
+             "icons": {
+              "comment": {
+               "text": "Points for a blue ghost",
+               "pinned": false,
+               "height": 120,
+               "width": 260
               }
              }
             }
@@ -4546,6 +4610,14 @@
              }
             }
            }
+          },
+          "icons": {
+           "comment": {
+            "text": "Lives at the start\nHow many times a ghost can catch you.",
+            "pinned": false,
+            "height": 120,
+            "width": 260
+           }
           }
          }
         }
@@ -4556,7 +4628,7 @@
     {
      "type": "py_handler",
      "id": "on_left_key_handler_block",
-     "x": 1365,
+     "x": 40,
      "y": 30,
      "extraState": {
       "functionId": "on_left_key_handler",
@@ -4622,8 +4694,8 @@
     {
      "type": "py_handler",
      "id": "on_right_key_handler_block",
-     "x": 1365,
-     "y": 200,
+     "x": 40,
+     "y": 208,
      "extraState": {
       "functionId": "on_right_key_handler",
       "signature": {
@@ -4688,8 +4760,8 @@
     {
      "type": "py_handler",
      "id": "on_up_key_handler_block",
-     "x": 1365,
-     "y": 370,
+     "x": 40,
+     "y": 386,
      "extraState": {
       "functionId": "on_up_key_handler",
       "signature": {
@@ -4754,8 +4826,8 @@
     {
      "type": "py_handler",
      "id": "on_down_key_handler_block",
-     "x": 1365,
-     "y": 540,
+     "x": 40,
+     "y": 564,
      "extraState": {
       "functionId": "on_down_key_handler",
       "signature": {
@@ -5754,6 +5826,49 @@
      }
     ]
    }
-  ]
+  ],
+  "scriptTabs": {
+   "tabs": [
+    {
+     "id": "game",
+     "name": "Game",
+     "icon": "game"
+    },
+    {
+     "id": "muncher",
+     "name": "Muncher",
+     "icon": "sprite"
+    },
+    {
+     "id": "keys",
+     "name": "Arrow keys",
+     "icon": "keyboard"
+    },
+    {
+     "id": "ghosts",
+     "name": "Ghosts",
+     "icon": "target"
+    },
+    {
+     "id": "maze",
+     "name": "Maze helpers",
+     "icon": "wall"
+    }
+   ],
+   "scripts": {
+    "on_start_handler_block": "game",
+    "reset_function_block": "game",
+    "move_muncher_function_block": "muncher",
+    "eat_function_block": "muncher",
+    "on_left_key_handler_block": "keys",
+    "on_right_key_handler_block": "keys",
+    "on_up_key_handler_block": "keys",
+    "on_down_key_handler_block": "keys",
+    "move_ghost_function_block": "ghosts",
+    "caught_function_block": "ghosts",
+    "open_at_function_block": "maze",
+    "at_center_function_block": "maze"
+   }
+  }
  }
 }

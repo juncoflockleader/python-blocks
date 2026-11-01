@@ -230,8 +230,8 @@ test('the menu and examples dialog are keyboard friendly and every shell control
   await expect(page.locator('#import-project')).toBeFocused(); await page.keyboard.press('Escape'); await expect(page.locator('#menu-button')).toBeFocused();
   await menu(page, 'Learner pilot'); await expect(page.locator('#panel-help')).toBeVisible(); await expect(page.locator('#pilot-panel')).toHaveAttribute('open', '');
   await page.locator('#tab-help').focus(); await page.keyboard.press('ArrowLeft'); await expect(page.locator('#tab-output')).toBeFocused(); await expect(page.locator('#panel-output')).toBeVisible();
-  const small = await page.evaluate(() => [...document.querySelectorAll('.top-bar button, .workspace-tools button, .stage-toolbar button, .sprite-tray button, .tab-bar button, .blocklyToolboxCategory, #panel-sprite input:not([type=checkbox]), #panel-sprite select, .help-nav-button')]
-    .filter(e => { const r = e.getBoundingClientRect(); return r.width && (r.width < 43.5 || r.height < (e.classList.contains('help-nav-button') ? 39.5 : 43.5)); }).map(e => e.id || e.textContent));
+  const small = await page.evaluate(() => [...document.querySelectorAll('.top-bar button, .workspace-tools button, .stage-toolbar button, .sprite-tray button, .tab-bar button, #script-tabs button, .blocklyToolboxCategory, #panel-sprite input:not([type=checkbox]), #panel-sprite select, .help-nav-button')]
+    .filter(e => { const r = e.getBoundingClientRect(); return r.width && (r.width < (e.closest('#script-tabs') ? 39.5 : 43.5) || r.height < (e.matches('.help-nav-button, #script-tabs button') ? 39.5 : 43.5)); }).map(e => e.id || e.textContent));
   expect(small).toEqual([]);
   await openExample(page, 'scene-star-game'); await expect(page.locator('#project-title')).toHaveText('Star game');
   await expect(page.locator('#scene-cards button')).not.toHaveCount(0);

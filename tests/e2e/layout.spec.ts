@@ -2,12 +2,13 @@ import { test, expect, type Page } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 
 /** Opening a project spreads out scripts that would sit on top of each other (project/spread.ts),
- * by their size as drawn, so no example or lesson game opens with one script hiding another. */
+ * by their size as drawn, so no example or lesson game opens with one script hiding another, in any of
+ * its script tabs (the scripts of other tabs are hidden, so they draw nothing). */
 const gallery = JSON.parse(readFileSync('content/gallery.json', 'utf8')) as { id: string; project: string }[];
 
 /** Pairs of top-level scripts whose boxes overlap, as drawn in the workspace. */
 const overlaps = (page: Page) => page.evaluate(() => {
-  const boxes = [...document.querySelectorAll<SVGGElement>('#blockly .blocklyBlockCanvas > g[data-id]')].filter(g => !g.closest('.blocklyFlyout')).map(g => {
+  const boxes = [...document.querySelectorAll<SVGGElement>('#blockly .blocklyBlockCanvas > g[data-id]')].filter(g => !g.closest('.blocklyFlyout') && getComputedStyle(g).display !== 'none').map(g => {
     const at = /translate\(([-\d.]+)[ ,]+([-\d.]+)\)/.exec(g.getAttribute('transform') ?? ''), box = g.getBBox();
     return { id: g.getAttribute('data-id'), x: Number(at?.[1] ?? 0) + box.x, y: Number(at?.[2] ?? 0) + box.y, w: box.width, h: box.height };
   });
@@ -26,6 +27,9 @@ test('no script of an example or a lesson game opens on top of another', async (
     await page.locator('#project-file').setInputFiles(entry.project);
     await expect(page.locator('#project-title')).toHaveText(title);
     if (await page.locator('#level-dialog').isVisible()) await page.locator('#level-keep').click();
-    expect(await overlaps(page), entry.id).toEqual([]);
+    for (const tab of await page.locator('#script-tab-list .script-tab').all()) {
+      await tab.click();
+      expect(await overlaps(page), `${entry.id}: ${await tab.textContent()}`).toEqual([]);
+    }
   }
 });

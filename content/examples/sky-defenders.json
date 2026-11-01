@@ -9,7 +9,7 @@
     {
      "type": "py_function",
      "id": "make_aliens_function_block",
-     "x": 1779,
+     "x": 40,
      "y": 30,
      "extraState": {
       "functionId": "make_aliens_function",
@@ -194,6 +194,14 @@
                        }
                       }
                      }
+                    }
+                   },
+                   "icons": {
+                    "comment": {
+                     "text": "Space between aliens\nHow far apart the aliens in a row are.",
+                     "pinned": false,
+                     "height": 120,
+                     "width": 260
                     }
                    }
                   }
@@ -616,6 +624,14 @@
               }
              }
             }
+           }
+          },
+          "icons": {
+           "comment": {
+            "text": "Aliens in a row\nThe first row has this many squid aliens; the next two rows have their own repeat. Up to 10 fit across the sky.",
+            "pinned": false,
+            "height": 120,
+            "width": 260
            }
           }
          }
@@ -1132,6 +1148,14 @@
                                                      }
                                                     }
                                                    }
+                                                  },
+                                                  "icons": {
+                                                   "comment": {
+                                                    "text": "Bomb chance\nEach step, every alien has 1 chance in 40 to drop a bomb. Make 40 smaller for a bomb storm.",
+                                                    "pinned": false,
+                                                    "height": 120,
+                                                    "width": 260
+                                                   }
                                                   }
                                                  }
                                                 },
@@ -1172,6 +1196,14 @@
                                                    "VALUE": "3"
                                                   }
                                                  }
+                                                }
+                                               },
+                                               "icons": {
+                                                "comment": {
+                                                 "text": "Most bombs at once\nOnly this many bombs can fall at the same time.",
+                                                 "pinned": false,
+                                                 "height": 120,
+                                                 "width": 260
                                                 }
                                                }
                                               }
@@ -1534,6 +1566,14 @@
                                                }
                                               }
                                              }
+                                            },
+                                            "icons": {
+                                             "comment": {
+                                              "text": "Alien drop\nHow far the aliens come down when they reach the edge. Minus means down.",
+                                              "pinned": false,
+                                              "height": 120,
+                                              "width": 260
+                                             }
                                             }
                                            }
                                           }
@@ -1551,6 +1591,14 @@
                               }
                              }
                             }
+                           },
+                           "icons": {
+                            "comment": {
+                             "text": "Alien march timing\nThe wait between steps: 0.1 seconds, plus 0.025 for every alien still flying. Fewer aliens means a faster march!",
+                             "pinned": false,
+                             "height": 120,
+                             "width": 260
+                            }
                            }
                           }
                          }
@@ -1562,11 +1610,35 @@
                    }
                   }
                  }
+                },
+                "icons": {
+                 "comment": {
+                  "text": "Alien march step\nHow far the aliens step sideways each time. Bigger is faster and scarier.",
+                  "pinned": false,
+                  "height": 120,
+                  "width": 260
+                 }
                 }
                }
               }
              }
+            },
+            "icons": {
+             "comment": {
+              "text": "Cannon speed\nHow fast the arrow keys slide the cannon. Try 400 for a zippy cannon.",
+              "pinned": false,
+              "height": 120,
+              "width": 260
+             }
             }
+           }
+          },
+          "icons": {
+           "comment": {
+            "text": "Lives at the start\nHow many bombs can hit you before the game is over. Try 5 for an easier game, or 1 if you are brave.",
+            "pinned": false,
+            "height": 120,
+            "width": 260
            }
           }
          }
@@ -1578,7 +1650,7 @@
     {
      "type": "py_handler",
      "id": "on_space_key_handler_block",
-     "x": 1081,
+     "x": 40,
      "y": 30,
      "extraState": {
       "functionId": "on_space_key_handler",
@@ -1729,8 +1801,8 @@
     {
      "type": "py_handler",
      "id": "on_laser_update_handler_block",
-     "x": 1081,
-     "y": 420,
+     "x": 40,
+     "y": 276,
      "extraState": {
       "functionId": "on_laser_update_handler",
       "signature": {
@@ -1870,6 +1942,14 @@
               }
              }
             }
+           },
+           "icons": {
+            "comment": {
+             "text": "Laser speed and direction\nHow far the laser flies up each step. Try 20 for a super laser. A minus number would shoot it down!",
+             "pinned": false,
+             "height": 120,
+             "width": 260
+            }
            }
           }
          }
@@ -1881,8 +1961,8 @@
     {
      "type": "py_handler",
      "id": "on_alien_overlap_handler_block",
-     "x": 1081,
-     "y": 748,
+     "x": 40,
+     "y": 888,
      "extraState": {
       "functionId": "on_alien_overlap_handler",
       "signature": {
@@ -2121,6 +2201,14 @@
                   }
                  }
                 }
+               },
+               "icons": {
+                "comment": {
+                 "text": "Points for an alien\nWhat each alien you hit is worth.",
+                 "pinned": false,
+                 "height": 120,
+                 "width": 260
+                }
                }
               }
              }
@@ -2136,8 +2224,8 @@
     {
      "type": "py_handler",
      "id": "on_bomb_update_handler_block",
-     "x": 1081,
-     "y": 1296,
+     "x": 40,
+     "y": 30,
      "extraState": {
       "functionId": "on_bomb_update_handler",
       "signature": {
@@ -2302,6 +2390,14 @@
               }
              }
             }
+           },
+           "icons": {
+            "comment": {
+             "text": "Bomb speed\nHow fast bombs fall. Minus means down. Try -10 for fast bombs.",
+             "pinned": false,
+             "height": 120,
+             "width": 260
+            }
            }
           }
          }
@@ -2313,8 +2409,8 @@
     {
      "type": "py_handler",
      "id": "on_bomb_overlap_handler_block",
-     "x": 1081,
-     "y": 1672,
+     "x": 40,
+     "y": 310,
      "extraState": {
       "functionId": "on_bomb_overlap_handler",
       "signature": {
@@ -2454,6 +2550,14 @@
                  }
                 }
                }
+              }
+             },
+             "icons": {
+              "comment": {
+               "text": "Damage\nLives a bomb takes away. Try -2 for a hard game, or 0 and nothing can hurt you.",
+               "pinned": false,
+               "height": 120,
+               "width": 260
               }
              }
             }
@@ -2822,6 +2926,39 @@
      }
     ]
    }
-  ]
+  ],
+  "scriptTabs": {
+   "tabs": [
+    {
+     "id": "game",
+     "name": "Game rules",
+     "icon": "game"
+    },
+    {
+     "id": "cannon",
+     "name": "Cannon & laser",
+     "icon": "rocket"
+    },
+    {
+     "id": "aliens",
+     "name": "Aliens",
+     "icon": "target"
+    },
+    {
+     "id": "bombs",
+     "name": "Bombs & lives",
+     "icon": "heart"
+    }
+   ],
+   "scripts": {
+    "on_start_handler_block": "game",
+    "on_space_key_handler_block": "cannon",
+    "on_laser_update_handler_block": "cannon",
+    "make_aliens_function_block": "aliens",
+    "on_alien_overlap_handler_block": "aliens",
+    "on_bomb_update_handler_block": "bombs",
+    "on_bomb_overlap_handler_block": "bombs"
+   }
+  }
  }
 }

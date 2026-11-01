@@ -70,7 +70,23 @@
              }
             }
            }
+          },
+          "icons": {
+           "comment": {
+            "text": "Running speed\nHow fast the arrow keys move the hero.",
+            "pinned": false,
+            "height": 120,
+            "width": 260
+           }
           }
+         }
+        },
+        "icons": {
+         "comment": {
+          "text": "Gravity\nHow hard the hero falls. Closer to 0 floats like on the moon.",
+          "pinned": false,
+          "height": 120,
+          "width": 260
          }
         }
        }
@@ -81,7 +97,7 @@
      "type": "py_handler",
      "id": "on_left_arrow_key_handler_block",
      "x": 40,
-     "y": 202,
+     "y": 208,
      "extraState": {
       "functionId": "on_left_arrow_key_handler"
      },
@@ -118,7 +134,7 @@
      "type": "py_handler",
      "id": "on_right_arrow_key_handler_block",
      "x": 40,
-     "y": 328,
+     "y": 352,
      "extraState": {
       "functionId": "on_right_arrow_key_handler"
      },
@@ -155,7 +171,7 @@
      "type": "py_handler",
      "id": "on_space_key_handler_block",
      "x": 40,
-     "y": 454,
+     "y": 496,
      "extraState": {
       "functionId": "on_space_key_handler"
      },
@@ -207,6 +223,14 @@
            }
           }
          }
+        },
+        "icons": {
+         "comment": {
+          "text": "How high the hero jumps\nA bigger number jumps higher. Try 700, but not too big or you fly off the screen!",
+          "pinned": false,
+          "height": 120,
+          "width": 260
+         }
         }
        }
       }
@@ -216,7 +240,7 @@
      "type": "py_handler",
      "id": "on_start_2_handler_block",
      "x": 40,
-     "y": 580,
+     "y": 30,
      "extraState": {
       "functionId": "on_start_2_handler"
      },
@@ -535,8 +559,8 @@
     {
      "type": "py_handler",
      "id": "on_coin_overlap_handler_block",
-     "x": 560,
-     "y": 30,
+     "x": 40,
+     "y": 582,
      "extraState": {
       "functionId": "on_coin_overlap_handler"
      },
@@ -631,7 +655,7 @@
      "type": "py_handler",
      "id": "on_start_3_handler_block",
      "x": 40,
-     "y": 1258,
+     "y": 828,
      "extraState": {
       "functionId": "on_start_3_handler"
      },
@@ -651,6 +675,14 @@
            }
           }
          }
+        },
+        "icons": {
+         "comment": {
+          "text": "Lives at the start",
+          "pinned": false,
+          "height": 120,
+          "width": 260
+         }
         }
        }
       }
@@ -659,8 +691,8 @@
     {
      "type": "py_handler",
      "id": "on_hero_update_handler_block",
-     "x": 560,
-     "y": 248,
+     "x": 40,
+     "y": 674,
      "extraState": {
       "functionId": "on_hero_update_handler"
      },
@@ -787,7 +819,7 @@
      "type": "py_handler",
      "id": "on_start_4_handler_block",
      "x": 40,
-     "y": 1384,
+     "y": 30,
      "extraState": {
       "functionId": "on_start_4_handler"
      },
@@ -871,6 +903,14 @@
            }
           }
          }
+        },
+        "icons": {
+         "comment": {
+          "text": "Beetle speed\nHow fast beetles walk. Minus means to the left.",
+          "pinned": false,
+          "height": 120,
+          "width": 260
+         }
         }
        }
       }
@@ -879,8 +919,8 @@
     {
      "type": "py_handler",
      "id": "on_beetle_overlap_handler_block",
-     "x": 560,
-     "y": 466,
+     "x": 40,
+     "y": 242,
      "extraState": {
       "functionId": "on_beetle_overlap_handler"
      },
@@ -1032,6 +1072,14 @@
                  }
                 }
                }
+              },
+              "icons": {
+               "comment": {
+                "text": "Stomp bounce\nHow high the hero bounces after stomping a beetle.",
+                "pinned": false,
+                "height": 120,
+                "width": 260
+               }
               }
              }
             },
@@ -1122,8 +1170,8 @@
     {
      "type": "py_handler",
      "id": "on_hero_overlap_handler_block",
-     "x": 560,
-     "y": 868,
+     "x": 40,
+     "y": 920,
      "extraState": {
       "functionId": "on_hero_overlap_handler"
      },
@@ -1205,7 +1253,7 @@
     {
      "type": "py_handler",
      "id": "play_music_handler_block",
-     "x": 1460,
+     "x": 40,
      "y": 30,
      "extraState": {
       "functionId": "play_music_handler"
@@ -4166,6 +4214,44 @@
     "returnTypes": null,
     "async": true
    }
-  ]
+  ],
+  "scriptTabs": {
+   "tabs": [
+    {
+     "id": "hero",
+     "name": "Hero",
+     "icon": "sprite"
+    },
+    {
+     "id": "coins",
+     "name": "Coins & lives",
+     "icon": "coin"
+    },
+    {
+     "id": "beetles",
+     "name": "Beetles",
+     "icon": "target"
+    },
+    {
+     "id": "music",
+     "name": "Music",
+     "icon": "music"
+    }
+   ],
+   "scripts": {
+    "on_start_handler_block": "hero",
+    "on_left_arrow_key_handler_block": "hero",
+    "on_right_arrow_key_handler_block": "hero",
+    "on_space_key_handler_block": "hero",
+    "on_hero_update_handler_block": "hero",
+    "on_hero_overlap_handler_block": "hero",
+    "on_start_2_handler_block": "coins",
+    "on_coin_overlap_handler_block": "coins",
+    "on_start_3_handler_block": "coins",
+    "on_start_4_handler_block": "beetles",
+    "on_beetle_overlap_handler_block": "beetles",
+    "play_music_handler_block": "music"
+   }
+  }
  }
 }

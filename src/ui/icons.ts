@@ -19,7 +19,7 @@ const actionGroups: Partial<Record<IconName, string>> = {
   redo: 'language-redo world-redo',
   pause: 'debug-pause',
   close: 'lessons-close academy-close lesson-start-cancel guide-confirm-cancel debug-close block-search-clear export-cancel examples-close name-sheet-cancel level-keep migration-cancel language-close lambda-close events-close modules-close module-inspector-close python-cancel question-cancel world-close stock-close assist-cancel',
-  plus: 'zoom-in stage-zoom-in world-wide-more world-tall-more stage-add-right stage-add-down name-sheet-confirm parameter-add lambda-parameter-add scene-add world-new watch-add',
+  plus: 'script-tab-add zoom-in stage-zoom-in world-wide-more world-tall-more stage-add-right stage-add-down name-sheet-confirm parameter-add lambda-parameter-add scene-add world-new watch-add',
   trash: 'function-delete handler-delete module-remove python-recovery-remove scene-delete data-remove world-delete pilot-clear',
   copy: 'function-copy handler-copy scene-copy world-copy',
   check: 'guide-confirm-start sprite-settings-done level-switch migration-apply function-apply variable-apply handler-apply lambda-apply python-apply motion-use-preset pilot-finish',
@@ -40,7 +40,7 @@ const actionGroups: Partial<Record<IconName, string>> = {
   // Lessons and the Academy: back and on, a hint, leaving, and the panels' tabs.
   left: 'guide-back play-close', right: 'guide-next guide-next-build lesson-finish-next debug-into debug-over',
   hint: 'guide-hint help-nav-ideas', leave: 'guide-stop', people: 'academy-grownups', layers: 'python-side-toggle',
-  code: 'tab-python', notes: 'menu-pilot tab-output',
+  code: 'tab-python', notes: 'menu-pilot tab-output', wand: 'tab-magic',
   palette: 'scene-paint-backdrop scene-edit-costume',
   keyboard: 'scene-input-example',
   game: 'scene-game-example scene-star-game touch-toggle',

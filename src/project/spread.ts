@@ -1,4 +1,5 @@
 import * as Blockly from 'blockly/core';
+import { tabOf } from '../scripts/tabs';
 
 /** Scripts that start this close together, left to right, make one column. */
 const COLUMN = 120;
@@ -7,11 +8,20 @@ const GAP_X = 48, GAP_Y = 32;
 /** Spread out the scripts of a project just opened so none overlaps another, by their size as drawn on
  * this screen (a touch screen's larger text makes wider blocks). The layout keeps its columns and their
  * order: a script that runs into the one above it in its column moves down, and a column that runs into
- * a script of a column on its left moves right. Scripts that do not overlap stay where they are.
- * Returns whether anything moved. */
+ * a script of a column on its left moves right. Scripts that do not overlap stay where they are. Each
+ * script tab (scripts/tabs.ts) is laid out on its own: scripts in different tabs are never on screen
+ * together. Returns whether anything moved. */
 export function spreadScripts(workspace: Blockly.WorkspaceSvg) {
   Blockly.renderManagement.triggerQueuedRenders(workspace);
-  const scripts = workspace.getTopBlocks(false).map(block => {
+  const tabs = new Map<string, Blockly.BlockSvg[]>();
+  for (const block of workspace.getTopBlocks(false)) { const tab = tabOf(workspace, block); tabs.set(tab, [...tabs.get(tab) ?? [], block]); }
+  let moved = false;
+  for (const blocks of tabs.values()) moved = spreadTab(blocks) || moved;
+  if (moved) workspace.resizeContents();
+  return moved;
+}
+function spreadTab(blocks: Blockly.BlockSvg[]) {
+  const scripts = blocks.map(block => {
     const box = block.getBoundingRectangle();
     return { block, left: box.left, top: box.top, width: box.right - box.left, height: box.bottom - box.top, dx: 0, dy: 0 };
   });
@@ -42,6 +52,5 @@ export function spreadScripts(workspace: Blockly.WorkspaceSvg) {
   }
   const moved = scripts.filter(s => Math.abs(s.dx) > 0.5 || Math.abs(s.dy) > 0.5);
   for (const script of moved) script.block.moveBy(script.dx, script.dy);
-  if (moved.length) workspace.resizeContents();
   return moved.length > 0;
 }

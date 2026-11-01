@@ -604,6 +604,20 @@ The owner asked for a backend before more content: a sign-in with no sign-up (an
 
 Not built yet: the shop and its items (the coin ledger already takes purchases and refunds as entries); a grown-ups' view of the Academy from the server's progress (the admin page lists finished awards; the Academy's own For grown-ups view still reads the browser's copy); several learners at once on one computer without signing out.
 
+### 3.22 Script tabs and the magic book (built 2026-11-01)
+
+The owner asked for two things a learner needs in a big project: to find the key values to change quickly (lives, health, how many bullets, which way they fly, how to jump higher), with comments turned into a guide told by a character such as a magician; and to organise the giant blob of blocks into descriptive tabs, so a huge project stays easy to follow.
+
+| Part | What | Where |
+| --- | --- | --- |
+| Script tabs | A strip above the workspace. Only the open tab's scripts show; the rest are hidden, cannot be snapped to or bumped, and still run. New tab (with a picture guessed from its name), rename, picture, reorder and delete with the pencil; drop a script on a tab's name or use its menu to move it; new scripts join the open tab. Navigation and Undo open the tab they need. Saved as `scriptTabs`. | [tab-strip.ts](../src/scripts/tab-strip.ts), [tabs.ts](../src/scripts/tabs.ts) |
+| The magic book | The Magic tab. Wren the Wizard (original art) turns every block comment into a page: the first line is the title, the rest what to try, with the block's numbers (and the words the player reads) to change with − and + or by typing, and Show me. Well-known numbers are spotted without a note, and one tap makes a spotted one a note. | [magic.ts](../src/guide/magic.ts), [magic-notes.ts](../src/guide/magic-notes.ts) |
+| Content | The six arcade examples and Super Hopper have descriptive tabs (Sky Defenders: Game rules, Cannon & laser, Aliens, Bombs & lives) and 56 notes on the values worth changing, including warnings where two numbers must match (Snake's speed and body) or fit a grid (Maze Muncher's speeds). | [content/examples](../content/examples) |
+
+Checked by [unit tests](../tests/unit/script-tabs.test.ts) of the tab model (saving, Undo, cleaning, the Python unchanged) and [of the magic book](../tests/unit/magic.test.ts), and [browser tests](../tests/e2e/script-tabs.spec.ts) on an iPad-sized screen: an example in tabs, a new tab, a script dropped on a tab above the palette (moved, not deleted), Undo and Redo, a reload, the menu move, rename, reorder and delete, hidden scripts staying put during Clean up, and the magic book's pages, steppers, typing, Show me and spotted values. The [layout test](../tests/e2e/layout.spec.ts) checks every tab of every example for overlapping scripts.
+
+Not built yet: tabs in the Python view (Python still lists the whole program in one file); moving a workspace note between tabs (a note stays in the tab it was written in); a magic note on a block inside a module.
+
 ## 4. Track C: academy
 
 ### 4.1 Model

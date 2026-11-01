@@ -43,6 +43,8 @@ import { installGallery } from './guide/gallery';
 import { installLessons } from './guide/lessons';
 import { installAcademy } from './academy/academy';
 import { installAccount } from './account/ui';
+import { installScriptTabs } from './scripts/tab-strip';
+import { installMagic } from './guide/magic';
 import './academy/academy.css';
 import { atLeast, installLevels, levelNames, findBlock, requiredLevel, storedLevel, toolboxFor, LEVEL_KEY, type Level } from './ui/levels';
 import { installHelpSections, installInputHints, installLevelControl, installMenu, installPaletteHint, installPythonPlacement, installTabs, installViewSwitch, keepShellInPlace, shellMarkup, trackKeyboard } from './ui/shell';
@@ -66,7 +68,8 @@ const badge = element<HTMLButtonElement>('#stage-badge');
 // Output and errors live in their tab. The first print or error of a run opens
 // it, unless the learner is typing in another tab; then a stage badge points there.
 let outputAnnounced = false, errorCount = 0;
-const tabs = installTabs(tab => { if (tab === 'output') badge.hidden = true; });
+let magic: ReturnType<typeof installMagic> | undefined;
+const tabs = installTabs(tab => { if (tab === 'output') badge.hidden = true; if (tab === 'magic') magic?.opened(); });
 const help = installHelpSections();
 // The title is cosmetic editor state, kept with the autosave so a reload shows the same name.
 const TITLE_KEY = 'python-blocks.title.v1';
@@ -199,6 +202,16 @@ element('#tray-sounds').addEventListener('click', () => soundEditor.open());
 installLevels(workspace, () => sceneEditor?.selected() ?? '');
 // Every command and event block carries its family's symbol; installed before any project loads.
 installBlockIcons(workspace);
+// Script tabs: a big project's scripts in named tabs above the workspace (scripts/tab-strip.ts).
+const scriptTabsControl = installScriptTabs(workspace, { revealBlocks: () => viewSwitch?.show('blocks') });
+// The magic book: Wren the Wizard reads the project's notes as a guide to the numbers worth changing.
+magic = installMagic({
+  workspace, visible: () => tabs.current === 'magic',
+  show(id) {
+    const block = workspace.getBlockById(id); if (!block) return;
+    viewSwitch?.show('blocks'); workspace.centerOnBlock(id); block.select();
+  },
+});
 // Guidance: reviewed recipes inserted by the app, the gallery, guided builds and nudges.
 let preferredTarget: string | undefined;
 const cards: CardHost = {
@@ -434,6 +447,8 @@ function installProject(project: ReturnType<typeof snapshot>, cloud: string | nu
   output.textContent = ''; outputPanel.hidden = true; element('#error-details').hidden = true; badge.hidden = true; tabs.mark('output', false);
   status.textContent = 'Ready'; updateCode();
   accountControls.replaced(cloud);
+  // A project with notes has a magic book: a dot on the Magic tab points at it.
+  if (tabs.current === 'magic') magic?.refresh(true); else tabs.mark('magic', !!magic?.notes());
   return true;
 }
 
@@ -641,4 +656,4 @@ element<HTMLInputElement>('#project-file').addEventListener('change', async even
     else if (installProject(prepared.project)) { setTitle(file.name.replace(/\.python-blocks\.json$|\.json$/i, '') || 'My project'); offerLevel(); }
   } catch (error) { notice.textContent = `Could not open project: ${error instanceof Error ? error.message : error}. Your current work is unchanged.`; }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeCaptions(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); academy.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); blockSearch.dispose(); paletteSearch.dispose(); lessonStage.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeCaptions(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); academy.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); scriptTabsControl.dispose(); magic?.dispose(); blockSearch.dispose(); paletteSearch.dispose(); lessonStage.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });

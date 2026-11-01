@@ -171,11 +171,35 @@
                  }
                 }
                }
+              },
+              "icons": {
+               "comment": {
+                "text": "Starting drift\nHow fast the lander drifts sideways at the start. 0 starts it still.",
+                "pinned": false,
+                "height": 120,
+                "width": 260
+               }
               }
+             }
+            },
+            "icons": {
+             "comment": {
+              "text": "Moon gravity\nHow hard the moon pulls the lander down. Closer to 0 floats; try -100 for a heavy planet.",
+              "pinned": false,
+              "height": 120,
+              "width": 260
              }
             }
            }
           }
+         }
+        },
+        "icons": {
+         "comment": {
+          "text": "Fuel\nHow much fuel the lander starts with. The engine uses 1 every step it fires.",
+          "pinned": false,
+          "height": 120,
+          "width": 260
          }
         }
        }
@@ -186,7 +210,7 @@
      "type": "py_handler",
      "id": "on_lander_update_handler_block",
      "x": 40,
-     "y": 428,
+     "y": 30,
      "extraState": {
       "functionId": "on_lander_update_handler",
       "signature": {
@@ -356,6 +380,14 @@
               }
              }
             }
+           },
+           "icons": {
+            "comment": {
+             "text": "Engine power\nHow hard the engine pushes up while you hold the up arrow. Bigger makes landing easier.",
+             "pinned": false,
+             "height": 120,
+             "width": 260
+            }
            }
           }
          },
@@ -454,6 +486,14 @@
                  "VALUE": "-2"
                 }
                }
+              }
+             },
+             "icons": {
+              "comment": {
+               "text": "Side thrusters\nHow much the left arrow pushes sideways each step. The right arrow uses 2.",
+               "pinned": false,
+               "height": 120,
+               "width": 260
               }
              }
             }
@@ -621,6 +661,14 @@
                              "VALUE": "-50"
                             }
                            }
+                          }
+                         },
+                         "icons": {
+                          "comment": {
+                           "text": "Soft landing speed\nCome down slower than this or you crash. Try -100 for an easier landing.",
+                           "pinned": false,
+                           "height": 120,
+                           "width": 260
                           }
                          }
                         }
@@ -1044,6 +1092,24 @@
      }
     ]
    }
-  ]
+  ],
+  "scriptTabs": {
+   "tabs": [
+    {
+     "id": "start",
+     "name": "Start",
+     "icon": "flag"
+    },
+    {
+     "id": "lander",
+     "name": "Lander",
+     "icon": "rocket"
+    }
+   ],
+   "scripts": {
+    "on_start_handler_block": "start",
+    "on_lander_update_handler_block": "lander"
+   }
+  }
  }
 }

@@ -9,8 +9,8 @@
     {
      "type": "py_function",
      "id": "wrap_function_block",
-     "x": 1396,
-     "y": 30,
+     "x": 40,
+     "y": 446,
      "extraState": {
       "functionId": "wrap_function",
       "signature": {
@@ -338,8 +338,8 @@
     {
      "type": "py_function",
      "id": "new_wave_function_block",
-     "x": 1396,
-     "y": 656,
+     "x": 40,
+     "y": 684,
      "extraState": {
       "functionId": "new_wave_function",
       "signature": {
@@ -379,6 +379,14 @@
                "SYMBOL": "rock-blaster-210"
               }
              }
+            }
+           },
+           "icons": {
+            "comment": {
+             "text": "Rocks in a wave\nThe first wave has 2 rocks plus one, and every wave adds one more. Try 5 for a crowded sky.",
+             "pinned": false,
+             "height": 120,
+             "width": 260
             }
            }
           }
@@ -874,6 +882,14 @@
                                     }
                                    }
                                   }
+                                 },
+                                 "icons": {
+                                  "comment": {
+                                   "text": "Rock speed\nHow far each rock drifts every step. Try 3 for fast rocks.",
+                                   "pinned": false,
+                                   "height": 120,
+                                   "width": 260
+                                  }
                                  }
                                 }
                                }
@@ -988,6 +1004,14 @@
              }
             }
            }
+          },
+          "icons": {
+           "comment": {
+            "text": "Lives at the start\nHow many rocks can hit the ship before the game is over.",
+            "pinned": false,
+            "height": 120,
+            "width": 260
+           }
           }
          }
         }
@@ -998,7 +1022,7 @@
     {
      "type": "py_handler",
      "id": "on_ship_update_handler_block",
-     "x": 701,
+     "x": 40,
      "y": 30,
      "extraState": {
       "functionId": "on_ship_update_handler",
@@ -1056,6 +1080,14 @@
                "VALUE": "-6"
               }
              }
+            }
+           },
+           "icons": {
+            "comment": {
+             "text": "Turning speed\nHow many degrees the ship turns each step with the left arrow. The right arrow uses 6: keep them a pair, one with a minus.",
+             "pinned": false,
+             "height": 120,
+             "width": 260
             }
            }
           }
@@ -1168,6 +1200,14 @@
                   }
                  }
                 }
+               },
+               "icons": {
+                "comment": {
+                 "text": "Thrust\nHow fast the ship flies forward while you hold the up arrow.",
+                 "pinned": false,
+                 "height": 120,
+                 "width": 260
+                }
                }
               }
              },
@@ -1239,8 +1279,8 @@
     {
      "type": "py_handler",
      "id": "on_space_key_handler_block",
-     "x": 701,
-     "y": 671,
+     "x": 40,
+     "y": 30,
      "extraState": {
       "functionId": "on_space_key_handler",
       "signature": {
@@ -1428,6 +1468,14 @@
                 }
                }
               }
+             },
+             "icons": {
+              "comment": {
+               "text": "Shot direction\nA shot flies the way the ship points. Want to shoot backwards? Put the ship direction + 180 here.",
+               "pinned": false,
+               "height": 120,
+               "width": 260
+              }
              }
             }
            }
@@ -1441,8 +1489,8 @@
     {
      "type": "py_handler",
      "id": "on_shot_update_handler_block",
-     "x": 701,
-     "y": 1174,
+     "x": 40,
+     "y": 310,
      "extraState": {
       "functionId": "on_shot_update_handler",
       "signature": {
@@ -1559,6 +1607,14 @@
               }
              }
             }
+           },
+           "icons": {
+            "comment": {
+             "text": "Shot speed\nHow far a shot flies each step.",
+             "pinned": false,
+             "height": 120,
+             "width": 260
+            }
            }
           }
          }
@@ -1570,8 +1626,8 @@
     {
      "type": "py_handler",
      "id": "on_rock_overlap_handler_block",
-     "x": 701,
-     "y": 1520,
+     "x": 40,
+     "y": 30,
      "extraState": {
       "functionId": "on_rock_overlap_handler",
       "signature": {
@@ -1715,6 +1771,14 @@
                         "VALUE": "30"
                        }
                       }
+                     }
+                    },
+                    "icons": {
+                     "comment": {
+                      "text": "Rocks that split\nA rock bigger than this size splits in two. Try 10 for lots of tiny pieces, or 200 so rocks never split.",
+                      "pinned": false,
+                      "height": 120,
+                      "width": 260
                      }
                     }
                    }
@@ -1937,6 +2001,14 @@
                   }
                  }
                 }
+               },
+               "icons": {
+                "comment": {
+                 "text": "Points for a rock\nWhat each rock you blast is worth.",
+                 "pinned": false,
+                 "height": 120,
+                 "width": 260
+                }
                }
               }
              }
@@ -1952,8 +2024,8 @@
     {
      "type": "py_handler",
      "id": "on_rock_hits_ship_handler_block",
-     "x": 701,
-     "y": 2243,
+     "x": 40,
+     "y": 514,
      "extraState": {
       "functionId": "on_rock_hits_ship_handler",
       "signature": {
@@ -2128,6 +2200,14 @@
                  }
                 }
                }
+              }
+             },
+             "icons": {
+              "comment": {
+               "text": "Damage\nLives a rock takes away when it hits the ship.",
+               "pinned": false,
+               "height": 120,
+               "width": 260
               }
              }
             }
@@ -2429,6 +2509,40 @@
      }
     ]
    }
-  ]
+  ],
+  "scriptTabs": {
+   "tabs": [
+    {
+     "id": "game",
+     "name": "Game & waves",
+     "icon": "game"
+    },
+    {
+     "id": "ship",
+     "name": "Ship",
+     "icon": "rocket"
+    },
+    {
+     "id": "shots",
+     "name": "Shots",
+     "icon": "target"
+    },
+    {
+     "id": "rocks",
+     "name": "Rocks",
+     "icon": "star"
+    }
+   ],
+   "scripts": {
+    "on_start_handler_block": "game",
+    "new_wave_function_block": "game",
+    "on_ship_update_handler_block": "ship",
+    "wrap_function_block": "ship",
+    "on_space_key_handler_block": "shots",
+    "on_shot_update_handler_block": "shots",
+    "on_rock_overlap_handler_block": "rocks",
+    "on_rock_hits_ship_handler_block": "rocks"
+   }
+  }
  }
 }
