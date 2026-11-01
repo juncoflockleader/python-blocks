@@ -128,6 +128,24 @@ class SceneTests(unittest.IsolatedAsyncioTestCase):
         self.player.turn(45); self.assertTrue(self.player.overlaps(other))
         with self.assertRaises(TypeError): self.player.overlaps(3)
 
+    def test_stretch_makes_a_sprite_longer_one_way_for_drawing_bounds_and_overlap(self):
+        p = self.player; width, height = p.width, p.height
+        self.assertEqual((p.stretch_x, p.stretch_y), (100, 100))
+        p.set('stretch_y', 300)
+        self.assertEqual(p.stretch_y, 300); self.assertAlmostEqual(p.height, height * 3); self.assertAlmostEqual(p.width, width)
+        self.assertEqual(self.messages[-1]['sprite']['stretchY'], 300)
+        p.change('stretch_x', 50); self.assertEqual(p.stretch_x, 150); self.assertAlmostEqual(p.width, width * 1.5)
+        # The stretch turns with the sprite: on its side, a tall sprite is wide.
+        p.set('direction', 90); self.assertAlmostEqual(p.width, height * 3); self.assertAlmostEqual(p.height, width * 1.5)
+        p.set('direction', 0)
+        # A taller sprite now reaches one that was out of reach above it.
+        other = self.scene.get('Friend'); other.go_to(-100, height * 1.2)
+        self.assertTrue(p.overlaps(other))
+        p.set('stretch_y', 100); self.assertFalse(p.overlaps(other))
+        for value in (5, 2000):
+            with self.assertRaises(ValueError): p.set('stretch_x', value)
+        self.assertEqual(p.clone().stretch_x, 150)
+
     def test_creation_appearance_and_command_limit(self):
         fresh = self.scene.create('ball'); self.assertEqual((fresh.x, fresh.y), (0, 0))
         fresh.set('layer', 4); fresh.set('size', 200); fresh.hide(); fresh.show()

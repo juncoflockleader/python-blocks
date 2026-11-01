@@ -37,6 +37,8 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
       <label class="field-wide">Name <input id="scene-name" maxlength="48" required ${nameAttributes}></label><label class="field-wide">Costume <select id="scene-costume"></select></label>
       ${numberField('scene-x', 'x', -1000000, 1000000)}${numberField('scene-y', 'y', -1000000, 1000000)}
       ${numberField('scene-size', 'Size %', 5, 400)}${numberField('scene-direction', 'Direction °', 0, 360)}
+      ${numberField('scene-stretchX', 'Width %', 10, 1000)}${numberField('scene-stretchY', 'Height %', 10, 1000)}
+      <p class="field-wide scene-hint" id="scene-stretch-hint">Width and Height stretch one way: Height 300 makes a laser three times as long.</p>
       <label class="field-check"><input id="scene-visible" type="checkbox"> Visible</label>
     </div><p class="tab-note">Changes save as you type. Undo restores them.</p></fieldset></form>
     <button id="sprite-more" class="button secondary more-button">More settings <span>layer · rotation · pen · data · motion</span></button>
@@ -197,6 +199,7 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     watchers.refresh(scene, editing);
     el<HTMLSelectElement>('scene-costume').replaceChildren(...costumes(scene).map(a => new Option(a.name, a.id)));
     for (const key of ['name', 'x', 'y', 'direction', 'size', 'layer', 'costume'] as const) (el(`scene-${key}`) as HTMLInputElement).value = sprite ? String(sprite[key]) : '';
+    for (const key of ['stretchX', 'stretchY'] as const) el<HTMLInputElement>(`scene-${key}`).value = sprite ? String(sprite[key] ?? 100) : '';
     el('sprite-settings-name').textContent = sprite ? `· ${sprite.name}` : '';
     el<HTMLSelectElement>('scene-world').replaceChildren(new Option('Global (all worlds)', ''), ...(scene.worlds ?? []).map(w => new Option(w.name, w.id))); el<HTMLSelectElement>('scene-world').value = sprite?.world ?? '';
     el<HTMLInputElement>('scene-visible').checked = sprite?.visible ?? true;
@@ -255,7 +258,7 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
   }));
   el('scene-delete').addEventListener('click', () => attempt(() => { if (!resumeEditing()) return; const scene = sceneState(workspace); scene.sprites = scene.sprites.filter(s => s.id !== selected); for (const camera of [scene.camera, ...(scene.worlds ?? []).map(w => w.camera)]) if (camera?.follow === selected) camera.follow = null; changeScene(workspace, scene); render(true); }));
   select.addEventListener('change', () => choose(select.value));
-  type Property = 'name' | 'costume' | 'x' | 'y' | 'direction' | 'size' | 'layer' | 'visible' | 'world' | 'rotation';
+  type Property = 'name' | 'costume' | 'x' | 'y' | 'direction' | 'size' | 'stretchX' | 'stretchY' | 'layer' | 'visible' | 'world' | 'rotation';
   /** Write one property of the selected sprite. Each committed change is one Undo step. */
   const commit = (key: Property) => {
     // Going back to editing redraws the fields from the saved sprite: keep what the learner typed.
@@ -274,12 +277,13 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
       else {
         const value = field.valueAsNumber;
         if (!Number.isFinite(value) || value < Number(field.min) || value > Number(field.max)) throw new Error(`Enter a number from ${field.min} to ${field.max}.`);
-        sprite[key] = value;
+        // A stretch of 100 is no stretch: the project stays as it was.
+        if ((key === 'stretchX' || key === 'stretchY') && value === 100) delete sprite[key]; else sprite[key] = value;
       }
       changeScene(workspace, scene); render(true);
     } catch (e) { render(true); throw e; }
   }); };
-  for (const key of ['name', 'costume', 'x', 'y', 'direction', 'size', 'layer', 'visible', 'world', 'rotation'] as const) {
+  for (const key of ['name', 'costume', 'x', 'y', 'direction', 'size', 'stretchX', 'stretchY', 'layer', 'visible', 'world', 'rotation'] as const) {
     const field = el<HTMLInputElement>(`scene-${key}`);
     field.addEventListener('change', () => commit(key));
     if (field.tagName === 'INPUT' && field.type !== 'checkbox') field.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); commit(key); } });

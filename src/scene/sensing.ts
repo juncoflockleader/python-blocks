@@ -1,5 +1,5 @@
 import { effectNames, effectPixels } from './effects';
-import type { SpriteState } from './model';
+import { spriteScale, type SpriteState } from './model';
 
 export interface PixelImage { width: number; height: number; data: Uint8ClampedArray }
 interface Mask extends PixelImage { opaque: boolean }
@@ -21,11 +21,12 @@ export class PixelSensing {
     return mask;
   }
   private sample(sprite: SpriteState, mask: Mask, x: number, y: number) {
-    const scale = sprite.size / 100, dx = (x - sprite.x) / scale, dy = (sprite.y - y) / scale;
+    // Into the sprite's own frame: turn back first, then undo each axis's scale (a stretch is not even).
+    const scale = spriteScale(sprite), dx = x - sprite.x, dy = sprite.y - y;
     const angle = !sprite.rotationStyle || sprite.rotationStyle === 'all' ? sprite.direction * Math.PI / 180 : 0;
     const flip = sprite.rotationStyle === 'left-right' && sprite.direction > 90 && sprite.direction < 270 ? -1 : 1;
-    const px = Math.floor((dx * Math.cos(angle) + dy * Math.sin(angle)) * flip + mask.width / 2);
-    const py = Math.floor(-dx * Math.sin(angle) + dy * Math.cos(angle) + mask.height / 2);
+    const px = Math.floor((dx * Math.cos(angle) + dy * Math.sin(angle)) * flip / scale.x + mask.width / 2);
+    const py = Math.floor((-dx * Math.sin(angle) + dy * Math.cos(angle)) / scale.y + mask.height / 2);
     return px >= 0 && py >= 0 && px < mask.width && py < mask.height && mask.data[(py * mask.width + px) * 4 + 3] > 0;
   }
   point(sprite: SpriteState, x: number, y: number, world = false, camera = { x: 0, y: 0 }) {
@@ -38,7 +39,8 @@ export class PixelSensing {
     const extent = (s: SpriteState, m: Mask) => {
       const angle = !s.rotationStyle || s.rotationStyle === 'all' ? s.direction * Math.PI / 180 : 0;
       const cos = Math.abs(Math.cos(angle)), sin = Math.abs(Math.sin(angle));
-      return { x: (cos * m.width + sin * m.height) * s.size / 200, y: (cos * m.height + sin * m.width) * s.size / 200 };
+      const scale = spriteScale(s), width = m.width * scale.x, height = m.height * scale.y;
+      return { x: (cos * width + sin * height) / 2, y: (cos * height + sin * width) / 2 };
     };
     const ae = extent(a, am), be = extent(b, bm);
     const left = Math.max(world ? -Infinity : camera.x - 240, Math.floor(Math.max(a.x - ae.x, b.x - be.x))), right = Math.min(world ? Infinity : camera.x + 240, Math.ceil(Math.min(a.x + ae.x, b.x + be.x)));

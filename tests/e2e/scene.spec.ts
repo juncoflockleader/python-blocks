@@ -71,6 +71,22 @@ test('the sprite tools work after a run and during one: using one stops the game
   expect(errors).toEqual([]);
 });
 
+test('Width % and Height % stretch a sprite one way: a laser three times as long', async ({ page }, info) => {
+  await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
+  await page.locator('#project-file').setInputFiles('content/examples/sky-defenders.json');
+  if (await page.locator('#level-dialog').isVisible()) await page.locator('#level-keep').click();
+  await page.locator('#scene-cards button', { hasText: 'Laser' }).click();
+  await expect(page.locator('#scene-stretchY')).toHaveValue('100');
+  await (await reveal(page, '#scene-stretchY')).fill('300'); await page.keyboard.press('Enter');
+  await expect.poll(async () => (await saved(page)).sprites.find((s: { id: string }) => s.id === 'laser').stretchY).toBe(300);
+  // Back to 100 is no stretch at all: the project is saved as before.
+  await (await reveal(page, '#scene-stretchY')).fill('100'); await page.keyboard.press('Enter');
+  await expect.poll(async () => 'stretchY' in (await saved(page)).sprites.find((s: { id: string }) => s.id === 'laser')).toBe(false);
+  await (await reveal(page, '#scene-stretchY')).fill('5000'); await page.keyboard.press('Enter');
+  await expect(page.locator('#scene-error')).toContainText('Enter a number from 10 to 1000');
+  await page.screenshot({ path: info.outputPath('stretch.png') });
+});
+
 test('runtime transforms stay out of saved projects and scene assets travel in source exports', async ({ page }) => {
   await open(page); await run(page); await expect(page.locator('#scene-live')).toContainText('x -80'); expect((await saved(page)).sprites[0].x).toBe(-100);
   const downloading = page.waitForEvent('download'); await (await reveal(page, '#export')).click(); const download = await downloading;
