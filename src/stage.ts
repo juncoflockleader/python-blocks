@@ -2,7 +2,7 @@ import { GameEffects } from './scene/game';
 import { cameraPosition, defaultCamera, type Tilemap } from './scene/world';
 import { assetData, paintBuiltinCostume, paintBuiltinBackdrop } from './scene/assets';
 import type { DrawCommand } from './runtime/protocol';
-import { bounds, builtins, emptyScene, resolutionOf, type SceneState, type SceneCommand, type SpriteState, type Bubble, type InkCommand } from './scene/model';
+import { bounds, builtins, emptyScene, resolutionOf, spriteScale, type SceneState, type SceneCommand, type SpriteState, type Bubble, type InkCommand } from './scene/model';
 import { effectNames, effectPixels, type Effects } from './scene/effects';
 import { PixelSensing, type PixelImage } from './scene/sensing';
 
@@ -358,7 +358,7 @@ export class Stage {
     ctx.save(); ctx.translate(240 + s.x, 160 - s.y);
     if (!s.rotationStyle || s.rotationStyle === 'all') ctx.rotate(s.direction * Math.PI / 180);
     const flip = s.rotationStyle === 'left-right' && s.direction > 90 && s.direction < 270 ? -1 : 1;
-    ctx.scale(flip * s.size / 100, s.size / 100);
+    const scale = spriteScale(s); ctx.scale(flip * scale.x, scale.y);
     if (Object.values(s.effects ?? {}).some(Boolean)) {
       // Effects work on pixels: at the artwork's own resolution, and at 2× for the built-in shapes.
       const filtered = this.effectImage('costume:' + s.costume, asset.width, asset.height, s.effects!, c => {

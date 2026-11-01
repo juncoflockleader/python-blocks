@@ -27,6 +27,14 @@ The sprite tray shows a thumbnail for every sprite. **Find sprite** in the Sprit
 
 The workspace corner also provides **Find blocks** for the current level's palette and the current project. **Debug code** adds real Python pause/step controls and local/global values. See [block search and debugging](debugging-and-search.md).
 
+## Changing a value on a tablet
+
+On an iPad, Blockly does not edit a number or words in place: it asks in a prompt. The browser's own *Change value:* box had small buttons that were hard to hit, so the value sheet ([value-sheet.ts](../src/ui/value-sheet.ts)) takes its place, and Blockly's confirm and alert boxes become the same kind of sheet. A number opens **Change the number** with the block's words above it (*set lives to*), a big box with a number keyboard, − and + that step by an amount that suits the number (1 for 3, 10 for 220, 0.01 for 0.1), and **+/−**, since an iPad's number keyboard has no minus sign; anything that is not a Python number keeps the sheet open with a hint. Words open **Change the words** with a wide box. Done and Cancel are 56 px tall. The tap that opened the sheet cannot press Done or Cancel by landing where they appear: a click counts only after a press starts inside the sheet. Blockly's dropdown menus (sprites, keys, directions) get 44 px rows on a touch screen.
+
+## Editing after a run
+
+After Run the stage keeps the game's last picture (or the game keeps running, for a game that listens for keys). The sprite tools stay usable all the time: Add sprite, Duplicate, Delete, Sprites (library), Paint, Sounds, Worlds & tilemaps, the backdrop and colour, Find on stage, Edit costume and every property in the Sprite tab. Using one stops a game that is still running (as Stop does), puts the stage back to the starting layout (as Reset stage does), and then does what was asked; a property typed during a run keeps the learner's value. The note at the top of the Sprite tab says so: *Running … Changing a sprite stops the game* and *Run result. Change a sprite, or Reset stage, to edit the starting layout.* Picking a sprite in the tray only selects it and never stops a game. (Before, every tool stayed greyed out until Reset stage, which learners did not find.)
+
 ## Script tabs and the magic book
 
 A finished game, such as an arcade example, can have a dozen long scripts; in one workspace they are one big blob. Two tools let a learner keep track of a big project and find the numbers worth changing.
@@ -52,6 +60,8 @@ Each tab remembers where it was scrolled while the project is open; a tab opened
 - Pages are grouped by script tab, in tab order, then top to bottom.
 - Without a note, Wren still spots well-known numbers: lives at the start, lives lost, points, jump strength, move speed, gravity, the countdown and the win and game-over messages. **Make this a note** writes the title and hint into the block's comment, where the learner can reword it.
 - A project whose notes have pages puts a dot on the Magic tab when it opens.
+
+**A Settings tab: a game's config.** Sky Defenders and Flappy Pipe keep the numbers that make the game what it is in one place, the way programmers keep a config: a **Settings** tab (first, with the magic wand) holding the Program block, which sets named values before anything else runs (`LIVES = 3`, `CANNON_SPEED = 220`, `BOMB_CHANCE = 40`, `GRAVITY = 900`, `FLAP_POWER = 300`). Every script reads those names instead of typing the number again, so one change is all it takes, and Python shows them as plain assignments with the notes as `#` comments above them. Sky Defenders also keeps its looks there: `CANNON_LOOK`, `LASER_LOOK` and `BOMB_LOOK` are costumes, and the start script puts each sprite in its look, so making the laser shoot stars is one change in Settings rather than an edit to every block that uses the laser. In the magic book each setting is a page; a look is a costume to pick from a list. A spotted number whose value comes from a setting is not spotted again in the script that reads it.
 
 The six arcade examples and Super Hopper's finished game ship with tabs and notes: lives, cannon and ship speed, laser and shot speed and direction, bomb speed, chance and the most at once, how high the hero jumps, gravity, engine power, fuel, a safe landing speed, the snake's speed (and the body that must match it), and the maze speeds that must fit its 32-pixel squares.
 

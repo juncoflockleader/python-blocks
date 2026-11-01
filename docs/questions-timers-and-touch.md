@@ -37,6 +37,8 @@ The directional buttons send arrow keys. A/B default to Space/X and can each map
 
 Real pointer capture permits dragging a held finger or mouse outside a button before release. Multiple fingers can hold independent buttons. Physical keys and every virtual button are separate sources: a key stays down until its last source releases, including when both A/B map to the same key. Key repeat does not create repeated presses. Pointer cancellation, loss of capture, focus loss, hiding the page and shutdown release or reset input; hiding the pad releases its virtual buttons. Focus resets clear state without synthesizing key-release handlers, consistent with the existing keyboard contract.
 
+In the Large stage on a touch screen the controller is sized for thumbs, like a handheld's: 56 px arrow buttons and 73 px round A and B buttons that show their key (*A · space*). In landscape the arrows stand in a cross to the left of the stage and A and B to its right, where thumbs rest; upright, they sit under the stage. Fast, repeated taps on or between the buttons never start a text selection, a callout or a double-tap zoom (`user-select`, `-webkit-touch-callout` and `touch-action` on the controller, and `selectstart`, `dblclick` and `contextmenu` cancelled on it), and taps on the game's picture or score never select them either, while the answer box still takes typing.
+
 Buttons also work with keyboard focus and held Space/Enter; moving focus releases the button. Assistive activation sends a single press/release. The same Python key-state queries, key/release handlers and movement controllers work for physical and virtual input. Typing an answer or editing project text does not send stage keys.
 
 ## Color contact

@@ -86,6 +86,9 @@ class Sprite(Appearance):
         if name in ('width', 'height'):
             self._check()
             return self._bounds()[0 if name == 'width' else 1]
+        if name in ('stretch_x', 'stretch_y'):
+            self._check()
+            return self._state.get('stretchX' if name == 'stretch_x' else 'stretchY', 100)
         if name in ('frames', 'costume_id', 'frame_seconds'):
             self._check()
             return list(self._state['costumes']) if name == 'frames' else self._state['costume' if name == 'costume_id' else 'frameSeconds']
@@ -210,8 +213,8 @@ class Sprite(Appearance):
         self.set('direction', self.direction + number(degrees, 'Degrees'))
 
     def change(self, property, amount):
-        if property not in ('x', 'y', 'direction', 'size', 'layer'):
-            raise ValueError('Choose x, y, direction, size, or layer.')
+        if property not in ('x', 'y', 'direction', 'size', 'layer', 'stretch_x', 'stretch_y'):
+            raise ValueError('Choose x, y, direction, size, layer, stretch_x or stretch_y.')
         self.set(property, getattr(self, property) + number(amount, 'Change'))
 
     def point_towards(self, x, y):
@@ -288,15 +291,16 @@ class Sprite(Appearance):
 
     def set(self, property, value):
         self._check()
-        limits = {'x': (-1e6, 1e6), 'y': (-1e6, 1e6), 'direction': (-1e6, 1e6), 'size': (5, 400), 'layer': (-1000, 1000)}
+        # stretch_x and stretch_y stretch the sprite along its own width and height, as percents of its size.
+        limits = {'x': (-1e6, 1e6), 'y': (-1e6, 1e6), 'direction': (-1e6, 1e6), 'size': (5, 400), 'layer': (-1000, 1000), 'stretch_x': (10, 1000), 'stretch_y': (10, 1000)}
         if property not in limits:
-            raise ValueError('Choose x, y, direction, size, or layer.')
+            raise ValueError('Choose x, y, direction, size, layer, stretch_x or stretch_y.')
         value = number(value, property, *limits[property])
         if property == 'direction': value %= 360
         if property in ('x', 'y'):
             self.go_to(value if property == 'x' else self.x, value if property == 'y' else self.y)
             return
-        self._state[property] = value
+        self._state[{'stretch_x': 'stretchX', 'stretch_y': 'stretchY'}.get(property, property)] = value
         self._send()
 
     def show(self):
@@ -404,8 +408,10 @@ class Sprite(Appearance):
     def _bounds(self):
         asset = self._owner.assets[self._state['costume']]
         angle, scale = math.radians(self.direction if self._state['rotationStyle'] == 'all' else 0), self.size / 100
+        width = asset['width'] * scale * self._state.get('stretchX', 100) / 100
+        height = asset['height'] * scale * self._state.get('stretchY', 100) / 100
         c, s = abs(math.cos(angle)), abs(math.sin(angle))
-        return scale * (c * asset['width'] + s * asset['height']), scale * (s * asset['width'] + c * asset['height'])
+        return c * width + s * height, s * width + c * height
 
     def overlaps(self, other):
         self._check()

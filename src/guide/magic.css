@@ -26,6 +26,7 @@
 .magic-step:hover { background: #e6ddff; }
 .magic-step svg { width: 100%; height: 100%; }
 .magic-number-input { width: 76px; min-height: 44px; padding: 0 6px; border: 0; border-inline: 1px solid #e3dafa; font: 700 17px 'DM Sans', system-ui, sans-serif; text-align: center; color: #2f2950; }
+.magic-choice-select { min-height: 44px; padding: 0 10px; border: 1px solid #c9b8f0; border-radius: 10px; background: #fff; font: inherit; font-size: 15px; color: #2f2950; }
 .magic-text-input { min-height: 44px; padding: 0 10px; border: 1px solid #c9b8f0; border-radius: 10px; font: inherit; font-size: 14px; }
 .magic-number-input:focus, .magic-text-input:focus { outline: 3px solid #dd9250; outline-offset: -3px; }
 .magic-error { grid-column: 1 / -1; font-size: 12px; color: #a13824; }

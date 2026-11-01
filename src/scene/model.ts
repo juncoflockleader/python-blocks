@@ -29,7 +29,7 @@ export interface AutoAnimate { moving: string; air: string; still: string; turn:
 export const FRAMES_ANIMATION = 'frames';
 export const ANIMATION_LIMITS = { animations: 8, frames: 64 } as const;
 export const validAnimationName = (n: unknown): n is string => typeof n === 'string' && /^[A-Za-z][A-Za-z0-9 _-]{0,23}$/.test(n) && n === n.trim();
-export interface SpriteState { id: string; name: string; x: number; y: number; direction: number; size: number; layer: number; visible: boolean; costume: string; rotationStyle?: RotationStyle; costumes?: string[]; frameSeconds?: number; animations?: SpriteAnimation[]; autoAnimate?: AutoAnimate; pen?: SpritePen; effects?: Effects; data?: Record<string, unknown>; motion?: Partial<Motion>; kind?: string; world?: string }
+export interface SpriteState { id: string; name: string; x: number; y: number; direction: number; size: number; layer: number; visible: boolean; costume: string; rotationStyle?: RotationStyle; /** Stretch along the sprite's own width and height, as percents of Size (100 when absent). */ stretchX?: number; stretchY?: number; costumes?: string[]; frameSeconds?: number; animations?: SpriteAnimation[]; autoAnimate?: AutoAnimate; pen?: SpritePen; effects?: Effects; data?: Record<string, unknown>; motion?: Partial<Motion>; kind?: string; world?: string }
 export interface Bubble { text: string; style: 'say' | 'think' }
 export interface SceneState { watchers?: Watch[]; controls?: Controls; sounds?: Sound[]; version: 1; background: string; sprites: SpriteState[]; assets: Costume[]; backdrops?: Costume[]; backdrop?: string | null; effects?: Effects; worlds?: World[]; world?: string | null; camera?: Camera }
 export const builtins = [
@@ -89,7 +89,7 @@ export function validSprite(value: unknown, assetIds?: Set<string>): value is Sp
   if (s.data !== undefined && !validData(s.data)) return false;
   if ((s.pen !== undefined && !validPen(s.pen)) || (s.effects !== undefined && !validEffects(s.effects))) return false;
   if (s.animations !== undefined && !validAnimations(s.animations, assetIds) || s.autoAnimate !== undefined && !validAutoAnimate(s.autoAnimate, s.animations)) return false;
-  return id(s.id) && name(s.name) && finite(s.x, -1e6, 1e6) && finite(s.y, -1e6, 1e6) && finite(s.direction, 0, 360) && finite(s.size, 5, 400) && finite(s.layer, -1000, 1000) && typeof s.visible === 'boolean' && id(s.costume) && (!assetIds || assetIds.has(s.costume)) && (s.rotationStyle === undefined || rotationStyles.some(([, style]) => style === s.rotationStyle)) && (s.costumes === undefined || (Array.isArray(s.costumes) && s.costumes.length > 0 && s.costumes.length <= 64 && s.costumes.every(c => id(c) && (!assetIds || assetIds.has(c))))) && (s.frameSeconds === undefined || finite(s.frameSeconds, 0.02, 10));
+  return id(s.id) && name(s.name) && finite(s.x, -1e6, 1e6) && finite(s.y, -1e6, 1e6) && finite(s.direction, 0, 360) && finite(s.size, 5, 400) && finite(s.layer, -1000, 1000) && typeof s.visible === 'boolean' && id(s.costume) && (!assetIds || assetIds.has(s.costume)) && (s.rotationStyle === undefined || rotationStyles.some(([, style]) => style === s.rotationStyle)) && (s.costumes === undefined || (Array.isArray(s.costumes) && s.costumes.length > 0 && s.costumes.length <= 64 && s.costumes.every(c => id(c) && (!assetIds || assetIds.has(c))))) && (s.frameSeconds === undefined || finite(s.frameSeconds, 0.02, 10)) && (s.stretchX === undefined || finite(s.stretchX, 10, 1000)) && (s.stretchY === undefined || finite(s.stretchY, 10, 1000));
 }
 export function validateScene(value: unknown): asserts value is SceneState {
   const s = value as SceneState;
@@ -161,8 +161,11 @@ export function validateInput(input: SceneInput) {
   if (input.kind === 'pointer' && finite(input.x, -1e6, 1e6) && finite(input.y, -1e6, 1e6) && typeof input.down === 'boolean' && typeof input.inside === 'boolean') return;
   throw new Error('Invalid stage input.');
 }
+/** How much a sprite is scaled along its own width and height: Size, times each stretch. */
+export const spriteScale = (sprite: Pick<SpriteState, 'size' | 'stretchX' | 'stretchY'>) => ({ x: sprite.size / 100 * (sprite.stretchX ?? 100) / 100, y: sprite.size / 100 * (sprite.stretchY ?? 100) / 100 });
 export function bounds(sprite: SpriteState, scene: SceneState) {
   const asset = costumes(scene).find(a => a.id === sprite.costume) ?? builtins[0];
-  const angle = (sprite.rotationStyle && sprite.rotationStyle !== 'all' ? 0 : sprite.direction) * Math.PI / 180, scale = sprite.size / 100;
-  return { width: scale * (Math.abs(Math.cos(angle)) * asset.width + Math.abs(Math.sin(angle)) * asset.height), height: scale * (Math.abs(Math.sin(angle)) * asset.width + Math.abs(Math.cos(angle)) * asset.height) };
+  const angle = (sprite.rotationStyle && sprite.rotationStyle !== 'all' ? 0 : sprite.direction) * Math.PI / 180, scale = spriteScale(sprite);
+  const width = asset.width * scale.x, height = asset.height * scale.y, cos = Math.abs(Math.cos(angle)), sin = Math.abs(Math.sin(angle));
+  return { width: cos * width + sin * height, height: sin * width + cos * height };
 }

@@ -29,10 +29,10 @@ export function installSceneNavigation(workspace: Blockly.WorkspaceSvg, select: 
       }
       filter(); el<HTMLSelectElement>('scene-browse-world').replaceChildren(new Option('Base stage',''),...(scene.worlds ?? []).map(w => new Option(w.name,w.id)));
     }
-    el<HTMLSelectElement>('scene-browse-world').value = scene.world ?? ''; el<HTMLSelectElement>('scene-browse-world').disabled = !editing;
+    el<HTMLSelectElement>('scene-browse-world').value = scene.world ?? '';
     for (const card of el('scene-cards').querySelectorAll('button')) card.setAttribute('aria-pressed',String((card as HTMLElement).dataset.sprite === current));
     const sprite = scene.sprites.find(s => s.id === current);
-    el<HTMLButtonElement>('scene-locate').disabled = !editing || !sprite; el<HTMLButtonElement>('scene-edit-costume').disabled = !editing || !sprite;
+    el<HTMLButtonElement>('scene-locate').disabled = !sprite; el<HTMLButtonElement>('scene-edit-costume').disabled = !sprite;
     const handlers = handlerSignatures(workspace).filter(h => h.handler!.sprite === current || !!sprite?.kind && h.handler!.kind === sprite.kind || !h.handler!.sprite && !h.handler!.kind);
     const chosen = el<HTMLSelectElement>('scene-script').value;
     el<HTMLSelectElement>('scene-script').replaceChildren(...handlers.map(h => new Option(`${h.name} · ${h.handler!.event}${h.handler!.sprite || h.handler!.kind ? '' : ' · project'}`,h.id)));

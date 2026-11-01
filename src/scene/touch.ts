@@ -32,9 +32,14 @@ export class TouchControls {
   constructor(readonly root: HTMLElement, private stage: HTMLElement, private held: HeldKeys) {
     root.innerHTML = '<button id="touch-toggle" class="button secondary" aria-controls="touch-pad">Touch controls</button><fieldset id="touch-pad" disabled><legend>On-screen controller</legend><div class="touch-directions"><button type="button" data-control="ArrowUp" aria-label="Move up">↑</button><button type="button" data-control="ArrowLeft" aria-label="Move left">←</button><button type="button" data-control="ArrowDown" aria-label="Move down">↓</button><button type="button" data-control="ArrowRight" aria-label="Move right">→</button></div><div class="touch-actions"><button type="button" data-control="a">A</button><button type="button" data-control="b">B</button></div></fieldset>';
     this.pad = root.querySelector('fieldset')!; this.toggle = root.querySelector<HTMLButtonElement>('#touch-toggle')!;
+    // Fast, repeated taps anywhere on the controller (on a button or between them) must never start a
+    // text selection, a callout or a magnifier: on an iPad that froze the game mid-play.
+    for (const name of ['selectstart', 'contextmenu', 'dblclick'] as const) this.pad.addEventListener(name, e => e.preventDefault());
     this.toggle.addEventListener('click', () => { this.clear(); this.shown = !this.shown; this.render(); });
     for (const button of root.querySelectorAll<HTMLButtonElement>('[data-control]')) {
       button.addEventListener('contextmenu', e => e.preventDefault());
+      // A quick second tap is a second press, never a double-click (which would select or zoom).
+      button.addEventListener('dblclick', e => e.preventDefault());
       button.addEventListener('pointerdown', e => {
         if (!this.enabled || e.button !== 0 || this.pointers.has(e.pointerId)) return;
         e.preventDefault(); this.stage.focus({ preventScroll: true }); button.setPointerCapture(e.pointerId);
@@ -64,6 +69,6 @@ export class TouchControls {
   private render() {
     this.pad.hidden = !this.shown; this.pad.disabled = !this.enabled;
     this.toggle.setAttribute('aria-expanded', String(this.shown));
-    for (const action of ['a','b'] as const) { const b = this.root.querySelector<HTMLButtonElement>(`[data-control="${action}"]`)!; b.textContent = `${action.toUpperCase()} · ${this.profile[action] === 'Space' ? 'space' : this.profile[action]}`; b.setAttribute('aria-label', `Action ${action.toUpperCase()}: ${this.profile[action]}`); }
+    for (const action of ['a','b'] as const) { const b = this.root.querySelector<HTMLButtonElement>(`[data-control="${action}"]`)!; b.innerHTML = `<span class="touch-letter">${action.toUpperCase()}</span><span class="touch-key">${this.profile[action] === 'Space' ? 'space' : this.profile[action]}</span>`; b.setAttribute('aria-label', `Action ${action.toUpperCase()}: ${this.profile[action]}`); }
   }
 }

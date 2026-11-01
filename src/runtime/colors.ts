@@ -1,5 +1,5 @@
 import { paintBuiltinCostume, paintBuiltinBackdrop } from '../scene/assets';
-import { builtins, type SceneCommand, type SceneState, type SpriteState, type InkCommand } from '../scene/model';
+import { builtins, spriteScale, type SceneCommand, type SceneState, type SpriteState, type InkCommand } from '../scene/model';
 import { effectNames, effectPixels, type Effects } from '../scene/effects';
 import { cameraPosition, defaultCamera, type Tilemap } from '../scene/world';
 import type { DrawCommand } from './protocol';
@@ -68,7 +68,7 @@ export class SceneColors {
     ctx.save(); ctx.translate(240 + s.x, 160 - s.y);
     if (!s.rotationStyle || s.rotationStyle === 'all') ctx.rotate(s.direction * Math.PI / 180);
     const flip = s.rotationStyle === 'left-right' && s.direction > 90 && s.direction < 270 ? -1 : 1;
-    ctx.scale(flip * s.size / 100, s.size / 100);
+    const scale = spriteScale(s); ctx.scale(flip * scale.x, scale.y);
     if (Object.values(s.effects ?? {}).some(Boolean)) ctx.drawImage(this.filter('sprite:' + s.costume, image, s.effects!), -image.width / 2, -image.height / 2);
     else if (builtins.some(b => b.id === s.costume)) paintBuiltinCostume(ctx, s.costume);
     else ctx.drawImage(image, -image.width / 2, -image.height / 2);

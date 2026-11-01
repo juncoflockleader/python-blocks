@@ -25,7 +25,11 @@ const nameAttributes = 'autocomplete="off" autocapitalize="off" autocorrect="off
 /** Sprite tab, sprite tray and the More settings sheet. The tab holds the seven
  * properties a learner changes constantly; each commits on change with Undo.
  * Everything else is layered into the sheet, nothing is removed. */
-export interface SceneEvents { spriteAdded?(name: string): void }
+export interface SceneEvents {
+  spriteAdded?(name: string): void;
+  /** Stop the running program (as Stop does), so a learner who changes a sprite mid-game can edit at once. */
+  stopRun?(): void;
+}
 export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage, input: (value: SceneInput) => boolean, events: SceneEvents = {}) {
   document.getElementById('panel-sprite')!.innerHTML = `<p id="scene-mode" class="tab-note"></p>
     <div class="sprite-head"><label>Sprite <select id="scene-selection"></select></label><button id="scene-add" class="button secondary">Add sprite</button></div>
@@ -33,6 +37,8 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
       <label class="field-wide">Name <input id="scene-name" maxlength="48" required ${nameAttributes}></label><label class="field-wide">Costume <select id="scene-costume"></select></label>
       ${numberField('scene-x', 'x', -1000000, 1000000)}${numberField('scene-y', 'y', -1000000, 1000000)}
       ${numberField('scene-size', 'Size %', 5, 400)}${numberField('scene-direction', 'Direction °', 0, 360)}
+      ${numberField('scene-stretchX', 'Width %', 10, 1000)}${numberField('scene-stretchY', 'Height %', 10, 1000)}
+      <p class="field-wide scene-hint" id="scene-stretch-hint">Width and Height stretch one way: Height 300 makes a laser three times as long.</p>
       <label class="field-check"><input id="scene-visible" type="checkbox"> Visible</label>
     </div><p class="tab-note">Changes save as you type. Undo restores them.</p></fieldset></form>
     <button id="sprite-more" class="button secondary more-button">More settings <span>layer · rotation · pen · data · motion</span></button>
@@ -114,8 +120,8 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     changeScene(workspace,next); if(added) selected=added; render(true);
     if (added) events.spriteAdded?.(next.sprites.find(s => s.id === added)!.name);
   });
-  el('scene-stock').addEventListener('click',() => stock.open('costume'));
-  el('scene-stock-backdrop').addEventListener('click',() => stock.open('backdrop'));
+  el('scene-stock').addEventListener('click',() => { if (resumeEditing()) stock.open('costume'); });
+  el('scene-stock-backdrop').addEventListener('click',() => { if (resumeEditing()) stock.open('backdrop'); });
   // The Paint editor: costumes from the tray or Edit costume, backdrops from Stage & assets, tiles from the world editor.
   const paint = installPaintEditor(workspace, {
     canEdit: () => editing, selected: () => selected,
@@ -124,13 +130,15 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     done: sprite => { if (sprite) selected = sprite; render(true); if (sprite) choose(sprite); },
   });
   const worlds = installWorldEditor(workspace, () => editing, () => stock.open('world'), id => { if (editing) paint.open({ kind: 'tile', id }); });
-  el('tray-paint').addEventListener('click', () => { if (editing) paint.open({ kind: 'costume' }); });
+  el('tray-paint').addEventListener('click', () => { if (resumeEditing()) paint.open({ kind: 'costume' }); });
+  // Worlds & tilemaps belongs to the world editor; going back to editing comes first (a capture listener).
+  el('scene-worlds').addEventListener('click', () => { resumeEditing(); }, { capture: true });
   const choose = (id: string) => { selected = id; select.value = id; loadProperties(); workspace.refreshToolboxSelection(); select.dispatchEvent(new Event('sprite-selection-changed')); };
-  const navigation = installSceneNavigation(workspace, choose, id => attempt(() => { if (!editing) return; const state = sceneState(workspace); state.world = id || null; changeScene(workspace,state); render(true); }), () => attempt(() => {
-    if (!editing) return; const state = sceneState(workspace), sprite = state.sprites.find(s => s.id === selected); if (!sprite) return;
+  const navigation = installSceneNavigation(workspace, choose, id => attempt(() => { if (!resumeEditing()) return; const state = sceneState(workspace); state.world = id || null; changeScene(workspace,state); render(true); }), () => attempt(() => {
+    if (!resumeEditing()) return; const state = sceneState(workspace), sprite = state.sprites.find(s => s.id === selected); if (!sprite) return;
     if (sprite.world && sprite.world !== state.world) { state.world = sprite.world; changeScene(workspace,state); render(true); }
     view.centerOn(sprite.x,sprite.y); canvas.scrollIntoView({block:'nearest'}); canvas.focus({preventScroll:true});
-  }), () => { if (editing) paint.open({ kind: 'costume', sprite: selected }); });
+  }), () => { if (resumeEditing()) paint.open({ kind: 'costume', sprite: selected }); });
   const appearance = installAppearanceEditor(workspace, () => selected, () => editing);
   const dataEditor = installDataEditor(workspace, () => selected, () => editing);
   const motionEditor = installMotionEditor(workspace, () => selected, () => editing);
@@ -143,6 +151,15 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
   let drag: { pointer: number; id: string; x: number; y: number; originX: number; originY: number } | null = null;
   const error = (e: unknown) => { el('scene-error').textContent = e instanceof Error ? e.message : String(e); };
   const attempt = (fn: () => void) => { try { el('scene-error').textContent = ''; fn(); } catch (e) { error(e); } };
+  /** The sprite tools stay usable after a run and during one: using one stops a running game and puts the
+   * stage back to its starting layout (as Stop, then Reset stage), then does what was asked. Learners never
+   * meet greyed-out tools with no idea that Reset stage unlocks them. */
+  function resumeEditing() {
+    if (editing) return true;
+    if (running) events.stopRun?.();
+    if (!running) reset();
+    return editing;
+  }
   const clearKeys = () => playInput.release();
   /** Animate while moving: a switch, which animation plays when moving, in the air and still, and turning. */
   const autoChoices = (sprite: SpriteState) => [['', 'Nothing'], [FRAMES_ANIMATION, 'frames'], ...(sprite.animations ?? []).map(a => [a.name, a.name])];
@@ -158,7 +175,7 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     el('scene-auto-grid').hidden = !auto;
   }
   function applyAuto(changed: 'on' | 'moving' | 'air' | 'still' | 'turn') {
-    if (!editing) return; attempt(() => {
+    if (!resumeEditing()) return; attempt(() => {
       const scene = sceneState(workspace), sprite = scene.sprites.find(s => s.id === selected); if (!sprite) return;
       if (changed === 'on') {
         if (el<HTMLInputElement>('scene-auto').checked) {
@@ -182,6 +199,7 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     watchers.refresh(scene, editing);
     el<HTMLSelectElement>('scene-costume').replaceChildren(...costumes(scene).map(a => new Option(a.name, a.id)));
     for (const key of ['name', 'x', 'y', 'direction', 'size', 'layer', 'costume'] as const) (el(`scene-${key}`) as HTMLInputElement).value = sprite ? String(sprite[key]) : '';
+    for (const key of ['stretchX', 'stretchY'] as const) el<HTMLInputElement>(`scene-${key}`).value = sprite ? String(sprite[key] ?? 100) : '';
     el('sprite-settings-name').textContent = sprite ? `· ${sprite.name}` : '';
     el<HTMLSelectElement>('scene-world').replaceChildren(new Option('Global (all worlds)', ''), ...(scene.worlds ?? []).map(w => new Option(w.name, w.id))); el<HTMLSelectElement>('scene-world').value = sprite?.world ?? '';
     el<HTMLInputElement>('scene-visible').checked = sprite?.visible ?? true;
@@ -189,8 +207,8 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     renderAuto(sprite);
     el<HTMLInputElement>('scene-background').value = scene.worlds?.find(w => w.id === scene.world)?.background ?? scene.background;
     el<HTMLSelectElement>('scene-backdrop').replaceChildren(new Option('Plain color', ''), ...backdrops(scene).map(a => new Option(a.name, a.id))); el<HTMLSelectElement>('scene-backdrop').value = (scene.worlds?.find(w => w.id === scene.world) ?? scene).backdrop ?? '';
-    for (const id of ['scene-fields', 'scene-more-fields', 'scene-animate-fields']) el<HTMLFieldSetElement>(id).disabled = !editing || !sprite;
-    for (const id of ['scene-copy', 'scene-delete']) el<HTMLButtonElement>(id).disabled = !editing || !sprite;
+    for (const id of ['scene-fields', 'scene-more-fields', 'scene-animate-fields']) el<HTMLFieldSetElement>(id).disabled = !sprite;
+    for (const id of ['scene-copy', 'scene-delete']) el<HTMLButtonElement>(id).disabled = !sprite;
     for (const action of ['a', 'b'] as const) { el<HTMLSelectElement>('touch-key-' + action).value = (scene.controls ?? defaultControls())[action]; el<HTMLSelectElement>('touch-key-' + action).disabled = !editing; }
     if (editing) playInput.configure(scene.controls);
     stage.selected = editing ? selected : null; stage.paint(); live(); view.refresh();
@@ -217,30 +235,37 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     loadProperties();
   }
   function controls() {
-    for (const id of ['scene-add', 'scene-stock', 'tray-paint', 'tray-sounds', 'scene-stock-backdrop', 'scene-import', 'scene-background', 'scene-backdrop', 'scene-paint-backdrop', 'scene-worlds']) (el(id) as HTMLButtonElement).disabled = !editing;
+    for (const id of ['scene-add', 'scene-stock', 'tray-paint', 'tray-sounds', 'scene-stock-backdrop', 'scene-import', 'scene-background', 'scene-backdrop', 'scene-paint-backdrop', 'scene-worlds']) (el(id) as HTMLButtonElement).disabled = false;
     steppers();
     el<HTMLButtonElement>('scene-reset').disabled = running;
-    el('scene-mode').textContent = editing ? 'Drag sprites on the stage to place them before running. Drag empty space to look around.' : running ? 'Running. Runtime movement does not change your saved layout.' : 'Run result. Reset stage to edit the saved starting layout.';
+    el('scene-mode').textContent = editing ? 'Drag sprites on the stage to place them before running. Drag empty space to look around.' : running ? 'Running. Runtime movement does not change your saved layout. Changing a sprite stops the game.' : 'Run result. Change a sprite, or Reset stage, to edit the starting layout.';
     el('scene-mode').dataset.state = editing ? 'editing' : running ? 'running' : 'result';
     canvas.setAttribute('aria-label', editing ? 'Sprite placement and drawing stage. Arrow keys look around; plus and minus zoom.' : 'Interactive stage. Click to focus, then use arrow keys, letters, numbers, or space.');
     loadProperties();
   }
   const uniqueName = (base: string) => { const names = sceneState(workspace).sprites.map(s => s.name); let n = 1; while (names.includes(`${base} ${n}`)) n++; return `${base} ${n}`; };
   el('scene-add').addEventListener('click', () => attempt(() => {
+    if (!resumeEditing()) return;
     const scene = sceneState(workspace); selected = crypto.randomUUID();
     scene.sprites.push({ id: selected, name: uniqueName('Sprite'), x: Number(canvas.dataset.cameraX ?? 0), y: Number(canvas.dataset.cameraY ?? 0), ...(scene.world ? { world: scene.world } : {}), direction: 0, size: 100, layer: 0, visible: true, costume: builtins[scene.sprites.length % builtins.length].id });
     changeScene(workspace, scene); render(true);
   }));
   el('scene-copy').addEventListener('click', () => attempt(() => {
+    if (!resumeEditing()) return;
     const scene = sceneState(workspace), original = scene.sprites.find(s => s.id === selected)!; selected = crypto.randomUUID();
     scene.sprites.push({ ...original, id: selected, name: uniqueName(original.name.slice(0, 32) + ' copy'), x: Math.min(1e6, original.x + 20), y: Math.max(-1e6, original.y - 20) });
     changeScene(workspace, scene); render(true);
   }));
-  el('scene-delete').addEventListener('click', () => attempt(() => { const scene = sceneState(workspace); scene.sprites = scene.sprites.filter(s => s.id !== selected); for (const camera of [scene.camera, ...(scene.worlds ?? []).map(w => w.camera)]) if (camera?.follow === selected) camera.follow = null; changeScene(workspace, scene); render(true); }));
+  el('scene-delete').addEventListener('click', () => attempt(() => { if (!resumeEditing()) return; const scene = sceneState(workspace); scene.sprites = scene.sprites.filter(s => s.id !== selected); for (const camera of [scene.camera, ...(scene.worlds ?? []).map(w => w.camera)]) if (camera?.follow === selected) camera.follow = null; changeScene(workspace, scene); render(true); }));
   select.addEventListener('change', () => choose(select.value));
-  type Property = 'name' | 'costume' | 'x' | 'y' | 'direction' | 'size' | 'layer' | 'visible' | 'world' | 'rotation';
+  type Property = 'name' | 'costume' | 'x' | 'y' | 'direction' | 'size' | 'stretchX' | 'stretchY' | 'layer' | 'visible' | 'world' | 'rotation';
   /** Write one property of the selected sprite. Each committed change is one Undo step. */
-  const commit = (key: Property) => { if (!editing) return; attempt(() => {
+  const commit = (key: Property) => {
+    // Going back to editing redraws the fields from the saved sprite: keep what the learner typed.
+    const typed = el<HTMLInputElement>(`scene-${key}`), value = typed.value, checked = typed.checked;
+    if (!editing && !resumeEditing()) return;
+    typed.value = value; typed.checked = checked;
+    attempt(() => {
     const scene = sceneState(workspace), sprite = scene.sprites.find(s => s.id === selected); if (!sprite) return;
     const field = el<HTMLInputElement>(`scene-${key}`);
     try {
@@ -252,23 +277,24 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
       else {
         const value = field.valueAsNumber;
         if (!Number.isFinite(value) || value < Number(field.min) || value > Number(field.max)) throw new Error(`Enter a number from ${field.min} to ${field.max}.`);
-        sprite[key] = value;
+        // A stretch of 100 is no stretch: the project stays as it was.
+        if ((key === 'stretchX' || key === 'stretchY') && value === 100) delete sprite[key]; else sprite[key] = value;
       }
       changeScene(workspace, scene); render(true);
     } catch (e) { render(true); throw e; }
   }); };
-  for (const key of ['name', 'costume', 'x', 'y', 'direction', 'size', 'layer', 'visible', 'world', 'rotation'] as const) {
+  for (const key of ['name', 'costume', 'x', 'y', 'direction', 'size', 'stretchX', 'stretchY', 'layer', 'visible', 'world', 'rotation'] as const) {
     const field = el<HTMLInputElement>(`scene-${key}`);
     field.addEventListener('change', () => commit(key));
     if (field.tagName === 'INPUT' && field.type !== 'checkbox') field.addEventListener('keydown', event => { if (event.key === 'Enter') { event.preventDefault(); commit(key); } });
   }
   for (const id of ['scene-properties', 'scene-more']) el(id).addEventListener('submit', event => event.preventDefault());
-  el('scene-paint-backdrop').addEventListener('click', () => { if (editing) paint.open({ kind: 'backdrop' }); });
-  el('scene-backdrop').addEventListener('change', () => attempt(() => { const scene = sceneState(workspace); (scene.worlds?.find(w => w.id === scene.world) ?? scene).backdrop = el<HTMLSelectElement>('scene-backdrop').value || null; changeScene(workspace, scene); render(true); }));
-  el('scene-background').addEventListener('change', () => attempt(() => { const scene = sceneState(workspace); (scene.worlds?.find(w => w.id === scene.world) ?? scene).background = el<HTMLInputElement>('scene-background').value; changeScene(workspace, scene); render(true); }));
+  el('scene-paint-backdrop').addEventListener('click', () => { if (resumeEditing()) paint.open({ kind: 'backdrop' }); });
+  el('scene-backdrop').addEventListener('change', () => attempt(() => { const chosen = el<HTMLSelectElement>('scene-backdrop').value; if (!resumeEditing()) return; el<HTMLSelectElement>('scene-backdrop').value = chosen; const scene = sceneState(workspace); (scene.worlds?.find(w => w.id === scene.world) ?? scene).backdrop = el<HTMLSelectElement>('scene-backdrop').value || null; changeScene(workspace, scene); render(true); }));
+  el('scene-background').addEventListener('change', () => attempt(() => { const chosen = el<HTMLInputElement>('scene-background').value; if (!resumeEditing()) return; el<HTMLInputElement>('scene-background').value = chosen; const scene = sceneState(workspace); (scene.worlds?.find(w => w.id === scene.world) ?? scene).background = el<HTMLInputElement>('scene-background').value; changeScene(workspace, scene); render(true); }));
   const reset = () => { if (!running) { editing = true; watchers.restore(); render(true); controls(); } };
   el('scene-reset').addEventListener('click', reset);
-  el('scene-import').addEventListener('click', () => el<HTMLInputElement>('scene-image').click());
+  el('scene-import').addEventListener('click', () => { if (resumeEditing()) el<HTMLInputElement>('scene-image').click(); });
   el('scene-image').addEventListener('change', async () => {
     const file = el<HTMLInputElement>('scene-image').files?.[0]; el<HTMLInputElement>('scene-image').value = ''; if (!file) return;
     const before = JSON.stringify(sceneState(workspace)); let bitmap: ImageBitmap | undefined;
@@ -316,7 +342,9 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     /** Select a sprite as the tray does (palette defaults, inspector and stage). */
     select(id: string) { if (sceneState(workspace).sprites.some(s => s.id === id)) choose(id); },
     /** Open the stock library on a kind, as the tray and settings buttons do. */
-    openLibrary(kind: 'costume' | 'backdrop' | 'world') { if (editing) stock.open(kind); },
+    openLibrary(kind: 'costume' | 'backdrop' | 'world') { if (resumeEditing()) stock.open(kind); },
+    /** Before a sprite tool outside this editor (Sounds): stop a running game and go back to editing. */
+    resumeEditing,
     /** On touch screens, show the on-screen controller when the program listens for keys. */
     touchControls(show: boolean) { playInput.showTouch(show); },
     start(scene = sceneState(workspace)) { stock.close(); worlds.close(); paint.close(); settings.close(); clearKeys(); drag = null; editing = false; running = true; ready = false; stage.selected = null; stage.reset(scene); view.sync(); playInput.configure(scene.controls); playInput.setEnabled(false); watchers.start(scene); controls(); },

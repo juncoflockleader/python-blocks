@@ -618,6 +618,20 @@ Checked by [unit tests](../tests/unit/script-tabs.test.ts) of the tab model (sav
 
 Not built yet: tabs in the Python view (Python still lists the whole program in one file); moving a workspace note between tabs (a note stays in the tab it was written in); a magic note on a block inside a module.
 
+### 3.23 A learner's requests: editing after a run, iPad controls and values, stretch, and settings (built 2026-11-01)
+
+The owner passed on what a young learner ran into, and asked for them after the tabs.
+
+| Request | What was built | Where |
+| --- | --- | --- |
+| The sprite buttons grey out after Run | The sprite tools stay usable after a run and during one. Using one stops a running game and goes back to the starting layout first; a property typed meanwhile is kept. | [scene/editor.ts](../src/scene/editor.ts), [workflow](editor-and-play-workflow.md#editing-after-a-run) |
+| The game controls are poor on an iPad; repeated taps start a selection | The Large stage's controller is sized for thumbs (56 px arrows, 73 px round A and B): in landscape a cross of arrows left of the stage and A and B to its right. Taps on or between the buttons, or on the game, never select, call out or zoom. | [touch.ts](../src/scene/touch.ts), [questions, timers and touch](questions-timers-and-touch.md) |
+| The change-value dialog is hard to tap | Blockly's prompt, confirm and alert are touch-sized sheets: a number gets - and +, and +/- for a minus sign the iPad keyboard lacks; the tap that opens a sheet cannot press its buttons. Dropdown menus get 44 px rows. | [value-sheet.ts](../src/ui/value-sheet.ts), [workflow](editor-and-play-workflow.md#changing-a-value-on-a-tablet) |
+| Making a laser longer is hard | Width % and Height % stretch a sprite one way (Sprite tab, `set("stretch_y", 300)` and the property blocks), counted everywhere Size is: drawing, clicks, overlap, edges, physics. | [sprites, stage and input](sprites-stage-input.md) |
+| Magic numbers in configs; swap a character or bullet in one place | Sky Defenders and Flappy Pipe have a Settings tab: named settings in the Program block that every script reads (`LIVES`, `LASER_SPEED`, `GRAVITY`). Sky Defenders' looks (`LASER_LOOK` and the others) are costumes there, so the laser shoots stars with one change; the magic book offers them as a list to pick. | [workflow](editor-and-play-workflow.md#script-tabs-and-the-magic-book) |
+
+Not built yet: Settings tabs for the other examples; swapping an animated sprite's look (Flappy Pipe's pipe and birds play several frames, so one costume would not stay); a tool to put one sprite in another's place in every script, for a learner who made a new sprite rather than a new costume.
+
 ## 4. Track C: academy
 
 ### 4.1 Model

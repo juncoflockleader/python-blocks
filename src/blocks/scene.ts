@@ -59,7 +59,7 @@ for (const kind of ['sprite', 'costume', 'backdrop', 'world'] as const) Blockly.
 } };
 const value = (name: string) => ({ type: 'input_value', name });
 const menu = (name: string, options: string[][]) => ({ type: 'field_dropdown', name, options });
-const propertyOptions = ['x', 'y', 'direction', 'size', 'layer'].map(v => [v, v]);
+const propertyOptions = [...['x', 'y', 'direction', 'size', 'layer'].map(v => [v, v]), ['width stretch %', 'stretch_x'], ['height stretch %', 'stretch_y']];
 const command = (type: string, message0: string, args0: unknown[], output = false) => ({ type, message0, args0, ...(output ? { output: null } : { previousStatement: null, nextStatement: null }), colour: '#477c9a', inputsInline: false });
 Blockly.common.defineBlocksWithJsonArray([
   command('scene_world_set', 'switch to world %1', [value('WORLD')]),

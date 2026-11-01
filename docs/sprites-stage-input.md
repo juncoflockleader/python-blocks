@@ -20,7 +20,7 @@ Choose **Examples → Sprites**, then **Run code**. Click the stage to focus it.
 
 ## Authoring and persistence
 
-- Add, name, duplicate, select, or delete sprites in the scene editor. Set their initial x/y, direction, size, layer, visibility, and costume. Apply records one Undo operation.
+- Add, name, duplicate, select, or delete sprites in the scene editor. Set their initial x/y, direction, size, stretch (**Width %** and **Height %**: Height 300 makes a laser three times as long), layer, visibility, and costume. Apply records one Undo operation.
 - Drag a sprite on the stage to place it. A completed drag is one Undo operation; a cancelled pointer gesture restores the prior position. Numeric fields provide a keyboard-accessible placement alternative.
 - Built-in costumes are Bird, Star, Ball, and Box. **Import costume** accepts PNG, JPEG, or WebP up to 2 MB, scales it to fit 256 × 256 pixels, and embeds a PNG copy in the project. Imported costumes are selectable for any sprite. Image import and its assignment to the selected sprite are undoable together.
 - Paint and edit custom costumes, backdrops or tiles in the **Paint** editor. Assets have stable IDs; rename and pixel edits preserve references. Duplicate creates independent artwork. Sprites save an ordered frame list and duration. Select plain color, Meadow, Night, or custom artwork as the starting backdrop.
@@ -42,6 +42,7 @@ scene.load("scene.json")
 player = sprites.named("Player")
 player.move(20)
 player.set("size", 125)
+laser.set("stretch_y", 300)   # three times as long, along the sprite's own height
 ```
 
 | Operation | Python behavior |
@@ -49,9 +50,9 @@ player.set("size", 125)
 | Authored reference | `sprites.named(name)` selects the authored name emitted for its saved ID. Rename regenerates the name. |
 | Dynamic lookup | `sprites.get(name_or_id)` accepts a name or runtime ID, including a click payload's sprite ID. Missing targets raise `KeyError`. |
 | Runtime creation | `sprites.create(costume_id)` returns a new sprite at the center with size 100%, direction/layer zero, and visibility enabled. |
-| Move and transform | `move(steps)`, `turn(degrees)`, `go_to(x, y)`, and `set(property, value)`. Settable properties are x, y, direction, size, and layer. |
+| Move and transform | `move(steps)`, `turn(degrees)`, `go_to(x, y)`, and `set(property, value)`. Settable properties are x, y, direction, size, layer, `stretch_x` and `stretch_y` (also with `change`). |
 | Relative changes and aiming | `change(property, amount)`, `point_towards(x, y)`, and `distance_to(x, y)`. Aim at another sprite or the pointer using their x/y reporters. Aiming at the same position preserves direction. |
-| Read properties | `sprite.x`, `.y`, `.direction`, `.size`, `.layer`, `.visible`, `.name`, `.id`, `.width` and `.height`. Width/height are the scaled, rotated enclosing bounds. |
+| Read properties | `sprite.x`, `.y`, `.direction`, `.size`, `.stretch_x`, `.stretch_y`, `.layer`, `.visible`, `.name`, `.id`, `.width` and `.height`. Width/height are the scaled, stretched, rotated enclosing bounds. |
 | Rotation and layering | `rotation_style("all" / "left-right" / "none")`; `to_layer("front" / "back")` preserves other sprites' relative order and compacts layer numbers to stay bounded. |
 | Appearance | `show()`, `hide()`, and `costume(costume_id)`. The costume value block selects a stable asset ID. |
 | Clone and destroy | `clone()` returns an independent copy of the current properties; assets are shared. `destroy()` removes it. Further operations on the destroyed object raise a useful error. |
@@ -97,7 +98,7 @@ Browser implementation references: [keyboard key and code semantics](https://dev
 ## Limits and export
 
 - Up to 64 authored sprites, 128 live sprites including runtime copies, 24 custom costumes and 12 custom backdrops.
-- Coordinates from −1,000,000 to 1,000,000; size 5–400%; layers −1000 to 1000. Coordinates and properties must be finite numbers; Boolean values do not silently become numbers.
+- Coordinates from −1,000,000 to 1,000,000; size 5–400%; stretch 10–1000% each way (saved as `stretchX` and `stretchY` only when not 100); layers −1000 to 1000. Coordinates and properties must be finite numbers; Boolean values do not silently become numbers.
 - Glides last 0–60 seconds. Runtime animation lists contain 1–100 available costumes; authored sequences contain 1–64 frames. Timing is 0.02–10 seconds per costume.
 - Dialogue supports up to 240 UTF-16 code units. Timed dialogue lasts 0–60 seconds and yields even for zero duration. Long text wraps; the canvas shows at most 12 lines, with the full text retained in the accessible caption. Speech accepts text explicitly; use the text-conversion block for numeric values.
 - At most 50,000 sprite/background changes per run. Existing event, output, watchdog and project limits still apply.

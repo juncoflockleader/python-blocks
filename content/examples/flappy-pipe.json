@@ -7,6 +7,866 @@
    "languageVersion": 0,
    "blocks": [
     {
+     "type": "py_program",
+     "id": "settings_program_block",
+     "x": 40,
+     "y": 30,
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "py_set",
+        "id": "flappy-pipe-set-gravity",
+        "fields": {
+         "SYMBOL": "^%xqEwB.RNd*R^@O[nX:"
+        },
+        "inputs": {
+         "VALUE": {
+          "block": {
+           "type": "py_number",
+           "id": "flappy-pipe-gravity",
+           "fields": {
+            "VALUE": "900"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "py_set",
+          "id": "flappy-pipe-set-flap-power",
+          "fields": {
+           "SYMBOL": "h`lezP64nVm2-Q6?[DPs"
+          },
+          "inputs": {
+           "VALUE": {
+            "block": {
+             "type": "py_number",
+             "id": "flappy-pipe-flap-power",
+             "fields": {
+              "VALUE": "300"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "py_set",
+            "id": "flappy-pipe-set-bird-speed",
+            "fields": {
+             "SYMBOL": "BvI%Z5):QGSJkvbxk40/"
+            },
+            "inputs": {
+             "VALUE": {
+              "block": {
+               "type": "py_number",
+               "id": "flappy-pipe-bird-speed",
+               "fields": {
+                "VALUE": "150"
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "py_set",
+              "id": "flappy-pipe-set-speed-up",
+              "fields": {
+               "SYMBOL": "JB:|fz|6UD-8Z,U[vUB}"
+              },
+              "inputs": {
+               "VALUE": {
+                "block": {
+                 "type": "py_number",
+                 "id": "flappy-pipe-speed-up",
+                 "fields": {
+                  "VALUE": "5"
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "py_set",
+                "id": "flappy-pipe-set-birds-to-win",
+                "fields": {
+                 "SYMBOL": "j?|I^mnD90}/?(4!:r3e"
+                },
+                "inputs": {
+                 "VALUE": {
+                  "block": {
+                   "type": "py_number",
+                   "id": "flappy-pipe-birds-to-win",
+                   "fields": {
+                    "VALUE": "20"
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "py_set",
+                  "id": "flappy-pipe-set-pipe-lean",
+                  "fields": {
+                   "SYMBOL": "=a9oJcvzSQoXSkwCF}.b"
+                  },
+                  "inputs": {
+                   "VALUE": {
+                    "block": {
+                     "type": "py_number",
+                     "id": "flappy-pipe-pipe-lean",
+                     "fields": {
+                      "VALUE": "0.05"
+                     }
+                    }
+                   }
+                  },
+                  "icons": {
+                   "comment": {
+                    "text": "Pipe lean\nHow much the pipe tips as it rises and falls. Try 0.2 for a very wobbly pipe, or 0 to stay straight.",
+                    "pinned": false,
+                    "height": 120,
+                    "width": 260
+                   }
+                  }
+                 }
+                },
+                "icons": {
+                 "comment": {
+                  "text": "Birds to win\nDodge this many birds to win.",
+                  "pinned": false,
+                  "height": 120,
+                  "width": 260
+                 }
+                }
+               }
+              },
+              "icons": {
+               "comment": {
+                "text": "Speed up\nHow much faster birds get for every bird you dodge. 0 keeps them the same.",
+                "pinned": false,
+                "height": 120,
+                "width": 260
+               }
+              }
+             }
+            },
+            "icons": {
+             "comment": {
+              "text": "Bird speed\nHow fast the first birds fly at you.",
+              "pinned": false,
+              "height": 120,
+              "width": 260
+             }
+            }
+           }
+          },
+          "icons": {
+           "comment": {
+            "text": "Flap power\nHow hard each flap (Space) pushes the pipe up.",
+            "pinned": false,
+            "height": 120,
+            "width": 260
+           }
+          }
+         }
+        },
+        "icons": {
+         "comment": {
+          "text": "Gravity\nHow hard the pipe falls. Try 500 to float, or 1500 for a heavy pipe.",
+          "pinned": false,
+          "height": 120,
+          "width": 260
+         }
+        }
+       }
+      }
+     },
+     "icons": {
+      "comment": {
+       "text": "Settings\nThe numbers that make this game what it is. Every script reads them from here, so one change is all it takes. Programmers call a place like this a config.",
+       "pinned": false,
+       "height": 120,
+       "width": 260
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_bird_update_handler_block",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_bird_update_handler",
+      "signature": {
+       "id": "on_bird_update_handler",
+       "name": "on_bird_update",
+       "parameters": [
+        {
+         "id": "on_bird_update_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "update",
+        "order": 4,
+        "sprite": "bird"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "controls_if",
+        "id": "flappy-pipe-77",
+        "inputs": {
+         "IF0": {
+          "block": {
+           "type": "py_logic",
+           "id": "flappy-pipe-78",
+           "fields": {
+            "OP": "and"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "scene_get",
+              "id": "flappy-pipe-79",
+              "fields": {
+               "PROPERTY": "is_clone"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_self",
+                 "id": "flappy-pipe-80"
+                }
+               }
+              }
+             }
+            },
+            "B": {
+             "block": {
+              "type": "logic_compare",
+              "id": "flappy-pipe-81",
+              "fields": {
+               "OP": "LT"
+              },
+              "inputs": {
+               "A": {
+                "block": {
+                 "type": "scene_get",
+                 "id": "flappy-pipe-82",
+                 "fields": {
+                  "PROPERTY": "x"
+                 },
+                 "inputs": {
+                  "SPRITE": {
+                   "block": {
+                    "type": "scene_self",
+                    "id": "flappy-pipe-83"
+                   }
+                  }
+                 }
+                }
+               },
+               "B": {
+                "block": {
+                 "type": "py_unary",
+                 "id": "679cf2df-1def-474f-b507-b4c5ffc7dace",
+                 "fields": {
+                  "OP": "-"
+                 },
+                 "inputs": {
+                  "VALUE": {
+                   "block": {
+                    "type": "py_number",
+                    "id": "6e801a3c-9fa6-4837-9395-4e0ee0ba8893",
+                    "fields": {
+                     "VALUE": "270"
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         },
+         "DO0": {
+          "block": {
+           "type": "game_change",
+           "id": "flappy-pipe-85",
+           "fields": {
+            "FIELD": "score"
+           },
+           "inputs": {
+            "VALUE": {
+             "shadow": {
+              "type": "py_number",
+              "id": "flappy-pipe-86",
+              "fields": {
+               "VALUE": "1"
+              }
+             }
+            }
+           },
+           "next": {
+            "block": {
+             "type": "controls_if",
+             "id": "flappy-pipe-87",
+             "inputs": {
+              "IF0": {
+               "block": {
+                "type": "logic_compare",
+                "id": "flappy-pipe-88",
+                "fields": {
+                 "OP": "EQ"
+                },
+                "inputs": {
+                 "A": {
+                  "block": {
+                   "type": "game_get",
+                   "id": "flappy-pipe-89",
+                   "fields": {
+                    "FIELD": "score"
+                   }
+                  }
+                 },
+                 "B": {
+                  "shadow": {
+                   "type": "py_number",
+                   "id": "flappy-pipe-90",
+                   "fields": {
+                    "VALUE": "10"
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "DO0": {
+               "block": {
+                "type": "game_message",
+                "id": "flappy-pipe-91",
+                "inputs": {
+                 "TEXT": {
+                  "shadow": {
+                   "type": "text",
+                   "id": "flappy-pipe-92",
+                   "fields": {
+                    "TEXT": "The birds are confused. Is that a flying pipe?"
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "controls_if",
+               "id": "flappy-pipe-93",
+               "inputs": {
+                "IF0": {
+                 "block": {
+                  "type": "logic_compare",
+                  "id": "flappy-pipe-94",
+                  "fields": {
+                   "OP": "EQ"
+                  },
+                  "inputs": {
+                   "A": {
+                    "block": {
+                     "type": "game_get",
+                     "id": "flappy-pipe-95",
+                     "fields": {
+                      "FIELD": "score"
+                     }
+                    }
+                   },
+                   "B": {
+                    "block": {
+                     "type": "py_get",
+                     "id": "f385da8c-6359-4290-9c49-8f9397968af8",
+                     "fields": {
+                      "SYMBOL": "j?|I^mnD90}/?(4!:r3e"
+                     }
+                    }
+                   }
+                  }
+                 }
+                },
+                "DO0": {
+                 "block": {
+                  "type": "sound_play",
+                  "id": "flappy-pipe-97",
+                  "inputs": {
+                   "SOUND": {
+                    "block": {
+                     "type": "sound_asset",
+                     "id": "flappy-pipe-98",
+                     "fields": {
+                      "SOUND_ID": "win"
+                     }
+                    }
+                   },
+                   "OWNER": {
+                    "block": {
+                     "type": "py_none",
+                     "id": "flappy-pipe-99"
+                    }
+                   }
+                  },
+                  "next": {
+                   "block": {
+                    "type": "game_finish",
+                    "id": "flappy-pipe-100",
+                    "fields": {
+                     "WON": "TRUE"
+                    },
+                    "inputs": {
+                     "TEXT": {
+                      "shadow": {
+                       "type": "text",
+                       "id": "flappy-pipe-101",
+                       "fields": {
+                        "TEXT": "The birds give up. Pipes rule the sky!"
+                       }
+                      }
+                     }
+                    }
+                   }
+                  }
+                 }
+                }
+               },
+               "next": {
+                "block": {
+                 "type": "scene_destroy",
+                 "id": "flappy-pipe-102",
+                 "inputs": {
+                  "SPRITE": {
+                   "block": {
+                    "type": "scene_self",
+                    "id": "flappy-pipe-103"
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_pipe_overlap_handler_block",
+     "x": 40,
+     "y": 488,
+     "extraState": {
+      "functionId": "on_pipe_overlap_handler",
+      "signature": {
+       "id": "on_pipe_overlap_handler",
+       "name": "on_pipe_overlap",
+       "parameters": [
+        {
+         "id": "on_pipe_overlap_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "overlap",
+        "order": 3,
+        "sprite": "pipe"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_animation_play",
+        "id": "flappy-pipe-70",
+        "fields": {
+         "ANIMATION": "bonk"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "flappy-pipe-71",
+           "fields": {
+            "SPRITE_ID": "pipe"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "sound_play",
+          "id": "flappy-pipe-72",
+          "inputs": {
+           "SOUND": {
+            "block": {
+             "type": "sound_asset",
+             "id": "flappy-pipe-73",
+             "fields": {
+              "SOUND_ID": "hit"
+             }
+            }
+           },
+           "OWNER": {
+            "block": {
+             "type": "py_none",
+             "id": "flappy-pipe-74"
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "game_finish",
+            "id": "flappy-pipe-75",
+            "fields": {
+             "WON": "FALSE"
+            },
+            "inputs": {
+             "TEXT": {
+              "shadow": {
+               "type": "text",
+               "id": "flappy-pipe-76",
+               "fields": {
+                "TEXT": "BONK! A bird flew into the pipe."
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_pipe_update_handler_block",
+     "x": 40,
+     "y": 208,
+     "extraState": {
+      "functionId": "on_pipe_update_handler",
+      "signature": {
+       "id": "on_pipe_update_handler",
+       "name": "on_pipe_update",
+       "parameters": [
+        {
+         "id": "on_pipe_update_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "update",
+        "order": 2,
+        "sprite": "pipe"
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_set",
+        "id": "flappy-pipe-52",
+        "fields": {
+         "PROPERTY": "direction"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "flappy-pipe-53",
+           "fields": {
+            "SPRITE_ID": "pipe"
+           }
+          }
+         },
+         "VALUE": {
+          "block": {
+           "type": "py_binary",
+           "id": "flappy-pipe-54",
+           "fields": {
+            "OP": "*"
+           },
+           "inputs": {
+            "A": {
+             "block": {
+              "type": "scene_motion_get",
+              "id": "flappy-pipe-55",
+              "fields": {
+               "PROPERTY": "vy"
+              },
+              "inputs": {
+               "SPRITE": {
+                "block": {
+                 "type": "scene_sprite",
+                 "id": "flappy-pipe-56",
+                 "fields": {
+                  "SPRITE_ID": "pipe"
+                 }
+                }
+               }
+              }
+             }
+            },
+            "B": {
+             "block": {
+              "type": "py_binary",
+              "id": "85b6c108-35a4-4d7d-b2fe-b936720e09a4",
+              "fields": {
+               "OP": "-"
+              },
+              "inputs": {
+               "A": {
+                "block": {
+                 "type": "py_number",
+                 "id": "6bad88f5-352e-4683-b75d-1dab5b40c979",
+                 "fields": {
+                  "VALUE": "0"
+                 }
+                }
+               },
+               "B": {
+                "block": {
+                 "type": "py_get",
+                 "id": "f0eac2f5-a877-46de-8b79-594f873a310d",
+                 "fields": {
+                  "SYMBOL": "=a9oJcvzSQoXSkwCF}.b"
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "controls_if",
+          "id": "flappy-pipe-58",
+          "inputs": {
+           "IF0": {
+            "block": {
+             "type": "logic_compare",
+             "id": "flappy-pipe-59",
+             "fields": {
+              "OP": "LT"
+             },
+             "inputs": {
+              "A": {
+               "block": {
+                "type": "scene_get",
+                "id": "flappy-pipe-60",
+                "fields": {
+                 "PROPERTY": "y"
+                },
+                "inputs": {
+                 "SPRITE": {
+                  "block": {
+                   "type": "scene_sprite",
+                   "id": "flappy-pipe-61",
+                   "fields": {
+                    "SPRITE_ID": "pipe"
+                   }
+                  }
+                 }
+                }
+               }
+              },
+              "B": {
+               "block": {
+                "type": "py_unary",
+                "id": "f7b135dc-ec05-4deb-9eca-1790e330cc88",
+                "fields": {
+                 "OP": "-"
+                },
+                "inputs": {
+                 "VALUE": {
+                  "block": {
+                   "type": "py_number",
+                   "id": "fa182b91-b7f5-4195-9f22-c24eeef44b2d",
+                   "fields": {
+                    "VALUE": "130"
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           },
+           "DO0": {
+            "block": {
+             "type": "scene_animation_play",
+             "id": "flappy-pipe-63",
+             "fields": {
+              "ANIMATION": "bonk"
+             },
+             "inputs": {
+              "SPRITE": {
+               "block": {
+                "type": "scene_sprite",
+                "id": "flappy-pipe-64",
+                "fields": {
+                 "SPRITE_ID": "pipe"
+                }
+               }
+              }
+             },
+             "next": {
+              "block": {
+               "type": "sound_play",
+               "id": "flappy-pipe-65",
+               "inputs": {
+                "SOUND": {
+                 "block": {
+                  "type": "sound_asset",
+                  "id": "flappy-pipe-66",
+                  "fields": {
+                   "SOUND_ID": "hit"
+                  }
+                 }
+                },
+                "OWNER": {
+                 "block": {
+                  "type": "py_none",
+                  "id": "flappy-pipe-67"
+                 }
+                }
+               },
+               "next": {
+                "block": {
+                 "type": "game_finish",
+                 "id": "flappy-pipe-68",
+                 "fields": {
+                  "WON": "FALSE"
+                 },
+                 "inputs": {
+                  "TEXT": {
+                   "shadow": {
+                    "type": "text",
+                    "id": "flappy-pipe-69",
+                    "fields": {
+                     "TEXT": "Thud! Pipes are not very good at flying."
+                    }
+                   }
+                  }
+                 }
+                }
+               }
+              }
+             }
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
+     "type": "py_handler",
+     "id": "on_space_key_handler_block",
+     "x": 40,
+     "y": 30,
+     "extraState": {
+      "functionId": "on_space_key_handler",
+      "signature": {
+       "id": "on_space_key_handler",
+       "name": "on_space_key",
+       "parameters": [
+        {
+         "id": "on_space_key_handler_payload",
+         "name": "payload"
+        }
+       ],
+       "async": true,
+       "handler": {
+        "event": "key:Space",
+        "order": 1
+       }
+      }
+     },
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "scene_motion_set",
+        "id": "flappy-pipe-46",
+        "fields": {
+         "PROPERTY": "vy"
+        },
+        "inputs": {
+         "SPRITE": {
+          "block": {
+           "type": "scene_sprite",
+           "id": "flappy-pipe-47",
+           "fields": {
+            "SPRITE_ID": "pipe"
+           }
+          }
+         },
+         "VALUE": {
+          "block": {
+           "type": "py_get",
+           "id": "710b796e-f7ae-41d4-ac91-abe7f10540c2",
+           "fields": {
+            "SYMBOL": "h`lezP64nVm2-Q6?[DPs"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "sound_play",
+          "id": "flappy-pipe-49",
+          "inputs": {
+           "SOUND": {
+            "block": {
+             "type": "sound_asset",
+             "id": "flappy-pipe-50",
+             "fields": {
+              "SOUND_ID": "whoosh"
+             }
+            }
+           },
+           "OWNER": {
+            "block": {
+             "type": "py_none",
+             "id": "flappy-pipe-51"
+            }
+           }
+          }
+         }
+        }
+       }
+      }
+     }
+    },
+    {
      "type": "py_handler",
      "id": "on_start_handler_block",
      "x": 40,
@@ -81,11 +941,31 @@
               }
              },
              "VALUE": {
-              "shadow": {
-               "type": "py_number",
-               "id": "flappy-pipe-7",
+              "block": {
+               "type": "py_binary",
+               "id": "c5d6a1d0-f9f3-4a71-b283-a180b7745880",
                "fields": {
-                "VALUE": "-900"
+                "OP": "-"
+               },
+               "inputs": {
+                "A": {
+                 "block": {
+                  "type": "py_number",
+                  "id": "162dcead-9b43-4bb4-8e9a-128f3ec9ae37",
+                  "fields": {
+                   "VALUE": "0"
+                  }
+                 }
+                },
+                "B": {
+                 "block": {
+                  "type": "py_get",
+                  "id": "5e71f914-34e7-455a-bbec-1bc9adc74b5f",
+                  "fields": {
+                   "SYMBOL": "^%xqEwB.RNd*R^@O[nX:"
+                  }
+                 }
+                }
                }
               }
              }
@@ -206,11 +1086,22 @@
                         "id": "flappy-pipe-21",
                         "inputs": {
                          "FROM": {
-                          "shadow": {
-                           "type": "py_number",
-                           "id": "flappy-pipe-22",
+                          "block": {
+                           "type": "py_unary",
+                           "id": "91b87c8a-6535-4760-83e9-184ed6ba69f5",
                            "fields": {
-                            "VALUE": "-130"
+                            "OP": "-"
+                           },
+                           "inputs": {
+                            "VALUE": {
+                             "block": {
+                              "type": "py_number",
+                              "id": "60dd4a60-bf5a-476c-bd6f-a1af671f7ae7",
+                              "fields": {
+                               "VALUE": "130"
+                              }
+                             }
+                            }
                            }
                           }
                          },
@@ -341,11 +1232,31 @@
                                 },
                                 "inputs": {
                                  "A": {
-                                  "shadow": {
-                                   "type": "py_number",
-                                   "id": "flappy-pipe-37",
+                                  "block": {
+                                   "type": "py_binary",
+                                   "id": "9d9e22f2-ce81-42a3-922c-910b0f29c990",
                                    "fields": {
-                                    "VALUE": "-150"
+                                    "OP": "-"
+                                   },
+                                   "inputs": {
+                                    "A": {
+                                     "block": {
+                                      "type": "py_number",
+                                      "id": "a1d436f7-470a-44b2-bac8-295733f48f4f",
+                                      "fields": {
+                                       "VALUE": "0"
+                                      }
+                                     }
+                                    },
+                                    "B": {
+                                     "block": {
+                                      "type": "py_get",
+                                      "id": "374d66af-98de-4607-b51f-4d522ffb7772",
+                                      "fields": {
+                                       "SYMBOL": "BvI%Z5):QGSJkvbxk40/"
+                                      }
+                                     }
+                                    }
                                    }
                                   }
                                  },
@@ -367,11 +1278,11 @@
                                      }
                                     },
                                     "B": {
-                                     "shadow": {
-                                      "type": "py_number",
-                                      "id": "flappy-pipe-40",
+                                     "block": {
+                                      "type": "py_get",
+                                      "id": "7ac34fb2-ff2e-46d8-97c3-900e09e00f03",
                                       "fields": {
-                                       "VALUE": "5"
+                                       "SYMBOL": "JB:|fz|6UD-8Z,U[vUB}"
                                       }
                                      }
                                     }
@@ -405,18 +1316,29 @@
                                   "id": "flappy-pipe-43",
                                   "inputs": {
                                    "FROM": {
-                                    "shadow": {
-                                     "type": "py_number",
-                                     "id": "flappy-pipe-44",
+                                    "block": {
+                                     "type": "py_unary",
+                                     "id": "d270389b-d88d-4339-964c-a18233ee264f",
                                      "fields": {
-                                      "VALUE": "-30"
+                                      "OP": "-"
+                                     },
+                                     "inputs": {
+                                      "VALUE": {
+                                       "block": {
+                                        "type": "py_number",
+                                        "id": "flappy-pipe-45",
+                                        "fields": {
+                                         "VALUE": "30"
+                                        }
+                                       }
+                                      }
                                      }
                                     }
                                    },
                                    "TO": {
                                     "shadow": {
                                      "type": "py_number",
-                                     "id": "flappy-pipe-45",
+                                     "id": "2e7f9284-83f5-4d54-9678-49900547e462",
                                      "fields": {
                                       "VALUE": "30"
                                      }
@@ -426,14 +1348,6 @@
                                  }
                                 }
                                }
-                              }
-                             },
-                             "icons": {
-                              "comment": {
-                               "text": "Bird speed\nBirds fly at -150, and 5 faster for every bird you dodge. Minus means to the left.",
-                               "pinned": false,
-                               "height": 120,
-                               "width": 260
                               }
                              }
                             }
@@ -468,672 +1382,6 @@
                }
               }
              }
-            },
-            "icons": {
-             "comment": {
-              "text": "Gravity\nHow hard the pipe falls. Try -500 to float, or -1500 for a heavy pipe.",
-              "pinned": false,
-              "height": 120,
-              "width": 260
-             }
-            }
-           }
-          }
-         }
-        }
-       }
-      }
-     }
-    },
-    {
-     "type": "py_handler",
-     "id": "on_space_key_handler_block",
-     "x": 40,
-     "y": 30,
-     "extraState": {
-      "functionId": "on_space_key_handler",
-      "signature": {
-       "id": "on_space_key_handler",
-       "name": "on_space_key",
-       "parameters": [
-        {
-         "id": "on_space_key_handler_payload",
-         "name": "payload"
-        }
-       ],
-       "async": true,
-       "handler": {
-        "event": "key:Space",
-        "order": 1
-       }
-      }
-     },
-     "inputs": {
-      "BODY": {
-       "block": {
-        "type": "scene_motion_set",
-        "id": "flappy-pipe-46",
-        "fields": {
-         "PROPERTY": "vy"
-        },
-        "inputs": {
-         "SPRITE": {
-          "block": {
-           "type": "scene_sprite",
-           "id": "flappy-pipe-47",
-           "fields": {
-            "SPRITE_ID": "pipe"
-           }
-          }
-         },
-         "VALUE": {
-          "shadow": {
-           "type": "py_number",
-           "id": "flappy-pipe-48",
-           "fields": {
-            "VALUE": "300"
-           }
-          }
-         }
-        },
-        "next": {
-         "block": {
-          "type": "sound_play",
-          "id": "flappy-pipe-49",
-          "inputs": {
-           "SOUND": {
-            "block": {
-             "type": "sound_asset",
-             "id": "flappy-pipe-50",
-             "fields": {
-              "SOUND_ID": "whoosh"
-             }
-            }
-           },
-           "OWNER": {
-            "block": {
-             "type": "py_none",
-             "id": "flappy-pipe-51"
-            }
-           }
-          }
-         }
-        },
-        "icons": {
-         "comment": {
-          "text": "Flap power\nHow hard each flap pushes the pipe up.",
-          "pinned": false,
-          "height": 120,
-          "width": 260
-         }
-        }
-       }
-      }
-     }
-    },
-    {
-     "type": "py_handler",
-     "id": "on_pipe_update_handler_block",
-     "x": 40,
-     "y": 208,
-     "extraState": {
-      "functionId": "on_pipe_update_handler",
-      "signature": {
-       "id": "on_pipe_update_handler",
-       "name": "on_pipe_update",
-       "parameters": [
-        {
-         "id": "on_pipe_update_handler_payload",
-         "name": "payload"
-        }
-       ],
-       "async": true,
-       "handler": {
-        "event": "update",
-        "order": 2,
-        "sprite": "pipe"
-       }
-      }
-     },
-     "inputs": {
-      "BODY": {
-       "block": {
-        "type": "scene_set",
-        "id": "flappy-pipe-52",
-        "fields": {
-         "PROPERTY": "direction"
-        },
-        "inputs": {
-         "SPRITE": {
-          "block": {
-           "type": "scene_sprite",
-           "id": "flappy-pipe-53",
-           "fields": {
-            "SPRITE_ID": "pipe"
-           }
-          }
-         },
-         "VALUE": {
-          "block": {
-           "type": "py_binary",
-           "id": "flappy-pipe-54",
-           "fields": {
-            "OP": "*"
-           },
-           "inputs": {
-            "A": {
-             "block": {
-              "type": "scene_motion_get",
-              "id": "flappy-pipe-55",
-              "fields": {
-               "PROPERTY": "vy"
-              },
-              "inputs": {
-               "SPRITE": {
-                "block": {
-                 "type": "scene_sprite",
-                 "id": "flappy-pipe-56",
-                 "fields": {
-                  "SPRITE_ID": "pipe"
-                 }
-                }
-               }
-              }
-             }
-            },
-            "B": {
-             "shadow": {
-              "type": "py_number",
-              "id": "flappy-pipe-57",
-              "fields": {
-               "VALUE": "-0.05"
-              }
-             }
-            }
-           }
-          }
-         }
-        },
-        "next": {
-         "block": {
-          "type": "controls_if",
-          "id": "flappy-pipe-58",
-          "inputs": {
-           "IF0": {
-            "block": {
-             "type": "logic_compare",
-             "id": "flappy-pipe-59",
-             "fields": {
-              "OP": "LT"
-             },
-             "inputs": {
-              "A": {
-               "block": {
-                "type": "scene_get",
-                "id": "flappy-pipe-60",
-                "fields": {
-                 "PROPERTY": "y"
-                },
-                "inputs": {
-                 "SPRITE": {
-                  "block": {
-                   "type": "scene_sprite",
-                   "id": "flappy-pipe-61",
-                   "fields": {
-                    "SPRITE_ID": "pipe"
-                   }
-                  }
-                 }
-                }
-               }
-              },
-              "B": {
-               "shadow": {
-                "type": "py_number",
-                "id": "flappy-pipe-62",
-                "fields": {
-                 "VALUE": "-130"
-                }
-               }
-              }
-             }
-            }
-           },
-           "DO0": {
-            "block": {
-             "type": "scene_animation_play",
-             "id": "flappy-pipe-63",
-             "fields": {
-              "ANIMATION": "bonk"
-             },
-             "inputs": {
-              "SPRITE": {
-               "block": {
-                "type": "scene_sprite",
-                "id": "flappy-pipe-64",
-                "fields": {
-                 "SPRITE_ID": "pipe"
-                }
-               }
-              }
-             },
-             "next": {
-              "block": {
-               "type": "sound_play",
-               "id": "flappy-pipe-65",
-               "inputs": {
-                "SOUND": {
-                 "block": {
-                  "type": "sound_asset",
-                  "id": "flappy-pipe-66",
-                  "fields": {
-                   "SOUND_ID": "hit"
-                  }
-                 }
-                },
-                "OWNER": {
-                 "block": {
-                  "type": "py_none",
-                  "id": "flappy-pipe-67"
-                 }
-                }
-               },
-               "next": {
-                "block": {
-                 "type": "game_finish",
-                 "id": "flappy-pipe-68",
-                 "fields": {
-                  "WON": "FALSE"
-                 },
-                 "inputs": {
-                  "TEXT": {
-                   "shadow": {
-                    "type": "text",
-                    "id": "flappy-pipe-69",
-                    "fields": {
-                     "TEXT": "Thud! Pipes are not very good at flying."
-                    }
-                   }
-                  }
-                 }
-                }
-               }
-              }
-             }
-            }
-           }
-          }
-         }
-        },
-        "icons": {
-         "comment": {
-          "text": "Pipe lean\nThe pipe tips with its speed. Try -0.2 for a very wobbly pipe, or 0 to stay straight.",
-          "pinned": false,
-          "height": 120,
-          "width": 260
-         }
-        }
-       }
-      }
-     }
-    },
-    {
-     "type": "py_handler",
-     "id": "on_pipe_overlap_handler_block",
-     "x": 40,
-     "y": 488,
-     "extraState": {
-      "functionId": "on_pipe_overlap_handler",
-      "signature": {
-       "id": "on_pipe_overlap_handler",
-       "name": "on_pipe_overlap",
-       "parameters": [
-        {
-         "id": "on_pipe_overlap_handler_payload",
-         "name": "payload"
-        }
-       ],
-       "async": true,
-       "handler": {
-        "event": "overlap",
-        "order": 3,
-        "sprite": "pipe"
-       }
-      }
-     },
-     "inputs": {
-      "BODY": {
-       "block": {
-        "type": "scene_animation_play",
-        "id": "flappy-pipe-70",
-        "fields": {
-         "ANIMATION": "bonk"
-        },
-        "inputs": {
-         "SPRITE": {
-          "block": {
-           "type": "scene_sprite",
-           "id": "flappy-pipe-71",
-           "fields": {
-            "SPRITE_ID": "pipe"
-           }
-          }
-         }
-        },
-        "next": {
-         "block": {
-          "type": "sound_play",
-          "id": "flappy-pipe-72",
-          "inputs": {
-           "SOUND": {
-            "block": {
-             "type": "sound_asset",
-             "id": "flappy-pipe-73",
-             "fields": {
-              "SOUND_ID": "hit"
-             }
-            }
-           },
-           "OWNER": {
-            "block": {
-             "type": "py_none",
-             "id": "flappy-pipe-74"
-            }
-           }
-          },
-          "next": {
-           "block": {
-            "type": "game_finish",
-            "id": "flappy-pipe-75",
-            "fields": {
-             "WON": "FALSE"
-            },
-            "inputs": {
-             "TEXT": {
-              "shadow": {
-               "type": "text",
-               "id": "flappy-pipe-76",
-               "fields": {
-                "TEXT": "BONK! A bird flew into the pipe."
-               }
-              }
-             }
-            }
-           }
-          }
-         }
-        }
-       }
-      }
-     }
-    },
-    {
-     "type": "py_handler",
-     "id": "on_bird_update_handler_block",
-     "x": 40,
-     "y": 30,
-     "extraState": {
-      "functionId": "on_bird_update_handler",
-      "signature": {
-       "id": "on_bird_update_handler",
-       "name": "on_bird_update",
-       "parameters": [
-        {
-         "id": "on_bird_update_handler_payload",
-         "name": "payload"
-        }
-       ],
-       "async": true,
-       "handler": {
-        "event": "update",
-        "order": 4,
-        "sprite": "bird"
-       }
-      }
-     },
-     "inputs": {
-      "BODY": {
-       "block": {
-        "type": "controls_if",
-        "id": "flappy-pipe-77",
-        "inputs": {
-         "IF0": {
-          "block": {
-           "type": "py_logic",
-           "id": "flappy-pipe-78",
-           "fields": {
-            "OP": "and"
-           },
-           "inputs": {
-            "A": {
-             "block": {
-              "type": "scene_get",
-              "id": "flappy-pipe-79",
-              "fields": {
-               "PROPERTY": "is_clone"
-              },
-              "inputs": {
-               "SPRITE": {
-                "block": {
-                 "type": "scene_self",
-                 "id": "flappy-pipe-80"
-                }
-               }
-              }
-             }
-            },
-            "B": {
-             "block": {
-              "type": "logic_compare",
-              "id": "flappy-pipe-81",
-              "fields": {
-               "OP": "LT"
-              },
-              "inputs": {
-               "A": {
-                "block": {
-                 "type": "scene_get",
-                 "id": "flappy-pipe-82",
-                 "fields": {
-                  "PROPERTY": "x"
-                 },
-                 "inputs": {
-                  "SPRITE": {
-                   "block": {
-                    "type": "scene_self",
-                    "id": "flappy-pipe-83"
-                   }
-                  }
-                 }
-                }
-               },
-               "B": {
-                "shadow": {
-                 "type": "py_number",
-                 "id": "flappy-pipe-84",
-                 "fields": {
-                  "VALUE": "-270"
-                 }
-                }
-               }
-              }
-             }
-            }
-           }
-          }
-         },
-         "DO0": {
-          "block": {
-           "type": "game_change",
-           "id": "flappy-pipe-85",
-           "fields": {
-            "FIELD": "score"
-           },
-           "inputs": {
-            "VALUE": {
-             "shadow": {
-              "type": "py_number",
-              "id": "flappy-pipe-86",
-              "fields": {
-               "VALUE": "1"
-              }
-             }
-            }
-           },
-           "next": {
-            "block": {
-             "type": "controls_if",
-             "id": "flappy-pipe-87",
-             "inputs": {
-              "IF0": {
-               "block": {
-                "type": "logic_compare",
-                "id": "flappy-pipe-88",
-                "fields": {
-                 "OP": "EQ"
-                },
-                "inputs": {
-                 "A": {
-                  "block": {
-                   "type": "game_get",
-                   "id": "flappy-pipe-89",
-                   "fields": {
-                    "FIELD": "score"
-                   }
-                  }
-                 },
-                 "B": {
-                  "shadow": {
-                   "type": "py_number",
-                   "id": "flappy-pipe-90",
-                   "fields": {
-                    "VALUE": "10"
-                   }
-                  }
-                 }
-                }
-               }
-              },
-              "DO0": {
-               "block": {
-                "type": "game_message",
-                "id": "flappy-pipe-91",
-                "inputs": {
-                 "TEXT": {
-                  "shadow": {
-                   "type": "text",
-                   "id": "flappy-pipe-92",
-                   "fields": {
-                    "TEXT": "The birds are confused. Is that a flying pipe?"
-                   }
-                  }
-                 }
-                }
-               }
-              }
-             },
-             "next": {
-              "block": {
-               "type": "controls_if",
-               "id": "flappy-pipe-93",
-               "inputs": {
-                "IF0": {
-                 "block": {
-                  "type": "logic_compare",
-                  "id": "flappy-pipe-94",
-                  "fields": {
-                   "OP": "EQ"
-                  },
-                  "inputs": {
-                   "A": {
-                    "block": {
-                     "type": "game_get",
-                     "id": "flappy-pipe-95",
-                     "fields": {
-                      "FIELD": "score"
-                     }
-                    }
-                   },
-                   "B": {
-                    "shadow": {
-                     "type": "py_number",
-                     "id": "flappy-pipe-96",
-                     "fields": {
-                      "VALUE": "20"
-                     }
-                    }
-                   }
-                  },
-                  "icons": {
-                   "comment": {
-                    "text": "Birds to win\nDodge this many birds to win.",
-                    "pinned": false,
-                    "height": 120,
-                    "width": 260
-                   }
-                  }
-                 }
-                },
-                "DO0": {
-                 "block": {
-                  "type": "sound_play",
-                  "id": "flappy-pipe-97",
-                  "inputs": {
-                   "SOUND": {
-                    "block": {
-                     "type": "sound_asset",
-                     "id": "flappy-pipe-98",
-                     "fields": {
-                      "SOUND_ID": "win"
-                     }
-                    }
-                   },
-                   "OWNER": {
-                    "block": {
-                     "type": "py_none",
-                     "id": "flappy-pipe-99"
-                    }
-                   }
-                  },
-                  "next": {
-                   "block": {
-                    "type": "game_finish",
-                    "id": "flappy-pipe-100",
-                    "fields": {
-                     "WON": "TRUE"
-                    },
-                    "inputs": {
-                     "TEXT": {
-                      "shadow": {
-                       "type": "text",
-                       "id": "flappy-pipe-101",
-                       "fields": {
-                        "TEXT": "The birds give up. Pipes rule the sky!"
-                       }
-                      }
-                     }
-                    }
-                   }
-                  }
-                 }
-                }
-               },
-               "next": {
-                "block": {
-                 "type": "scene_destroy",
-                 "id": "flappy-pipe-102",
-                 "inputs": {
-                  "SPRITE": {
-                   "block": {
-                    "type": "scene_self",
-                    "id": "flappy-pipe-103"
-                   }
-                  }
-                 }
-                }
-               }
-              }
-             }
             }
            }
           }
@@ -1149,6 +1397,36 @@
    {
     "name": "new_bird",
     "id": "flappy-pipe-104",
+    "type": "py:module"
+   },
+   {
+    "name": "BIRDS_TO_WIN",
+    "id": "j?|I^mnD90}/?(4!:r3e",
+    "type": "py:module"
+   },
+   {
+    "name": "PIPE_LEAN",
+    "id": "=a9oJcvzSQoXSkwCF}.b",
+    "type": "py:module"
+   },
+   {
+    "name": "FLAP_POWER",
+    "id": "h`lezP64nVm2-Q6?[DPs",
+    "type": "py:module"
+   },
+   {
+    "name": "GRAVITY",
+    "id": "^%xqEwB.RNd*R^@O[nX:",
+    "type": "py:module"
+   },
+   {
+    "name": "BIRD_SPEED",
+    "id": "BvI%Z5):QGSJkvbxk40/",
+    "type": "py:module"
+   },
+   {
+    "name": "SPEED_UP",
+    "id": "JB:|fz|6UD-8Z,U[vUB}",
     "type": "py:module"
    },
    {
@@ -1381,50 +1659,18 @@
   },
   "procedures": [
    {
-    "id": "on_start_handler",
-    "name": "on_start",
-    "returnTypes": null,
-    "async": true,
-    "handler": {
-     "event": "start",
-     "order": 0
-    },
-    "parameters": [
-     {
-      "id": "on_start_handler_payload",
-      "name": "payload"
-     }
-    ]
-   },
-   {
-    "id": "on_space_key_handler",
-    "name": "on_space_key",
-    "returnTypes": null,
-    "async": true,
-    "handler": {
-     "event": "key:Space",
-     "order": 1
-    },
-    "parameters": [
-     {
-      "id": "on_space_key_handler_payload",
-      "name": "payload"
-     }
-    ]
-   },
-   {
-    "id": "on_pipe_update_handler",
-    "name": "on_pipe_update",
+    "id": "on_bird_update_handler",
+    "name": "on_bird_update",
     "returnTypes": null,
     "async": true,
     "handler": {
      "event": "update",
-     "order": 2,
-     "sprite": "pipe"
+     "order": 4,
+     "sprite": "bird"
     },
     "parameters": [
      {
-      "id": "on_pipe_update_handler_payload",
+      "id": "on_bird_update_handler_payload",
       "name": "payload"
      }
     ]
@@ -1447,18 +1693,50 @@
     ]
    },
    {
-    "id": "on_bird_update_handler",
-    "name": "on_bird_update",
+    "id": "on_pipe_update_handler",
+    "name": "on_pipe_update",
     "returnTypes": null,
     "async": true,
     "handler": {
      "event": "update",
-     "order": 4,
-     "sprite": "bird"
+     "order": 2,
+     "sprite": "pipe"
     },
     "parameters": [
      {
-      "id": "on_bird_update_handler_payload",
+      "id": "on_pipe_update_handler_payload",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "on_space_key_handler",
+    "name": "on_space_key",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "key:Space",
+     "order": 1
+    },
+    "parameters": [
+     {
+      "id": "on_space_key_handler_payload",
+      "name": "payload"
+     }
+    ]
+   },
+   {
+    "id": "on_start_handler",
+    "name": "on_start",
+    "returnTypes": null,
+    "async": true,
+    "handler": {
+     "event": "start",
+     "order": 0
+    },
+    "parameters": [
+     {
+      "id": "on_start_handler_payload",
       "name": "payload"
      }
     ]
@@ -1466,6 +1744,11 @@
   ],
   "scriptTabs": {
    "tabs": [
+    {
+     "id": "settings",
+     "name": "Settings",
+     "icon": "wand"
+    },
     {
      "id": "game",
      "name": "Start & birds",
@@ -1487,7 +1770,8 @@
     "on_space_key_handler_block": "pipe",
     "on_pipe_update_handler_block": "pipe",
     "on_pipe_overlap_handler_block": "pipe",
-    "on_bird_update_handler_block": "score"
+    "on_bird_update_handler_block": "score",
+    "settings_program_block": "settings"
    }
   }
  }

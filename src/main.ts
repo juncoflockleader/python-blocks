@@ -45,6 +45,7 @@ import { installAcademy } from './academy/academy';
 import { installAccount } from './account/ui';
 import { installScriptTabs } from './scripts/tab-strip';
 import { installMagic } from './guide/magic';
+import { installValueSheet } from './ui/value-sheet';
 import './academy/academy.css';
 import { atLeast, installLevels, levelNames, findBlock, requiredLevel, storedLevel, toolboxFor, LEVEL_KEY, type Level } from './ui/levels';
 import { installHelpSections, installInputHints, installLevelControl, installMenu, installPaletteHint, installPythonPlacement, installTabs, installViewSwitch, keepShellInPlace, shellMarkup, trackKeyboard } from './ui/shell';
@@ -188,6 +189,8 @@ const workspace = Blockly.inject('blockly', {
   move: { scrollbars: true, drag: true, wheel: true }, trashcan: false,
 });
 installPythonVariables(workspace);
+// Blockly's prompt, confirm and alert (on a tablet, tapping a number asks "Change value:") as touch-sized sheets.
+const valueSheet = installValueSheet();
 const disposeHatGuard = installHatGuard(workspace);
 const paletteHint = installPaletteHint(() => element('#blockly').querySelector<HTMLElement>('.blocklyToolbox'));
 element('#zoom-in').addEventListener('click', () => workspace.zoomCenter(1));
@@ -195,10 +198,10 @@ element('#zoom-out').addEventListener('click', () => workspace.zoomCenter(-1));
 element('#zoom-reset').addEventListener('click', () => { workspace.setScale(startScale); workspace.scrollCenter(); });
 const soundEditor = installSoundEditor(workspace, { canEdit: () => sceneEditor?.canEdit() ?? true });
 const disposeLanguageEditor = installLanguageEditor(workspace);
-sceneEditor = installSceneEditor(workspace, stage, value => runner.input(value), { spriteAdded: name => nudges.spriteAdded(name) });
+sceneEditor = installSceneEditor(workspace, stage, value => runner.input(value), { spriteAdded: name => nudges.spriteAdded(name), stopRun: () => { if (!stop.disabled) stop.click(); } });
 // Sounds: the tray button, and a list in the Sprite tab under the sprite's buttons.
 const soundList = installSoundList(workspace, element('#scene-edit-costume').closest<HTMLElement>('.scene-toolbar')!, sound => soundEditor.open({ sound }));
-element('#tray-sounds').addEventListener('click', () => soundEditor.open());
+element('#tray-sounds').addEventListener('click', () => { sceneEditor?.resumeEditing(); soundEditor.open(); });
 installLevels(workspace, () => sceneEditor?.selected() ?? '');
 // Every command and event block carries its family's symbol; installed before any project loads.
 installBlockIcons(workspace);
@@ -656,4 +659,4 @@ element<HTMLInputElement>('#project-file').addEventListener('change', async even
     else if (installProject(prepared.project)) { setTitle(file.name.replace(/\.python-blocks\.json$|\.json$/i, '') || 'My project'); offerLevel(); }
   } catch (error) { notice.textContent = `Could not open project: ${error instanceof Error ? error.message : error}. Your current work is unchanged.`; }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeCaptions(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); academy.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); scriptTabsControl.dispose(); magic?.dispose(); blockSearch.dispose(); paletteSearch.dispose(); lessonStage.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeCaptions(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); academy.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); scriptTabsControl.dispose(); magic?.dispose(); valueSheet.dispose(); blockSearch.dispose(); paletteSearch.dispose(); lessonStage.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
