@@ -6,7 +6,7 @@ This repository contains the initial product design and a working browser scaffo
 
 ## Try it locally
 
-Requirements: Node.js 24 (see `.nvmrc`), pnpm 11.19.0, and Python for the native tests. CI uses Python 3.14.2 to match the bundled Pyodide interpreter.
+Requirements: Node.js 24 (see `.nvmrc`), pnpm 11.19.0, and Python for the native tests. CI uses Python 3.14.6, the earliest 3.14 release that `actions/setup-python` offers on `ubuntu-latest` (Ubuntu 26.04), nearest the bundled Pyodide interpreter's 3.14.2.
 
 ```sh
 pnpm install

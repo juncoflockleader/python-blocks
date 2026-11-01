@@ -1,4 +1,4 @@
-import { sceneState } from '../scene/state';
+import { readScene, sceneState } from '../scene/state';
 import { backdrops, builtinBackdrops, builtins, costumes, emptyScene, validKey, type SceneState } from '../scene/model';
 import { loadWorkspace } from './serialization';
 import * as Blockly from 'blockly/core';
@@ -169,7 +169,7 @@ function generator() {
   g.forBlock['game_finish'] = (b, gen) => { gen.useScene('game'); return `_pb_game.finish(${b.getFieldValue('WON') === 'TRUE' ? 'True' : 'False'}, ${v(b, gen, 'TEXT')})\n`; };
   g.forBlock['game_effect'] = (b, gen) => { gen.useScene('game'); return `_pb_game.effect(${gen.quote_(b.getFieldValue('KIND'))}, ${v(b, gen, 'SPRITE')}, ${v(b, gen, 'SECONDS')})\n`; };
   g.forBlock['game_effect_clear'] = (_b, gen) => { gen.useScene('game'); return '_pb_game.clear_effects()\n'; };
-  g.forBlock['scene_sprite'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.named(${gen.quote_(sceneState(b.workspace).sprites.find(s => s.id === b.getFieldValue('SPRITE_ID'))!.name)})`, Order.FUNCTION_CALL]; };
+  g.forBlock['scene_sprite'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.named(${gen.quote_(readScene(b.workspace).sprites.find(s => s.id === b.getFieldValue('SPRITE_ID'))!.name)})`, Order.FUNCTION_CALL]; };
   g.forBlock['scene_costume'] = (b, gen) => [gen.quote_(b.getFieldValue('COSTUME_ID')), Order.ATOMIC];
   g.forBlock['scene_backdrop'] = (b, gen) => [b.getFieldValue('BACKDROP_ID') ? gen.quote_(b.getFieldValue('BACKDROP_ID')) : 'None', Order.ATOMIC];
   g.forBlock['scene_backdrop_set'] = (b, gen) => { gen.useScene('scene'); return `_pb_scene.set_backdrop(${v(b, gen, 'BACKDROP')})\n`; };

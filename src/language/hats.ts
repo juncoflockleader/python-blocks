@@ -46,7 +46,7 @@ function backdropMenu(this: Blockly.FieldDropdown): Blockly.MenuOption[] {
 }
 function worldMenu(this: Blockly.FieldDropdown): Blockly.MenuOption[] {
   const block = this.getSourceBlock();
-  return [['any world', ''], ...(block ? (sceneState(block.workspace).worlds ?? []).map(w => [w.name, w.id] as [string, string]) : [])];
+  return [['any world', ''], ...(block ? (readScene(block.workspace).worlds ?? []).map(w => [w.name, w.id] as [string, string]) : [])];
 }
 
 Blockly.Blocks[HAT_TYPE] = {
