@@ -351,9 +351,10 @@ export function installScriptTabs(workspace: Blockly.WorkspaceSvg, host: { revea
 
   // Drop a script on a tab's name to move it there, or on New tab to start a tab with it.
   let dragging = '', target: string | null = null;
+  // The dragged block is drawn over the strip, so look under it for the tab.
   const hovered = (event: PointerEvent) => {
-    const at = document.elementFromPoint(event.clientX, event.clientY);
-    if (!at || !strip.contains(at)) return null;
+    const at = document.elementsFromPoint(event.clientX, event.clientY).find(element => strip.contains(element));
+    if (!at) return null;
     if (at.closest('#script-tab-add')) return 'new';
     return at.closest<HTMLElement>('.script-tab')?.dataset.tab ?? null;
   };
@@ -361,6 +362,8 @@ export function installScriptTabs(workspace: Blockly.WorkspaceSvg, host: { revea
     target = tab;
     for (const button of strip.querySelectorAll<HTMLElement>('.script-tab, #script-tab-add')) button.classList.toggle('script-tab-drop', !!tab && (button.dataset.tab ?? 'new') === tab && tab !== current);
     strip.classList.toggle('script-tabs-dragging', !!dragging);
+    // Over a tab, the dragged script turns see-through so the tab it will go to shows.
+    document.documentElement.classList.toggle('script-tab-dropping', !!tab && tab !== current);
   };
   const onMove = (event: PointerEvent) => { if (dragging) mark(hovered(event)); };
   const onUp = (event: PointerEvent) => { if (dragging) target = hovered(event); };

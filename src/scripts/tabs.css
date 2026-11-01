@@ -18,6 +18,7 @@
 .script-tab-add:hover:not(:disabled) { background: #e9ede0; }
 .script-tab-add:disabled { opacity: .45; cursor: default; }
 .script-tabs-dragging .script-tab:not([aria-pressed=true]), .script-tabs-dragging .script-tab-add { outline: 2px dashed #9fc3b9; outline-offset: -4px; }
+.script-tab-dropping .blocklyDragging { opacity: .4; }
 .script-tab.script-tab-drop, .script-tab-add.script-tab-drop { background: #d9ece8; outline: 2px solid #267c70; outline-offset: -3px; }
 @keyframes script-tab-flash { 0%, 100% { background: transparent; } 30% { background: #c7df8c; } }
 .script-tab-flash:not([aria-pressed=true]) { animation: script-tab-flash .9s ease-out; }

@@ -115,7 +115,7 @@ test('hidden scripts stay put: Clean up and new scripts in one tab never nudge a
   const before = await where();
   await tab(page, 'Aliens').click();
   const canvas = (await page.locator('#blockly .blocklySvg').first().boundingBox())!;
-  await page.mouse.click(canvas.x + canvas.width - 40, canvas.y + 40, { button: 'right' });
+  await page.mouse.click(canvas.x + canvas.width - 40, canvas.y + 120, { button: 'right' }); // below the strip
   await page.locator('.blocklyContextMenu').getByText(/Clean up Blocks/i).click();
   await expect.poll(async () => (await where()).make_aliens_function_block).not.toEqual(before.make_aliens_function_block);
   const after = await where();
