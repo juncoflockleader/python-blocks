@@ -12,9 +12,11 @@ import { paletteWorkspace } from './palette-workspace';
  * without an error, its controls do what they say, and it can be lost. */
 const spaces: Blockly.Workspace[] = [];
 afterEach(() => spaces.splice(0).forEach(w => w.dispose()));
-function play(id: string, steps: GameStep[]) {
+/** `settings` changes numbers in the Settings tab first, by the id of the number block. */
+function play(id: string, steps: GameStep[], settings: Record<string, string> = {}) {
   const w = paletteWorkspace(); spaces.push(w);
   restore(w, prepareProject(readFileSync(`content/examples/${id}.json`, 'utf8')).project);
+  for (const [block, value] of Object.entries(settings)) w.getBlockById(block)!.setFieldValue(value, 'VALUE');
   const compiled = compile(w);
   expect(compiled.diagnostics.filter(d => d.severity === 'error'), id).toEqual([]);
   const out = execFileSync('python3', ['tests/python/scene_check.py'], { input: JSON.stringify({ source: compiled.source, scene: compiled.scene, steps, files: compiled.files }), encoding: 'utf8' });
@@ -42,6 +44,12 @@ describe('arcade examples', () => {
       { key: 'ArrowRight', hold: 0.3 }, { expect: { sprite: 'Ship', direction: [290, 360] } },
       { wait: 40 }, { expect: { lives: [0, 2] } },
     ]);
+  }, 60_000);
+  it('Rock Blaster: every script reads its Settings, so more lives, a faster ship and no turning change the game', () => {
+    play('rock-blaster', [
+      { wait: 0.3 }, { expect: { lives: 5 } }, { place: 'Ship', x: 0, y: -130 }, { key: 'ArrowUp', hold: 0.5 }, { expect: { sprite: 'Ship', y: [-40, 20] } },
+      { key: 'ArrowRight', hold: 0.3 }, { expect: { sprite: 'Ship', direction: 270 } },
+    ], { 'rock-blaster-lives': '5', 'rock-blaster-ship-speed': '8', 'rock-blaster-turn-speed': '0' });
   }, 60_000);
   it('Snake: the head moves a square at a time, turns, and the wall ends the game', () => {
     play('snake', [

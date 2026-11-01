@@ -7,6 +7,330 @@
    "languageVersion": 0,
    "blocks": [
     {
+     "type": "py_program",
+     "id": "settings_program_block",
+     "x": 40,
+     "y": 30,
+     "inputs": {
+      "BODY": {
+       "block": {
+        "type": "py_set",
+        "id": "rock-blaster-set-lives",
+        "fields": {
+         "SYMBOL": "rock-blaster-setting-lives"
+        },
+        "inputs": {
+         "VALUE": {
+          "block": {
+           "type": "py_number",
+           "id": "rock-blaster-lives",
+           "fields": {
+            "VALUE": "3"
+           }
+          }
+         }
+        },
+        "next": {
+         "block": {
+          "type": "py_set",
+          "id": "rock-blaster-set-ship-speed",
+          "fields": {
+           "SYMBOL": "rock-blaster-setting-ship-speed"
+          },
+          "inputs": {
+           "VALUE": {
+            "block": {
+             "type": "py_number",
+             "id": "rock-blaster-ship-speed",
+             "fields": {
+              "VALUE": "4"
+             }
+            }
+           }
+          },
+          "next": {
+           "block": {
+            "type": "py_set",
+            "id": "rock-blaster-set-turn-speed",
+            "fields": {
+             "SYMBOL": "rock-blaster-setting-turn-speed"
+            },
+            "inputs": {
+             "VALUE": {
+              "block": {
+               "type": "py_number",
+               "id": "rock-blaster-turn-speed",
+               "fields": {
+                "VALUE": "6"
+               }
+              }
+             }
+            },
+            "next": {
+             "block": {
+              "type": "py_set",
+              "id": "rock-blaster-set-shot-speed",
+              "fields": {
+               "SYMBOL": "rock-blaster-setting-shot-speed"
+              },
+              "inputs": {
+               "VALUE": {
+                "block": {
+                 "type": "py_number",
+                 "id": "rock-blaster-shot-speed",
+                 "fields": {
+                  "VALUE": "12"
+                 }
+                }
+               }
+              },
+              "next": {
+               "block": {
+                "type": "py_set",
+                "id": "rock-blaster-set-first-wave-rocks",
+                "fields": {
+                 "SYMBOL": "rock-blaster-setting-first-wave-rocks"
+                },
+                "inputs": {
+                 "VALUE": {
+                  "block": {
+                   "type": "py_number",
+                   "id": "rock-blaster-first-wave-rocks",
+                   "fields": {
+                    "VALUE": "3"
+                   }
+                  }
+                 }
+                },
+                "next": {
+                 "block": {
+                  "type": "py_set",
+                  "id": "rock-blaster-set-rock-speed",
+                  "fields": {
+                   "SYMBOL": "rock-blaster-setting-rock-speed"
+                  },
+                  "inputs": {
+                   "VALUE": {
+                    "block": {
+                     "type": "py_number",
+                     "id": "rock-blaster-rock-speed",
+                     "fields": {
+                      "VALUE": "1.5"
+                     }
+                    }
+                   }
+                  },
+                  "next": {
+                   "block": {
+                    "type": "py_set",
+                    "id": "rock-blaster-set-split-size",
+                    "fields": {
+                     "SYMBOL": "rock-blaster-setting-split-size"
+                    },
+                    "inputs": {
+                     "VALUE": {
+                      "block": {
+                       "type": "py_number",
+                       "id": "rock-blaster-split-size",
+                       "fields": {
+                        "VALUE": "30"
+                       }
+                      }
+                     }
+                    },
+                    "next": {
+                     "block": {
+                      "type": "py_set",
+                      "id": "rock-blaster-set-split-pieces",
+                      "fields": {
+                       "SYMBOL": "rock-blaster-setting-split-pieces"
+                      },
+                      "inputs": {
+                       "VALUE": {
+                        "block": {
+                         "type": "py_number",
+                         "id": "rock-blaster-split-pieces",
+                         "fields": {
+                          "VALUE": "2"
+                         }
+                        }
+                       }
+                      },
+                      "next": {
+                       "block": {
+                        "type": "py_set",
+                        "id": "rock-blaster-set-points-per-rock",
+                        "fields": {
+                         "SYMBOL": "rock-blaster-setting-points-per-rock"
+                        },
+                        "inputs": {
+                         "VALUE": {
+                          "block": {
+                           "type": "py_number",
+                           "id": "rock-blaster-points-per-rock",
+                           "fields": {
+                            "VALUE": "10"
+                           }
+                          }
+                         }
+                        },
+                        "next": {
+                         "block": {
+                          "type": "py_set",
+                          "id": "rock-blaster-set-damage",
+                          "fields": {
+                           "SYMBOL": "rock-blaster-setting-damage"
+                          },
+                          "inputs": {
+                           "VALUE": {
+                            "block": {
+                             "type": "py_number",
+                             "id": "rock-blaster-damage",
+                             "fields": {
+                              "VALUE": "1"
+                             }
+                            }
+                           }
+                          },
+                          "next": {
+                           "block": {
+                            "type": "py_set",
+                            "id": "rock-blaster-set-shot-look",
+                            "fields": {
+                             "SYMBOL": "rock-blaster-setting-shot-look"
+                            },
+                            "inputs": {
+                             "VALUE": {
+                              "block": {
+                               "type": "scene_costume",
+                               "id": "rock-blaster-shot-look",
+                               "fields": {
+                                "COSTUME_ID": "stock-little-ball"
+                               }
+                              }
+                             }
+                            },
+                            "icons": {
+                             "comment": {
+                              "text": "Shot look\nWant to shoot stars instead? Pick a costume for the shot here.",
+                              "pinned": false,
+                              "height": 120,
+                              "width": 260
+                             }
+                            }
+                           }
+                          },
+                          "icons": {
+                           "comment": {
+                            "text": "Damage\nLives a rock takes away when it hits the ship. Try 2 for a hard game, or 0 and nothing can hurt you.",
+                            "pinned": false,
+                            "height": 120,
+                            "width": 260
+                           }
+                          }
+                         }
+                        },
+                        "icons": {
+                         "comment": {
+                          "text": "Points for a rock\nWhat each rock you blast is worth.",
+                          "pinned": false,
+                          "height": 120,
+                          "width": 260
+                         }
+                        }
+                       }
+                      },
+                      "icons": {
+                       "comment": {
+                        "text": "Pieces of a rock\nHow many smaller rocks a rock splits into. Try 3 for a sky full of rocks.",
+                        "pinned": false,
+                        "height": 120,
+                        "width": 260
+                       }
+                      }
+                     }
+                    },
+                    "icons": {
+                     "comment": {
+                      "text": "Rocks that split\nA rock bigger than this size splits into smaller ones, and big rocks start at 100. Try 10 for lots of tiny pieces, or 200 so rocks never split.",
+                      "pinned": false,
+                      "height": 120,
+                      "width": 260
+                     }
+                    }
+                   }
+                  },
+                  "icons": {
+                   "comment": {
+                    "text": "Rock speed\nHow far each rock drifts every step. Try 3 for fast rocks.",
+                    "pinned": false,
+                    "height": 120,
+                    "width": 260
+                   }
+                  }
+                 }
+                },
+                "icons": {
+                 "comment": {
+                  "text": "Rocks in the first wave\nHow many rocks the first wave has. Every wave after brings one more. Try 6 for a crowded sky.",
+                  "pinned": false,
+                  "height": 120,
+                  "width": 260
+                 }
+                }
+               }
+              },
+              "icons": {
+               "comment": {
+                "text": "Shot speed\nHow far a shot flies each step. Try 6 for slow shots. Too big, and a shot can jump right over a small rock!",
+                "pinned": false,
+                "height": 120,
+                "width": 260
+               }
+              }
+             }
+            },
+            "icons": {
+             "comment": {
+              "text": "Turning speed\nHow many degrees the ship turns each step with the left or right arrow. Try 10 to spin faster.",
+              "pinned": false,
+              "height": 120,
+              "width": 260
+             }
+            }
+           }
+          },
+          "icons": {
+           "comment": {
+            "text": "Ship speed\nHow fast the ship flies forward while you hold the up arrow. Try 8 for a zippy ship.",
+            "pinned": false,
+            "height": 120,
+            "width": 260
+           }
+          }
+         }
+        },
+        "icons": {
+         "comment": {
+          "text": "Lives at the start\nHow many rocks can hit the ship before the game is over. Try 5 for an easier game, or 1 if you are brave.",
+          "pinned": false,
+          "height": 120,
+          "width": 260
+         }
+        }
+       }
+      }
+     },
+     "icons": {
+      "comment": {
+       "text": "Settings\nThe numbers and looks that make this game what it is. Every script reads them from here, so one change is all it takes. Programmers call a place like this a config.",
+       "pinned": false,
+       "height": 120,
+       "width": 260
+      }
+     }
+    },
+    {
      "type": "py_function",
      "id": "wrap_function_block",
      "x": 40,
@@ -363,11 +687,11 @@
            },
            "inputs": {
             "A": {
-             "shadow": {
-              "type": "py_number",
+             "block": {
+              "type": "py_get",
               "id": "rock-blaster-35",
               "fields": {
-               "VALUE": "2"
+               "SYMBOL": "rock-blaster-setting-first-wave-rocks"
               }
              }
             },
@@ -379,14 +703,6 @@
                "SYMBOL": "rock-blaster-210"
               }
              }
-            }
-           },
-           "icons": {
-            "comment": {
-             "text": "Rocks in a wave\nThe first wave has 2 rocks plus one, and every wave adds one more. Try 5 for a crowded sky.",
-             "pinned": false,
-             "height": 120,
-             "width": 260
             }
            }
           }
@@ -630,29 +946,35 @@
           },
           "inputs": {
            "VALUE": {
-            "shadow": {
-             "type": "py_number",
+            "block": {
+             "type": "py_get",
              "id": "rock-blaster-60",
              "fields": {
-              "VALUE": "3"
+              "SYMBOL": "rock-blaster-setting-lives"
              }
             }
            }
           },
           "next": {
            "block": {
-            "type": "py_set",
-            "id": "rock-blaster-61",
-            "fields": {
-             "SYMBOL": "rock-blaster-210"
-            },
+            "type": "scene_costume_set",
+            "id": "rock-blaster-dress-shot",
             "inputs": {
-             "VALUE": {
-              "shadow": {
-               "type": "py_number",
-               "id": "rock-blaster-62",
+             "SPRITE": {
+              "block": {
+               "type": "scene_sprite",
+               "id": "rock-blaster-dress-shot-sprite",
                "fields": {
-                "VALUE": "1"
+                "SPRITE_ID": "shot"
+               }
+              }
+             },
+             "COSTUME": {
+              "block": {
+               "type": "py_get",
+               "id": "rock-blaster-dress-shot-look",
+               "fields": {
+                "SYMBOL": "rock-blaster-setting-shot-look"
                }
               }
              }
@@ -660,15 +982,15 @@
             "next": {
              "block": {
               "type": "py_set",
-              "id": "rock-blaster-63",
+              "id": "rock-blaster-61",
               "fields": {
-               "SYMBOL": "rock-blaster-209"
+               "SYMBOL": "rock-blaster-210"
               },
               "inputs": {
                "VALUE": {
                 "shadow": {
                  "type": "py_number",
-                 "id": "rock-blaster-64",
+                 "id": "rock-blaster-62",
                  "fields": {
                   "VALUE": "0"
                  }
@@ -677,31 +999,16 @@
               },
               "next": {
                "block": {
-                "type": "scene_go",
-                "id": "rock-blaster-65",
+                "type": "py_set",
+                "id": "rock-blaster-63",
+                "fields": {
+                 "SYMBOL": "rock-blaster-209"
+                },
                 "inputs": {
-                 "SPRITE": {
-                  "block": {
-                   "type": "scene_sprite",
-                   "id": "rock-blaster-66",
-                   "fields": {
-                    "SPRITE_ID": "ship"
-                   }
-                  }
-                 },
-                 "X": {
+                 "VALUE": {
                   "shadow": {
                    "type": "py_number",
-                   "id": "rock-blaster-67",
-                   "fields": {
-                    "VALUE": "0"
-                   }
-                  }
-                 },
-                 "Y": {
-                  "shadow": {
-                   "type": "py_number",
-                   "id": "rock-blaster-68",
+                   "id": "rock-blaster-64",
                    "fields": {
                     "VALUE": "0"
                    }
@@ -710,171 +1017,150 @@
                 },
                 "next": {
                  "block": {
-                  "type": "scene_set",
-                  "id": "rock-blaster-69",
-                  "fields": {
-                   "PROPERTY": "direction"
-                  },
+                  "type": "scene_go",
+                  "id": "rock-blaster-65",
                   "inputs": {
                    "SPRITE": {
                     "block": {
                      "type": "scene_sprite",
-                     "id": "rock-blaster-70",
+                     "id": "rock-blaster-66",
                      "fields": {
                       "SPRITE_ID": "ship"
                      }
                     }
                    },
-                   "VALUE": {
+                   "X": {
                     "shadow": {
                      "type": "py_number",
-                     "id": "rock-blaster-71",
+                     "id": "rock-blaster-67",
                      "fields": {
-                      "VALUE": "270"
+                      "VALUE": "0"
+                     }
+                    }
+                   },
+                   "Y": {
+                    "shadow": {
+                     "type": "py_number",
+                     "id": "rock-blaster-68",
+                     "fields": {
+                      "VALUE": "0"
                      }
                     }
                    }
                   },
                   "next": {
                    "block": {
-                    "type": "py_call",
-                    "id": "rock-blaster-72",
-                    "extraState": {
-                     "functionId": "new_wave_function",
-                     "signature": {
-                      "id": "new_wave_function",
-                      "name": "new_wave",
-                      "parameters": []
+                    "type": "scene_set",
+                    "id": "rock-blaster-69",
+                    "fields": {
+                     "PROPERTY": "direction"
+                    },
+                    "inputs": {
+                     "SPRITE": {
+                      "block": {
+                       "type": "scene_sprite",
+                       "id": "rock-blaster-70",
+                       "fields": {
+                        "SPRITE_ID": "ship"
+                       }
+                      }
+                     },
+                     "VALUE": {
+                      "shadow": {
+                       "type": "py_number",
+                       "id": "rock-blaster-71",
+                       "fields": {
+                        "VALUE": "270"
+                       }
+                      }
                      }
                     },
                     "next": {
                      "block": {
-                      "type": "controls_whileUntil",
-                      "id": "rock-blaster-73",
-                      "fields": {
-                       "MODE": "WHILE"
+                      "type": "py_call",
+                      "id": "rock-blaster-72",
+                      "extraState": {
+                       "functionId": "new_wave_function",
+                       "signature": {
+                        "id": "new_wave_function",
+                        "name": "new_wave",
+                        "parameters": []
+                       }
                       },
-                      "inputs": {
-                       "BOOL": {
-                        "shadow": {
-                         "type": "logic_boolean",
-                         "id": "rock-blaster-74",
-                         "fields": {
-                          "BOOL": "TRUE"
-                         }
-                        }
-                       },
-                       "DO": {
-                        "block": {
-                         "type": "py_wait",
-                         "id": "rock-blaster-75",
-                         "inputs": {
-                          "SECONDS": {
-                           "shadow": {
-                            "type": "py_number",
-                            "id": "rock-blaster-76",
-                            "fields": {
-                             "VALUE": "0.03"
-                            }
+                      "next": {
+                       "block": {
+                        "type": "controls_whileUntil",
+                        "id": "rock-blaster-73",
+                        "fields": {
+                         "MODE": "WHILE"
+                        },
+                        "inputs": {
+                         "BOOL": {
+                          "shadow": {
+                           "type": "logic_boolean",
+                           "id": "rock-blaster-74",
+                           "fields": {
+                            "BOOL": "TRUE"
                            }
                           }
                          },
-                         "next": {
+                         "DO": {
                           "block": {
-                           "type": "py_for_each",
-                           "id": "rock-blaster-77",
-                           "fields": {
-                            "SYMBOL": "rock-blaster-211"
-                           },
+                           "type": "py_wait",
+                           "id": "rock-blaster-75",
                            "inputs": {
-                            "ITERABLE": {
-                             "block": {
-                              "type": "scene_of_kind",
-                              "id": "rock-blaster-78",
-                              "inputs": {
-                               "KIND": {
-                                "shadow": {
-                                 "type": "text",
-                                 "id": "rock-blaster-79",
-                                 "fields": {
-                                  "TEXT": "rock"
+                            "SECONDS": {
+                             "shadow": {
+                              "type": "py_number",
+                              "id": "rock-blaster-76",
+                              "fields": {
+                               "VALUE": "0.03"
+                              }
+                             }
+                            }
+                           },
+                           "next": {
+                            "block": {
+                             "type": "py_for_each",
+                             "id": "rock-blaster-77",
+                             "fields": {
+                              "SYMBOL": "rock-blaster-211"
+                             },
+                             "inputs": {
+                              "ITERABLE": {
+                               "block": {
+                                "type": "scene_of_kind",
+                                "id": "rock-blaster-78",
+                                "inputs": {
+                                 "KIND": {
+                                  "shadow": {
+                                   "type": "text",
+                                   "id": "rock-blaster-79",
+                                   "fields": {
+                                    "TEXT": "rock"
+                                   }
+                                  }
                                  }
                                 }
                                }
-                              }
-                             }
-                            },
-                            "DO": {
-                             "block": {
-                              "type": "controls_if",
-                              "id": "rock-blaster-80",
-                              "inputs": {
-                               "IF0": {
-                                "block": {
-                                 "type": "scene_get",
-                                 "id": "rock-blaster-81",
-                                 "fields": {
-                                  "PROPERTY": "is_clone"
-                                 },
-                                 "inputs": {
-                                  "SPRITE": {
-                                   "block": {
-                                    "type": "py_get",
-                                    "id": "rock-blaster-82",
-                                    "fields": {
-                                     "SYMBOL": "rock-blaster-211"
-                                    }
-                                   }
-                                  }
-                                 }
-                                }
-                               },
-                               "DO0": {
-                                "block": {
-                                 "type": "scene_move",
-                                 "id": "rock-blaster-83",
-                                 "inputs": {
-                                  "SPRITE": {
-                                   "block": {
-                                    "type": "py_get",
-                                    "id": "rock-blaster-84",
-                                    "fields": {
-                                     "SYMBOL": "rock-blaster-211"
-                                    }
-                                   }
-                                  },
-                                  "VALUE": {
-                                   "shadow": {
-                                    "type": "py_number",
-                                    "id": "rock-blaster-85",
-                                    "fields": {
-                                     "VALUE": "1.5"
-                                    }
-                                   }
-                                  }
-                                 },
-                                 "next": {
+                              },
+                              "DO": {
+                               "block": {
+                                "type": "controls_if",
+                                "id": "rock-blaster-80",
+                                "inputs": {
+                                 "IF0": {
                                   "block": {
-                                   "type": "py_call",
-                                   "id": "rock-blaster-86",
-                                   "extraState": {
-                                    "functionId": "wrap_function",
-                                    "signature": {
-                                     "id": "wrap_function",
-                                     "name": "wrap",
-                                     "parameters": [
-                                      {
-                                       "id": "wrap_thing",
-                                       "name": "thing"
-                                      }
-                                     ]
-                                    }
+                                   "type": "scene_get",
+                                   "id": "rock-blaster-81",
+                                   "fields": {
+                                    "PROPERTY": "is_clone"
                                    },
                                    "inputs": {
-                                    "ARG_wrap_thing": {
+                                    "SPRITE": {
                                      "block": {
                                       "type": "py_get",
-                                      "id": "rock-blaster-87",
+                                      "id": "rock-blaster-82",
                                       "fields": {
                                        "SYMBOL": "rock-blaster-211"
                                       }
@@ -883,102 +1169,150 @@
                                    }
                                   }
                                  },
-                                 "icons": {
-                                  "comment": {
-                                   "text": "Rock speed\nHow far each rock drifts every step. Try 3 for fast rocks.",
-                                   "pinned": false,
-                                   "height": 120,
-                                   "width": 260
-                                  }
-                                 }
-                                }
-                               }
-                              }
-                             }
-                            }
-                           },
-                           "next": {
-                            "block": {
-                             "type": "controls_if",
-                             "id": "rock-blaster-88",
-                             "inputs": {
-                              "IF0": {
-                               "block": {
-                                "type": "logic_compare",
-                                "id": "rock-blaster-89",
-                                "fields": {
-                                 "OP": "EQ"
-                                },
-                                "inputs": {
-                                 "A": {
+                                 "DO0": {
                                   "block": {
-                                   "type": "py_get",
-                                   "id": "rock-blaster-90",
-                                   "fields": {
-                                    "SYMBOL": "rock-blaster-209"
-                                   }
-                                  }
-                                 },
-                                 "B": {
-                                  "shadow": {
-                                   "type": "py_number",
-                                   "id": "rock-blaster-91",
-                                   "fields": {
-                                    "VALUE": "0"
-                                   }
-                                  }
-                                 }
-                                }
-                               }
-                              },
-                              "DO0": {
-                               "block": {
-                                "type": "py_set",
-                                "id": "rock-blaster-92",
-                                "fields": {
-                                 "SYMBOL": "rock-blaster-210"
-                                },
-                                "inputs": {
-                                 "VALUE": {
-                                  "block": {
-                                   "type": "py_binary",
-                                   "id": "rock-blaster-93",
-                                   "fields": {
-                                    "OP": "+"
-                                   },
+                                   "type": "scene_move",
+                                   "id": "rock-blaster-83",
                                    "inputs": {
-                                    "A": {
+                                    "SPRITE": {
                                      "block": {
                                       "type": "py_get",
-                                      "id": "rock-blaster-94",
+                                      "id": "rock-blaster-84",
                                       "fields": {
-                                       "SYMBOL": "rock-blaster-210"
+                                       "SYMBOL": "rock-blaster-211"
                                       }
                                      }
                                     },
-                                    "B": {
-                                     "shadow": {
-                                      "type": "py_number",
-                                      "id": "rock-blaster-95",
+                                    "VALUE": {
+                                     "block": {
+                                      "type": "py_get",
+                                      "id": "rock-blaster-85",
                                       "fields": {
-                                       "VALUE": "1"
+                                       "SYMBOL": "rock-blaster-setting-rock-speed"
+                                      }
+                                     }
+                                    }
+                                   },
+                                   "next": {
+                                    "block": {
+                                     "type": "py_call",
+                                     "id": "rock-blaster-86",
+                                     "extraState": {
+                                      "functionId": "wrap_function",
+                                      "signature": {
+                                       "id": "wrap_function",
+                                       "name": "wrap",
+                                       "parameters": [
+                                        {
+                                         "id": "wrap_thing",
+                                         "name": "thing"
+                                        }
+                                       ]
+                                      }
+                                     },
+                                     "inputs": {
+                                      "ARG_wrap_thing": {
+                                       "block": {
+                                        "type": "py_get",
+                                        "id": "rock-blaster-87",
+                                        "fields": {
+                                         "SYMBOL": "rock-blaster-211"
+                                        }
+                                       }
                                       }
                                      }
                                     }
                                    }
                                   }
                                  }
-                                },
-                                "next": {
+                                }
+                               }
+                              }
+                             },
+                             "next": {
+                              "block": {
+                               "type": "controls_if",
+                               "id": "rock-blaster-88",
+                               "inputs": {
+                                "IF0": {
                                  "block": {
-                                  "type": "py_call",
-                                  "id": "rock-blaster-96",
-                                  "extraState": {
-                                   "functionId": "new_wave_function",
-                                   "signature": {
-                                    "id": "new_wave_function",
-                                    "name": "new_wave",
-                                    "parameters": []
+                                  "type": "logic_compare",
+                                  "id": "rock-blaster-89",
+                                  "fields": {
+                                   "OP": "EQ"
+                                  },
+                                  "inputs": {
+                                   "A": {
+                                    "block": {
+                                     "type": "py_get",
+                                     "id": "rock-blaster-90",
+                                     "fields": {
+                                      "SYMBOL": "rock-blaster-209"
+                                     }
+                                    }
+                                   },
+                                   "B": {
+                                    "shadow": {
+                                     "type": "py_number",
+                                     "id": "rock-blaster-91",
+                                     "fields": {
+                                      "VALUE": "0"
+                                     }
+                                    }
+                                   }
+                                  }
+                                 }
+                                },
+                                "DO0": {
+                                 "block": {
+                                  "type": "py_set",
+                                  "id": "rock-blaster-92",
+                                  "fields": {
+                                   "SYMBOL": "rock-blaster-210"
+                                  },
+                                  "inputs": {
+                                   "VALUE": {
+                                    "block": {
+                                     "type": "py_binary",
+                                     "id": "rock-blaster-93",
+                                     "fields": {
+                                      "OP": "+"
+                                     },
+                                     "inputs": {
+                                      "A": {
+                                       "block": {
+                                        "type": "py_get",
+                                        "id": "rock-blaster-94",
+                                        "fields": {
+                                         "SYMBOL": "rock-blaster-210"
+                                        }
+                                       }
+                                      },
+                                      "B": {
+                                       "shadow": {
+                                        "type": "py_number",
+                                        "id": "rock-blaster-95",
+                                        "fields": {
+                                         "VALUE": "1"
+                                        }
+                                       }
+                                      }
+                                     }
+                                    }
+                                   }
+                                  },
+                                  "next": {
+                                   "block": {
+                                    "type": "py_call",
+                                    "id": "rock-blaster-96",
+                                    "extraState": {
+                                     "functionId": "new_wave_function",
+                                     "signature": {
+                                      "id": "new_wave_function",
+                                      "name": "new_wave",
+                                      "parameters": []
+                                     }
+                                    }
                                    }
                                   }
                                  }
@@ -1003,14 +1337,6 @@
               }
              }
             }
-           }
-          },
-          "icons": {
-           "comment": {
-            "text": "Lives at the start\nHow many rocks can hit the ship before the game is over.",
-            "pinned": false,
-            "height": 120,
-            "width": 260
            }
           }
          }
@@ -1073,21 +1399,24 @@
              }
             },
             "VALUE": {
-             "shadow": {
-              "type": "py_number",
+             "block": {
+              "type": "py_unary",
               "id": "rock-blaster-101",
               "fields": {
-               "VALUE": "-6"
+               "OP": "-"
+              },
+              "inputs": {
+               "VALUE": {
+                "block": {
+                 "type": "py_get",
+                 "id": "rock-blaster-101-get",
+                 "fields": {
+                  "SYMBOL": "rock-blaster-setting-turn-speed"
+                 }
+                }
+               }
               }
              }
-            }
-           },
-           "icons": {
-            "comment": {
-             "text": "Turning speed\nHow many degrees the ship turns each step with the left arrow. The right arrow uses 6: keep them a pair, one with a minus.",
-             "pinned": false,
-             "height": 120,
-             "width": 260
             }
            }
           }
@@ -1122,11 +1451,11 @@
                }
               },
               "VALUE": {
-               "shadow": {
-                "type": "py_number",
+               "block": {
+                "type": "py_get",
                 "id": "rock-blaster-106",
                 "fields": {
-                 "VALUE": "6"
+                 "SYMBOL": "rock-blaster-setting-turn-speed"
                 }
                }
               }
@@ -1166,11 +1495,11 @@
                  }
                 },
                 "VALUE": {
-                 "shadow": {
-                  "type": "py_number",
+                 "block": {
+                  "type": "py_get",
                   "id": "rock-blaster-111",
                   "fields": {
-                   "VALUE": "4"
+                   "SYMBOL": "rock-blaster-setting-ship-speed"
                   }
                  }
                 }
@@ -1199,14 +1528,6 @@
                    }
                   }
                  }
-                }
-               },
-               "icons": {
-                "comment": {
-                 "text": "Thrust\nHow fast the ship flies forward while you hold the up arrow.",
-                 "pinned": false,
-                 "height": 120,
-                 "width": 260
                 }
                }
               }
@@ -1551,11 +1872,11 @@
              }
             },
             "VALUE": {
-             "shadow": {
-              "type": "py_number",
+             "block": {
+              "type": "py_get",
               "id": "rock-blaster-144",
               "fields": {
-               "VALUE": "12"
+               "SYMBOL": "rock-blaster-setting-shot-speed"
               }
              }
             }
@@ -1606,14 +1927,6 @@
                }
               }
              }
-            }
-           },
-           "icons": {
-            "comment": {
-             "text": "Shot speed\nHow far a shot flies each step.",
-             "pinned": false,
-             "height": 120,
-             "width": 260
             }
            }
           }
@@ -1724,11 +2037,11 @@
                },
                "inputs": {
                 "VALUE": {
-                 "shadow": {
-                  "type": "py_number",
+                 "block": {
+                  "type": "py_get",
                   "id": "rock-blaster-160",
                   "fields": {
-                   "VALUE": "10"
+                   "SYMBOL": "rock-blaster-setting-points-per-rock"
                   }
                  }
                 }
@@ -1764,21 +2077,13 @@
                       }
                      },
                      "B": {
-                      "shadow": {
-                       "type": "py_number",
+                      "block": {
+                       "type": "py_get",
                        "id": "rock-blaster-165",
                        "fields": {
-                        "VALUE": "30"
+                        "SYMBOL": "rock-blaster-setting-split-size"
                        }
                       }
-                     }
-                    },
-                    "icons": {
-                     "comment": {
-                      "text": "Rocks that split\nA rock bigger than this size splits in two. Try 10 for lots of tiny pieces, or 200 so rocks never split.",
-                      "pinned": false,
-                      "height": 120,
-                      "width": 260
                      }
                     }
                    }
@@ -1841,11 +2146,11 @@
                       "id": "rock-blaster-172",
                       "inputs": {
                        "TIMES": {
-                        "shadow": {
-                         "type": "py_number",
+                        "block": {
+                         "type": "py_get",
                          "id": "rock-blaster-173",
                          "fields": {
-                          "VALUE": "2"
+                          "SYMBOL": "rock-blaster-setting-split-pieces"
                          }
                         }
                        },
@@ -1927,11 +2232,11 @@
                              }
                             },
                             "B": {
-                             "shadow": {
-                              "type": "py_number",
+                             "block": {
+                              "type": "py_get",
                               "id": "rock-blaster-183",
                               "fields": {
-                               "VALUE": "2"
+                               "SYMBOL": "rock-blaster-setting-split-pieces"
                               }
                              }
                             }
@@ -2000,14 +2305,6 @@
                    }
                   }
                  }
-                }
-               },
-               "icons": {
-                "comment": {
-                 "text": "Points for a rock\nWhat each rock you blast is worth.",
-                 "pinned": false,
-                 "height": 120,
-                 "width": 260
                 }
                }
               }
@@ -2104,11 +2401,22 @@
              },
              "inputs": {
               "VALUE": {
-               "shadow": {
-                "type": "py_number",
+               "block": {
+                "type": "py_unary",
                 "id": "rock-blaster-198",
                 "fields": {
-                 "VALUE": "-1"
+                 "OP": "-"
+                },
+                "inputs": {
+                 "VALUE": {
+                  "block": {
+                   "type": "py_get",
+                   "id": "rock-blaster-198-get",
+                   "fields": {
+                    "SYMBOL": "rock-blaster-setting-damage"
+                   }
+                  }
+                 }
                 }
                }
               }
@@ -2201,14 +2509,6 @@
                 }
                }
               }
-             },
-             "icons": {
-              "comment": {
-               "text": "Damage\nLives a rock takes away when it hits the ship.",
-               "pinned": false,
-               "height": 120,
-               "width": 260
-              }
              }
             }
            }
@@ -2235,6 +2535,61 @@
    {
     "name": "rock",
     "id": "rock-blaster-211",
+    "type": "py:module"
+   },
+   {
+    "name": "LIVES",
+    "id": "rock-blaster-setting-lives",
+    "type": "py:module"
+   },
+   {
+    "name": "SHIP_SPEED",
+    "id": "rock-blaster-setting-ship-speed",
+    "type": "py:module"
+   },
+   {
+    "name": "TURN_SPEED",
+    "id": "rock-blaster-setting-turn-speed",
+    "type": "py:module"
+   },
+   {
+    "name": "SHOT_SPEED",
+    "id": "rock-blaster-setting-shot-speed",
+    "type": "py:module"
+   },
+   {
+    "name": "FIRST_WAVE_ROCKS",
+    "id": "rock-blaster-setting-first-wave-rocks",
+    "type": "py:module"
+   },
+   {
+    "name": "ROCK_SPEED",
+    "id": "rock-blaster-setting-rock-speed",
+    "type": "py:module"
+   },
+   {
+    "name": "SPLIT_SIZE",
+    "id": "rock-blaster-setting-split-size",
+    "type": "py:module"
+   },
+   {
+    "name": "SPLIT_PIECES",
+    "id": "rock-blaster-setting-split-pieces",
+    "type": "py:module"
+   },
+   {
+    "name": "POINTS_PER_ROCK",
+    "id": "rock-blaster-setting-points-per-rock",
+    "type": "py:module"
+   },
+   {
+    "name": "DAMAGE",
+    "id": "rock-blaster-setting-damage",
+    "type": "py:module"
+   },
+   {
+    "name": "SHOT_LOOK",
+    "id": "rock-blaster-setting-shot-look",
     "type": "py:module"
    },
    {
@@ -2513,6 +2868,11 @@
   "scriptTabs": {
    "tabs": [
     {
+     "id": "settings",
+     "name": "Settings",
+     "icon": "wand"
+    },
+    {
      "id": "game",
      "name": "Game & waves",
      "icon": "game"
@@ -2541,7 +2901,8 @@
     "on_space_key_handler_block": "shots",
     "on_shot_update_handler_block": "shots",
     "on_rock_overlap_handler_block": "rocks",
-    "on_rock_hits_ship_handler_block": "rocks"
+    "on_rock_hits_ship_handler_block": "rocks",
+    "settings_program_block": "settings"
    }
   }
  }

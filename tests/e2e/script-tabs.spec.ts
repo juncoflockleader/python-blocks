@@ -155,6 +155,26 @@ test('the magic book: notes become a guide to the numbers, ready to change', asy
   expect(errors).toEqual([]);
 });
 
+test('Rock Blaster opens on its Settings too: one setting changes both arrows, and the shot shoots stars', async ({ page }) => {
+  const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
+  await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
+  await openExample(page, 'rock-blaster');
+  await expect.poll(() => tabNames(page)).toEqual(['Settings', 'Game & waves', 'Ship', 'Shots', 'Rocks']);
+  await expect(tab(page, 'Settings')).toHaveAttribute('aria-pressed', 'true');
+  await expect.poll(() => onScreen(page)).toEqual(['settings_program_block']);
+  await openTab(page, 'magic');
+  await expect(page.locator('.magic-tab-heading')).toHaveText(['Settings', 'Shots']);
+  const turning = page.locator('.magic-entry', { hasText: 'Turning speed' });
+  await expect(turning.locator('label')).toHaveText('set TURN_SPEED to');
+  await turning.locator('input').fill('10'); await turning.locator('input').press('Enter');
+  await page.locator('.magic-entry', { hasText: 'Shot look' }).locator('select').selectOption('star');
+  await openTab(page, 'python');
+  await expect(page.locator('#python')).toContainText('TURN_SPEED = 10');
+  await expect(page.locator('#python')).toContainText('SHOT_LOOK = "star"');
+  for (const line of ['.turn(-(TURN_SPEED))', '.turn(TURN_SPEED)', '.costume(SHOT_LOOK)']) await expect(page.locator('#python')).toContainText(line);
+  expect(errors).toEqual([]);
+});
+
 test('a game without notes still has a book: Wren spots its numbers, and one becomes a note', async ({ page }) => {
   await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
   await page.locator('#project-file').setInputFiles('content/builds/jump-quest-game.json');
