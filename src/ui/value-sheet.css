@@ -1,0 +1,23 @@
+/* The value sheet (value-sheet.ts): Blockly's prompts, confirms and alerts, made for fingers. */
+.value-sheet { width: min(420px, calc(100vw - 24px)); padding: 20px; border: 0; border-radius: 18px; background: #fafbf6; box-shadow: 0 18px 48px #26382f40; }
+.value-sheet::backdrop { background: #26382f55; }
+.value-sheet h2 { margin: 0 0 12px; font: 700 20px 'Space Grotesk', system-ui, sans-serif; color: #26382f; }
+.value-sheet-context { margin: 0 0 4px; font-size: 13px; color: #5d6b52; }
+.value-sheet-context[hidden], .value-sheet-message[hidden], .value-sheet-row[hidden], .value-sheet [hidden] { display: none !important; }
+.value-sheet-message { margin: 0 0 12px; font-size: 15px; line-height: 1.45; color: #35483b; }
+.value-sheet-row { display: flex; align-items: stretch; gap: 8px; }
+.value-sheet-row input { flex: 1; min-width: 0; min-height: 56px; padding: 0 14px; border: 2px solid #c9b8f0; border-radius: 14px; background: #fff; font: 700 22px 'DM Sans', system-ui, sans-serif; color: #2f2950; }
+.value-sheet[data-kind=number] .value-sheet-row input { text-align: center; }
+.value-sheet-row input:focus { outline: 3px solid #dd9250; outline-offset: 1px; }
+.value-sheet-step { flex: none; width: 56px; min-height: 56px; padding: 14px; border: 0; border-radius: 14px; background: #f1ecff; color: #4a3c8c; cursor: pointer; touch-action: manipulation; -webkit-user-select: none; user-select: none; }
+.value-sheet-step:active { background: #ddd2ff; }
+.value-sheet-step svg { width: 100%; height: 100%; }
+.value-sheet-sign { display: block; margin: 10px auto 0; min-width: 120px; min-height: 48px; border: 1px solid #c9b8f0; border-radius: 12px; background: #fff; color: #4a3c8c; font: 700 18px 'DM Sans', system-ui, sans-serif; cursor: pointer; touch-action: manipulation; }
+.value-sheet-error { min-height: 1.2em; margin: 8px 0 0; font-size: 13px; color: #a13824; }
+.value-sheet-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
+.value-sheet[data-mode=alert] .value-sheet-actions { grid-template-columns: 1fr; }
+.value-sheet-actions .button { min-height: 56px; border-radius: 14px; font-size: 17px; }
+/* Blockly's dropdown menus (sprite, key, direction choices) get finger-sized rows on a touch screen. */
+@media (pointer: coarse) {
+  .blocklyDropDownDiv .blocklyMenuItem, .blocklyWidgetDiv .blocklyMenu .blocklyMenuItem { min-height: 44px; display: flex; align-items: center; padding-block: 6px; font-size: 16px; }
+}
