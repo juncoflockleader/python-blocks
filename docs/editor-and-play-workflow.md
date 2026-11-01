@@ -31,13 +31,13 @@ The workspace corner also provides **Find blocks** for the current level's palet
 
 A finished game, such as an arcade example, can have a dozen long scripts; in one workspace they are one big blob. Two tools let a learner keep track of a big project and find the numbers worth changing.
 
-**Script tabs** ([tab-strip.ts](../src/scripts/tab-strip.ts), [tabs.ts](../src/scripts/tabs.ts)) run along the top of the workspace. Each top-level script (and workspace note) lives in one tab, and only the open tab's scripts are on screen. The others are hidden: their connections leave Blockly's connection database, so nothing snaps to them, and they never take part in a bump; Clean up, Collapse, Expand, Delete all, scrolling and zoom-to-fit count only the scripts on screen. A hidden block is never left selected. Hiding is only for finding your way: every script compiles and runs, Python lists them all, and a tab never changes what the program does.
+**Script tabs** ([tab-strip.ts](../src/scripts/tab-strip.ts), [tabs.ts](../src/scripts/tabs.ts)) run along the top of the workspace, beside the palette: the palette and its flyout keep the panel's full height (an open flyout covers the strip), and the workspace view starts under the strip. Each top-level script (and workspace note) lives in one tab, and only the open tab's scripts are on screen. The others are hidden: their connections leave Blockly's connection database, so nothing snaps to them, and they never take part in a bump; Clean up, Collapse, Expand, Delete all, scrolling and zoom-to-fit count only the scripts on screen. A hidden block is never left selected. Hiding is only for finding your way: every script compiles and runs, Python lists them all, and a tab never changes what the program does.
 
 | Action | How |
 | --- | --- |
 | Make a tab | **New tab**: a name, and a picture guessed from it (Enemies gets a target, Lives a heart). Up to 12 tabs. |
 | Change a tab | The pencil beside the open tab, or double-click its name: rename, pick one of 18 pictures, Move left or right, Delete tab. Deleting asks first and moves its scripts to the first tab left. |
-| Move a script | Drop it on a tab's name (or on **New tab** to start a tab with it), or **Move script to another tab** in its menu. It goes under that tab's scripts, and the tab flashes. Dropping on a tab above the palette moves the script: the palette's delete area stops at the top of the workspace. |
+| Move a script | Drop it on a tab's name (or on **New tab** to start a tab with it), or **Move script to another tab** in its menu. It goes under that tab's scripts, and the tab flashes. The strip lies beside the palette, outside its delete area, so a script dropped on a tab is always moved. |
 | New scripts | Belong to the tab they are made in: dragged from the palette, pasted, inserted from an idea or a lesson. A block pulled out of a script stays in that script's tab. |
 | Go to a block | Find blocks, an error, a runtime fault, the debugger, Go to script, Show me and the function and handler editors open the block's tab first. Undo or Redo of a change that touched only another tab opens that tab. |
 

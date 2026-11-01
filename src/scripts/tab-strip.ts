@@ -4,7 +4,7 @@ import { askName } from '../ui/name-sheet';
 import { MAX_TABS, MAX_TAB_NAME, TAB_ICONS, adoptScripts, changeTabs, hasTab, newTabId, onTabsLoaded, placeScript, scriptTabs, tabName, tabOfScript, type ScriptTab, type TabIcon, TabsEvent } from './tabs';
 import './tabs.css';
 
-/** The strip of script tabs above the workspace. Only the scripts of the chosen tab are on screen: the
+/** The strip of script tabs along the top of the workspace, beside the palette. Only the scripts of the chosen tab are on screen: the
  * others are hidden and cannot be snapped to, bumped or selected, but they still run and still compile.
  * A new script belongs to the tab it was made in; a script moves to another tab by being dropped on that
  * tab's name, or with "Move script to another tab" in its menu. Anything that goes to a block (Find blocks,
@@ -177,11 +177,18 @@ export function installScriptTabs(workspace: Blockly.WorkspaceSvg, host: { revea
       const left = open.offsetLeft - list.offsetLeft, right = left + open.offsetWidth + 44;
       if (left < list.scrollLeft) list.scrollLeft = left; else if (right > list.scrollLeft + list.clientWidth) list.scrollLeft = right - list.clientWidth;
     }
+    fade();
     if (focused) (list.querySelector<HTMLElement>(`[data-tab="${CSS.escape(focused)}"]`) ?? (focused === 'script-tab-edit' ? el('script-tab-edit') : null))?.focus();
     empty.hidden = all.length < 2 || countIn(current) > 0;
     if (!empty.hidden) empty.querySelector('strong')!.textContent = all.find(t => t.id === current)!.name;
   }
 
+  /** The strip's edge fades while more tabs lie beyond it. */
+  const fade = () => {
+    strip.classList.toggle('script-tabs-overflow', list.scrollWidth > list.clientWidth + 1);
+    strip.classList.toggle('script-tabs-at-end', list.scrollLeft + list.clientWidth >= list.scrollWidth - 1);
+  };
+  list.addEventListener('scroll', fade, { passive: true });
   const viewTopLeft = () => { const view = workspace.getMetricsManager().getViewMetrics(true); return { left: view.left, top: view.top }; };
   function scrollTo(left: number, top: number) {
     const view = viewTopLeft();
@@ -412,16 +419,34 @@ export function installScriptTabs(workspace: Blockly.WorkspaceSvg, host: { revea
     }, 0);
   };
 
-  // Blockly deletes a block dropped anywhere left of the palette's edge, at any height, which takes in the
-  // tabs above the palette: dropping a script on one of them must move it, never delete it. The palette's
-  // delete area stops at the top of the workspace.
-  const toolbox = workspace.getToolbox() as (Blockly.IToolbox & { getClientRect(): Blockly.utils.Rect | null }) | null;
-  const toolboxRect = toolbox?.getClientRect.bind(toolbox);
-  if (toolbox && toolboxRect) toolbox.getClientRect = () => {
-    const rect = toolboxRect();
-    if (rect) rect.top = Math.max(rect.top, workspace.getParentSvg().getBoundingClientRect().top);
-    return rect;
+  // The strip lies over the top of the workspace, beside the palette: the palette and its flyout keep the
+  // panel's full height. Blockly is told the workspace view starts under the strip, as it would under a
+  // toolbox at the top, so scripts, scrollbars and centring never hide behind it. (Beside the palette, the
+  // strip is also outside the palette's delete area, which reaches up and down without end: a script
+  // dropped on a tab is moved, never deleted.)
+  const panel = strip.parentElement!;
+  const stripHeight = () => strip.offsetHeight;
+  const metrics = workspace.getMetricsManager();
+  const absolute = metrics.getAbsoluteMetrics.bind(metrics), viewMetrics = metrics.getViewMetrics.bind(metrics);
+  let fullHeight = false;
+  metrics.getAbsoluteMetrics = () => { const m = absolute(); return { ...m, top: m.top + stripHeight() }; };
+  metrics.getViewMetrics = (inWorkspaceUnits?: boolean) => {
+    const m = viewMetrics(inWorkspaceUnits);
+    return fullHeight ? m : { ...m, height: Math.max(0, m.height - stripHeight() / (inWorkspaceUnits ? workspace.scale : 1)) };
   };
+  // The flyout sizes itself to the workspace view; it keeps the full height, drawn over the strip.
+  const flyout = workspace.getFlyout() as (Blockly.IFlyout & { position(): void }) | null;
+  const position = flyout?.position.bind(flyout);
+  if (flyout && position) flyout.position = () => { fullHeight = true; try { position(); } finally { fullHeight = false; } };
+  const placeStrip = () => {
+    const palette = workspace.getInjectionDiv().querySelector<HTMLElement>('.blocklyToolbox');
+    panel.style.setProperty('--palette-width', `${palette?.offsetWidth ?? 0}px`);
+  };
+  const resized = new ResizeObserver(() => { placeStrip(); fade(); });
+  const palette = workspace.getInjectionDiv().querySelector<HTMLElement>('.blocklyToolbox');
+  if (palette) resized.observe(palette);
+  resized.observe(strip);
+  placeStrip(); Blockly.svgResize(workspace);
 
   // Things that go to a block open its tab first.
   const centerOnBlock = workspace.centerOnBlock.bind(workspace), highlightBlock = workspace.highlightBlock.bind(workspace);
@@ -466,7 +491,8 @@ export function installScriptTabs(workspace: Blockly.WorkspaceSvg, host: { revea
       document.removeEventListener('pointermove', onMove, true); document.removeEventListener('pointerup', onUp, true);
       for (const [id, item] of wrapped) Object.assign(Blockly.ContextMenuRegistry.registry.getItem(id) ?? {}, item);
       for (const top of hidden.values()) unhide(top);
-      if (toolbox && toolboxRect) toolbox.getClientRect = toolboxRect;
+      metrics.getAbsoluteMetrics = absolute; metrics.getViewMetrics = viewMetrics; resized.disconnect();
+      if (flyout && position) flyout.position = position;
       editDialog.remove(); moveDialog.remove();
     },
   };

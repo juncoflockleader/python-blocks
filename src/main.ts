@@ -202,7 +202,7 @@ element('#tray-sounds').addEventListener('click', () => soundEditor.open());
 installLevels(workspace, () => sceneEditor?.selected() ?? '');
 // Every command and event block carries its family's symbol; installed before any project loads.
 installBlockIcons(workspace);
-// Script tabs: a big project's scripts in named tabs above the workspace (scripts/tab-strip.ts).
+// Script tabs: a big project's scripts in named tabs along the top of the workspace (scripts/tab-strip.ts).
 const scriptTabsControl = installScriptTabs(workspace, { revealBlocks: () => viewSwitch?.show('blocks') });
 // The magic book: Wren the Wizard reads the project's notes as a guide to the numbers worth changing.
 magic = installMagic({

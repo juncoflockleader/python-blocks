@@ -138,10 +138,12 @@ export function installMagic(host: MagicHost) {
     dirty = false;
   }
 
-  /** Keep the open book current; a field being typed in keeps its text until it is left. */
+  const typing = () => panel.contains(document.activeElement) && !!document.activeElement?.matches('input');
+  /** Keep the open book current; a field being typed in keeps its text until it is left. A redraw that was
+   * waiting checks again when its time comes, since the learner may have started typing meanwhile. */
   function refresh(now = false) {
     if (!host.visible()) { dirty = true; return; }
-    if (panel.contains(document.activeElement) && document.activeElement?.matches('input')) {
+    if (typing()) {
       // Update the other fields in place; the one being typed in keeps the learner's text.
       for (const input of panel.querySelectorAll<HTMLInputElement>('input[data-block]')) {
         if (input === document.activeElement) continue;
@@ -151,11 +153,11 @@ export function installMagic(host: MagicHost) {
       dirty = true; return;
     }
     clearTimeout(timer);
-    if (now) render(); else timer = window.setTimeout(render, 120);
+    if (now) render(); else timer = window.setTimeout(() => refresh(true), 120);
   }
   const listener = (event: Blockly.Events.Abstract) => { if (!event.isUiEvent || event.type === 'py_script_tabs') refresh(); };
   host.workspace.addChangeListener(listener);
-  panel.addEventListener('focusout', () => { if (dirty) setTimeout(() => { if (!panel.contains(document.activeElement)) refresh(); }, 0); });
+  panel.addEventListener('focusout', () => setTimeout(() => { if (dirty && !typing()) refresh(); }, 0));
 
   return {
     /** The Magic tab was opened. */

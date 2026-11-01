@@ -57,9 +57,11 @@ test('make a tab, drop a script on it, undo and redo, and find it all again afte
   await tab(page, 'Main').click();
   await expect(page.locator('#script-tabs-empty')).toBeHidden();
   const from = (await hat(page, 'on_start_handler_block').boundingBox())!, target = (await tab(page, 'Jumping').boundingBox())!;
-  // The tab is above the palette, where Blockly would delete a dropped block: here it moves it.
-  const palette = (await page.locator('#blockly .blocklyToolbox').boundingBox())!;
-  expect(target.x + target.width / 2).toBeLessThan(palette.x + palette.width);
+  // The strip lies beside the palette, which keeps the panel's full height, and is outside the palette's
+  // delete area (Blockly deletes a block dropped anywhere left of the palette's edge).
+  const palette = (await page.locator('#blockly .blocklyToolbox').boundingBox())!, strip = (await page.locator('#script-tabs').boundingBox())!;
+  expect(strip.x).toBeGreaterThanOrEqual(palette.x + palette.width - 1);
+  expect(palette.y).toBeLessThanOrEqual(strip.y + 1);
   await dragTo(page, { x: from.x + 30, y: from.y + 10 }, { x: target.x + target.width / 2, y: target.y + target.height / 2 });
   await expect.poll(() => onScreen(page)).toEqual(scripts.filter(id => id !== 'on_start_handler_block'));
   await expect(tab(page, 'Jumping').locator('.script-tab-count')).toHaveText('1');
