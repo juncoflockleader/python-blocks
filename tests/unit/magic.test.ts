@@ -44,11 +44,16 @@ describe('the magic book', () => {
     const w = open('content/examples/rock-blaster.json'), pages = magicEntries(w);
     const settings = pages.filter(p => p.tab === 'settings');
     expect(settings[0]).toMatchObject({ title: 'Settings', values: [] });
-    expect(settings.slice(1).map(p => p.values[0].label)).toEqual(['LIVES', 'SHIP_SPEED', 'TURN_SPEED', 'SHOT_SPEED', 'FIRST_WAVE_ROCKS', 'ROCK_SPEED', 'SPLIT_SIZE', 'SPLIT_PIECES', 'POINTS_PER_ROCK', 'DAMAGE', 'SHOT_LOOK'].map(name => `set ${name} to`));
+    // The last setting, ROCK_LOOKS, is a list of looks (below).
+    expect(settings.slice(1, -1).map(p => p.values[0].label)).toEqual(['LIVES', 'SHIP_SPEED', 'TURN_SPEED', 'SHOT_SPEED', 'FIRST_WAVE_ROCKS', 'ROCK_SPEED', 'SPLIT_SIZE', 'SPLIT_PIECES', 'PIECE_SIZE', 'POINTS_PER_ROCK', 'DAMAGE', 'SHIP_START_X', 'SHIP_START_Y', 'SHIP_START_DIRECTION', 'SHIP_SIZE', 'SHOT_SIZE', 'ROCK_SIZE', 'ROCK_START_Y', 'SHIP_LOOK', 'SHIP_FLYING_LOOK', 'SHOT_LOOK'].map(name => `set ${name} to`));
     expect(settings.find(p => p.title === 'Lives at the start')!.note).toMatch(/^How many rocks can hit the ship/);
     const shot = settings.find(p => p.title === 'Shot look')!.values[0];
     expect(shot).toMatchObject({ kind: 'choice', value: 'stock-little-ball', field: 'COSTUME_ID' });
     expect(shot.options).toEqual(expect.arrayContaining([['Star', 'star']]));
+    // A list's items are named by its setting and their place, each a look to pick.
+    expect(settings.find(p => p.title === 'Rock looks')!.values.map(v => [v.kind, v.label, v.value])).toEqual([
+      ['choice', 'set ROCK_LOOKS to (first look)', 'stock-rock-big'], ['choice', 'set ROCK_LOOKS to (second look)', 'stock-rock-lumpy'], ['choice', 'set ROCK_LOOKS to (third look)', 'stock-rock-round'],
+    ]);
     // A note without numbers is still a page of the guide.
     expect(pages.filter(p => p.tab !== 'settings').map(p => [p.tab, p.title, p.values])).toEqual([['shots', 'Shot direction', []]]);
     // Every number in the scripts comes from a setting, so none is spotted.

@@ -155,7 +155,7 @@ test('the magic book: notes become a guide to the numbers, ready to change', asy
   expect(errors).toEqual([]);
 });
 
-test('Rock Blaster opens on its Settings too: one setting changes both arrows, and the shot shoots stars', async ({ page }) => {
+test('Rock Blaster opens on its Settings too: one setting changes both arrows, the shot shoots stars, and a rock can be a star', async ({ page }) => {
   const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
   await openExample(page, 'rock-blaster');
@@ -168,10 +168,14 @@ test('Rock Blaster opens on its Settings too: one setting changes both arrows, a
   await expect(turning.locator('label')).toHaveText('set TURN_SPEED to');
   await turning.locator('input').fill('10'); await turning.locator('input').press('Enter');
   await page.locator('.magic-entry', { hasText: 'Shot look' }).locator('select').selectOption('star');
+  const rocks = page.locator('.magic-entry', { hasText: 'Rock looks' });
+  await expect(rocks.locator('label')).toHaveText(['first', 'second', 'third'].map(nth => `set ROCK_LOOKS to (${nth} look)`));
+  await rocks.locator('select').first().selectOption('star');
   await openTab(page, 'python');
   await expect(page.locator('#python')).toContainText('TURN_SPEED = 10');
   await expect(page.locator('#python')).toContainText('SHOT_LOOK = "star"');
-  for (const line of ['.turn(-(TURN_SPEED))', '.turn(TURN_SPEED)', '.costume(SHOT_LOOK)']) await expect(page.locator('#python')).toContainText(line);
+  await expect(page.locator('#python')).toContainText('ROCK_LOOKS = ["star", "stock-rock-lumpy", "stock-rock-round"]');
+  for (const line of ['.turn(-(TURN_SPEED))', '.turn(TURN_SPEED)', '.costume(SHOT_LOOK)', '.costume(SHIP_LOOK)', '.costume(SHIP_FLYING_LOOK)', '.set("size", SHIP_SIZE)']) await expect(page.locator('#python')).toContainText(line);
   expect(errors).toEqual([]);
 });
 

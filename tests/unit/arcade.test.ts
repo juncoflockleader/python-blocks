@@ -12,11 +12,11 @@ import { paletteWorkspace } from './palette-workspace';
  * without an error, its controls do what they say, and it can be lost. */
 const spaces: Blockly.Workspace[] = [];
 afterEach(() => spaces.splice(0).forEach(w => w.dispose()));
-/** `settings` changes numbers in the Settings tab first, by the id of the number block. */
+/** `settings` changes numbers and looks in the Settings tab first, by the id of the number or costume block. */
 function play(id: string, steps: GameStep[], settings: Record<string, string> = {}) {
   const w = paletteWorkspace(); spaces.push(w);
   restore(w, prepareProject(readFileSync(`content/examples/${id}.json`, 'utf8')).project);
-  for (const [block, value] of Object.entries(settings)) w.getBlockById(block)!.setFieldValue(value, 'VALUE');
+  for (const [id, value] of Object.entries(settings)) { const block = w.getBlockById(id)!; block.setFieldValue(value, block.type === 'scene_costume' ? 'COSTUME_ID' : 'VALUE'); }
   const compiled = compile(w);
   expect(compiled.diagnostics.filter(d => d.severity === 'error'), id).toEqual([]);
   const out = execFileSync('python3', ['tests/python/scene_check.py'], { input: JSON.stringify({ source: compiled.source, scene: compiled.scene, steps, files: compiled.files }), encoding: 'utf8' });
@@ -50,6 +50,18 @@ describe('arcade examples', () => {
       { wait: 0.3 }, { expect: { lives: 5 } }, { place: 'Ship', x: 0, y: -130 }, { key: 'ArrowUp', hold: 0.5 }, { expect: { sprite: 'Ship', y: [-40, 20] } },
       { key: 'ArrowRight', hold: 0.3 }, { expect: { sprite: 'Ship', direction: 270 } },
     ], { 'rock-blaster-lives': '5', 'rock-blaster-ship-speed': '8', 'rock-blaster-turn-speed': '0' });
+  }, 60_000);
+  it('Rock Blaster: each sprite starts with the look, size and place its Settings give it', () => {
+    play('rock-blaster', [
+      { wait: 0.3 }, { expect: { sprite: 'Ship', x: 100 } }, { expect: { sprite: 'Ship', y: -100 } }, { expect: { sprite: 'Ship', direction: 0 } },
+      { expect: { sprite: 'Ship', size: 150 } }, { expect: { sprite: 'Ship', costume: 'star' } }, { expect: { sprite: 'Shot', size: 80 } },
+      { expect: { sprite: 'Rock', size: 60 } }, { expect: { sprite: 'Rock', costume: 'ball' } }, { expect: { sprite: 'Rock', y: 100 } },
+      // Pointing right, the ship flies right.
+      { key: 'ArrowUp', hold: 0.3 }, { expect: { sprite: 'Ship', x: [120, 160] } },
+    ], {
+      'rock-blaster-ship-start-x': '100', 'rock-blaster-ship-start-y': '-100', 'rock-blaster-ship-start-direction': '0', 'rock-blaster-ship-size': '150', 'rock-blaster-ship-look': 'star',
+      'rock-blaster-shot-size': '80', 'rock-blaster-rock-size': '60', 'rock-blaster-rock-start-y': '100', 'rock-blaster-rock-looks-1': 'ball', 'rock-blaster-rock-looks-2': 'ball', 'rock-blaster-rock-looks-3': 'ball',
+    });
   }, 60_000);
   it('Snake: the head moves a square at a time, turns, and the wall ends the game', () => {
     play('snake', [
