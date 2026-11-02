@@ -56,6 +56,7 @@ export const iconArt = {
   flipY: '<path d="M2 12h3m3 0h3m3 0h3m3 0h2M6 8h12V2Zm0 8h12v6Z"/>',
   rotate: '<path d="M4 10a8 8 0 1 1 2 8M4 3v7h7M8 13h6v6H8Z"/>',
   resize: '<path d="M14 3h7v7m0-7-8 8M3 14v7h7m-7 0 8-8"/>',
+  toolbox: '<rect x="3" y="7" width="18" height="12" rx="2"/><path d="M9 7V5h6v2M3 12h18M10 12v2h4v-2"/>',
   crop: '<path d="M6 2v16h16M2 6h16v16M6 6h12v12"/>',
   reverse: '<path d="M3 7h18m-4-4 4 4-4 4M21 17H3m4-4-4 4 4 4"/>',
   fadeIn: '<path d="M3 20V4m0 16h18M6 17l14-12"/>',
