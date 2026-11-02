@@ -232,6 +232,8 @@ test.describe('on an iPad', () => {
     const cdp = await page.context().newCDPSession(page);
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchStart', touchPoints: [{ x, y, id: 1 }] });
     for (let step = 1; step <= 8; step++) await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x - step * 15, y: y - step * 20, id: 1 }] });
+    // The finger stops before it lifts. Lifted mid-move, Chrome on Linux flings, and the tap that stops a fling is no click.
+    await page.waitForTimeout(150); await cdp.send('Input.dispatchTouchEvent', { type: 'touchMove', touchPoints: [{ x: x - 120, y: y - 160, id: 1 }] });
     await cdp.send('Input.dispatchTouchEvent', { type: 'touchEnd', touchPoints: [] });
     const moved = await box(panel(page));
     near(moved.x, start.x - 120); near(moved.y, start.y - 160);
