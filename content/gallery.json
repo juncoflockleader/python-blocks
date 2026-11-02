@@ -342,8 +342,8 @@
     ],
     "tryChanging": [
       "More aliens: add a fourth row in make aliens.",
-      "Faster lasers: change the laser's 10 to 16.",
-      "Fewer bombs: change random 1 to 40 into 1 to 80."
+      "Faster lasers: in Settings, change LASER_SPEED from 10 to 16.",
+      "Fewer bombs: change BOMB_CHANCE from 40 to 80."
     ],
     "demo": [
       {
@@ -380,9 +380,9 @@
       "function"
     ],
     "tryChanging": [
-      "Turn faster: change the ship's 6 degrees to 10.",
-      "Make rocks split three ways: repeat 3 instead of 2.",
-      "Start with more rocks: change 2 + wave to 4 + wave."
+      "Turn faster: in Settings, change TURN_SPEED from 6 to 10.",
+      "Make rocks split three ways: change SPLIT_PIECES to 3.",
+      "Start with more rocks: change FIRST_WAVE_ROCKS to 5."
     ],
     "demo": [
       {
@@ -481,8 +481,8 @@
       "collision"
     ],
     "tryChanging": [
-      "A floatier pipe: change ay from −900 to −500.",
-      "Bigger flaps: set vy to 400 when Space is pressed.",
+      "A floatier pipe: in Settings, change GRAVITY from 900 to 500.",
+      "Bigger flaps: change FLAP_POWER from 300 to 400.",
       "Huge birds: pick their size from 120 to 200 instead of 50 to 100."
     ],
     "demo": [

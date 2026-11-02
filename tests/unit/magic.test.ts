@@ -12,20 +12,20 @@ const open = (path: string) => { const w = createWorkspace(); workspaces.push(w)
 
 describe('the magic book', () => {
   it('turns each note into a page, in tab order, with the numbers in its block', () => {
-    const w = open('content/examples/rock-blaster.json'), pages = magicEntries(w);
+    const w = open('content/examples/maze-muncher.json'), pages = magicEntries(w);
     const notes = pages.filter(p => p.source === 'note');
-    expect(notes).toHaveLength(10);
-    expect([...new Set(notes.map(p => p.tab))]).toEqual(['game', 'ship', 'shots', 'rocks']);
+    expect(notes).toHaveLength(9);
+    expect([...new Set(notes.map(p => p.tab))]).toEqual(['game', 'muncher', 'ghosts']);
     const lives = notes.find(p => p.title === 'Lives at the start')!;
-    expect(lives.note).toMatch(/^How many rocks can hit the ship/);
+    expect(lives.note).toMatch(/^How many times a ghost can catch you/);
     expect(lives.values).toEqual([expect.objectContaining({ kind: 'number', value: '3', label: 'set lives to', field: 'VALUE' })]);
     expect(lives.script).toBe('when game starts');
-    expect(notes.find(p => p.title === 'Turning speed')!.values.map(v => v.value)).toEqual(['-6']);
-    expect(notes.find(p => p.title === 'Rocks that split')!.values.map(v => [v.label, v.value])).toEqual([[expect.stringMatching(/size > 30$/), '30']]);
-    // A note without numbers is still a page of the guide.
-    expect(notes.find(p => p.title === 'Shot direction')!.values).toEqual([]);
-    // Numbers that already have a note are not spotted again.
-    expect(pages.filter(p => p.source === 'spotted').map(p => p.title)).toEqual([]);
+    expect(notes.find(p => p.title === 'Muncher speed')!.values.map(v => [v.label, v.value])).toEqual([['change sprite x by', '4']]);
+    expect(notes.find(p => p.title === 'Ghost guessing')!.values.map(v => [v.label, v.value])).toEqual([['random integer from', '0'], ['to', '48']]);
+    // A title alone is a page too.
+    expect(notes.find(p => p.title === 'Points for a dot')!).toMatchObject({ note: '', values: [expect.objectContaining({ value: '10' })] });
+    // Numbers that already have a note are not spotted again: the points have notes, the lives a ghost takes do not.
+    expect(pages.filter(p => p.source === 'spotted').map(p => p.title)).toEqual(['Winning message', 'Lives lost (or won)']);
   });
 
   it('reads a settings tab as a config: each setting a page, costumes as looks to pick', () => {
@@ -38,6 +38,21 @@ describe('the magic book', () => {
     expect(laser.options).toEqual(expect.arrayContaining([['Star', 'star']]));
     // The cannon's speed comes from CANNON_SPEED, so it is not spotted again in the control block.
     expect(pages.filter(p => p.source === 'spotted').map(p => p.title)).toEqual(['Game over message', 'Winning message']);
+  });
+
+  it('reads Rock Blaster’s settings tab the same way, and keeps a note without numbers with its script', () => {
+    const w = open('content/examples/rock-blaster.json'), pages = magicEntries(w);
+    const settings = pages.filter(p => p.tab === 'settings');
+    expect(settings[0]).toMatchObject({ title: 'Settings', values: [] });
+    expect(settings.slice(1).map(p => p.values[0].label)).toEqual(['LIVES', 'SHIP_SPEED', 'TURN_SPEED', 'SHOT_SPEED', 'FIRST_WAVE_ROCKS', 'ROCK_SPEED', 'SPLIT_SIZE', 'SPLIT_PIECES', 'POINTS_PER_ROCK', 'DAMAGE', 'SHOT_LOOK'].map(name => `set ${name} to`));
+    expect(settings.find(p => p.title === 'Lives at the start')!.note).toMatch(/^How many rocks can hit the ship/);
+    const shot = settings.find(p => p.title === 'Shot look')!.values[0];
+    expect(shot).toMatchObject({ kind: 'choice', value: 'stock-little-ball', field: 'COSTUME_ID' });
+    expect(shot.options).toEqual(expect.arrayContaining([['Star', 'star']]));
+    // A note without numbers is still a page of the guide.
+    expect(pages.filter(p => p.tab !== 'settings').map(p => [p.tab, p.title, p.values])).toEqual([['shots', 'Shot direction', []]]);
+    // Every number in the scripts comes from a setting, so none is spotted.
+    expect(pages.filter(p => p.source === 'spotted')).toEqual([]);
   });
 
   it('spots lives, points, jump, speed, gravity and end messages in a game without notes', () => {
