@@ -211,9 +211,9 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
     for (const id of ['scene-copy', 'scene-delete']) el<HTMLButtonElement>(id).disabled = !sprite;
     for (const action of ['a', 'b'] as const) { el<HTMLSelectElement>('touch-key-' + action).value = (scene.controls ?? defaultControls())[action]; el<HTMLSelectElement>('touch-key-' + action).disabled = !editing; }
     if (editing) playInput.configure(scene.controls);
-    stage.selected = editing ? selected : null; stage.paint(); live(); view.refresh();
+    stage.selected = editing ? selected : null; stage.paint(); showReadout(); view.refresh();
   }
-  function live() {
+  function showReadout() {
     const sprite = stage.getSprite(selected);
     el('scene-live').textContent = sprite ? `${sprite.name}: x ${Math.round(sprite.x * 10) / 10}, y ${Math.round(sprite.y * 10) / 10}${sprite.visible ? '' : ' · hidden'}${sprite.motion?.body === 'moving' ? ` · vx ${Math.round(sprite.motion.vx ?? 0)}, vy ${Math.round(sprite.motion.vy ?? 0)}` : ''}` : '';
     const dialogue = stage.dialogue();
@@ -321,7 +321,7 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
   const pointerMove = (event: PointerEvent) => {
     if (ready) return;
     if (!drag || drag.pointer !== event.pointerId) return; const point = stage.point(event.clientX, event.clientY);
-    stage.previewPosition(drag.id, Math.round(drag.x + point.x - drag.originX), Math.round(drag.y + point.y - drag.originY)); live();
+    stage.previewPosition(drag.id, Math.round(drag.x + point.x - drag.originX), Math.round(drag.y + point.y - drag.originY)); showReadout();
   };
   const endDrag = (event: PointerEvent) => {
     if (!drag || drag.pointer !== event.pointerId) return;
@@ -336,7 +336,7 @@ export function installSceneEditor(workspace: Blockly.WorkspaceSvg, stage: Stage
   installScenePalette(workspace, () => selected);
   render(true); controls();
   return {
-    live, watch: watchers.accept, releaseInput: clearKeys, selected: () => selected,
+    showReadout, watch: watchers.accept, releaseInput: clearKeys, selected: () => selected,
     /** False while a program runs: the editors wait until it stops. */
     canEdit: () => editing,
     /** Select a sprite as the tray does (palette defaults, inspector and stage). */

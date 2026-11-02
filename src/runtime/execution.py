@@ -175,17 +175,17 @@ async def check_scene(source, files, steps, report, sleep=None):
     game runs, then each expectation reported as it is judged. A game that ends early is judged on its last picture."""
     from _playground_events import reset_session
     from _playground_scene import scene, receive_input
-    from _playground_checks import play, finish_after
+    from _playground_checks import play_script, finish_after
     session = reset_session() if sleep is None else reset_session(sleep=sleep)
     done = []
     async def player(_payload):
-        await play(scene, receive_input, session._sleep, steps, report, done)
+        await play_script(scene, receive_input, session._sleep, steps, report, done)
         session.finish()
     try:
         with generated_modules(source, files):
             try:
                 exec(compile(source, "program.py", "exec"), {"__name__": "__main__"})
-                session._service(player)
+                session._add_service(player)
                 await session.run()
             except BaseException as error:
                 from _playground_events import SessionFinished

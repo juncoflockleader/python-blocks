@@ -100,7 +100,7 @@ const tools: Record<string, IconName> = {
   move: 'move', pick: 'pick', wall: 'wall', view: 'eye',
 };
 const images = new Map<IconName, string>();
-function decorate(element: HTMLElement, icon: IconName) {
+function setIcon(element: HTMLElement, icon: IconName) {
   if (element.dataset.uiIcon === icon) return;
   let url = images.get(icon);
   if (!url) { url = `url("data:image/svg+xml,${encodeURIComponent(iconSvg(icon))}")`; images.set(icon, url); }
@@ -126,7 +126,7 @@ const targets = 'button, summary, .design-link, .player footer a, .blocklyToolbo
  * The observer only visits changed controls/subtrees, never the whole document
  * on each runtime update. Styles and data attributes are not observed. */
 export function installIcons(root: HTMLElement = document.body) {
-  function apply(element: Element) {
+  function addIcon(element: Element) {
     if (element.matches('.blocklyFlyoutButton')) {
       if (element.querySelector('.ui-flyout-icon')) return;
       const name = labels[element.querySelector('text')?.textContent?.trim() ?? ''];
@@ -148,7 +148,7 @@ export function installIcons(root: HTMLElement = document.body) {
     if (element.matches('.blocklyToolboxCategory')) {
       const name = categoryIcons[element.querySelector('.blocklyToolboxCategoryLabel')?.textContent?.trim() ?? ''];
       const icon = element.querySelector<HTMLElement>('.blocklyToolboxCategoryIcon');
-      if (name && icon) { icon.setAttribute('aria-hidden', 'true'); decorate(icon, name); }
+      if (name && icon) { icon.setAttribute('aria-hidden', 'true'); setIcon(icon, name); }
       // The palette shows each category as a coloured disc; Blockly keeps the colour on the row border.
       if (icon && element.style.borderLeftColor) icon.style.setProperty('--category-colour', element.style.borderLeftColor);
       return;
@@ -162,7 +162,7 @@ export function installIcons(root: HTMLElement = document.body) {
         const text = [...label.childNodes].find(node => node.nodeType === Node.TEXT_NODE);
         if (text) text.replaceWith(caption); else label.prepend(caption);
       }
-      decorate(caption, name); return;
+      setIcon(caption, name); return;
     }
     // Thumbnails, controller A/B, the Sound editor's own icons and Quick tools favourites (their block's symbol) already are visual icons.
     if (element.matches('.stock-card, #scene-cards button, #sound-dialog button, .sprite-sound-play, [data-control="a"], [data-control="b"], .quick-favourite')) return;
@@ -177,27 +177,27 @@ export function installIcons(root: HTMLElement = document.body) {
     if (element.matches('.python-error-link, #diagnostics button')) name = 'alert';
     if (element.matches('.blocklyContextMenu .blocklyMenuItem')) name = menuIcon(label);
     if (name) {
-      decorate(element, name);
+      setIcon(element, name);
       if (arrows[label] && element.hasAttribute('aria-label')) element.classList.add('ui-icon-only');
     }
   }
-  function scan(element: Element) {
-    if (element.matches(targets)) apply(element);
-    element.querySelectorAll(targets).forEach(apply);
+  function addIconsWithin(element: Element) {
+    if (element.matches(targets)) addIcon(element);
+    element.querySelectorAll(targets).forEach(addIcon);
   }
-  scan(root);
+  addIconsWithin(root);
   const observer = new MutationObserver(records => {
     const changed = new Set<Element>();
     for (const record of records) {
       const parent = record.target instanceof Element ? record.target : record.target.parentElement;
       const control = parent?.closest(targets); if (control && root.contains(control)) changed.add(control);
-      for (const node of record.addedNodes) if (node instanceof Element && root.contains(node)) scan(node);
+      for (const node of record.addedNodes) if (node instanceof Element && root.contains(node)) addIconsWithin(node);
     }
-    changed.forEach(apply);
+    changed.forEach(addIcon);
   });
   observer.observe(root, { subtree: true, childList: true, characterData: true });
   const change = (event: Event) => {
-    if (event.target instanceof Element && event.target.matches('#world-tool')) apply(event.target);
+    if (event.target instanceof Element && event.target.matches('#world-tool')) addIcon(event.target);
   };
   root.addEventListener('change', change);
   return () => { observer.disconnect(); root.removeEventListener('change', change); };

@@ -23,12 +23,12 @@ class Sounds:
         self.channels = {}; self.active = {}; self.serial = 0; self.commands = 0
         self.tempo = 120
 
-    def _owner(self, owner):
+    def _owner_id(self, owner):
         if owner is None: return '$stage'
         from _playground_scene import Sprite
         if not isinstance(owner, Sprite) or owner._owner is not self.scene:
             raise TypeError('Sound owner must be a sprite from this scene, or None for the stage.')
-        owner._check()
+        owner._require_alive()
         return owner.id
 
     def _settings(self, owner):
@@ -43,7 +43,7 @@ class Sounds:
         audio_emit(json.dumps(command)); self.commands += 1
 
     def _start(self, command, owner):
-        owner_id = self._owner(owner)
+        owner_id = self._owner_id(owner)
         if len(self.active) >= 32: raise RuntimeError('Too many overlapping sounds (limit 32). Wait or stop sounds before starting more.')
         identity = self.serial + 1
         origin = [{'file': f.filename, 'line': f.lineno, 'name': f.name} for f in traceback.extract_stack()[:-1]]
@@ -86,7 +86,7 @@ class Sounds:
 
     def stop(self, owner=None):
         """Stop one owner's playback. None means the stage channel."""
-        self._stop(self._owner(owner))
+        self._stop(self._owner_id(owner))
 
     def stop_all(self): self._stop(None)
 
@@ -104,7 +104,7 @@ class Sounds:
     def set(self, field, value, owner=None):
         if field not in BOUNDS: raise ValueError('Choose volume, pitch or pan.')
         value = number(value, *BOUNDS[field], field.capitalize())
-        identity = self._owner(owner); settings = self._settings(identity); settings[field] = value
+        identity = self._owner_id(owner); settings = self._settings(identity); settings[field] = value
         self._send({'type': 'settings', 'owner': identity, 'settings': settings}); self.channels[identity] = settings
 
     def change(self, field, amount, owner=None):
@@ -114,10 +114,10 @@ class Sounds:
 
     def get(self, field, owner=None):
         if field not in BOUNDS: raise ValueError('Choose volume, pitch or pan.')
-        return self._settings(self._owner(owner))[field]
+        return self._settings(self._owner_id(owner))[field]
 
     def clear_effects(self, owner=None):
-        identity = self._owner(owner); settings = self._settings(identity); settings.update(pitch=0, pan=0)
+        identity = self._owner_id(owner); settings = self._settings(identity); settings.update(pitch=0, pan=0)
         self._send({'type': 'settings', 'owner': identity, 'settings': settings}); self.channels[identity] = settings
 
     def set_tempo(self, bpm): self.tempo = number(bpm, 30, 300, 'Tempo')

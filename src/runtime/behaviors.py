@@ -12,7 +12,7 @@ STARTING_LIMIT = .25
 def current_sprite():
     sprite = _current.get()
     if sprite is None: raise RuntimeError('This sprite is available only inside a sprite behavior.')
-    sprite._check()
+    sprite._require_alive()
     return sprite
 
 
@@ -27,7 +27,7 @@ class Behaviors:
 
     def ensure_clock(self):
         if not self.clock_started:
-            self.events._service(self.clock); self.clock_started = True
+            self.events._add_service(self.clock); self.clock_started = True
 
     def register(self, template, event, handler, by_kind=False):
         if self.events.state != 'setup': raise RuntimeError('Register sprite behaviors before the session starts.')
@@ -72,7 +72,7 @@ class Behaviors:
                 key = (id(handler), sprite.id) if event == 'update' else None
                 result.append((deliver, copy.deepcopy(payload), sprite.id, key))
             return result
-        self.events._route(resolve)
+        self.events._add_resolver(resolve)
 
     async def clock(self, _payload):
         previous = time.monotonic()
@@ -80,16 +80,16 @@ class Behaviors:
             await self.events.wait(1 / 30)
             now = time.monotonic(); dt = min(.25, max(0, now - previous)); previous = now
             pending = []
-            def retain(name, payload):
+            def defer_event(name, payload):
                 # Substeps do not run learner handlers. Retain transitions in
                 # order, within the same event budget (including the tick).
                 if len(pending) + len(self.events._queue) + 1 >= self.events.limits['queuedEvents']:
                     from _playground_events import EventOverloadError
                     raise EventOverloadError('Too many queued contact events. Use fewer overlapping sprites or slower motion.')
                 pending.append((name, payload))
-            def scan():
-                self.scan_tiles(retain); self.scan_contacts(retain)
-            if not self.scene._physics or not self.scene._physics.step(dt, scan): scan()
+            def scan_overlaps():
+                self.scan_tiles(defer_event); self.scan_contacts(defer_event)
+            if not self.scene._physics or not self.scene._physics.step(dt, scan_overlaps): scan_overlaps()
             for sprite in list(self.scene.items.values()):
                 if sprite._alive: sprite._animate_tick(now)
             self.scene.worlds.update_camera()

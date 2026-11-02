@@ -142,9 +142,9 @@ function bubble(group: Element) {
 }
 /** Watch the flyouts and give every caption its bubble as Blockly draws it. */
 export function installCaptionBubbles(root: Element = document.body) {
-  const sweep = () => root.querySelectorAll('g.block-caption').forEach(bubble);
-  const observer = new MutationObserver(sweep);
+  const bubbleCaptions = () => root.querySelectorAll('g.block-caption').forEach(bubble);
+  const observer = new MutationObserver(bubbleCaptions);
   observer.observe(root, { childList: true, subtree: true });
-  sweep();
+  bubbleCaptions();
   return () => observer.disconnect();
 }

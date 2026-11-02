@@ -110,13 +110,13 @@ class EventSession:
             raise EventOverloadError(f'Too many handlers (limit {self.limits["handlers"]}).')
         self._handlers.append((name, handler))
 
-    def _route(self, resolver):
+    def _add_resolver(self, resolver):
         """Library-owned expansion of an event into instance deliveries, in registration order."""
         if self.state != 'setup': raise RuntimeError('Register sprite behaviors before the session starts.')
         if len(self._handlers) >= self.limits['handlers']: raise EventOverloadError('Too many handlers.')
         self._handlers.append((None, resolver))
 
-    def _service(self, handler):
+    def _add_service(self, handler):
         if self.state == 'setup': self._services.append(handler)
         elif self.state == 'running': self._service_tasks.add(asyncio.create_task(self._deliver(handler, None)))
         else: raise RuntimeError('This event session has ended.')

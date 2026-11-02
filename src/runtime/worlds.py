@@ -59,14 +59,14 @@ class Worlds:
         from _playground_scene import Sprite
         for state in self.authored:
             if state.get('world') is not None and state['world'] == identity:
-                sprite = Sprite(self.scene, state); self.scene.items[sprite.id] = sprite; sprite._send()
+                sprite = Sprite(self.scene, state); self.scene.items[sprite.id] = sprite; sprite._send_state()
                 if self.scene._behaviors: self.scene._behaviors.created(sprite)
                 else: self.scene._pending_clones.append(sprite)
         self.update_camera()
         if any(s._state['motion']['body'] != 'off' or s._state['motion']['lifetime'] > 0 for s in self.scene.items.values()): self.scene.enable_motion()
         # The level on the HUD follows the world.
-        if self.scene._game is not None: self.scene._game._send()
-        self.enter(previous)
+        if self.scene._game is not None: self.scene._game._send_hud()
+        self.emit_world_enter(previous)
         if caller is not None and not caller._alive:
             import asyncio
             raise asyncio.CancelledError()
@@ -86,7 +86,7 @@ class Worlds:
         order = list(self.definitions)
         return order.index(self.active) + 1 if self.active in order else 0 if order else 1
 
-    def enter(self, previous=None):
+    def emit_world_enter(self, previous=None):
         import sys
         module = sys.modules.get('_playground_events')
         if module and module.events.state in ('setup', 'running'):
@@ -97,7 +97,7 @@ class Worlds:
     @property
     def name(self): return self.definitions[self.active]['name'] if self.active else 'Base stage'
 
-    def view(self): return self.x - 240, self.x + 240, self.y - 160, self.y + 160
+    def view_bounds(self): return self.x - 240, self.x + 240, self.y - 160, self.y + 160
 
     def update_camera(self):
         target = self.scene.items.get(self.camera.get('follow'))
@@ -123,24 +123,24 @@ class Worlds:
         if sprite is not None:
             from _playground_scene import Sprite
             if not isinstance(sprite, Sprite) or sprite._owner is not self.scene: raise TypeError('Camera follow needs a sprite from this scene, or None.')
-            sprite._check(); self.scene._ensure_behaviors().ensure_clock()
+            sprite._require_alive(); self.scene._ensure_behaviors().ensure_clock()
         self.camera.update(follow=sprite.id if sprite else None, x=self.x, y=self.y); self.update_camera()
 
     def clamp(self, enabled):
         if type(enabled) is not bool: raise TypeError('Camera clamp needs True or False.')
         self.camera['clamp'] = enabled; self.update_camera()
 
-    def cell(self, column, row):
+    def cell_index(self, column, row):
         if not self.map: raise RuntimeError('Choose a world with a tilemap first.')
         if type(column) is not int or type(row) is not int: raise TypeError('Tile column and row need whole numbers.')
         if not 0 <= column < self.map['columns'] or not 0 <= row < self.map['rows']: raise IndexError('That tile is outside this world.')
         return row * self.map['columns'] + column
 
     def tile(self, column, row):
-        index = self.cell(column, row); size = self.map['tileSize']
+        index = self.cell_index(column, row); size = self.map['tileSize']
         return {'column': column, 'row': row, 'costume': self.map['tiles'][index], 'solid': self.map['walls'][index], 'x': -240 + (column + .5) * size, 'y': 160 - (row + .5) * size}
 
-    def at(self, x, y):
+    def tile_at(self, x, y):
         from _playground_scene import number
         x, y = number(x, 'x'), number(y, 'y')
         if not self.map: return None
@@ -148,7 +148,7 @@ class Worlds:
         return self.tile(c, r) if 0 <= c < self.map['columns'] and 0 <= r < self.map['rows'] else None
 
     def set_tile(self, column, row, costume, solid=False):
-        index = self.cell(column, row)
+        index = self.cell_index(column, row)
         if costume is not None and (type(costume) is not str or costume not in self.scene.assets): raise ValueError('A tile needs an available costume or None.')
         if type(solid) is not bool: raise TypeError('Tile solid needs True or False.')
         self.map['tiles'][index] = costume; self.map['walls'][index] = solid

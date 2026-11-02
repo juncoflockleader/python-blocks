@@ -15,7 +15,7 @@ export function installLessonStage(building?: () => void) {
   const button = document.createElement('button');
   button.type = 'button'; button.id = 'stage-size'; button.className = 'stage-size'; button.hidden = true;
   wrap?.append(button);
-  function apply() {
+  function sizeStage() {
     const was = root.dataset.lessonStage;
     if (lesson) root.dataset.lessonStage = big && !puzzle ? 'big' : 'small'; else delete root.dataset.lessonStage;
     button.hidden = !lesson || puzzle;
@@ -26,21 +26,21 @@ export function installLessonStage(building?: () => void) {
   }
   button.addEventListener('click', event => {
     event.stopPropagation();
-    big = root.dataset.lessonStage === 'small'; kept = big; apply();
+    big = root.dataset.lessonStage === 'small'; kept = big; sizeStage();
   });
   // Back to the blocks: the stage steps back again, unless the learner made it big by hand.
-  const backToBlocks = () => { if (lesson && big && !kept) { big = false; apply(); } };
+  const backToBlocks = () => { if (lesson && big && !kept) { big = false; sizeStage(); } };
   blocks?.addEventListener('pointerdown', backToBlocks, true);
-  apply();
+  sizeStage();
   return {
     /** A lesson opened or closed, or a step opened (a puzzle or not): the learner builds again, so the stage steps back. */
     lesson(on: boolean, isPuzzle: boolean) {
       if (on !== lesson) kept = false;
       if (!kept) big = false;
-      lesson = on; puzzle = isPuzzle; apply();
+      lesson = on; puzzle = isPuzzle; sizeStage();
     },
     /** Run code: the game gets the full stage. */
-    running() { if (lesson && !puzzle && !big) { big = true; apply(); } },
+    running() { if (lesson && !puzzle && !big) { big = true; sizeStage(); } },
     dispose() { blocks?.removeEventListener('pointerdown', backToBlocks, true); button.remove(); delete root.dataset.lessonStage; },
   };
 }

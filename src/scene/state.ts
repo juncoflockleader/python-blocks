@@ -1,12 +1,12 @@
 import * as Blockly from 'blockly/core';
 import { emptyScene, validateScene, type SceneState } from './model';
 const states = new WeakMap<Blockly.Workspace, SceneState>();
-const stored = (workspace: Blockly.Workspace) => states.get((workspace as Blockly.WorkspaceSvg).targetWorkspace ?? workspace);
+const storedScene = (workspace: Blockly.Workspace) => states.get((workspace as Blockly.WorkspaceSvg).targetWorkspace ?? workspace);
 /** A copy of the scene, free to change and pass to changeScene. */
-export function sceneState(workspace: Blockly.Workspace): SceneState { return structuredClone(stored(workspace) ?? emptyScene()); }
+export function sceneState(workspace: Blockly.Workspace): SceneState { return structuredClone(storedScene(workspace) ?? emptyScene()); }
 /** The scene itself, for reads that run per block, such as menus: sounds can make a copy megabytes. Never change it. */
-export function readScene(workspace: Blockly.Workspace): SceneState { return stored(workspace) ?? emptyScene(); }
-function apply(workspace: Blockly.Workspace, state: unknown) {
+export function readScene(workspace: Blockly.Workspace): SceneState { return storedScene(workspace) ?? emptyScene(); }
+function setScene(workspace: Blockly.Workspace, state: unknown) {
   validateScene(state);
   for (const block of workspace.getAllBlocks(false)) for (const key of ['SPRITE_ID', 'COSTUME_ID', 'BACKDROP_ID', 'WORLD_ID', 'SOUND_ID']) {
     const field = block.getField(key); if (field) field.loadState(field.saveState(true));
@@ -23,7 +23,7 @@ class SceneEvent extends Blockly.Events.Abstract {
   type = 'py_scene'; isBlank = false;
   constructor(workspace: Blockly.Workspace, readonly before: SceneState, readonly after: SceneState) { super(); this.workspaceId = workspace.id; }
   override run(forward: boolean) {
-    const workspace = this.getEventWorkspace_(); apply(workspace, forward ? this.after : this.before);
+    const workspace = this.getEventWorkspace_(); setScene(workspace, forward ? this.after : this.before);
     const notification = new SceneEvent(workspace, forward ? this.before : this.after, forward ? this.after : this.before); notification.recordUndo = false; Blockly.Events.fire(notification);
   }
   override toJson(): SceneEventJson { return { ...super.toJson(), before: this.before, after: this.after }; }
@@ -35,10 +35,10 @@ export function changeScene(workspace: Blockly.Workspace, next: SceneState) {
   if (new TextEncoder().encode(JSON.stringify({ ...Blockly.serialization.workspaces.save(workspace), pythonScene: next })).length > 15_990_000) throw new Error('The scene would exceed the 16 MB project limit. Use shorter sounds or smaller images.');
   // A group of its own, so changes that follow from it (a block bumped as warnings update) undo with it.
   const group = Blockly.Events.getGroup(); if (!group) Blockly.Events.setGroup(true);
-  try { apply(workspace, next); Blockly.Events.fire(new SceneEvent(workspace, before, structuredClone(next))); } finally { if (!group) Blockly.Events.setGroup(false); }
+  try { setScene(workspace, next); Blockly.Events.fire(new SceneEvent(workspace, before, structuredClone(next))); } finally { if (!group) Blockly.Events.setGroup(false); }
 }
 Blockly.serialization.registry.register('pythonScene', {
   priority: 95,
   save(workspace) { const s = sceneState(workspace); return s.watchers?.length || s.controls || s.sounds?.length || s.worlds?.length || s.world || s.camera || s.sprites.length || s.assets.length || s.backdrops?.length || s.backdrop || s.effects || s.background !== emptyScene().background ? s : null; },
-  load(state, workspace) { apply(workspace, state); }, clear(workspace) { states.delete(workspace); },
+  load(state, workspace) { setScene(workspace, state); }, clear(workspace) { states.delete(workspace); },
 });

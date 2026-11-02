@@ -15,7 +15,7 @@ starter fails, so both judge a program the same way.
 import json
 
 
-def _sprite(scene, name):
+def _sprite_named(scene, name):
     for sprite in scene.items.values():
         if sprite.name == name and not sprite.is_clone: return sprite
     return None
@@ -24,7 +24,7 @@ def _sprite(scene, name):
 def observe(scene, expect):
     """What the scene shows for one expectation: the value it is compared with."""
     if 'sprite' in expect:
-        sprite = _sprite(scene, expect['sprite'])
+        sprite = _sprite_named(scene, expect['sprite'])
         if sprite is None or not sprite._alive: return None
         if 'says' in expect or 'thinks' in expect:
             text, style = sprite._said
@@ -64,12 +64,12 @@ def judge(scene, index, step, report):
     report(json.dumps({'index': index, 'ok': holds(expect, got), 'got': got}))
 
 
-async def play(scene, receive_input, sleep, steps, report, done):
+async def play_script(scene, receive_input, sleep, steps, report, done):
     """Run the script while the game runs; `done` records how far it got, in case the game ends first."""
     await sleep(0.05)
     for index, step in enumerate(steps):
         if 'tap' in step:
-            sprite = _sprite(scene, step['tap'])
+            sprite = _sprite_named(scene, step['tap'])
             if sprite is not None and sprite._alive:
                 receive_input(json.dumps({'kind': 'click', 'x': sprite.x, 'y': sprite.y, 'sprite': sprite.id}))
             await sleep(0.05)
@@ -81,7 +81,7 @@ async def play(scene, receive_input, sleep, steps, report, done):
         elif 'wait' in step:
             await sleep(step['wait'])
         elif 'place' in step:
-            sprite = _sprite(scene, step['place'])
+            sprite = _sprite_named(scene, step['place'])
             if sprite is not None and sprite._alive: sprite.go_to(step['x'], step['y'])
         elif 'expect' in step:
             judge(scene, index, step, report)

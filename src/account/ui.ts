@@ -14,11 +14,11 @@ export interface AccountHost {
   /** Open a saved program in the editor; false when the editor cannot change projects now. */
   open(project: unknown, title: string, id: string): boolean;
   /** Start a new, empty program. */
-  fresh(): boolean;
+  newProject(): boolean;
   rename(title: string): void;
   title(): string;
   /** Put the editor's project in the browser's storage now; false when its Python draft cannot be applied. */
-  store(): boolean;
+  saveToBrowser(): boolean;
   lessonActive(): boolean;
   status(text: string): void;
   stopSaving(): void;
@@ -131,7 +131,7 @@ export function installAccount(host: AccountHost): AccountControls {
   // ── Save project: the first time (or while it has no name), ask for one; after that, save at once ──
   async function save() {
     if (host.lessonActive()) { await sync.flush(); host.status('Lesson work is saved to your account as you go'); return; }
-    if (!host.store()) { host.status('Apply or fix your Python draft first, then save.'); return; }
+    if (!host.saveToBrowser()) { host.status('Apply or fix your Python draft first, then save.'); return; }
     const title = host.title().trim();
     if (sync.identity() && title && title !== DEFAULT_TITLE) { await saveAs(title); return; }
     $<HTMLInputElement>('save-name').value = title === DEFAULT_TITLE ? '' : title; $('save-status').textContent = '';
@@ -140,7 +140,7 @@ export function installAccount(host: AccountHost): AccountControls {
   /** Save under `title`; false (with the reason shown) when it could not be saved. */
   async function saveAs(title: string) {
     const say = (text: string) => { if (saveDialog.open) $('save-status').textContent = text; else host.status(text); };
-    if (!host.store()) { say('Apply or fix your Python draft first, then save.'); return false; }
+    if (!host.saveToBrowser()) { say('Apply or fix your Python draft first, then save.'); return false; }
     host.rename(title);
     try { await sync.save(); host.status('Saved to My projects'); return true; }
     catch (error) { say(`Not saved yet: ${message(error)}`); return false; }
@@ -206,7 +206,7 @@ export function installAccount(host: AccountHost): AccountControls {
   }
   $('projects-new').addEventListener('click', async () => {
     await sync.flush();
-    if (host.fresh()) projectsDialog.close(); else $('projects-status').textContent = 'Save or apply your Python draft first.';
+    if (host.newProject()) projectsDialog.close(); else $('projects-status').textContent = 'Save or apply your Python draft first.';
   });
 
   async function openProfile() {

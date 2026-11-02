@@ -100,9 +100,9 @@ export function installPythonEditor(workspace: Blockly.Workspace, options: Edito
     if (unstored !== undefined) { const value = unstored; unstored = undefined; try { bridge.edit(value); error = ''; } catch (failure) { unstored = value; message(failure); return false; } }
     return true;
   }
-  async function apply() {
+  async function applyToBlocks() {
     if (!flush()) return false;
-    error = ''; const result = await bridge.apply(); refresh();
+    error = ''; const result = await bridge.applyToBlocks(); refresh();
     if (!result.ok) { if (result.diagnostics[0]?.code !== 'cancelled') { view = 'draft'; refresh(); element('#python-diagnostics').scrollIntoView({ block: 'nearest' }); } return false; }
     options.applied(); return true;
   }
@@ -129,12 +129,12 @@ export function installPythonEditor(workspace: Blockly.Workspace, options: Edito
   }
   textarea.addEventListener('input', edit);
   textarea.addEventListener('keydown', event => {
-    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) { event.preventDefault(); void apply().catch(message); }
+    if (event.key === 'Enter' && (event.ctrlKey || event.metaKey)) { event.preventDefault(); void applyToBlocks().catch(message); }
   });
   element('#python-edit').addEventListener('click', () => { if (!flush()) return; error = ''; void bridge.begin().then(() => { view = 'draft'; refresh(); textarea.focus(); }).catch(message); });
   element('#python-inspect').addEventListener('click', () => { view = 'generated'; refresh(); });
   element('#python-blocks').addEventListener('click', () => { const blockly = document.querySelector<HTMLElement>('#blockly')!; blockly.tabIndex = -1; blockly.focus(); blockly.scrollIntoView({ block: 'center' }); });
-  element('#python-apply').addEventListener('click', () => { void apply().catch(message); });
+  element('#python-apply').addEventListener('click', () => { void applyToBlocks().catch(message); });
   element('#python-cancel').addEventListener('click', () => bridge.cancel());
   element('#python-use-blocks').addEventListener('click', () => { if (!flush()) return; error = ''; void bridge.useBlocks().then(refresh).catch(message); });
   element('#python-discard').addEventListener('click', () => { if (!flush()) return; try { error = ''; bridge.discard(); refresh(); } catch (failure) { message(failure); } });
@@ -147,7 +147,7 @@ export function installPythonEditor(workspace: Blockly.Workspace, options: Edito
   return {
     /** Mark the generated Python for this block (null clears). */
     follow(id: string | null) { if (focus === id) return; focus = id; generated(); },
-    refresh, apply, flush, replayCheckpoint, allowReplay, get active() { return !!bridge.state.draft; }, get busy() { return bridge.status.busy; }, get unstored() { return unstored !== undefined; }, get hasChanges() { return unstored !== undefined || draftChanged(bridge.state.draft); },
+    refresh, applyToBlocks, flush, replayCheckpoint, allowReplay, get active() { return !!bridge.state.draft; }, get busy() { return bridge.status.busy; }, get unstored() { return unstored !== undefined; }, get hasChanges() { return unstored !== undefined || draftChanged(bridge.state.draft); },
     reset() { bridge.cancel(false); unstored = undefined; error = ''; hadDraft = false; view = 'generated'; },
     cancel() { bridge.cancel(); },
     dispose() { disposed = true; hashEpoch++; unsubscribe(); bridge.dispose(); parser.dispose(); },

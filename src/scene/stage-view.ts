@@ -60,7 +60,7 @@ export function installStageView(stage: Stage, canvas: HTMLCanvasElement, host: 
     return { x, y, zoom };
   };
   const current = (): View => views.get(host.world()) ?? { ...stage.startView(), zoom: 1 };
-  function set(view: View) {
+  function changeView(view: View) {
     if (!host.editing()) return;
     const next = clamp(view); views.set(host.world(), next); stage.setView(next); controls();
   }
@@ -78,13 +78,13 @@ export function installStageView(stage: Stage, canvas: HTMLCanvasElement, host: 
   /** Zoom to `zoom`, keeping the world point under `at` (default the centre) in place. */
   function zoomTo(zoom: number, at?: { x: number; y: number }, from = stage.shown()) {
     const next = clampZoom(zoom), o = at ? offset(at.x, at.y) : { x: 0, y: 0 };
-    set({ x: from.x + o.x / from.zoom - o.x / next, y: from.y + o.y / from.zoom - o.y / next, zoom: next });
+    changeView({ x: from.x + o.x / from.zoom - o.x / next, y: from.y + o.y / from.zoom - o.y / next, zoom: next });
   }
   const zoomBy = (factor: number, at?: { x: number; y: number }) => zoomTo(stage.shown().zoom * factor, at);
-  const fit = () => { const r = rect(); set({ x: r.left + r.width / 2, y: r.top - r.height / 2, zoom: fitZoom() }); };
+  const fit = () => { const r = rect(); changeView({ x: r.left + r.width / 2, y: r.top - r.height / 2, zoom: fitZoom() }); };
   /** Where the game starts, at 100% (or keeping the zoom). */
-  const home = (reset = true) => set({ ...stage.startView(), zoom: reset ? 1 : stage.shown().zoom });
-  const centerOn = (x: number, y: number) => set({ ...stage.shown(), x, y });
+  const home = (reset = true) => changeView({ ...stage.startView(), zoom: reset ? 1 : stage.shown().zoom });
+  const centerOn = (x: number, y: number) => changeView({ ...stage.shown(), x, y });
   const screenCentre = (index: number) => { const wide = host.screens().wide, r = rect(); return { x: r.left + SCREEN_W * (index % wide + .5), y: r.top - SCREEN_H * (Math.floor(index / wide) + .5) }; };
 
   // Pointer gestures. The sprite editor drags sprites; these listeners are added
@@ -114,12 +114,12 @@ export function installStageView(stage: Stage, canvas: HTMLCanvasElement, host: 
     if (!gesture || !host.editing()) return;
     if (gesture.kind === 'pan' && gesture.id === event.pointerId) {
       const box = canvas.getBoundingClientRect(), k = SCREEN_W / box.width / gesture.view.zoom;
-      set({ ...gesture.view, x: gesture.view.x - (event.clientX - gesture.x) * k, y: gesture.view.y + (event.clientY - gesture.y) * k });
+      changeView({ ...gesture.view, x: gesture.view.x - (event.clientX - gesture.x) * k, y: gesture.view.y + (event.clientY - gesture.y) * k });
     } else if (gesture.kind === 'pinch' && pointers.size >= 2) {
       // The world point under the first midpoint stays under the fingers' midpoint.
       const [a, b] = [...pointers.values()], mid = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }, from = gesture.view;
       const zoom = clampZoom(from.zoom * Math.hypot(a.x - b.x, a.y - b.y) / gesture.distance), o0 = offset(gesture.mid.x, gesture.mid.y), o1 = offset(mid.x, mid.y);
-      set({ x: from.x + o0.x / from.zoom - o1.x / zoom, y: from.y + o0.y / from.zoom - o1.y / zoom, zoom });
+      changeView({ x: from.x + o0.x / from.zoom - o1.x / zoom, y: from.y + o0.y / from.zoom - o1.y / zoom, zoom });
     }
   };
   const up = (event: PointerEvent) => {
@@ -135,7 +135,7 @@ export function installStageView(stage: Stage, canvas: HTMLCanvasElement, host: 
     const line = event.deltaMode === 1 ? 16 : event.deltaMode === 2 ? 320 : 1;
     if (event.ctrlKey || event.metaKey) { zoomBy(Math.exp(-event.deltaY * line * 0.0025), { x: event.clientX, y: event.clientY }); return; }
     const view = stage.shown(), box = canvas.getBoundingClientRect(), k = SCREEN_W / box.width / view.zoom;
-    set({ ...view, x: view.x + event.deltaX * line * k, y: view.y - event.deltaY * line * k });
+    changeView({ ...view, x: view.x + event.deltaX * line * k, y: view.y - event.deltaY * line * k });
   };
   const keydown = (event: KeyboardEvent) => {
     if (!host.editing() || event.altKey || event.ctrlKey || event.metaKey) return;
@@ -143,8 +143,8 @@ export function installStageView(stage: Stage, canvas: HTMLCanvasElement, host: 
     const view = stage.shown(), step = 60 / view.zoom;
     const actions: Record<string, () => void> = {
       '+': () => zoomBy(1.25), '=': () => zoomBy(1.25), '-': () => zoomBy(0.8), _: () => zoomBy(0.8), f: fit, F: fit, Home: () => home(),
-      ArrowLeft: () => set({ ...view, x: view.x - step }), ArrowRight: () => set({ ...view, x: view.x + step }),
-      ArrowUp: () => set({ ...view, y: view.y + step }), ArrowDown: () => set({ ...view, y: view.y - step }),
+      ArrowLeft: () => changeView({ ...view, x: view.x - step }), ArrowRight: () => changeView({ ...view, x: view.x + step }),
+      ArrowUp: () => changeView({ ...view, y: view.y + step }), ArrowDown: () => changeView({ ...view, y: view.y - step }),
     };
     const action = actions[event.key]; if (!action) return;
     event.preventDefault(); action();
@@ -178,7 +178,7 @@ export function installStageView(stage: Stage, canvas: HTMLCanvasElement, host: 
   });
   screens.addEventListener('click', event => {
     const button = (event.target as Element).closest<HTMLElement>('[data-screen]'); if (!button || !host.editing()) return;
-    focusScreen = Number(button.dataset.screen); const p = screenCentre(focusScreen); set({ ...p, zoom: Math.max(stage.shown().zoom, Math.min(1, fitZoom() / 0.94)) });
+    focusScreen = Number(button.dataset.screen); const p = screenCentre(focusScreen); changeView({ ...p, zoom: Math.max(stage.shown().zoom, Math.min(1, fitZoom() / 0.94)) });
   });
   el('stage-map-hide').addEventListener('click', () => { mapHidden = true; controls(); el('stage-map-show').focus(); });
   el('stage-map-show').addEventListener('click', () => { mapHidden = false; controls(); el('stage-map-hide').focus(); });
