@@ -20,6 +20,7 @@ describe('the magic book', () => {
     expect(lives.note).toMatch(/^How many times a ghost can catch you/);
     expect(lives.values).toEqual([expect.objectContaining({ kind: 'number', value: '3', label: 'set lives to', field: 'VALUE' })]);
     expect(lives.script).toBe('when game starts');
+    // The sprite the block moves is not a choice: only a sprite a setting names is (Rock Blaster's SHIP).
     expect(notes.find(p => p.title === 'Muncher speed')!.values.map(v => [v.label, v.value])).toEqual([['change sprite x by', '4']]);
     expect(notes.find(p => p.title === 'Ghost guessing')!.values.map(v => [v.label, v.value])).toEqual([['random integer from', '0'], ['to', '48']]);
     // A title alone is a page too.
@@ -45,8 +46,13 @@ describe('the magic book', () => {
     const settings = pages.filter(p => p.tab === 'settings');
     expect(settings[0]).toMatchObject({ title: 'Settings', values: [] });
     // The last setting, ROCK_LOOKS, is a list of looks (below).
-    expect(settings.slice(1, -1).map(p => p.values[0].label)).toEqual(['LIVES', 'SHIP_SPEED', 'TURN_SPEED', 'SHOT_SPEED', 'FIRST_WAVE_ROCKS', 'ROCK_SPEED', 'SPLIT_SIZE', 'SPLIT_PIECES', 'PIECE_SIZE', 'POINTS_PER_ROCK', 'DAMAGE', 'SHIP_START_X', 'SHIP_START_Y', 'SHIP_START_DIRECTION', 'SHIP_SIZE', 'SHOT_SIZE', 'ROCK_SIZE', 'ROCK_START_Y', 'SHIP_LOOK', 'SHIP_FLYING_LOOK', 'SHOT_LOOK'].map(name => `set ${name} to`));
+    expect(settings.slice(1, -1).map(p => p.values[0].label)).toEqual(['LIVES', 'SHIP_SPEED', 'TURN_SPEED', 'SHOT_SPEED', 'FIRST_WAVE_ROCKS', 'ROCK_SPEED', 'SPLIT_SIZE', 'SPLIT_PIECES', 'PIECE_SIZE', 'POINTS_PER_ROCK', 'DAMAGE', 'SHIP_START_X', 'SHIP_START_Y', 'SHIP_START_DIRECTION', 'SHIP_SIZE', 'SHOT_SIZE', 'ROCK_SIZE', 'ROCK_START_Y', 'SHIP', 'SHIP_LOOK', 'SHIP_FLYING_LOOK', 'SHOT', 'SHOT_LOOK', 'ROCK'].map(name => `set ${name} to`));
     expect(settings.find(p => p.title === 'Lives at the start')!.note).toMatch(/^How many rocks can hit the ship/);
+    // SHIP, SHOT and ROCK name the sprite that plays each part: a sprite to pick.
+    expect(['The ship', 'The shot', 'The rocks'].map(title => settings.find(p => p.title === title)!.values.map(v => [v.kind, v.value, v.field]))).toEqual([
+      [['choice', 'ship', 'SPRITE_ID']], [['choice', 'shot', 'SPRITE_ID']], [['choice', 'rock', 'SPRITE_ID']],
+    ]);
+    expect(settings.find(p => p.title === 'The ship')!.values[0].options).toEqual(expect.arrayContaining([['Ship', 'ship'], ['Shot', 'shot'], ['Rock', 'rock']]));
     const shot = settings.find(p => p.title === 'Shot look')!.values[0];
     expect(shot).toMatchObject({ kind: 'choice', value: 'stock-little-ball', field: 'COSTUME_ID' });
     expect(shot.options).toEqual(expect.arrayContaining([['Star', 'star']]));

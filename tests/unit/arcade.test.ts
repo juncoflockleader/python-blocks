@@ -5,6 +5,7 @@ import { Blockly } from '../../src/blocks';
 import { prepareProject, restore } from '../../src/project';
 import { compile } from '../../src/language/compiler';
 import type { GameStep } from '../../src/guide/checker';
+import type { SpriteState } from '../../src/scene/model';
 import { paletteWorkspace } from './palette-workspace';
 
 /** The arcade examples (content/examples), played by the scripted player the academy uses
@@ -12,11 +13,15 @@ import { paletteWorkspace } from './palette-workspace';
  * without an error, its controls do what they say, and it can be lost. */
 const spaces: Blockly.Workspace[] = [];
 afterEach(() => spaces.splice(0).forEach(w => w.dispose()));
-/** `settings` changes numbers and looks in the Settings tab first, by the id of the number or costume block. */
-function play(id: string, steps: GameStep[], settings: Record<string, string> = {}) {
+/** `settings` changes numbers, looks and sprites in the Settings tab first, by the id of the number, costume or
+ * sprite block. `stage` changes the stage's sprites before that, so a setting can pick a new one. */
+const FIELDS: Record<string, string> = { scene_costume: 'COSTUME_ID', scene_sprite: 'SPRITE_ID' };
+function play(id: string, steps: GameStep[], settings: Record<string, string> = {}, stage = (sprites: SpriteState[]) => sprites) {
   const w = paletteWorkspace(); spaces.push(w);
-  restore(w, prepareProject(readFileSync(`content/examples/${id}.json`, 'utf8')).project);
-  for (const [id, value] of Object.entries(settings)) { const block = w.getBlockById(id)!; block.setFieldValue(value, block.type === 'scene_costume' ? 'COSTUME_ID' : 'VALUE'); }
+  const { project } = prepareProject(readFileSync(`content/examples/${id}.json`, 'utf8'));
+  project.workspace.pythonScene!.sprites = stage(project.workspace.pythonScene!.sprites);
+  restore(w, project);
+  for (const [id, value] of Object.entries(settings)) { const block = w.getBlockById(id)!; block.setFieldValue(value, FIELDS[block.type] ?? 'VALUE'); }
   const compiled = compile(w);
   expect(compiled.diagnostics.filter(d => d.severity === 'error'), id).toEqual([]);
   const out = execFileSync('python3', ['tests/python/scene_check.py'], { input: JSON.stringify({ source: compiled.source, scene: compiled.scene, steps, files: compiled.files }), encoding: 'utf8' });
@@ -62,6 +67,19 @@ describe('arcade examples', () => {
       'rock-blaster-ship-start-x': '100', 'rock-blaster-ship-start-y': '-100', 'rock-blaster-ship-start-direction': '0', 'rock-blaster-ship-size': '150', 'rock-blaster-ship-look': 'star',
       'rock-blaster-shot-size': '80', 'rock-blaster-rock-size': '60', 'rock-blaster-rock-start-y': '100', 'rock-blaster-rock-looks-1': 'ball', 'rock-blaster-rock-looks-2': 'ball', 'rock-blaster-rock-looks-3': 'ball',
     });
+  }, 60_000);
+  it('Rock Blaster: only Settings name the sprites, so new ones can play the ship, the shot and the rocks, and the old ones can go', () => {
+    // Ufo, Bolt and Comet take the place of Ship, Shot and Rock, which are deleted: no script named them.
+    const sprite = (id: string, name: string, visible: boolean): SpriteState => ({ id, name, x: -150, y: -100, direction: 0, size: 100, layer: 1, visible, rotationStyle: 'all', costume: 'star' });
+    play('rock-blaster', [
+      { wait: 0.3 }, { expect: { sprite: 'Ufo', at: [0, 0] } }, { expect: { sprite: 'Ufo', direction: 270 } },
+      { place: 'Ufo', x: 0, y: -130 }, { key: 'ArrowUp', hold: 0.5 }, { expect: { sprite: 'Ufo', y: [-100, -30] } },
+      { key: 'ArrowRight', hold: 0.3 }, { expect: { sprite: 'Ufo', direction: [290, 360] } },
+      { key: 'Space' }, { wait: 0.1 }, { expect: { sprite: 'Bolt', visible: true } },
+      // The rocks are copies of Comet, dressed in the rock looks.
+      { expect: { sprite: 'Comet', costume: 'stock-rock-round' } },
+      { wait: 40 }, { expect: { lives: [0, 2] } },
+    ], { 'rock-blaster-ship': 'ufo', 'rock-blaster-shot': 'bolt', 'rock-blaster-rock': 'comet' }, () => [sprite('ufo', 'Ufo', true), sprite('bolt', 'Bolt', false), sprite('comet', 'Comet', false)]);
   }, 60_000);
   it('Snake: the head moves a square at a time, turns, and the wall ends the game', () => {
     play('snake', [

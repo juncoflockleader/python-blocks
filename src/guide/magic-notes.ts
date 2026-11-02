@@ -12,7 +12,7 @@ export interface MagicValue {
   field: string;
   kind: 'number' | 'text' | 'choice';
   value: string;
-  /** For a choice (a costume): what can be picked, as [shown name, value]. */
+  /** For a choice (a costume or sprite): what can be picked, as [shown name, value]. */
   options?: [string, string][];
   /** The words beside it in the block, such as "set lives to" or "horizontal speed". */
   label: string;
@@ -35,11 +35,13 @@ const MAX_TITLE = 80;
 /** Words the player reads (a message, a speech bubble, a question) can be changed freely; other text,
  * such as a sprite data key or a kind, names something and would break the program if it changed. */
 const SHOWN_TEXT = /^(TEXT|MESSAGE|ADD\d+)$/;
-/** Costume pickers are choices: a setting such as LASER_LOOK swaps a sprite's look in one place. */
-const CHOICES: Record<string, string> = { scene_costume: 'COSTUME_ID' };
+/** Costume pickers are choices: a setting such as LASER_LOOK swaps a sprite's look in one place.
+ * So is a sprite that a setting names (SHIP = Ship picks who plays the ship), but not a sprite a
+ * script block acts on: changing that would move the block's work to another sprite. */
+const CHOICES: Record<string, string> = { scene_costume: 'COSTUME_ID', scene_sprite: 'SPRITE_ID' };
 const literal = (block: Blockly.Block, input = 'TEXT'): MagicValue | null => {
   if (block.type === 'py_number') return { blockId: block.id, field: 'VALUE', kind: 'number', value: block.getFieldValue('VALUE'), label: '' };
-  if (CHOICES[block.type]) {
+  if (CHOICES[block.type] && (block.type !== 'scene_sprite' || block.getParent()?.type === 'py_set')) {
     const field = block.getField(CHOICES[block.type]) as Blockly.FieldDropdown | null;
     const options = (field?.getOptions(false) ?? []).flatMap(([label, value]) => typeof label === 'string' && typeof value === 'string' ? [[label, value] as [string, string]] : []);
     return field && options.length ? { blockId: block.id, field: CHOICES[block.type], kind: 'choice', value: String(field.getValue()), label: '', options } : null;
