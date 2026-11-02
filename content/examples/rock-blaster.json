@@ -339,11 +339,11 @@
       "functionId": "wrap_function",
       "signature": {
        "id": "wrap_function",
-       "name": "wrap",
+       "name": "wrap_around_screen",
        "parameters": [
         {
          "id": "wrap_thing",
-         "name": "thing"
+         "name": "sprite"
         }
        ]
       }
@@ -1201,11 +1201,11 @@
                                       "functionId": "wrap_function",
                                       "signature": {
                                        "id": "wrap_function",
-                                       "name": "wrap",
+                                       "name": "wrap_around_screen",
                                        "parameters": [
                                         {
                                          "id": "wrap_thing",
-                                         "name": "thing"
+                                         "name": "sprite"
                                         }
                                        ]
                                       }
@@ -1567,11 +1567,11 @@
                "functionId": "wrap_function",
                "signature": {
                 "id": "wrap_function",
-                "name": "wrap",
+                "name": "wrap_around_screen",
                 "parameters": [
                  {
                   "id": "wrap_thing",
-                  "name": "thing"
+                  "name": "sprite"
                  }
                 ]
                }
@@ -2750,12 +2750,12 @@
   "procedures": [
    {
     "id": "wrap_function",
-    "name": "wrap",
+    "name": "wrap_around_screen",
     "returnTypes": null,
     "parameters": [
      {
       "id": "wrap_thing",
-      "name": "thing"
+      "name": "sprite"
      }
     ]
    },
