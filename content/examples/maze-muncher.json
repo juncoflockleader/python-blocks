@@ -99,11 +99,11 @@
       "functionId": "at_center_function",
       "signature": {
        "id": "at_center_function",
-       "name": "at_center",
+       "name": "at_square_center",
        "parameters": [
         {
          "id": "at_center_thing",
-         "name": "thing"
+         "name": "sprite"
         }
        ]
       }
@@ -299,7 +299,7 @@
       "functionId": "eat_function",
       "signature": {
        "id": "eat_function",
-       "name": "eat",
+       "name": "eat_dot",
        "parameters": []
       }
      },
@@ -940,11 +940,11 @@
             "functionId": "at_center_function",
             "signature": {
              "id": "at_center_function",
-             "name": "at_center",
+             "name": "at_square_center",
              "parameters": [
               {
                "id": "at_center_thing",
-               "name": "thing"
+               "name": "sprite"
               }
              ]
             }
@@ -970,7 +970,7 @@
             "functionId": "eat_function",
             "signature": {
              "id": "eat_function",
-             "name": "eat",
+             "name": "eat_dot",
              "parameters": []
             }
            },
@@ -1817,11 +1817,11 @@
               "functionId": "at_center_function",
               "signature": {
                "id": "at_center_function",
-               "name": "at_center",
+               "name": "at_square_center",
                "parameters": [
                 {
                  "id": "at_center_thing",
-                 "name": "thing"
+                 "name": "sprite"
                 }
                ]
               }
@@ -3376,7 +3376,7 @@
       "functionId": "reset_function",
       "signature": {
        "id": "reset_function",
-       "name": "reset",
+       "name": "reset_positions",
        "parameters": []
       }
      },
@@ -3818,7 +3818,7 @@
       "functionId": "caught_function",
       "signature": {
        "id": "caught_function",
-       "name": "caught",
+       "name": "touch_ghost",
        "parameters": [
         {
          "id": "caught_ghost",
@@ -4180,7 +4180,7 @@
                 "functionId": "reset_function",
                 "signature": {
                  "id": "reset_function",
-                 "name": "reset",
+                 "name": "reset_positions",
                  "parameters": []
                 }
                }
@@ -4333,7 +4333,7 @@
                "functionId": "reset_function",
                "signature": {
                 "id": "reset_function",
-                "name": "reset",
+                "name": "reset_positions",
                 "parameters": []
                }
               },
@@ -4476,7 +4476,7 @@
                                 "functionId": "caught_function",
                                 "signature": {
                                  "id": "caught_function",
-                                 "name": "caught",
+                                 "name": "touch_ghost",
                                  "parameters": [
                                   {
                                    "id": "caught_ghost",
@@ -4943,12 +4943,12 @@
     "type": "py:module"
    },
    {
-    "name": "best_d",
+    "name": "best_distance",
     "id": "maze-muncher-488",
     "type": "py:module"
    },
    {
-    "name": "d",
+    "name": "distance",
     "id": "maze-muncher-489",
     "type": "py:module"
    },
@@ -5700,18 +5700,18 @@
    },
    {
     "id": "at_center_function",
-    "name": "at_center",
+    "name": "at_square_center",
     "returnTypes": null,
     "parameters": [
      {
       "id": "at_center_thing",
-      "name": "thing"
+      "name": "sprite"
      }
     ]
    },
    {
     "id": "eat_function",
-    "name": "eat",
+    "name": "eat_dot",
     "returnTypes": null
    },
    {
@@ -5732,12 +5732,12 @@
    },
    {
     "id": "reset_function",
-    "name": "reset",
+    "name": "reset_positions",
     "returnTypes": null
    },
    {
     "id": "caught_function",
-    "name": "caught",
+    "name": "touch_ghost",
     "returnTypes": null,
     "parameters": [
      {

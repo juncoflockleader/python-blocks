@@ -1,5 +1,6 @@
 """Run a game with a scripted player under CPython, the way the browser's worker does
-(src/runtime/execution.py check_scene), on a virtual clock so waits take no real time.
+(src/runtime/execution.py check_scene), on a virtual clock so waits take no real time,
+and with seeded random numbers so a game plays the same way on every run.
 
 As a module: `check(source, scene, steps, files=None)` returns (result, reports).
 As a script: reads {"source", "scene", "steps", "files"} as JSON on stdin and prints
@@ -13,6 +14,7 @@ import itertools
 import json
 import os
 from pathlib import Path
+import random
 import sys
 import tempfile
 import time
@@ -74,8 +76,11 @@ def _check(source, scene, steps, files):
     # Glides, timers and animations read the time: they read the virtual clock too.
     clock, monotonic = VirtualClock(), time.monotonic
     time.monotonic = lambda: clock.now
+    # The program's random numbers repeat too: unseeded, about 1 Rock Blaster wave in 100
+    # drifts past a ship that waits 40 seconds, and the test that expects a hit fails.
+    state = random.getstate(); random.seed(0)
     try: return _run(source, scene, steps, files, clock)
-    finally: time.monotonic = monotonic
+    finally: time.monotonic = monotonic; random.setstate(state)
 
 
 def _run(source, scene, steps, files, clock):
