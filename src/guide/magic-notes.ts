@@ -82,7 +82,8 @@ export function blockValues(block: Blockly.Block): MagicValue[] {
   const visit = (owner: Blockly.Block, label: string) => {
     for (const [index, input] of owner.inputList.entries()) {
       if (input.type !== Blockly.inputs.inputTypes.VALUE || !input.connection?.targetBlock()) continue;
-      const child = input.connection.targetBlock()!, words = rowLabel(owner, index) || label;
+      // The items of a list (ROCK_LOOKS) are named by the slot that holds the list, not "create list with".
+      const child = input.connection.targetBlock()!, words = (owner.type !== 'lists_create_with' && rowLabel(owner, index)) || label;
       if (child.type === 'text' && !SHOWN_TEXT.test(input.name)) continue;
       const value = literal(child, input.name);
       // A number with no words of its own (bombs < 3) is named by its block: "bombs < 3".
@@ -93,10 +94,11 @@ export function blockValues(block: Blockly.Block): MagicValue[] {
   visit(block, '');
   // Two numbers beside the same words (await wait 0.1 + 0.025) are told apart by their order.
   const order = ['first', 'second', 'third', 'fourth', 'fifth', 'sixth'];
+  const kinds = { number: 'number', text: 'words', choice: 'look' };
   const labels = values.map(v => v.label);
   return values.map((value, index) => {
     const same = labels.flatMap((label, i) => label === value.label ? [i] : []), nth = same.indexOf(index);
-    return same.length > 1 && value.label ? { ...value, label: `${value.label} (${order[nth] ?? nth + 1} ${value.kind === 'number' ? 'number' : 'words'})` } : value;
+    return same.length > 1 && value.label ? { ...value, label: `${value.label} (${order[nth] ?? nth + 1} ${kinds[value.kind]})` } : value;
   });
 }
 
