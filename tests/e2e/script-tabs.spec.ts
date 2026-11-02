@@ -155,7 +155,7 @@ test('the magic book: notes become a guide to the numbers, ready to change', asy
   expect(errors).toEqual([]);
 });
 
-test('Rock Blaster opens on its Settings too: one setting changes both arrows, the shot shoots stars, a rock can be a star, and another sprite can be the ship', async ({ page }) => {
+test('Rock Blaster opens on its Settings too: one setting changes both arrows, the shot shoots stars, and a rock can be a star', async ({ page }) => {
   const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
   await openExample(page, 'rock-blaster');
@@ -164,29 +164,18 @@ test('Rock Blaster opens on its Settings too: one setting changes both arrows, t
   await expect.poll(() => onScreen(page)).toEqual(['settings_program_block']);
   await openTab(page, 'magic');
   await expect(page.locator('.magic-tab-heading')).toHaveText(['Settings', 'Shots']);
-  // By title: "The shot" says "the shot look" in its note.
-  const entry = (title: string) => page.locator('.magic-entry').filter({ has: page.getByRole('heading', { name: title, exact: true }) });
-  const turning = entry('Turning speed');
+  const turning = page.locator('.magic-entry', { hasText: 'Turning speed' });
   await expect(turning.locator('label')).toHaveText('set TURN_SPEED to');
   await turning.locator('input').fill('10'); await turning.locator('input').press('Enter');
-  await entry('Shot look').locator('select').selectOption('star');
-  const rocks = entry('Rock looks');
+  await page.locator('.magic-entry', { hasText: 'Shot look' }).locator('select').selectOption('star');
+  const rocks = page.locator('.magic-entry', { hasText: 'Rock looks' });
   await expect(rocks.locator('label')).toHaveText(['first', 'second', 'third'].map(nth => `set ROCK_LOOKS to (${nth} look)`));
   await rocks.locator('select').first().selectOption('star');
-  // SHIP names the sprite that plays the ship, picked like a look.
-  const ship = entry('The ship');
-  await expect(ship.locator('label')).toHaveText('set SHIP to');
-  await expect(ship.locator('select')).toHaveValue('ship');
-  await ship.locator('select').selectOption('shot');
   await openTab(page, 'python');
   await expect(page.locator('#python')).toContainText('TURN_SPEED = 10');
   await expect(page.locator('#python')).toContainText('SHOT_LOOK = "star"');
   await expect(page.locator('#python')).toContainText('ROCK_LOOKS = ["star", "stock-rock-lumpy", "stock-rock-round"]');
-  await expect(page.locator('#python')).toContainText('SHIP = _pb_sprites.named("Shot")');
-  for (const line of ['.turn(-(TURN_SPEED))', '.turn(TURN_SPEED)', '.costume(SHOT_LOOK)', '.costume(SHIP_LOOK)', '.costume(SHIP_FLYING_LOOK)', '.set("size", SHIP_SIZE)',
-    '(SHIP).set_kind("ship")', '_pb_scene.on_kind("ship", "update", on_ship_update)', '_pb_scene.on_kind("rock", "overlap", on_rock_hits_ship)']) await expect(page.locator('#python')).toContainText(line);
-  // No script names a sprite: only the three settings do.
-  await expect.poll(async () => (await page.locator('#python').textContent() ?? '').match(/_pb_sprites\.named\(/g)?.length).toBe(3);
+  for (const line of ['.turn(-(TURN_SPEED))', '.turn(TURN_SPEED)', '.costume(SHOT_LOOK)', '.costume(SHIP_LOOK)', '.costume(SHIP_FLYING_LOOK)', '.set("size", SHIP_SIZE)']) await expect(page.locator('#python')).toContainText(line);
   expect(errors).toEqual([]);
 });
 

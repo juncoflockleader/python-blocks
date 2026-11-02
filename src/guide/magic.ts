@@ -49,7 +49,7 @@ export function installMagic(host: MagicHost) {
     const label = document.createElement('label');
     label.htmlFor = id; label.textContent = value.label || (value.kind === 'number' ? 'number' : 'words');
     if (value.kind === 'choice') {
-      // A costume or sprite picker: pick another and the block changes at once (one Undo step).
+      // A costume picker: pick a new look and the block changes at once (one Undo step).
       const select = document.createElement('select');
       select.id = id; select.className = 'magic-choice-select'; select.dataset.block = value.blockId; select.dataset.field = value.field;
       select.append(...(value.options ?? []).map(([label, option]) => new Option(label, option)));
