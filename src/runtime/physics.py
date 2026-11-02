@@ -13,12 +13,12 @@ ENUMS = {'body': ('off', 'moving', 'wall'), 'response': ('slide', 'stop', 'bounc
          'edges': ('none', 'stop', 'bounce', 'destroy'), 'controller': ('none', 'arrows', 'wasd')}
 
 
-def defaults():
+def motion_defaults():
     return dict(body='off', vx=0, vy=0, ax=0, ay=0, dragX=0, dragY=0, response='slide', edges='none',
                 controller='none', speedX=120, speedY=120, lifetime=0, autoDestroy=False)
 
 
-def checked(property, value):
+def checked_motion(property, value):
     if property in NUMBERS:
         low, high = NUMBERS[property]
         if type(value) not in (int, float): raise TypeError(property + ' needs a number.')
@@ -31,7 +31,7 @@ def checked(property, value):
     return value
 
 
-def kind(value):
+def checked_kind(value):
     if type(value) is not str or not value or value.strip() != value or len(value.encode('utf-16-le', errors='surrogatepass')) > 64 or any(ord(c) < 32 for c in value): raise ValueError('A sprite kind needs 1–32 characters without surrounding spaces or control characters.')
     return value
 
@@ -54,7 +54,7 @@ def swept(x, y, dx, dy, left, right, bottom, top):
     return max(0, min(1, entry)), nx, ny
 
 
-def seams(hits):
+def without_seams(hits):
     """Simultaneous hits, without internal seams. Walking along a row of floor
     tiles meets the next tile's corner at the same moment as the floor below;
     that corner is part of the floor, not a wall, so it keeps only the axis of
@@ -85,12 +85,12 @@ class Physics:
         if sprite._state['motion']['edges'] in ('stop', 'bounce') and abs(bottom - (self.scene.worlds.y - 160)) < 1e-6: return True
         return any(abs(bottom - (s.y + s.height / 2)) < 1e-6 and abs(sprite.x - s.x) < (w + s.width) / 2 - EPSILON for s in self.walls(sprite))
 
-    def position(self, sprite, x, y):
+    def set_position(self, sprite, x, y):
         if abs(x) > 1_000_000 or abs(y) > 1_000_000: raise ValueError('Motion left the supported coordinate range.')
         if x != sprite.x or y != sprite.y:
-            sprite._trace(sprite.x, sprite.y, x, y); sprite._state.update(x=x, y=y)
+            sprite._draw_pen_line(sprite.x, sprite.y, x, y); sprite._state.update(x=x, y=y)
 
-    def contact(self, sprite, other, nx, ny, edge, seen):
+    def record_contact(self, sprite, other, nx, ny, edge, seen):
         key = (sprite.id, other.id if other else None, edge, nx, ny); seen.add(key)
         if key not in self.contacts:
             self.contacts.add(key)
@@ -121,7 +121,7 @@ class Physics:
             choices = [(overlap.x - overlap.width / 2 - rx - sprite.x, 0, -1, 0), (overlap.x + overlap.width / 2 + rx - sprite.x, 0, 1, 0),
                        (0, overlap.y - overlap.height / 2 - ry - sprite.y, 0, -1), (0, overlap.y + overlap.height / 2 + ry - sprite.y, 0, 1)]
             dx, dy, nx, ny = min(choices, key=lambda v: abs(v[0]) + abs(v[1]))
-            self.position(sprite, sprite.x + dx, sprite.y + dy); self.contact(sprite, overlap, nx, ny, None, seen)
+            self.set_position(sprite, sprite.x + dx, sprite.y + dy); self.record_contact(sprite, overlap, nx, ny, None, seen)
             self.respond(sprite, nx, ny, m['response'])
             if not sprite._alive: return
         else:
@@ -133,8 +133,8 @@ class Physics:
                 value = getattr(sprite, axis) - center; fixed = max(-limit + radius, min(limit - radius, value)) if radius < limit else 0
                 if fixed != value:
                     nx = (1 if value < 0 else -1) if axis == 'x' else 0; ny = (1 if value < 0 else -1) if axis == 'y' else 0
-                    self.position(sprite, fixed + center if axis == 'x' else sprite.x, fixed + center if axis == 'y' else sprite.y)
-                    self.contact(sprite, None, nx, ny, ('left' if nx > 0 else 'right') if nx else ('bottom' if ny > 0 else 'top'), seen)
+                    self.set_position(sprite, fixed + center if axis == 'x' else sprite.x, fixed + center if axis == 'y' else sprite.y)
+                    self.record_contact(sprite, None, nx, ny, ('left' if nx > 0 else 'right') if nx else ('bottom' if ny > 0 else 'top'), seen)
                     self.respond(sprite, nx, ny, 'slide' if m['edges'] == 'stop' else m['edges'])
                     if not sprite._alive: return
                 if radius >= limit: m['vx' if axis == 'x' else 'vy'] = 0
@@ -151,11 +151,11 @@ class Physics:
                     if delta > EPSILON:
                         when = (extent - radius - position) / delta
                         if -EPSILON <= when <= 1 + EPSILON: hits.append((max(0, min(1, when)), nx, ny, None, edge, m['edges']))
-            if not hits: self.position(sprite, sprite.x + dx, sprite.y + dy); break
+            if not hits: self.set_position(sprite, sprite.x + dx, sprite.y + dy); break
             time = min(hit[0] for hit in hits)
-            self.position(sprite, sprite.x + dx * time, sprite.y + dy * time)
-            for _, nx, ny, other, edge, mode in seams([hit for hit in hits if abs(hit[0] - time) <= EPSILON]):
-                self.contact(sprite, other, nx, ny, edge, seen); self.respond(sprite, nx, ny, 'slide' if edge and mode == 'stop' else mode)
+            self.set_position(sprite, sprite.x + dx * time, sprite.y + dy * time)
+            for _, nx, ny, other, edge, mode in without_seams([hit for hit in hits if abs(hit[0] - time) <= EPSILON]):
+                self.record_contact(sprite, other, nx, ny, edge, seen); self.respond(sprite, nx, ny, 'slide' if edge and mode == 'stop' else mode)
                 if not sprite._alive: return
             remaining *= 1 - time
             if remaining <= EPSILON: break
@@ -200,5 +200,5 @@ class Physics:
             advanced = True
             if after_step: after_step()
         for sprite in self.scene.items.values():
-            if snapshots.get(sprite.id) != (sprite.x, sprite.y, sprite._state['motion']): sprite._send()
+            if snapshots.get(sprite.id) != (sprite.x, sprite.y, sprite._state['motion']): sprite._send_state()
         return advanced

@@ -459,7 +459,7 @@ export function installScriptTabs(workspace: Blockly.WorkspaceSvg, host: { revea
   const bounded = workspace.getTopBoundedElements.bind(workspace);
   workspace.getTopBoundedElements = (ordered?: boolean) => bounded(ordered).filter(element => !hidden.has((element as unknown as { id: string }).id));
   // Workspace menu items act on the scripts on screen: Clean up, Collapse, Expand and Delete all.
-  const wrapped = new Map<string, Partial<Blockly.ContextMenuRegistry.RegistryItem>>();
+  const originalItems = new Map<string, Partial<Blockly.ContextMenuRegistry.RegistryItem>>();
   const onScreen = <T>(scope: Blockly.ContextMenuRegistry.Scope, action: () => T): T => {
     if (scope.workspace !== workspace) return action();
     const own = Object.prototype.hasOwnProperty.call(workspace, 'getTopBlocks'), all = workspace.getTopBlocks;
@@ -470,7 +470,7 @@ export function installScriptTabs(workspace: Blockly.WorkspaceSvg, host: { revea
     const item = Blockly.ContextMenuRegistry.registry.getItem(id) as Blockly.ContextMenuRegistry.RegistryItem | null;
     if (!item) continue;
     const { preconditionFn, callback, displayText } = item;
-    wrapped.set(id, { preconditionFn, callback, displayText });
+    originalItems.set(id, { preconditionFn, callback, displayText });
     if (preconditionFn) item.preconditionFn = (scope, event) => onScreen(scope, () => preconditionFn(scope, event));
     if (callback) item.callback = (scope, ...rest) => onScreen(scope, () => callback(scope, ...rest));
     if (typeof displayText === 'function') item.displayText = scope => onScreen(scope, () => (displayText as (scope: Blockly.ContextMenuRegistry.Scope) => string | HTMLElement)(scope));
@@ -492,7 +492,7 @@ export function installScriptTabs(workspace: Blockly.WorkspaceSvg, host: { revea
       controls.delete(workspace); onTabsLoaded(workspace, null);
       workspace.removeChangeListener(listener);
       document.removeEventListener('pointermove', onMove, true); document.removeEventListener('pointerup', onUp, true);
-      for (const [id, item] of wrapped) Object.assign(Blockly.ContextMenuRegistry.registry.getItem(id) ?? {}, item);
+      for (const [id, item] of originalItems) Object.assign(Blockly.ContextMenuRegistry.registry.getItem(id) ?? {}, item);
       for (const top of hidden.values()) unhide(top);
       metrics.getAbsoluteMetrics = absolute; metrics.getViewMetrics = viewMetrics; resized.disconnect();
       if (flyout && position) flyout.position = position;

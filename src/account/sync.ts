@@ -116,7 +116,7 @@ export function startSync(host: SyncHost, start: StartState): Sync {
     program.saved = data; program.title = title;
     host.status('Saved to My projects');
   }
-  async function tick(leaving = false) {
+  async function pushChanges(leaving = false) {
     if (stopped) return;
     if (busy) return busy;
     busy = (async () => {
@@ -126,13 +126,13 @@ export function startSync(host: SyncHost, start: StartState): Sync {
     })();
     return busy;
   }
-  const timer = setInterval(() => void tick(), 1500);
-  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') void tick(true); });
-  window.addEventListener('pagehide', () => void tick(true));
+  const timer = setInterval(() => void pushChanges(), 1500);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') void pushChanges(true); });
+  window.addEventListener('pagehide', () => void pushChanges(true));
   return {
     identity,
     replaced(id) { setIdentity(id); program.saved = read(PROJECT_KEY); program.title = read(TITLE_KEY); program.replacedAt = Date.now(); },
-    async flush() { await busy; await tick(); },
+    async flush() { await busy; await pushChanges(); },
     async save() {
       while (busy) await busy;
       let failure: unknown = null;
@@ -141,7 +141,7 @@ export function startSync(host: SyncHost, start: StartState): Sync {
       if (failure) throw failure;
     },
     async signOut() {
-      await busy; await tick();
+      await busy; await pushChanges();
       stopped = true; clearInterval(timer); host.stopSaving();
       try { await api('POST', '/api/logout'); } catch { /* signing out anyway */ }
       for (const key of SYNCED_KEYS) write(key, null);

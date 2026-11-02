@@ -10,7 +10,7 @@ export interface Progress { format: 'python-blocks-academy'; version: 1; learner
 export const PROGRESS_KEY = 'python-blocks.academy.v1';
 export type ProgressEvent = { build: Build; index: number; type: 'done' | 'tried'; ok?: boolean; hints: number; ms: number };
 
-const fresh = (): Progress => ({ format: 'python-blocks-academy', version: 1, learner: { id: crypto.randomUUID?.() ?? String(Date.now()), name: '' }, units: {} });
+const emptyProgress = (): Progress => ({ format: 'python-blocks-academy', version: 1, learner: { id: crypto.randomUUID?.() ?? String(Date.now()), name: '' }, units: {} });
 const count = (value: unknown) => typeof value === 'number' && Number.isFinite(value) && value >= 0;
 
 /** A progress record from a file or storage, or null when it is not one. */
@@ -26,7 +26,7 @@ export function readProgress(text: string): Progress | null {
   } catch { return null; }
 }
 export function loadProgress(): Progress {
-  try { return readProgress(localStorage.getItem(PROGRESS_KEY) ?? '') ?? fresh(); } catch { return fresh(); }
+  try { return readProgress(localStorage.getItem(PROGRESS_KEY) ?? '') ?? emptyProgress(); } catch { return emptyProgress(); }
 }
 export function saveProgress(progress: Progress) {
   try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); } catch { /* progress stays for this visit */ }

@@ -81,7 +81,7 @@ async function open(id: number, said = '') {
   header.append(title, close);
   const status = el('p', 'admin-status', said); status.setAttribute('role', 'status');
   /** Do something, then say how it went; `again` redraws this panel to show the change. */
-  const act = async (work: () => Promise<unknown>, done: string, again = false) => {
+  const runAndReport = async (work: () => Promise<unknown>, done: string, again = false) => {
     try { await work(); await load(); if (again) await open(id, done); else status.textContent = done; }
     catch (error) { status.textContent = message(error); }
   };
@@ -90,17 +90,17 @@ async function open(id: number, said = '') {
   // Name, password, on/off and role.
   const forms = el('div', 'admin-forms');
   const nameForm = el('form', 'admin-inline'); const name = Object.assign(el('input'), { value: user.displayName, maxLength: LIMITS.displayName, required: true }); nameForm.append(name, el('button', 'admin-button', 'Rename'));
-  nameForm.addEventListener('submit', event => { event.preventDefault(); void act(() => api('PATCH', `/api/admin/users/${id}`, { displayName: name.value }), 'Renamed.'); });
+  nameForm.addEventListener('submit', event => { event.preventDefault(); void runAndReport(() => api('PATCH', `/api/admin/users/${id}`, { displayName: name.value }), 'Renamed.'); });
   const passwordForm = el('form', 'admin-inline'); const password = Object.assign(el('input'), { value: makePassword(), minLength: LIMITS.password.min, maxLength: LIMITS.password.max, required: true, autocomplete: 'off' });
   passwordForm.append(password, el('button', 'admin-button', 'Set password'));
-  passwordForm.addEventListener('submit', event => { event.preventDefault(); void act(() => api('PATCH', `/api/admin/users/${id}`, { password: password.value }), `New password: ${password.value}. They sign in again on every device.`); });
+  passwordForm.addEventListener('submit', event => { event.preventDefault(); void runAndReport(() => api('PATCH', `/api/admin/users/${id}`, { password: password.value }), `New password: ${password.value}. They sign in again on every device.`); });
   const toggle = el('button', 'admin-button', user.disabled ? 'Turn the account on' : 'Turn the account off') as HTMLButtonElement;
-  toggle.addEventListener('click', () => void act(() => api('PATCH', `/api/admin/users/${id}`, { disabled: !user.disabled }), user.disabled ? 'Turned on.' : 'Turned off: they cannot sign in.', true));
+  toggle.addEventListener('click', () => void runAndReport(() => api('PATCH', `/api/admin/users/${id}`, { disabled: !user.disabled }), user.disabled ? 'Turned on.' : 'Turned off: they cannot sign in.', true));
   const role = el('button', 'admin-button', user.role === 'admin' ? 'Make a learner' : 'Make an admin') as HTMLButtonElement;
-  role.addEventListener('click', () => void act(() => api('PATCH', `/api/admin/users/${id}`, { role: user.role === 'admin' ? 'learner' : 'admin' }), 'Role changed.', true));
+  role.addEventListener('click', () => void runAndReport(() => api('PATCH', `/api/admin/users/${id}`, { role: user.role === 'admin' ? 'learner' : 'admin' }), 'Role changed.', true));
   const coinForm = el('form', 'admin-inline'); const amount = Object.assign(el('input'), { type: 'number', value: '10', step: '1', required: true }); const note = Object.assign(el('input'), { placeholder: 'Why (they see this)', maxLength: 120 });
   coinForm.append(amount, note, el('button', 'admin-button', 'Give coins'));
-  coinForm.addEventListener('submit', event => { event.preventDefault(); void act(() => api('POST', `/api/admin/users/${id}/coins`, { amount: Number(amount.value), note: note.value }), 'Coins given.', true); });
+  coinForm.addEventListener('submit', event => { event.preventDefault(); void runAndReport(() => api('POST', `/api/admin/users/${id}/coins`, { amount: Number(amount.value), note: note.value }), 'Coins given.', true); });
   const row = (label: string, ...nodes: Node[]) => { const div = el('div', 'admin-row'); div.append(el('span', 'admin-label', label), ...nodes); return div; };
   forms.append(row('Name', nameForm), row('Password', passwordForm), row('Account', toggle, role), row('Coins', coinForm));
 

@@ -11,7 +11,7 @@ import copy
 import re
 from _playground_worlds import Worlds
 from _playground_host import scene_emit
-from _playground_physics import Physics, defaults as motion_defaults, checked as checked_motion, kind as checked_kind
+from _playground_physics import Physics, motion_defaults, checked_motion, checked_kind
 
 
 def number(value, label, minimum=-1_000_000, maximum=1_000_000):
@@ -32,16 +32,16 @@ EFFECT_LIMITS = {'color': (0, 360), 'brightness': (-100, 100), 'ghost': (0, 100)
 
 
 class Appearance:
-    def _effect_check(self, effect):
-        self._check()
+    def _require_effect(self, effect):
+        self._require_alive()
         if type(effect) is not str or effect not in EFFECT_LIMITS: raise ValueError('Choose color, brightness, ghost, whirl, fisheye, pixelate, or mosaic.')
 
     def get_effect(self, effect):
-        self._effect_check(effect)
+        self._require_effect(effect)
         return self._effects.get(effect, 0)
 
     def set_effect(self, effect, value):
-        self._effect_check(effect)
+        self._require_effect(effect)
         value = number(value, 'Effect value')
         low, high = EFFECT_LIMITS[effect]
         self._effects[effect] = value % 360 if effect == 'color' else max(low, min(high, value))
@@ -51,7 +51,7 @@ class Appearance:
         self.set_effect(effect, self.get_effect(effect) + number(amount, 'Effect change'))
 
     def clear_effects(self):
-        self._check(); self._effects.clear(); self._send_effects()
+        self._require_alive(); self._effects.clear(); self._send_effects()
 
 
 class Sprite(Appearance):
@@ -81,54 +81,54 @@ class Sprite(Appearance):
 
     def __getattr__(self, name):
         if name in ('id', 'name', 'x', 'y', 'direction', 'size', 'layer', 'visible', 'kind'):
-            self._check()
+            self._require_alive()
             return self._state[name]
         if name in ('width', 'height'):
-            self._check()
+            self._require_alive()
             return self._bounds()[0 if name == 'width' else 1]
         if name in ('stretch_x', 'stretch_y'):
-            self._check()
+            self._require_alive()
             return self._state.get('stretchX' if name == 'stretch_x' else 'stretchY', 100)
         if name in ('frames', 'costume_id', 'frame_seconds'):
-            self._check()
+            self._require_alive()
             return list(self._state['costumes']) if name == 'frames' else self._state['costume' if name == 'costume_id' else 'frameSeconds']
         if name == 'animation':
-            self._check()
+            self._require_alive()
             if self._playing and self._playing['token'] == self._animation: return self._playing['name']
             if self._once and self._once[1] == self._animation: return self._once[0]
             return self._auto[0] if self._auto else None
         if name == 'animations':
-            self._check()
+            self._require_alive()
             return ['frames'] + [a['name'] for a in self._state['animations']]
         raise AttributeError(name)
 
-    def _check(self):
+    def _require_alive(self):
         if not self._alive:
             raise RuntimeError('This sprite was destroyed. Create or choose another sprite.')
 
-    def _send(self):
-        self._check()
+    def _send_state(self):
+        self._require_alive()
         self._owner._send({'type': 'sprite', 'sprite': dict(self._state)})
         self._owner.worlds.update_camera()
 
-    def _send_effects(self): self._send()
+    def _send_effects(self): self._send_state()
 
     def set_kind(self, value):
-        self._check(); self._state['kind'] = checked_kind(value); self._send()
+        self._require_alive(); self._state['kind'] = checked_kind(value); self._send_state()
 
     def motion_value(self, property):
-        self._check()
+        self._require_alive()
         if property == 'grounded':
             return (self._owner._physics or Physics(self._owner, inputs)).grounded(self)
         if property not in self._state['motion']: raise ValueError('Choose a motion property.')
         return self._state['motion'][property]
 
     def set_motion(self, property, value):
-        self._check(); value = checked_motion(property, value)
+        self._require_alive(); value = checked_motion(property, value)
         self._owner.enable_motion()
         self._state['motion'][property] = value
         if property in ('vx', 'vy', 'ax', 'ay', 'controller') and self._state['motion']['body'] == 'off': self._state['motion']['body'] = 'moving'
-        self._motion += 1; self._send()
+        self._motion += 1; self._send_state()
 
     def change_motion(self, property, amount):
         if property not in ('vx', 'vy', 'ax', 'ay', 'dragX', 'dragY', 'speedX', 'speedY', 'lifetime'): raise ValueError('Choose a numeric motion property.')
@@ -136,8 +136,8 @@ class Sprite(Appearance):
 
     def control(self, scheme, speed_x=120, speed_y=120):
         checked_motion('controller', scheme); checked_motion('speedX', speed_x); checked_motion('speedY', speed_y)
-        self._check(); self._owner.enable_motion()
-        self._state['motion'].update(body='moving', controller=scheme, speedX=speed_x, speedY=speed_y); self._motion += 1; self._send()
+        self._require_alive(); self._owner.enable_motion()
+        self._state['motion'].update(body='moving', controller=scheme, speedX=speed_x, speedY=speed_y); self._motion += 1; self._send_state()
 
     def jump(self, speed):
         speed = number(speed, 'Jump speed', 0, 2000)
@@ -145,10 +145,10 @@ class Sprite(Appearance):
         return False
 
     def stop_motion(self):
-        self._check(); self._state['motion'].update(body='off', vx=0, vy=0, ax=0, ay=0, controller='none'); self._send()
+        self._require_alive(); self._state['motion'].update(body='off', vx=0, vy=0, ax=0, ay=0, controller='none'); self._send_state()
 
     def projectile(self, costume, vx, vy, lifetime=3):
-        self._check(); checked_motion('vx', vx); checked_motion('vy', vy); checked_motion('lifetime', lifetime)
+        self._require_alive(); checked_motion('vx', vx); checked_motion('vy', vy); checked_motion('lifetime', lifetime)
         if costume not in self._owner.assets: raise ValueError('Choose an available costume.')
         self._owner.enable_motion()
         state = {'name': 'Projectile', 'kind': 'projectile', 'x': self.x, 'y': self.y, 'direction': 0, 'size': 100, 'layer': self.layer, 'visible': True, 'costume': costume,
@@ -156,53 +156,53 @@ class Sprite(Appearance):
         return self._owner._create(state)
 
     def pen_value(self, property):
-        self._check()
+        self._require_alive()
         if type(property) is not str or property not in self._state['pen']: raise ValueError('Choose down, color, width, or opacity.')
         return self._state['pen'][property]
 
     def set_pen(self, property, value):
-        self._check()
+        self._require_alive()
         if property == 'color':
             if type(value) is not str or not re.fullmatch(r'#[0-9a-fA-F]{6}', value): raise ValueError('Pen color needs #RRGGBB text.')
         elif property in ('width', 'opacity'): value = number(value, 'Pen ' + property, 1 if property == 'width' else 0, 1200 if property == 'width' else 100)
         else: raise ValueError('Choose color, width, or opacity; use pen_up or pen_down to lift or lower the pen.')
         self._state['pen'][property] = value
-        self._send()
+        self._send_state()
 
     def change_pen(self, property, amount):
         if property not in ('width', 'opacity'): raise ValueError('Choose pen width or opacity.')
         self.set_pen(property, self.pen_value(property) + number(amount, 'Pen change'))
 
     def pen_up(self):
-        self._check(); self._state['pen']['down'] = False; self._send()
+        self._require_alive(); self._state['pen']['down'] = False; self._send_state()
 
     def pen_down(self):
-        self._check()
+        self._require_alive()
         if not self._state['pen']['down']:
             self._state['pen']['down'] = True
-            self._trace(self.x, self.y, self.x, self.y)
-            self._send()
+            self._draw_pen_line(self.x, self.y, self.x, self.y)
+            self._send_state()
 
-    def _trace(self, x1, y1, x2, y2):
+    def _draw_pen_line(self, x1, y1, x2, y2):
         pen = self._state['pen']
         if pen['down']:
             self._owner._ink({'type': 'pen_line', 'x1': x1, 'y1': y1, 'x2': x2, 'y2': y2,
                               'color': pen['color'], 'width': pen['width'], 'opacity': pen['opacity']})
 
-    def _position(self, x, y):
-        if x != self.x or y != self.y: self._trace(self.x, self.y, x, y)
+    def _move_to(self, x, y):
+        if x != self.x or y != self.y: self._draw_pen_line(self.x, self.y, x, y)
         self._state.update(x=x, y=y)
-        self._send()
+        self._send_state()
 
     def stamp(self):
-        self._check()
+        self._require_alive()
         self._owner._ink({'type': 'stamp', 'sprite': copy.deepcopy(self._state)})
 
     def go_to(self, x, y):
-        self._check()
+        self._require_alive()
         x, y = number(x, 'x'), number(y, 'y')
         self._motion += 1
-        self._position(x, y)
+        self._move_to(x, y)
 
     def move(self, distance):
         distance = number(distance, 'Distance')
@@ -226,13 +226,13 @@ class Sprite(Appearance):
         return math.hypot(number(x, 'x') - self.x, number(y, 'y') - self.y)
 
     def rotation_style(self, style):
-        self._check()
+        self._require_alive()
         if style not in ('all', 'left-right', 'none'): raise ValueError('Choose all, left-right, or none for rotation style.')
         self._state['rotationStyle'] = style
-        self._send()
+        self._send_state()
 
     def to_layer(self, place):
-        self._check()
+        self._require_alive()
         if place not in ('front', 'back'): raise ValueError('Choose front or back.')
         # Compact the order first so repeated front/back operations never hit a numeric limit.
         ordered = sorted(self._owner.items.values(), key=lambda s: s.layer)
@@ -240,26 +240,26 @@ class Sprite(Appearance):
         ordered.insert(len(ordered) if place == 'front' else 0, self)
         for index, sprite in enumerate(ordered):
             sprite._state['layer'] = index
-            sprite._send()
+            sprite._send_state()
 
     def touching_point(self, x, y):
         x, y = number(x, 'x'), number(y, 'y')
-        self._check()
+        self._require_alive()
         if not self.visible: return False
         w, h = self._bounds()
         return abs(self.x - x) <= w / 2 and abs(self.y - y) <= h / 2
 
     def touching_edge(self, edge='any'):
-        self._check()
+        self._require_alive()
         if edge not in ('any', 'left', 'right', 'top', 'bottom'): raise ValueError('Choose any, left, right, top, or bottom edge.')
         w, h = self._bounds()
-        left, right, bottom, top = self._owner.worlds.view()
+        left, right, bottom, top = self._owner.worlds.view_bounds()
         hits = {'left': self.x - w / 2 <= left, 'right': self.x + w / 2 >= right,
                 'top': self.y + h / 2 >= top, 'bottom': self.y - h / 2 <= bottom}
         return any(hits.values()) if edge == 'any' else hits[edge]
 
     def bounce(self):
-        self._check()
+        self._require_alive()
         if not self.touching_edge(): return
         dx, dy = math.cos(math.radians(self.direction)), -math.sin(math.radians(self.direction))
         if (self.touching_edge('left') and dx < 0) or (self.touching_edge('right') and dx > 0): dx = -dx
@@ -273,7 +273,7 @@ class Sprite(Appearance):
         self.go_to(x, y)
 
     def say(self, text, style='say'):
-        self._check()
+        self._require_alive()
         if type(text) is not str: raise TypeError('Speech needs text. Convert numbers to text first.')
         if len(text.encode('utf-16-le', errors='surrogatepass')) > 480: raise ValueError('Speech supports up to 240 text characters.')
         if style not in ('say', 'think'): raise ValueError('Choose say or think.')
@@ -290,7 +290,7 @@ class Sprite(Appearance):
         if self._alive and token == self._speech: self.say('', style)
 
     def set(self, property, value):
-        self._check()
+        self._require_alive()
         # stretch_x and stretch_y stretch the sprite along its own width and height, as percents of its size.
         limits = {'x': (-1e6, 1e6), 'y': (-1e6, 1e6), 'direction': (-1e6, 1e6), 'size': (5, 400), 'layer': (-1000, 1000), 'stretch_x': (10, 1000), 'stretch_y': (10, 1000)}
         if property not in limits:
@@ -301,24 +301,24 @@ class Sprite(Appearance):
             self.go_to(value if property == 'x' else self.x, value if property == 'y' else self.y)
             return
         self._state[{'stretch_x': 'stretchX', 'stretch_y': 'stretchY'}.get(property, property)] = value
-        self._send()
+        self._send_state()
 
     def show(self):
-        self._check(); self._state['visible'] = True; self._send()
+        self._require_alive(); self._state['visible'] = True; self._send_state()
 
     def hide(self):
-        self._check(); self._state['visible'] = False; self._send()
+        self._require_alive(); self._state['visible'] = False; self._send_state()
 
     def costume(self, costume):
-        self._check()
+        self._require_alive()
         if costume not in self._owner.assets: raise ValueError('This costume is unavailable in the scene.')
         self._animation += 1
         self._state['costume'] = costume
         self._frame_index = self._state['costumes'].index(costume) if costume in self._state['costumes'] else -1
-        self._send()
+        self._send_state()
 
     def next_costume(self):
-        self._check()
+        self._require_alive()
         frames = self.frames
         index = (self._frame_index + 1) % len(frames)
         self.costume(frames[index])
@@ -337,7 +337,7 @@ class Sprite(Appearance):
 
     def play(self, name):
         """Loop a named animation until another starts, the costume is set, or stop_animation()."""
-        self._check()
+        self._require_alive()
         frames, seconds = self._animation_named(name)
         if event_session().state not in ('setup', 'running'): raise RuntimeError('Animation needs a running event handler or async function.')
         self._animation += 1; self._once = None
@@ -346,7 +346,7 @@ class Sprite(Appearance):
 
     async def play_once(self, name):
         """Play a named animation once, ending on its last costume."""
-        self._check()
+        self._require_alive()
         frames, seconds = self._animation_named(name)
         self._playing = None
         once = self._once = (name, self._animation + 1)
@@ -355,14 +355,14 @@ class Sprite(Appearance):
             if self._once is once: self._once = None
 
     def stop_animation(self):
-        self._check()
+        self._require_alive()
         self._animation += 1; self._playing = None; self._once = None
 
     def _show_frame(self, costume):
         if self._state['costume'] != costume:
             self._state['costume'] = costume
             self._frame_index = self._state['costumes'].index(costume) if costume in self._state['costumes'] else -1
-            self._send()
+            self._send_state()
 
     def _animate_tick(self, now):
         """Advance a looping animation, or animate while moving: walk while it moves, its air
@@ -382,7 +382,7 @@ class Sprite(Appearance):
         name = auto['air'] if air and auto['air'] else auto['moving'] if now - self._moved_at < 0.15 else auto['still']
         if auto['turn'] and abs(dx) > 0.2 and self._state['rotationStyle'] == 'left-right':
             facing = 0 if dx > 0 else 180
-            if self._state['direction'] != facing: self._state['direction'] = facing; self._send()
+            if self._state['direction'] != facing: self._state['direction'] = facing; self._send_state()
         if not name: self._auto = None; return
         try: frames, seconds = self._animation_named(name)
         except ValueError: return
@@ -390,14 +390,14 @@ class Sprite(Appearance):
         self._show_frame(frames[int((now - self._auto[1]) / seconds) % len(frames)])
 
     def clone(self):
-        self._check()
+        self._require_alive()
         clone = self._owner._create(dict(self._state), template=self.template_id, data=copy.deepcopy(self.data), is_clone=True)
         clone._frame_index = self._frame_index
         if self._owner._sounds: self._owner._sounds._clone(self.id, clone.id)
         return clone
 
     def destroy(self, _defer_cancel=False):
-        self._check()
+        self._require_alive()
         if self._owner._sounds: self._owner._sounds._destroy(self.id)
         self._owner._send({'type': 'delete', 'id': self.id})
         del self._owner.items[self.id]
@@ -414,9 +414,9 @@ class Sprite(Appearance):
         return c * width + s * height, s * width + c * height
 
     def overlaps(self, other):
-        self._check()
+        self._require_alive()
         if not isinstance(other, Sprite) or other._owner is not self._owner: raise TypeError('Overlap needs another sprite from this scene.')
-        other._check()
+        other._require_alive()
         if self is other or not self.visible or not other.visible: return False
         w, h = self._bounds(); ow, oh = other._bounds()
         return abs(self.x - other.x) < (w + ow) / 2 and abs(self.y - other.y) < (h + oh) / 2
@@ -428,13 +428,13 @@ class Sprite(Appearance):
 
     def touching_pixel(self, x, y):
         x, y = number(x, 'x'), number(y, 'y')
-        self._check()
+        self._require_alive()
         if not self.visible: return False
         from _playground_host import scene_sense
         return bool(scene_sense(json.dumps({'kind': 'point', 'a': self._state, 'x': x, 'y': y, 'world': bool(self._owner.worlds.definitions), 'camera': {'x': self._owner.worlds.x, 'y': self._owner.worlds.y}})))
 
     def touching_color(self, color, own_color=None, tolerance=10):
-        self._check()
+        self._require_alive()
         for value in (color, own_color):
             if value is not None and (type(value) is not str or not re.fullmatch(r'#[0-9a-fA-F]{6}', value)):
                 raise ValueError('Colors need #RRGGBB text.')
@@ -445,7 +445,7 @@ class Sprite(Appearance):
         return bool(scene_sense(json.dumps({'kind': 'color', 'a': self._state, 'color': color, 'ownColor': own_color, 'tolerance': tolerance})))
 
     async def glide(self, seconds, x, y):
-        self._check()
+        self._require_alive()
         if self._state['motion']['body'] == 'moving': raise RuntimeError('Stop automatic motion before using glide on this sprite.')
         seconds = number(seconds, 'Glide seconds', 0, 60)
         x, y = number(x, 'x'), number(y, 'y')
@@ -455,13 +455,13 @@ class Sprite(Appearance):
         start_x, start_y, started = self.x, self.y, time.monotonic()
         while self._alive and self._motion == token:
             progress = 1 if seconds == 0 else min(1, (time.monotonic() - started) / seconds)
-            self._position(start_x + (x - start_x) * progress, start_y + (y - start_y) * progress)
+            self._move_to(start_x + (x - start_x) * progress, start_y + (y - start_y) * progress)
             if progress == 1: break
             await events.wait(min(1 / 30, seconds))
         if seconds == 0: await events.wait(0)
 
     async def animate(self, frames, seconds):
-        self._check()
+        self._require_alive()
         if type(frames) not in (list, tuple) or not 1 <= len(frames) <= 100 or any(type(f) is not str or f not in self._owner.assets for f in frames):
             raise ValueError('Animation needs 1–100 available costume IDs.')
         frames = tuple(frames)
@@ -474,7 +474,7 @@ class Sprite(Appearance):
             if not self._alive or self._animation != token: break
             self._state['costume'] = frame
             self._frame_index = index if authored else self._state['costumes'].index(frame) if frame in self._state['costumes'] else -1
-            self._send()
+            self._send_state()
             await events.wait(seconds)
 
 
@@ -537,7 +537,7 @@ class Scene(Appearance):
     def camera_go(self, x, y): self.worlds.move_camera(x, y)
     def camera_follow(self, sprite): self.worlds.follow(sprite)
     def camera_clamp(self, enabled): self.worlds.clamp(enabled)
-    def tile_at(self, x, y): return self.worlds.at(x, y)
+    def tile_at(self, x, y): return self.worlds.tile_at(x, y)
     def tile_get(self, column, row): return self.worlds.tile(column, row)
     def tile_set(self, column, row, costume, solid=False): self.worlds.set_tile(column, row, costume, solid)
     def tile_wall(self, column, row, solid): self.worlds.set_wall(column, row, solid)
@@ -567,10 +567,10 @@ class Scene(Appearance):
 
     def instances(self, sprite):
         if not isinstance(sprite, Sprite) or sprite._owner is not self: raise TypeError('Choose a sprite from this scene.')
-        sprite._check()
+        sprite._require_alive()
         return [s for s in self.items.values() if s.template_id == sprite.template_id]
 
-    def _check(self): pass
+    def _require_alive(self): pass
 
     def _send_effects(self): self._send({'type': 'effects', 'effects': dict(self._effects)})
 
@@ -613,9 +613,9 @@ class Scene(Appearance):
         self.worlds = Worlds(self); self.worlds.configure(data)
         for state in data['sprites']:
             if state.get('world') is not None and state['world'] != self.worlds.active: continue
-            sprite = Sprite(self, state); self.items[sprite.id] = sprite; sprite._send()
+            sprite = Sprite(self, state); self.items[sprite.id] = sprite; sprite._send_state()
         self.worlds.update_camera()
-        if self.worlds.active: self.worlds.enter()
+        if self.worlds.active: self.worlds.emit_world_enter()
         # Sprites that animate while moving need the motion clock, in any program that runs as events.
         module = sys.modules.get('_playground_events')
         if module and module.events.state == 'setup' and any(s.get('autoAnimate') for s in data['sprites']): self.enable_motion()
@@ -671,7 +671,7 @@ class Scene(Appearance):
         sprite = Sprite(self, state); sprite._runtime_world = True; self.items[identity] = sprite
         sprite.template_id = template or identity; sprite.is_clone = is_clone
         if data is not None: sprite.data = data
-        sprite._send()
+        sprite._send_state()
         if self._behaviors: self._behaviors.created(sprite)
         else: self._pending_clones.append(sprite)
         return sprite

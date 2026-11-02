@@ -38,7 +38,7 @@ function startScript(workspace: Blockly.Workspace, near?: Blockly.Block) {
   return handler;
 }
 /** Append a stack to the end of a script's body. */
-function attach(script: Blockly.Block, first: Blockly.Block) {
+function appendToBody(script: Blockly.Block, first: Blockly.Block) {
   const body = script.getInput('BODY')!.connection!;
   let last = body.targetBlock();
   if (!last) { body.connect(first.previousConnection!); return; }
@@ -57,7 +57,7 @@ export function programToStart(workspace: Blockly.Workspace) {
   const program = workspace.getTopBlocks(true).find(b => b.type === 'py_program'); if (!program) return;
   grouped(() => {
     const script = startScript(workspace, program), first = program.getInput('BODY')?.connection?.targetBlock();
-    if (first) { first.previousConnection!.disconnect(); attach(script, first); }
+    if (first) { first.previousConnection!.disconnect(); appendToBody(script, first); }
     program.dispose(false);
   });
 }
@@ -65,7 +65,7 @@ function mergePrograms(workspace: Blockly.Workspace, extra: Blockly.Block) {
   const keep = workspace.getTopBlocks(true).find(b => b.type === 'py_program' && b !== extra); if (!keep) return;
   grouped(() => {
     const first = extra.getInput('BODY')?.connection?.targetBlock();
-    if (first) { first.previousConnection!.disconnect(); attach(keep, first); }
+    if (first) { first.previousConnection!.disconnect(); appendToBody(keep, first); }
     extra.dispose(false);
   });
 }
@@ -136,7 +136,7 @@ export function fixFor(workspace: Blockly.Workspace, block: Blockly.Block, diagn
       return flow('This block is not in a script', 'Blocks only run inside Program or under an event hat. This one is floating on its own.', [{
         text: 'Drag it under a hat such as “when game starts”, or into Program.',
         highlight: { category: 'events' },
-        action: block.previousConnection ? { label: 'Put it under “when game starts”', run: () => grouped(() => attach(startScript(workspace, block), block)) } : undefined,
+        action: block.previousConnection ? { label: 'Put it under “when game starts”', run: () => grouped(() => appendToBody(startScript(workspace, block), block)) } : undefined,
       }]);
     case 'event-context': case 'wait-context': {
       const program = workspace.getTopBlocks(true).find(b => b.type === 'py_program');

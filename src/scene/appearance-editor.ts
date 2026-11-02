@@ -25,7 +25,7 @@ export function installAppearanceEditor(workspace: Blockly.WorkspaceSvg, selecte
     for (const key of ['color', 'width', 'opacity'] as const) el<HTMLInputElement>('appearance-' + key).value = String(pen[key]);
     for (const name of effectNames) el<HTMLInputElement>('appearance-effect-' + name).value = String((stage ? scene.effects : sprite?.effects)?.[name] ?? 0);
   }
-  function apply(clear = false) {
+  function saveAppearance(clear = false) {
     if (!editable()) return;
     try {
       const scene = sceneState(workspace), sprite = scene.sprites.find(s => s.id === selected());
@@ -39,7 +39,7 @@ export function installAppearanceEditor(workspace: Blockly.WorkspaceSvg, selecte
     } catch (error) { el('appearance-error').textContent = error instanceof Error ? error.message : String(error); }
   }
   target.addEventListener('change', refresh);
-  el('appearance-form').addEventListener('submit', event => { event.preventDefault(); apply(); });
-  el('appearance-clear').addEventListener('click', () => apply(true));
+  el('appearance-form').addEventListener('submit', event => { event.preventDefault(); saveAppearance(); });
+  el('appearance-clear').addEventListener('click', () => saveAppearance(true));
   return { refresh };
 }

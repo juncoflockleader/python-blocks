@@ -16,7 +16,7 @@ export function loopThumb(id: string, card: HTMLElement) {
   image.addEventListener('error', () => image.replaceWith(Object.assign(document.createElement('div'), { className: 'example-thumb' })), { once: true });
   frame.append(image);
   let video: HTMLVideoElement | undefined, failed = false, wanted = false;
-  const make = () => {
+  const createVideo = () => {
     const v = document.createElement('video'); v.className = 'example-thumb example-loop'; v.setAttribute('aria-hidden', 'true');
     v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto';
     for (const [type, file] of [['video/mp4', `${id}.mp4`], ['video/webm', `${id}.webm`]]) { const source = document.createElement('source'); source.type = type; source.src = url(file); v.append(source); }
@@ -28,7 +28,7 @@ export function loopThumb(id: string, card: HTMLElement) {
   };
   const play = () => {
     wanted = true; if (failed || reduced()) return;
-    video ??= make(); video.play().catch(() => {});
+    video ??= createVideo(); video.play().catch(() => {});
   };
   const stop = () => {
     wanted = false; if (!video) return;

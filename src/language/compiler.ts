@@ -141,107 +141,107 @@ function generator() {
   const g = new Generator();
   Object.assign(g.forBlock, standardGenerator.forBlock);
   g.addReservedWords('pen,playground');
-  const v = (b: Blockly.Block, gen: Generator, name: string) => gen.valueToCode(b, name, Order.NONE);
-  const sprite = (b: Blockly.Block, gen: Generator) => `(${v(b, gen, 'SPRITE')})`;
+  const valueCode = (b: Blockly.Block, gen: Generator, name: string) => gen.valueToCode(b, name, Order.NONE);
+  const sprite = (b: Blockly.Block, gen: Generator) => `(${valueCode(b, gen, 'SPRITE')})`;
   for (const type of ['input_timer', 'input_answer']) g.forBlock[type] = (_b, gen) => { gen.useScene('inputs'); return [`_pb_inputs.${type === 'input_timer' ? 'timer' : 'answer'}`, Order.MEMBER]; };
   for (const [type, method] of [['input_timer_reset', 'reset_timer'], ['input_cancel_questions', 'cancel_questions']]) g.forBlock[type] = (_b, gen) => { gen.useScene('inputs'); return `_pb_inputs.${method}()\n`; };
-  for (const type of ['input_ask', 'input_ask_value']) g.forBlock[type] = (b, gen) => { gen.useScene('inputs'); const code = `await _pb_inputs.ask(${v(b, gen, 'TEXT')})`; return type === 'input_ask_value' ? [`(${code})`, Order.ATOMIC] : code + '\n'; };
-  for (const type of ['scene_touching_color', 'scene_color_touching']) g.forBlock[type] = (b, gen) => [`${sprite(b, gen)}.touching_color(${v(b, gen, 'COLOR')}, ${type === 'scene_color_touching' ? v(b, gen, 'OWN_COLOR') : 'None'}, ${v(b, gen, 'TOLERANCE')})`, Order.FUNCTION_CALL];
+  for (const type of ['input_ask', 'input_ask_value']) g.forBlock[type] = (b, gen) => { gen.useScene('inputs'); const code = `await _pb_inputs.ask(${valueCode(b, gen, 'TEXT')})`; return type === 'input_ask_value' ? [`(${code})`, Order.ATOMIC] : code + '\n'; };
+  for (const type of ['scene_touching_color', 'scene_color_touching']) g.forBlock[type] = (b, gen) => [`${sprite(b, gen)}.touching_color(${valueCode(b, gen, 'COLOR')}, ${type === 'scene_color_touching' ? valueCode(b, gen, 'OWN_COLOR') : 'None'}, ${valueCode(b, gen, 'TOLERANCE')})`, Order.FUNCTION_CALL];
   g.forBlock['sound_asset'] = (b, gen) => [gen.quote_(b.getFieldValue('SOUND_ID')), Order.ATOMIC];
   for (const [type, method, args] of [
     ['sound_play', 'play', ['SOUND', 'OWNER']], ['sound_loop', 'loop', ['SOUND', 'OWNER']], ['sound_wait', 'play_wait', ['SOUND', 'OWNER']],
     ['sound_stop', 'stop', ['OWNER']], ['sound_stop_all', 'stop_all', []], ['sound_clear', 'clear_effects', ['OWNER']],
     ['sound_tempo', 'set_tempo', ['VALUE']], ['sound_rest', 'rest', ['BEATS']],
-  ] as const) g.forBlock[type] = (b, gen) => { gen.useScene('sounds'); return `${['sound_wait', 'sound_rest'].includes(type) ? 'await ' : ''}_pb_sounds.${method}(${args.map(a => v(b, gen, a)).join(', ')})\n`; };
+  ] as const) g.forBlock[type] = (b, gen) => { gen.useScene('sounds'); return `${['sound_wait', 'sound_rest'].includes(type) ? 'await ' : ''}_pb_sounds.${method}(${args.map(a => valueCode(b, gen, a)).join(', ')})\n`; };
   for (const type of ['sound_set', 'sound_change', 'sound_get']) g.forBlock[type] = (b, gen) => {
-    gen.useScene('sounds'); const code = `_pb_sounds.${type.slice(6)}(${gen.quote_(b.getFieldValue('FIELD'))}, ${type === 'sound_get' ? '' : v(b, gen, 'VALUE') + ', '}${v(b, gen, 'OWNER')})`;
+    gen.useScene('sounds'); const code = `_pb_sounds.${type.slice(6)}(${gen.quote_(b.getFieldValue('FIELD'))}, ${type === 'sound_get' ? '' : valueCode(b, gen, 'VALUE') + ', '}${valueCode(b, gen, 'OWNER')})`;
     return type === 'sound_get' ? [code, Order.FUNCTION_CALL] : code + '\n';
   };
   g.forBlock['sound_tempo_get'] = (_b, gen) => { gen.useScene('sounds'); return ['_pb_sounds.tempo', Order.MEMBER]; };
-  g.forBlock['sound_note'] = (b, gen) => { gen.useScene('sounds'); return `await _pb_sounds.note(${v(b, gen, 'NOTE')}, ${v(b, gen, 'BEATS')}, ${gen.quote_(b.getFieldValue('INSTRUMENT'))}, ${v(b, gen, 'OWNER')})\n`; };
-  for (const type of ['game_set', 'game_change']) g.forBlock[type] = (b, gen) => { gen.useScene('game'); return `_pb_game.${type === 'game_set' ? 'set' : 'change'}(${gen.quote_(b.getFieldValue('FIELD'))}, ${v(b, gen, 'VALUE')})\n`; };
+  g.forBlock['sound_note'] = (b, gen) => { gen.useScene('sounds'); return `await _pb_sounds.note(${valueCode(b, gen, 'NOTE')}, ${valueCode(b, gen, 'BEATS')}, ${gen.quote_(b.getFieldValue('INSTRUMENT'))}, ${valueCode(b, gen, 'OWNER')})\n`; };
+  for (const type of ['game_set', 'game_change']) g.forBlock[type] = (b, gen) => { gen.useScene('game'); return `_pb_game.${type === 'game_set' ? 'set' : 'change'}(${gen.quote_(b.getFieldValue('FIELD'))}, ${valueCode(b, gen, 'VALUE')})\n`; };
   g.forBlock['game_get'] = (b, gen) => { gen.useScene('game'); return [`_pb_game.get(${gen.quote_(b.getFieldValue('FIELD'))})`, Order.FUNCTION_CALL]; };
   g.forBlock['game_show'] = (b, gen) => { gen.useScene('game'); return `_pb_game.show(${gen.quote_(b.getFieldValue('FIELD'))}, ${b.getFieldValue('SHOW') === 'TRUE' ? 'True' : 'False'})\n`; };
-  g.forBlock['game_message'] = (b, gen) => { gen.useScene('game'); return `_pb_game.message(${v(b, gen, 'TEXT')})\n`; };
+  g.forBlock['game_message'] = (b, gen) => { gen.useScene('game'); return `_pb_game.message(${valueCode(b, gen, 'TEXT')})\n`; };
   g.forBlock['game_lives_rule'] = (b, gen) => { gen.useScene('game'); return `_pb_game.lives_rule(${gen.quote_(b.getFieldValue('ACTION'))})\n`; };
-  g.forBlock['game_countdown'] = (b, gen) => { gen.useScene('game'); return `_pb_game.countdown(${v(b, gen, 'SECONDS')}, ${gen.quote_(b.getFieldValue('ACTION'))})\n`; };
+  g.forBlock['game_countdown'] = (b, gen) => { gen.useScene('game'); return `_pb_game.countdown(${valueCode(b, gen, 'SECONDS')}, ${gen.quote_(b.getFieldValue('ACTION'))})\n`; };
   g.forBlock['game_countdown_stop'] = (_b, gen) => { gen.useScene('game'); return '_pb_game.stop_countdown()\n'; };
-  g.forBlock['game_finish'] = (b, gen) => { gen.useScene('game'); return `_pb_game.finish(${b.getFieldValue('WON') === 'TRUE' ? 'True' : 'False'}, ${v(b, gen, 'TEXT')})\n`; };
-  g.forBlock['game_effect'] = (b, gen) => { gen.useScene('game'); return `_pb_game.effect(${gen.quote_(b.getFieldValue('KIND'))}, ${v(b, gen, 'SPRITE')}, ${v(b, gen, 'SECONDS')})\n`; };
+  g.forBlock['game_finish'] = (b, gen) => { gen.useScene('game'); return `_pb_game.finish(${b.getFieldValue('WON') === 'TRUE' ? 'True' : 'False'}, ${valueCode(b, gen, 'TEXT')})\n`; };
+  g.forBlock['game_effect'] = (b, gen) => { gen.useScene('game'); return `_pb_game.effect(${gen.quote_(b.getFieldValue('KIND'))}, ${valueCode(b, gen, 'SPRITE')}, ${valueCode(b, gen, 'SECONDS')})\n`; };
   g.forBlock['game_effect_clear'] = (_b, gen) => { gen.useScene('game'); return '_pb_game.clear_effects()\n'; };
   g.forBlock['scene_sprite'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.named(${gen.quote_(readScene(b.workspace).sprites.find(s => s.id === b.getFieldValue('SPRITE_ID'))!.name)})`, Order.FUNCTION_CALL]; };
   g.forBlock['scene_costume'] = (b, gen) => [gen.quote_(b.getFieldValue('COSTUME_ID')), Order.ATOMIC];
   g.forBlock['scene_backdrop'] = (b, gen) => [b.getFieldValue('BACKDROP_ID') ? gen.quote_(b.getFieldValue('BACKDROP_ID')) : 'None', Order.ATOMIC];
-  g.forBlock['scene_backdrop_set'] = (b, gen) => { gen.useScene('scene'); return `_pb_scene.set_backdrop(${v(b, gen, 'BACKDROP')})\n`; };
+  g.forBlock['scene_backdrop_set'] = (b, gen) => { gen.useScene('scene'); return `_pb_scene.set_backdrop(${valueCode(b, gen, 'BACKDROP')})\n`; };
   g.forBlock['scene_backdrop_next'] = (_b, gen) => { gen.useScene('scene'); return '_pb_scene.next_backdrop()\n'; };
   g.forBlock['scene_backdrop_get'] = (b, gen) => { gen.useScene('scene'); return [`_pb_scene.${b.getFieldValue('PROPERTY')}`, Order.MEMBER]; };
   g.forBlock['scene_frames'] = (b, gen) => [`${sprite(b, gen)}.frames`, Order.MEMBER];
-  g.forBlock['scene_kind_set'] = (b, gen) => `${sprite(b, gen)}.set_kind(${v(b, gen, 'KIND')})\n`;
-  g.forBlock['scene_of_kind'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.of_kind(${v(b, gen, 'KIND')})`, Order.FUNCTION_CALL]; };
-  for (const [type, action] of [['scene_motion_set', 'set_motion'], ['scene_motion_change', 'change_motion']]) g.forBlock[type] = (b, gen) => `${sprite(b, gen)}.${action}(${gen.quote_(b.getFieldValue('PROPERTY'))}, ${v(b, gen, 'VALUE')})\n`;
+  g.forBlock['scene_kind_set'] = (b, gen) => `${sprite(b, gen)}.set_kind(${valueCode(b, gen, 'KIND')})\n`;
+  g.forBlock['scene_of_kind'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.of_kind(${valueCode(b, gen, 'KIND')})`, Order.FUNCTION_CALL]; };
+  for (const [type, action] of [['scene_motion_set', 'set_motion'], ['scene_motion_change', 'change_motion']]) g.forBlock[type] = (b, gen) => `${sprite(b, gen)}.${action}(${gen.quote_(b.getFieldValue('PROPERTY'))}, ${valueCode(b, gen, 'VALUE')})\n`;
   g.forBlock['scene_motion_get'] = (b, gen) => [`${sprite(b, gen)}.motion_value(${gen.quote_(b.getFieldValue('PROPERTY'))})`, Order.FUNCTION_CALL];
   for (const key of ['body', 'response', 'edges']) g.forBlock['scene_motion_' + key] = (b, gen) => `${sprite(b, gen)}.set_motion(${gen.quote_(key)}, ${gen.quote_(b.getFieldValue('MODE'))})\n`;
   g.forBlock['scene_motion_auto'] = (b, gen) => `${sprite(b, gen)}.set_motion("autoDestroy", ${b.getFieldValue('ENABLED') === 'TRUE' ? 'True' : 'False'})\n`;
   g.forBlock['scene_motion_stop'] = (b, gen) => `${sprite(b, gen)}.stop_motion()\n`;
-  g.forBlock['scene_control'] = (b, gen) => `${sprite(b, gen)}.control(${gen.quote_(b.getFieldValue('SCHEME'))}, ${v(b, gen, 'VX')}, ${v(b, gen, 'VY')})\n`;
-  g.forBlock['scene_jump'] = (b, gen) => `${sprite(b, gen)}.jump(${v(b, gen, 'VALUE')})\n`;
-  for (const type of ['scene_projectile', 'scene_fire']) g.forBlock[type] = (b, gen) => { const code = `${sprite(b, gen)}.projectile(${v(b, gen, 'COSTUME')}, ${v(b, gen, 'VX')}, ${v(b, gen, 'VY')}, ${v(b, gen, 'SECONDS')})`; return type === 'scene_projectile' ? [code, Order.FUNCTION_CALL] : code + '\n'; };
+  g.forBlock['scene_control'] = (b, gen) => `${sprite(b, gen)}.control(${gen.quote_(b.getFieldValue('SCHEME'))}, ${valueCode(b, gen, 'VX')}, ${valueCode(b, gen, 'VY')})\n`;
+  g.forBlock['scene_jump'] = (b, gen) => `${sprite(b, gen)}.jump(${valueCode(b, gen, 'VALUE')})\n`;
+  for (const type of ['scene_projectile', 'scene_fire']) g.forBlock[type] = (b, gen) => { const code = `${sprite(b, gen)}.projectile(${valueCode(b, gen, 'COSTUME')}, ${valueCode(b, gen, 'VX')}, ${valueCode(b, gen, 'VY')}, ${valueCode(b, gen, 'SECONDS')})`; return type === 'scene_projectile' ? [code, Order.FUNCTION_CALL] : code + '\n'; };
   g.forBlock['scene_world'] = (b, gen) => [b.getFieldValue('WORLD_ID') ? gen.quote_(b.getFieldValue('WORLD_ID')) : 'None', Order.ATOMIC];
   for (const [type, method, args, output] of [
     ['scene_world_set', 'switch_world', ['WORLD'], false], ['scene_world_next', 'next_world', [], false], ['scene_world_restart', 'restart_world', [], false],
     ['scene_camera_go', 'camera_go', ['X', 'Y'], false], ['scene_camera_follow', 'camera_follow', ['SPRITE'], false], ['scene_camera_clamp', 'camera_clamp', ['ENABLED'], false],
     ['scene_tile_get', 'tile_get', ['COLUMN', 'ROW'], true], ['scene_tile_at', 'tile_at', ['X', 'Y'], true], ['scene_tile_set', 'tile_set', ['COLUMN', 'ROW', 'COSTUME', 'ENABLED'], false], ['scene_tile_wall', 'tile_wall', ['COLUMN', 'ROW', 'ENABLED'], false], ['scene_tiles_of', 'tiles_of', ['COSTUME'], true], ['scene_tile_place', 'tile_place', ['SPRITE', 'COLUMN', 'ROW'], false],
-  ] as const) g.forBlock[type] = (b, gen) => { gen.useScene('scene'); const code = `_pb_scene.${method}(${args.map(a => v(b, gen, a)).join(', ')})`; return output ? [code, Order.FUNCTION_CALL] : code + '\n'; };
+  ] as const) g.forBlock[type] = (b, gen) => { gen.useScene('scene'); const code = `_pb_scene.${method}(${args.map(a => valueCode(b, gen, a)).join(', ')})`; return output ? [code, Order.FUNCTION_CALL] : code + '\n'; };
   for (const type of ['scene_world_get', 'scene_camera_get']) g.forBlock[type] = (b, gen) => { gen.useScene('scene'); return [`_pb_scene.${b.getFieldValue('PROPERTY')}`, Order.MEMBER]; };
   g.forBlock['scene_map_get'] = (b, gen) => { gen.useScene('scene'); return [`_pb_scene.map_value(${gen.quote_(b.getFieldValue('PROPERTY'))})`, Order.FUNCTION_CALL]; };
   g.forBlock['scene_self'] = (_b, gen) => { gen.useScene('scene'); return ['_pb_scene.current_sprite', Order.MEMBER]; };
   g.forBlock['scene_data'] = (b, gen) => [`${sprite(b, gen)}.data`, Order.MEMBER];
-  g.forBlock['scene_data_get'] = (b, gen) => [`${sprite(b, gen)}.data[${v(b, gen, 'KEY')}]`, Order.MEMBER];
-  g.forBlock['scene_data_set'] = (b, gen) => `${sprite(b, gen)}.data[${v(b, gen, 'KEY')}] = ${v(b, gen, 'VALUE')}\n`;
+  g.forBlock['scene_data_get'] = (b, gen) => [`${sprite(b, gen)}.data[${valueCode(b, gen, 'KEY')}]`, Order.MEMBER];
+  g.forBlock['scene_data_set'] = (b, gen) => `${sprite(b, gen)}.data[${valueCode(b, gen, 'KEY')}] = ${valueCode(b, gen, 'VALUE')}\n`;
   g.forBlock['scene_all'] = (_b, gen) => { gen.useScene('sprites'); return ['_pb_sprites.all()', Order.FUNCTION_CALL]; };
-  g.forBlock['scene_instances'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.instances(${v(b, gen, 'SPRITE')})`, Order.FUNCTION_CALL]; };
-  g.forBlock['scene_pixels'] = (b, gen) => [`${sprite(b, gen)}.touching_pixels(${v(b, gen, 'OTHER')})`, Order.FUNCTION_CALL];
-  g.forBlock['scene_pixel_point'] = (b, gen) => [`${sprite(b, gen)}.touching_pixel(${v(b, gen, 'X')}, ${v(b, gen, 'Y')})`, Order.FUNCTION_CALL];
+  g.forBlock['scene_instances'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.instances(${valueCode(b, gen, 'SPRITE')})`, Order.FUNCTION_CALL]; };
+  g.forBlock['scene_pixels'] = (b, gen) => [`${sprite(b, gen)}.touching_pixels(${valueCode(b, gen, 'OTHER')})`, Order.FUNCTION_CALL];
+  g.forBlock['scene_pixel_point'] = (b, gen) => [`${sprite(b, gen)}.touching_pixel(${valueCode(b, gen, 'X')}, ${valueCode(b, gen, 'Y')})`, Order.FUNCTION_CALL];
   g.forBlock['scene_pen_state'] = (b, gen) => `${sprite(b, gen)}.${b.getFieldValue('ACTION')}()\n`;
-  g.forBlock['scene_pen_color'] = (b, gen) => `${sprite(b, gen)}.set_pen("color", ${v(b, gen, 'COLOR')})\n`;
-  for (const [type, method] of [['scene_pen_set', 'set_pen'], ['scene_pen_change', 'change_pen']]) g.forBlock[type] = (b, gen) => `${sprite(b, gen)}.${method}(${gen.quote_(b.getFieldValue('PROPERTY'))}, ${v(b, gen, 'VALUE')})\n`;
+  g.forBlock['scene_pen_color'] = (b, gen) => `${sprite(b, gen)}.set_pen("color", ${valueCode(b, gen, 'COLOR')})\n`;
+  for (const [type, method] of [['scene_pen_set', 'set_pen'], ['scene_pen_change', 'change_pen']]) g.forBlock[type] = (b, gen) => `${sprite(b, gen)}.${method}(${gen.quote_(b.getFieldValue('PROPERTY'))}, ${valueCode(b, gen, 'VALUE')})\n`;
   g.forBlock['scene_pen_get'] = (b, gen) => [`${sprite(b, gen)}.pen_value(${gen.quote_(b.getFieldValue('PROPERTY'))})`, Order.FUNCTION_CALL];
   g.forBlock['scene_pen_clear'] = (_b, gen) => { gen.useScene('scene'); return '_pb_scene.clear_pen()\n'; };
   for (const stage of [false, true]) {
     const target = (b: Blockly.Block, gen: Generator) => { if (stage) { gen.useScene('scene'); return '_pb_scene'; } return sprite(b, gen); };
     const prefix = stage ? 'scene_stage_effect_' : 'scene_effect_';
-    for (const action of ['set', 'change']) g.forBlock[prefix + action] = (b, gen) => `${target(b, gen)}.${action}_effect(${gen.quote_(b.getFieldValue('EFFECT'))}, ${v(b, gen, 'VALUE')})\n`;
+    for (const action of ['set', 'change']) g.forBlock[prefix + action] = (b, gen) => `${target(b, gen)}.${action}_effect(${gen.quote_(b.getFieldValue('EFFECT'))}, ${valueCode(b, gen, 'VALUE')})\n`;
     g.forBlock[prefix + 'get'] = (b, gen) => [`${target(b, gen)}.get_effect(${gen.quote_(b.getFieldValue('EFFECT'))})`, Order.FUNCTION_CALL];
     g.forBlock[prefix + 'clear'] = (b, gen) => `${target(b, gen)}.clear_effects()\n`;
   }
-  g.forBlock['scene_lookup'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.get(${v(b, gen, 'NAME')})`, Order.FUNCTION_CALL]; };
-  g.forBlock['scene_create'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.create(${v(b, gen, 'COSTUME')})`, Order.FUNCTION_CALL]; };
+  g.forBlock['scene_lookup'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.get(${valueCode(b, gen, 'NAME')})`, Order.FUNCTION_CALL]; };
+  g.forBlock['scene_create'] = (b, gen) => { gen.useScene('sprites'); return [`_pb_sprites.create(${valueCode(b, gen, 'COSTUME')})`, Order.FUNCTION_CALL]; };
   for (const [type, method, args] of [
     ['scene_move', 'move', ['VALUE']], ['scene_turn', 'turn', ['VALUE']], ['scene_go', 'go_to', ['X', 'Y']],
     ['scene_costume_set', 'costume', ['COSTUME']], ['scene_next_costume', 'next_costume', []], ['scene_play_animation', 'play_animation', []], ['scene_destroy', 'destroy', []],
     ['scene_point', 'point_towards', ['X', 'Y']], ['scene_bounce', 'bounce', []], ['scene_stamp', 'stamp', []],
     ['scene_glide', 'glide', ['SECONDS', 'X', 'Y']], ['scene_animate', 'animate', ['FRAMES', 'SECONDS']],
-  ] as const) g.forBlock[type] = (b, gen) => `${['scene_glide', 'scene_animate', 'scene_play_animation'].includes(type) ? 'await ' : ''}${sprite(b, gen)}.${method}(${args.map(a => v(b, gen, a)).join(', ')})\n`;
+  ] as const) g.forBlock[type] = (b, gen) => `${['scene_glide', 'scene_animate', 'scene_play_animation'].includes(type) ? 'await ' : ''}${sprite(b, gen)}.${method}(${args.map(a => valueCode(b, gen, a)).join(', ')})\n`;
   // Named animations: play loops until another starts; once waits for the last costume.
   g.forBlock['scene_animation_play'] = (b, gen) => `${sprite(b, gen)}.play(${gen.quote_(b.getFieldValue('ANIMATION'))})\n`;
   g.forBlock['scene_animation_once'] = (b, gen) => `await ${sprite(b, gen)}.play_once(${gen.quote_(b.getFieldValue('ANIMATION'))})\n`;
   g.forBlock['scene_animation_stop'] = (b, gen) => `${sprite(b, gen)}.stop_animation()\n`;
   g.forBlock['scene_animation_get'] = (b, gen) => [`${sprite(b, gen)}.animation`, Order.MEMBER];
-  g.forBlock['scene_set'] = (b, gen) => `${sprite(b, gen)}.set(${gen.quote_(b.getFieldValue('PROPERTY'))}, ${v(b, gen, 'VALUE')})\n`;
-  g.forBlock['scene_change'] = (b, gen) => `${sprite(b, gen)}.change(${gen.quote_(b.getFieldValue('PROPERTY'))}, ${v(b, gen, 'VALUE')})\n`;
+  g.forBlock['scene_set'] = (b, gen) => `${sprite(b, gen)}.set(${gen.quote_(b.getFieldValue('PROPERTY'))}, ${valueCode(b, gen, 'VALUE')})\n`;
+  g.forBlock['scene_change'] = (b, gen) => `${sprite(b, gen)}.change(${gen.quote_(b.getFieldValue('PROPERTY'))}, ${valueCode(b, gen, 'VALUE')})\n`;
   g.forBlock['scene_rotation'] = (b, gen) => `${sprite(b, gen)}.rotation_style(${gen.quote_(b.getFieldValue('STYLE'))})\n`;
   g.forBlock['scene_layer'] = (b, gen) => `${sprite(b, gen)}.to_layer(${gen.quote_(b.getFieldValue('PLACE'))})\n`;
-  for (const [type, method] of [['scene_distance', 'distance_to'], ['scene_touching_point', 'touching_point']]) g.forBlock[type] = (b, gen) => [`${sprite(b, gen)}.${method}(${v(b, gen, 'X')}, ${v(b, gen, 'Y')})`, Order.FUNCTION_CALL];
+  for (const [type, method] of [['scene_distance', 'distance_to'], ['scene_touching_point', 'touching_point']]) g.forBlock[type] = (b, gen) => [`${sprite(b, gen)}.${method}(${valueCode(b, gen, 'X')}, ${valueCode(b, gen, 'Y')})`, Order.FUNCTION_CALL];
   g.forBlock['scene_edge'] = (b, gen) => [`${sprite(b, gen)}.touching_edge(${gen.quote_(b.getFieldValue('EDGE'))})`, Order.FUNCTION_CALL];
-  g.forBlock['scene_say'] = (b, gen) => `${sprite(b, gen)}.say(${v(b, gen, 'TEXT')}, ${gen.quote_(b.getFieldValue('STYLE'))})\n`;
-  g.forBlock['scene_say_for'] = (b, gen) => `await ${sprite(b, gen)}.say_for(${v(b, gen, 'TEXT')}, ${v(b, gen, 'SECONDS')}, ${gen.quote_(b.getFieldValue('STYLE'))})\n`;
+  g.forBlock['scene_say'] = (b, gen) => `${sprite(b, gen)}.say(${valueCode(b, gen, 'TEXT')}, ${gen.quote_(b.getFieldValue('STYLE'))})\n`;
+  g.forBlock['scene_say_for'] = (b, gen) => `await ${sprite(b, gen)}.say_for(${valueCode(b, gen, 'TEXT')}, ${valueCode(b, gen, 'SECONDS')}, ${gen.quote_(b.getFieldValue('STYLE'))})\n`;
   g.forBlock['scene_pointer'] = (b, gen) => { gen.useScene('inputs'); return [`_pb_inputs.${b.getFieldValue('PROPERTY')}`, Order.MEMBER]; };
   g.forBlock['scene_get'] = (b, gen) => [`${sprite(b, gen)}.${b.getFieldValue('PROPERTY')}`, Order.MEMBER];
   g.forBlock['scene_visibility'] = (b, gen) => `${sprite(b, gen)}.${b.getFieldValue('ACTION')}()\n`;
   g.forBlock['scene_clone'] = (b, gen) => [`${sprite(b, gen)}.clone()`, Order.FUNCTION_CALL];
-  g.forBlock['scene_overlaps'] = (b, gen) => [`${sprite(b, gen)}.overlaps(${v(b, gen, 'OTHER')})`, Order.FUNCTION_CALL];
+  g.forBlock['scene_overlaps'] = (b, gen) => [`${sprite(b, gen)}.overlaps(${valueCode(b, gen, 'OTHER')})`, Order.FUNCTION_CALL];
   g.forBlock['scene_key'] = (b, gen) => { gen.useScene('inputs'); return [`_pb_inputs.key_down(${gen.quote_(b.getFieldValue('KEY'))})`, Order.FUNCTION_CALL]; };
-  g.forBlock['scene_background'] = (b, gen) => { gen.useScene('scene'); return `_pb_scene.background(${v(b, gen, 'COLOR')})\n`; };
+  g.forBlock['scene_background'] = (b, gen) => { gen.useScene('scene'); return `_pb_scene.background(${valueCode(b, gen, 'COLOR')})\n`; };
   g.forBlock['py_emit'] = (b, gen) => { gen.useEvents(); return `events.emit(${gen.valueToCode(b, 'EVENT', Order.NONE)}, ${gen.valueToCode(b, 'PAYLOAD', Order.NONE)})\n`; };
   g.forBlock['py_wait'] = (b, gen) => { gen.useEvents(); return `await events.wait(${gen.valueToCode(b, 'SECONDS', Order.NONE)})\n`; };
   g.forBlock['lists_create_with'] = (b, gen) => [`[${b.inputList.filter(i => i.name.startsWith('ADD')).map(i => gen.valueToCode(b, i.name, Order.NONE)).join(', ')}]`, Order.ATOMIC];
@@ -270,12 +270,12 @@ function generator() {
     return '';
   };
   g.forBlock['py_handler'] = g.forBlock['py_function'];
-  const call = (block: Blockly.Block, gen: Generator) => {
+  const callCode = (block: Blockly.Block, gen: Generator) => {
     const model = (block as FunctionBlock).getProcedureModel()!;
     return `${signatureOf(model).async ? 'await ' : ''}${model.getName()}(${model.getParameters().map(p => gen.valueToCode(block, `ARG_${p.getId()}`, Order.NONE)).join(', ')})`;
   };
-  g.forBlock['py_call'] = (b, gen) => `${call(b, gen)}\n`;
-  g.forBlock['py_call_value'] = (b, gen) => signatureOf((b as FunctionBlock).getProcedureModel()!).async ? [`(${call(b, gen)})`, Order.ATOMIC] : [call(b, gen), Order.FUNCTION_CALL];
+  g.forBlock['py_call'] = (b, gen) => `${callCode(b, gen)}\n`;
+  g.forBlock['py_call_value'] = (b, gen) => signatureOf((b as FunctionBlock).getProcedureModel()!).async ? [`(${callCode(b, gen)})`, Order.ATOMIC] : [callCode(b, gen), Order.FUNCTION_CALL];
   g.forBlock['py_function_ref'] = b => [(b as FunctionBlock).getProcedureModel()!.getName(), Order.ATOMIC];
   g.forBlock['py_lambda'] = (b, gen) => {
     const parameters = (b as LambdaBlock).lambda.parameters.map(p => p.name).join(', ');

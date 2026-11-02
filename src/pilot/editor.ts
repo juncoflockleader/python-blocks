@@ -41,7 +41,7 @@ export function installPilot(options: PilotOptions) {
     try { const raw = JSON.stringify(next); localStorage.setItem(PILOT_KEY, raw); lastStored = raw; storageFailure = false; }
     catch { storageFailure = true; throw new Error('Browser storage is full or unavailable. Download observations and checkpoints before leaving. Project replacement was cancelled.'); }
   }
-  function action(fn: () => void) { try { fn(); } catch (error) { message(error instanceof Error ? error.message : 'The pilot action failed.'); } }
+  function reportErrors(fn: () => void) { try { fn(); } catch (error) { message(error instanceof Error ? error.message : 'The pilot reportErrors failed.'); } }
   function stopTimer() {
     if (timer === null || !session) return;
     session.record.notes[session.record.task].elapsedMs += Math.max(0, performance.now() - timer); timer = null;
@@ -62,7 +62,7 @@ export function installPilot(options: PilotOptions) {
     el('tasks').replaceChildren(...tasks.map((task, index) => {
       const b = document.createElement('button'); b.type = 'button'; b.className = 'button secondary'; b.textContent = `${index + 1}. ${task.title}`;
       b.setAttribute('aria-current', String(index === record.task));
-      b.addEventListener('click', () => action(() => { stopTimer(); const next = structuredClone(session!); next.record.task = index; persist(next); session = next; render(); })); return b;
+      b.addEventListener('click', () => reportErrors(() => { stopTimer(); const next = structuredClone(session!); next.record.task = index; persist(next); session = next; render(); })); return b;
     }));
     el('task-title').textContent = task.title; el('prompt').textContent = task.prompt;
     el('sprites').hidden = task.id !== 'assets' || !!record.endedAt;
@@ -74,37 +74,37 @@ export function installPilot(options: PilotOptions) {
     el<HTMLButtonElement>('finish').disabled = !!record.endedAt; el<HTMLButtonElement>('timer').disabled = !!record.endedAt;
     renderTime();
   }
-  el('setup').addEventListener('submit', event => { event.preventDefault(); action(() => {
+  el('setup').addEventListener('submit', event => { event.preventDefault(); reportErrors(() => {
     const original = options.capture(), starter = options.starter('score');
     const next = newSession(el<HTMLInputElement>('participant').value, el<HTMLSelectElement>('experience').value, el<HTMLTextAreaElement>('setting').value, options.revision, navigator.userAgent, original);
     persist(next); session = next; render(); options.load(starter);
     message('Session started. Record predictions before Run. Your original project has a return copy.');
   }); });
-  for (const key of ['prediction', 'observation', 'interpretation', 'outcome', 'hint'] as const) el(key).addEventListener('input', () => action(() => {
+  for (const key of ['prediction', 'observation', 'interpretation', 'outcome', 'hint'] as const) el(key).addEventListener('input', () => reportErrors(() => {
     if (!session) return;
     const note = session.record.notes[session.record.task];
     (note[key] as string) = el<HTMLInputElement>(key).value; persist(); message('Pilot notes saved in this browser.');
   }));
-  el('discussion').addEventListener('input', () => action(() => { if (session) { session.record.discussion = el<HTMLTextAreaElement>('discussion').value; persist(); message('Pilot notes saved in this browser.'); } }));
-  el('timer').addEventListener('click', () => action(() => {
+  el('discussion').addEventListener('input', () => reportErrors(() => { if (session) { session.record.discussion = el<HTMLTextAreaElement>('discussion').value; persist(); message('Pilot notes saved in this browser.'); } }));
+  el('timer').addEventListener('click', () => reportErrors(() => {
     if (!session || session.record.endedAt) return;
     if (timer === null) timer = performance.now(); else { stopTimer(); persist(); } renderTime();
   }));
-  el('sprites').addEventListener('click', () => action(() => {
+  el('sprites').addEventListener('click', () => reportErrors(() => {
     if (!session || session.record.endedAt || session.backups.beforeSprites) return;
     const next = structuredClone(session); next.backups.beforeSprites = options.capture();
     const starter = options.starter('sprites'); persist(next); session = next; render(); options.load(starter);
     message('Sprite starter loaded. Your earlier work is available in saved checkpoints.');
   }));
-  el('download').addEventListener('click', () => action(() => {
+  el('download').addEventListener('click', () => reportErrors(() => {
     if (!session) return; stopTimer(); renderTime(); options.download(`pilot-${session.record.participant}-observations.json`, exportRecord(session));
     persist(); message('Observation record downloaded. It does not include project checkpoints.');
   }));
-  el('finish').addEventListener('click', () => action(() => {
+  el('finish').addEventListener('click', () => reportErrors(() => {
     if (!session) return; stopTimer(); const next = structuredClone(session); next.record.endedAt = new Date().toISOString(); persist(next); session = next; render();
     message('Session finished. Download your observations, then review them with the facilitator. Unobserved tasks remain unobserved.');
   }));
-  el('return').addEventListener('click', () => action(() => {
+  el('return').addEventListener('click', () => reportErrors(() => {
     if (!session || session.backups.endProject) return;
     if (!window.confirm('Save this project as the end checkpoint and return to the project from before the pilot?')) return;
     stopTimer(); const next = structuredClone(session); next.backups.endProject = options.capture(); next.record.endedAt ??= new Date().toISOString();
@@ -112,17 +112,17 @@ export function installPilot(options: PilotOptions) {
   }));
   el('download-backup').addEventListener('click', () => { if (session) options.download(`pilot-${el<HTMLSelectElement>('backup').value}.python-blocks.json`, session.backups[el<HTMLSelectElement>('backup').value]); });
   el('recovery').addEventListener('click', () => { if (rawRecovery) options.download('pilot-recovery.json', rawRecovery); });
-  el('clear').addEventListener('click', () => action(() => {
+  el('clear').addEventListener('click', () => reportErrors(() => {
     if (!window.confirm('Delete the pilot notes and all pilot checkpoints from this browser? Download anything you want to keep first. Your current project stays open.')) return;
     if (localStorage.getItem(PILOT_KEY) !== lastStored) throw new Error('Pilot data changed in another tab. Reload before clearing it.');
     localStorage.removeItem(PILOT_KEY); lastStored = null; timer = null; session = null; rawRecovery = null; storageFailure = false; render(); message('Pilot data cleared.');
   }));
-  function pause() { if (timer !== null) action(() => { stopTimer(); persist(); renderTime(); }); }
+  function pause() { if (timer !== null) reportErrors(() => { stopTimer(); persist(); renderTime(); }); }
   const visibility = () => { if (document.hidden) pause(); };
   const leaving = (event: BeforeUnloadEvent) => { if (storageFailure) event.preventDefault(); };
   document.addEventListener('visibilitychange', visibility); window.addEventListener('pagehide', pause); window.addEventListener('beforeunload', leaving);
   const ticker = window.setInterval(() => { if (!disposed && timer !== null) { renderTime(); } }, 1000);
-  action(() => {
+  reportErrors(() => {
     rawRecovery = localStorage.getItem(PILOT_KEY); lastStored = rawRecovery;
     if (rawRecovery) { session = readSession(rawRecovery); rawRecovery = null; message('Saved pilot session restored. The task timer is paused.'); }
   }); render();

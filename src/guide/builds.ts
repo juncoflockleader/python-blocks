@@ -123,10 +123,10 @@ export interface GuideHost {
   /** Add scripts as one Undo step, first removing `replace` (block ids), making `variables` they use; returns the new scripts' ids. */
   insert(parts: RecipePart[], title: string, select?: string, other?: string, replace?: string[], variables?: string[]): string[];
   /** Keep the current project before a lesson replaces it; false when it cannot be kept. */
-  keep(): boolean;
+  keepProject(): boolean;
   /** Reopen the kept project; false when a Python draft must be saved first. */
-  restore(): boolean;
-  kept(): boolean;
+  restoreProject(): boolean;
+  hasKeptProject(): boolean;
   play(): void;
   /** The Help tab reads "Lesson" while a lesson is open. */
   tabLabel(text: string): void;
@@ -246,7 +246,7 @@ export function installGuide(host: GuideHost) {
     highlighted = targets;
   }
   const clearConfirm = () => { pending = null; el('guide-confirm').hidden = true; };
-  const showKept = () => { el('guide-kept').hidden = !!active || !host.kept(); };
+  const showKept = () => { el('guide-kept').hidden = !!active || !host.hasKeptProject(); };
 
   /** A lesson opens a start sheet; starting it keeps the current project instead of asking twice. */
   function offerLesson(build: Build) {
@@ -273,7 +273,7 @@ export function installGuide(host: GuideHost) {
   el('lesson-start-go').addEventListener('click', () => {
     const build = starting; if (!build) return;
     const force = el('lesson-start-go').dataset.force === 'yes';
-    if (host.workspace.getTopBlocks(false).length && !force && !host.keep()) {
+    if (host.workspace.getTopBlocks(false).length && !force && !host.keepProject()) {
       el('lesson-start-note').textContent = `Your current project could not be kept in this browser. Save it first (⋯ menu → ${keepAction()}), or start anyway and replace it.`;
       el('lesson-start-go').textContent = 'Start anyway'; el('lesson-start-go').dataset.force = 'yes';
       return;
@@ -756,14 +756,14 @@ export function installGuide(host: GuideHost) {
     el('lesson-finish-learn').replaceChildren(...(build.chapters ?? []).map(chapter => { const li = item('li', ''); li.append(item('strong', '', chapter.title), item('span', '', chapter.idea)); return li; }));
     el('lesson-finish-remix').replaceChildren(...build.finish.remix.map(richItem));
     el('lesson-finish-time').textContent = `Time: ${minutesText(total)} (planned ${build.minutes} min)`;
-    el('lesson-finish-return').hidden = !host.kept();
+    el('lesson-finish-return').hidden = !host.hasKeptProject();
     el('lesson-finish-next').hidden = !next; el('lesson-finish-next').textContent = next ? `Next: ${next.title}` : '';
     el('lesson-finish-next').onclick = () => { el<HTMLDialogElement>('lesson-finish').close(); if (next) begin(next); };
     el<HTMLDialogElement>('lesson-finish').showModal();
   }
   el('lesson-finish-close').addEventListener('click', () => { el<HTMLDialogElement>('lesson-finish').close(); showKept(); });
   el('lesson-finish-play').addEventListener('click', () => { el<HTMLDialogElement>('lesson-finish').close(); host.play(); });
-  const returnToKept = () => { if (host.restore()) { el<HTMLDialogElement>('lesson-finish').close(); showKept(); host.reveal(true); } };
+  const returnToKept = () => { if (host.restoreProject()) { el<HTMLDialogElement>('lesson-finish').close(); showKept(); host.reveal(true); } };
   el('lesson-finish-return').addEventListener('click', returnToKept);
   el('guide-kept-return').addEventListener('click', returnToKept);
   el('guide-next').addEventListener('click', () => { if (!active || !done) return; if (index === active.steps.length - 1) finish(); else { clock(); index++; render(); save(); } });

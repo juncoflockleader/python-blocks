@@ -15,10 +15,10 @@ export const DEFAULT_TAB: ScriptTab = Object.freeze({ id: 'main', name: 'Main' }
 
 interface State { tabs: ScriptTab[]; scripts: Map<string, string> }
 const states = new WeakMap<Blockly.Workspace, State>();
-const fresh = (): State => ({ tabs: [{ ...DEFAULT_TAB }], scripts: new Map() });
+const emptyTabs = (): State => ({ tabs: [{ ...DEFAULT_TAB }], scripts: new Map() });
 const state = (workspace: Blockly.Workspace) => {
   let s = states.get(workspace);
-  if (!s) { s = fresh(); states.set(workspace, s); }
+  if (!s) { s = emptyTabs(); states.set(workspace, s); }
   return s;
 };
 const ID = /^[A-Za-z0-9_-]{1,40}$/;
@@ -79,7 +79,7 @@ export function placeScript(workspace: Blockly.Workspace, id: string, tab: strin
 export interface TabsChange { tabs?: ScriptTab[]; moves?: Record<string, string> }
 type Move = [id: string, from: string | null, to: string];
 interface TabsEventJson extends Blockly.Events.AbstractEventJson { before?: ScriptTab[]; after?: ScriptTab[]; moves: Move[] }
-function apply(workspace: Blockly.Workspace, tabs: ScriptTab[] | undefined, moves: Move[], forward: boolean) {
+function setTabs(workspace: Blockly.Workspace, tabs: ScriptTab[] | undefined, moves: Move[], forward: boolean) {
   const s = state(workspace);
   if (tabs) s.tabs = structuredClone(tabs);
   for (const [id, from, to] of moves) {
@@ -93,7 +93,7 @@ export class TabsEvent extends Blockly.Events.Abstract {
   constructor(workspace: Blockly.Workspace, readonly before: ScriptTab[] | undefined, readonly after: ScriptTab[] | undefined, readonly moves: Move[]) { super(); this.workspaceId = workspace.id; }
   override run(forward: boolean) {
     const workspace = this.getEventWorkspace_();
-    apply(workspace, forward ? this.after : this.before, this.moves, forward);
+    setTabs(workspace, forward ? this.after : this.before, this.moves, forward);
     // Tell listeners (the tab strip, autosave) what Undo or Redo just changed.
     const notification = new TabsEvent(workspace, this.before, this.after, this.moves); notification.recordUndo = false; Blockly.Events.fire(notification);
   }
@@ -119,7 +119,7 @@ export function changeTabs(workspace: Blockly.Workspace, change: TabsChange) {
   if (!tabsChanged && !moves.length) return false;
   const group = Blockly.Events.getGroup(); if (!group) Blockly.Events.setGroup(true);
   try {
-    apply(workspace, tabsChanged ? after : undefined, moves, true);
+    setTabs(workspace, tabsChanged ? after : undefined, moves, true);
     Blockly.Events.fire(new TabsEvent(workspace, tabsChanged ? before : undefined, tabsChanged ? after : undefined, moves));
   } finally { if (!group) Blockly.Events.setGroup(false); }
   return true;
@@ -146,5 +146,5 @@ Blockly.serialization.registry.register('scriptTabs', {
     const clean = cleanTabs(value);
     states.set(workspace, { tabs: clean.tabs, scripts: new Map(Object.entries(clean.scripts)) });
   },
-  clear(workspace) { states.set(workspace, fresh()); announce(workspace); },
+  clear(workspace) { states.set(workspace, emptyTabs()); announce(workspace); },
 });

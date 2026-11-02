@@ -54,7 +54,7 @@ export function blockLook(workspace: Blockly.Workspace, ref: string) {
   return look;
 }
 const sources = new Map<IconName, string>();
-const source = (name: IconName) => {
+const iconUrl = (name: IconName) => {
   let url = sources.get(name);
   if (!url) { url = `data:image/svg+xml,${encodeURIComponent(iconSvg(name, 'white'))}`; sources.set(name, url); }
   return url;
@@ -71,14 +71,14 @@ export function installBlockIcons(workspace: Blockly.Workspace) {
     if (isEventHat(block)) return symbolOf(block.type, block.hatKind, undefined);
     return symbolOf(block.type, undefined, proCategory(workspace, block.type));
   }
-  function ensure(block: Blockly.Block) {
+  function ensureIcon(block: Blockly.Block) {
     if (block.outputConnection || block.isShadow()) return;
     const name = iconFor(block), input = block.inputList[0];
     if (!name || !input) return;
     const existing = block.getField(FIELD) as Blockly.FieldImage | null;
-    if (existing && input.fieldRow[0] === existing) { if (existing.getValue() !== source(name)) existing.setValue(source(name)); return; }
+    if (existing && input.fieldRow[0] === existing) { if (existing.getValue() !== iconUrl(name)) existing.setValue(iconUrl(name)); return; }
     if (existing) existing.getParentInput().removeField(FIELD);
-    input.insertFieldAt(0, new Blockly.FieldImage(source(name), SIZE, SIZE, ''), FIELD);
+    input.insertFieldAt(0, new Blockly.FieldImage(iconUrl(name), SIZE, SIZE, ''), FIELD);
   }
   // Blocks that rebuild their first row (event hats) or change their event
   // (handlers) are checked again after those methods run.
@@ -87,13 +87,13 @@ export function installBlockIcons(workspace: Blockly.Workspace) {
     for (const hook of hooks) {
       const original = definition[hook];
       if (typeof original !== 'function' || (original as { blockIcons?: true }).blockIcons) continue;
-      const wrapped = function (this: Blockly.Block, ...args: unknown[]) {
+      const withIcon = function (this: Blockly.Block, ...args: unknown[]) {
         const result = (original as (...a: unknown[]) => unknown).apply(this, args);
-        if (!this.isDeadOrDying()) ensure(this);
+        if (!this.isDeadOrDying()) ensureIcon(this);
         return result;
       };
-      wrapped.blockIcons = true as const;
-      definition[hook] = wrapped;
+      withIcon.blockIcons = true as const;
+      definition[hook] = withIcon;
     }
   }
 }

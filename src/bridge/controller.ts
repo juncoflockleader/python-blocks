@@ -34,7 +34,7 @@ export class PythonBridge {
   get status(): BridgeStatus { return structuredClone(this.statusValue); }
   subscribe(listener: () => void) { this.listeners.add(listener); return () => this.listeners.delete(listener); }
   private notify() { if (!this.disposed) for (const listener of this.listeners) listener(); }
-  private check() { if (this.disposed) throw new Error('This Python editor has been closed.'); }
+  private assertOpen() { if (this.disposed) throw new Error('This Python editor has been closed.'); }
   cancel(notify = true) {
     this.operation++; this.abort?.abort(); this.abort = undefined;
     this.statusValue = { busy: false, diagnostics: [] }; if (notify) this.notify();
@@ -52,9 +52,9 @@ export class PythonBridge {
     state.recovery.push({ ...structuredClone(draft), id: crypto.randomUUID(), reason });
   }
   /** Reopen a saved draft; creating a new draft requires valid generated code. */
-  async begin() { this.check(); if (!this.state.draft) await this.useBlocks(); }
+  async begin() { this.assertOpen(); if (!this.state.draft) await this.useBlocks(); }
   async useBlocks() {
-    this.check(); this.cancel(false); const operation = this.operation;
+    this.assertOpen(); this.cancel(false); const operation = this.operation;
     const project = snapshot(this.workspace), source = compile(this.workspace).source, state = this.state;
     if (source === null) throw new Error('Resolve the block errors before starting a new Python draft. The existing draft is preserved.');
     const revision = await projectRevision(project);
@@ -65,24 +65,24 @@ export class PythonBridge {
     this.write(state);
   }
   edit(source: string) {
-    this.check(); const state = this.state;
+    this.assertOpen(); const state = this.state;
     if (!state.draft) throw new Error('Start a Python draft before editing.');
     this.cancel(false); state.draft.source = source; this.write(state);
   }
   discard() {
-    this.check(); const state = this.state; if (!state.draft) return;
+    this.assertOpen(); const state = this.state; if (!state.draft) return;
     this.cancel(false); this.archive(state, state.draft, 'discarded'); delete state.draft; this.write(state);
   }
   recover(id: string) {
-    this.check(); const state = this.state, entry = state.recovery.find(entry => entry.id === id);
+    this.assertOpen(); const state = this.state, entry = state.recovery.find(entry => entry.id === id);
     if (!entry) throw new Error('That Python recovery entry is no longer available.');
     this.cancel(false); state.recovery = state.recovery.filter(item => item.id !== id);
     if (state.draft) this.archive(state, state.draft, 'replaced');
     const { id: _id, reason: _reason, ...draft } = entry; state.draft = draft; this.write(state);
   }
-  removeRecovery(id: string) { this.check(); this.cancel(false); const state = this.state; state.recovery = state.recovery.filter(entry => entry.id !== id); this.write(state); }
-  async apply(): Promise<ApplyResult> {
-    this.check(); this.cancel(false); const operation = this.operation, abort = new AbortController(); this.abort = abort;
+  removeRecovery(id: string) { this.assertOpen(); this.cancel(false); const state = this.state; state.recovery = state.recovery.filter(entry => entry.id !== id); this.write(state); }
+  async applyToBlocks(): Promise<ApplyResult> {
+    this.assertOpen(); this.cancel(false); const operation = this.operation, abort = new AbortController(); this.abort = abort;
     const state = this.state, project = snapshot(this.workspace), source = state.draft?.source ?? '';
     this.statusValue = { busy: true, diagnostics: [] }; this.notify();
     let result: ApplyResult;

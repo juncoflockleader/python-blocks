@@ -170,7 +170,7 @@ export function installPaletteHint(getToolbox: () => HTMLElement | null) {
   const observer = new ResizeObserver(refresh);
   // The palette is sized by Blockly at 100% of the panel; watch the panel and the window as well.
   observer.observe(panel); window.addEventListener('resize', refresh);
-  const attach = () => {
+  const watchToolbox = () => {
     const next = getToolbox();
     if (next !== toolbox) {
       if (toolbox) { toolbox.removeEventListener('scroll', refresh); observer.unobserve(toolbox); }
@@ -180,24 +180,24 @@ export function installPaletteHint(getToolbox: () => HTMLElement | null) {
     refresh();
   };
   hint.addEventListener('click', () => { if (atEnd) toolbox?.scrollTo({ top: 0, behavior: 'smooth' }); else toolbox?.scrollBy({ top: toolbox.clientHeight * 0.8, behavior: 'smooth' }); });
-  attach();
-  return { refresh: attach, dispose: () => { observer.disconnect(); window.removeEventListener('resize', refresh); hint.remove(); } };
+  watchToolbox();
+  return { refresh: watchToolbox, dispose: () => { observer.disconnect(); window.removeEventListener('resize', refresh); hint.remove(); } };
 }
 
 /** A disclosure menu: Escape or an outside tap closes it; choosing an item closes it too. */
 export function installMenu() {
   const button = document.getElementById('menu-button') as HTMLButtonElement, menu = document.getElementById('app-menu')!;
-  const set = (open: boolean, restore = false) => {
+  const setOpen = (open: boolean, restore = false) => {
     menu.hidden = !open; button.setAttribute('aria-expanded', String(open));
     if (open) menu.querySelector<HTMLElement>('button:not([disabled]):not([hidden]), a')?.focus();
     else if (restore) button.focus();
   };
-  button.addEventListener('click', () => set(!!menu.hidden));
-  menu.addEventListener('click', event => { if ((event.target as Element).closest('button, a')) set(false); });
-  menu.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); set(false, true); } });
-  const outside = (event: PointerEvent) => { if (!menu.hidden && !(event.target as Element).closest('.menu-wrap')) set(false); };
+  button.addEventListener('click', () => setOpen(!!menu.hidden));
+  menu.addEventListener('click', event => { if ((event.target as Element).closest('button, a')) setOpen(false); });
+  menu.addEventListener('keydown', event => { if (event.key === 'Escape') { event.preventDefault(); setOpen(false, true); } });
+  const outside = (event: PointerEvent) => { if (!menu.hidden && !(event.target as Element).closest('.menu-wrap')) setOpen(false); };
   document.addEventListener('pointerdown', outside);
-  return { open: () => set(true), close: () => set(false), dispose: () => document.removeEventListener('pointerdown', outside) };
+  return { open: () => setOpen(true), close: () => setOpen(false), dispose: () => document.removeEventListener('pointerdown', outside) };
 }
 
 export const VIEWS = ['blocks', 'stage'] as const;
@@ -255,7 +255,7 @@ export function installPythonPlacement(resize: () => void) {
 
 /** Level control, persisted per browser, plus the one-time prompt shown when a
  * loaded project uses tools above the current level. */
-export function installLevelControl(apply: (level: Level) => void) {
+export function installLevelControl(showLevel: (level: Level) => void) {
   document.body.insertAdjacentHTML('beforeend', `<dialog id="level-dialog" aria-labelledby="level-title"><h2 id="level-title">Show more tools?</h2><p id="level-reason"></p><p>Your blocks stay on the workspace either way. You can change the level any time from the top bar.</p><div class="dialog-actions"><button id="level-switch" class="button primary"></button><button id="level-keep" class="button secondary"></button></div></dialog>`);
   const select = document.getElementById('level-select') as HTMLSelectElement, dialog = document.getElementById('level-dialog') as HTMLDialogElement;
   const button = document.getElementById('level-button') as HTMLButtonElement, list = document.getElementById('level-list')!, control = document.getElementById('level-control')!;
@@ -264,29 +264,29 @@ export function installLevelControl(apply: (level: Level) => void) {
   const paint = (node: HTMLElement, value: Level) => node.style.setProperty('--ui-icon', `url("data:image/svg+xml,${encodeURIComponent(iconSvg(levelIcons[value]))}")`);
   options.forEach(option => paint(option.querySelector<HTMLElement>('.level-icon')!, option.dataset.level as Level));
   let level = storedLevel(), offered: Level | null = null, active = 0;
-  const set = (next: Level, persist = true) => {
+  const setLevel = (next: Level, persist = true) => {
     level = next; select.value = next; document.documentElement.dataset.level = next;
     control.dataset.level = next; paint(button.querySelector<HTMLElement>('.level-icon')!, next);
     document.getElementById('level-name')!.textContent = levelNames[next];
     button.setAttribute('aria-label', `Level: ${levelNames[next]}`);
     for (const option of options) option.setAttribute('aria-selected', String(option.dataset.level === next));
     if (persist) storeLevel(next);
-    apply(next);
+    showLevel(next);
   };
-  select.addEventListener('change', () => set(select.value as Level));
+  select.addEventListener('change', () => setLevel(select.value as Level));
   // The level menu: a button and a listbox of the three levels, each with its symbol and what it adds.
   const highlight = (index: number) => {
     active = (index + options.length) % options.length;
     options.forEach((option, i) => option.classList.toggle('level-active', i === active));
     list.setAttribute('aria-activedescendant', options[active].id);
   };
-  const open = (show: boolean, restore = false) => {
+  const setListOpen = (show: boolean, restore = false) => {
     list.hidden = !show; button.setAttribute('aria-expanded', String(show));
     if (show) { highlight(LEVELS.indexOf(level)); list.focus(); } else if (restore) button.focus();
   };
-  const choose = (index: number) => { const next = options[index].dataset.level as Level; open(false, true); if (next !== level) set(next); };
-  button.addEventListener('click', () => open(!!list.hidden));
-  button.addEventListener('keydown', event => { if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); open(true); } });
+  const choose = (index: number) => { const next = options[index].dataset.level as Level; setListOpen(false, true); if (next !== level) setLevel(next); };
+  button.addEventListener('click', () => setListOpen(!!list.hidden));
+  button.addEventListener('keydown', event => { if (event.key === 'ArrowDown' || event.key === 'ArrowUp') { event.preventDefault(); setListOpen(true); } });
   options.forEach((option, index) => {
     option.addEventListener('click', () => choose(index));
     option.addEventListener('pointermove', () => highlight(index));
@@ -296,23 +296,23 @@ export function installLevelControl(apply: (level: Level) => void) {
     else if (event.key === 'ArrowUp') { event.preventDefault(); highlight(active - 1); }
     else if (event.key === 'Home' || event.key === 'End') { event.preventDefault(); highlight(event.key === 'Home' ? 0 : options.length - 1); }
     else if (event.key === 'Enter' || event.key === ' ') { event.preventDefault(); choose(active); }
-    else if (event.key === 'Escape' || event.key === 'Tab') { if (event.key === 'Escape') event.preventDefault(); open(false, event.key === 'Escape'); }
+    else if (event.key === 'Escape' || event.key === 'Tab') { if (event.key === 'Escape') event.preventDefault(); setListOpen(false, event.key === 'Escape'); }
   });
-  const outside = (event: PointerEvent) => { if (!list.hidden && !control.contains(event.target as Node)) open(false); };
+  const outside = (event: PointerEvent) => { if (!list.hidden && !control.contains(event.target as Node)) setListOpen(false); };
   document.addEventListener('pointerdown', outside);
-  document.getElementById('level-switch')!.addEventListener('click', () => { if (offered) set(offered); dialog.close(); });
+  document.getElementById('level-switch')!.addEventListener('click', () => { if (offered) setLevel(offered); dialog.close(); });
   document.getElementById('level-keep')!.addEventListener('click', () => { storeLevel(level); dialog.close(); });
-  set(level, false);
-  const join = (names: string[]) => names.length < 2 ? names.join('') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
+  setLevel(level, false);
+  const joinWithAnd = (names: string[]) => names.length < 2 ? names.join('') : `${names.slice(0, -1).join(', ')} and ${names.at(-1)}`;
   return {
     get level() { return level; },
-    set,
+    set: setLevel,
     /** Offer the level a project needs, once per loaded project. */
     offer(need: LevelNeed) {
       if (atLeast(level, need.level)) return false;
       offered = need.level;
       const names = need.uses.filter(use => !atLeast(level, use.level)).map(use => use.name);
-      document.getElementById('level-reason')!.textContent = `This project uses ${join(names)}, which the ${levelNames[need.level]} level shows in the palette and menus.`;
+      document.getElementById('level-reason')!.textContent = `This project uses ${joinWithAnd(names)}, which the ${levelNames[need.level]} level shows in the palette and menus.`;
       document.getElementById('level-switch')!.textContent = `Switch to ${levelNames[need.level]}`;
       document.getElementById('level-keep')!.textContent = `Keep ${levelNames[level]}`;
       if (!dialog.open) dialog.showModal();
@@ -324,26 +324,26 @@ export function installLevelControl(apply: (level: Level) => void) {
 
 /** True once a physical keyboard is likely: no touch points, or a key was typed. */
 export function trackKeyboard(root: HTMLElement) {
-  const set = (on: boolean) => root.toggleAttribute('data-keyboard', on);
-  set(navigator.maxTouchPoints === 0);
-  const seen = (event: KeyboardEvent) => { if (event.key.length === 1 || event.key.startsWith('Arrow') || event.key === 'Tab') set(true); };
-  window.addEventListener('keydown', seen, { capture: true });
-  return () => window.removeEventListener('keydown', seen, { capture: true });
+  const setKeyboard = (on: boolean) => root.toggleAttribute('data-keyboard', on);
+  setKeyboard(navigator.maxTouchPoints === 0);
+  const noticeKey = (event: KeyboardEvent) => { if (event.key.length === 1 || event.key.startsWith('Arrow') || event.key === 'Tab') setKeyboard(true); };
+  window.addEventListener('keydown', noticeKey, { capture: true });
+  return () => window.removeEventListener('keydown', noticeKey, { capture: true });
 }
 
 /** Tablet keyboards: numeric fields get the decimal keypad and identifier-like
  * fields skip autocorrect. Applies to dialogs and panels as they are added. */
 export function installInputHints(root: HTMLElement = document.body) {
   const names = /(^|-)(name|alias|kind|event|payload|key|filter|answer|message)$/;
-  const apply = (scope: ParentNode) => {
+  const addHints = (scope: ParentNode) => {
     for (const input of scope.querySelectorAll<HTMLInputElement>('input[type=number]:not([inputmode])')) input.inputMode = 'decimal';
     for (const input of scope.querySelectorAll<HTMLInputElement>('input:not([type]), input[type=text], input[type=search]')) {
       if (!names.test(input.id) || input.hasAttribute('autocorrect')) continue;
       input.setAttribute('autocorrect', 'off'); input.setAttribute('autocapitalize', 'off'); input.spellcheck = false;
     }
   };
-  apply(root);
-  const observer = new MutationObserver(records => { for (const record of records) for (const node of record.addedNodes) if (node instanceof Element) apply(node); });
+  addHints(root);
+  const observer = new MutationObserver(records => { for (const record of records) for (const node of record.addedNodes) if (node instanceof Element) addHints(node); });
   observer.observe(root, { childList: true, subtree: true });
   return () => observer.disconnect();
 }

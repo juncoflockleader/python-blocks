@@ -210,19 +210,19 @@ export interface LevelNeed { level: Level; uses: { name: string; level: Level }[
 export function requiredLevel(workspace: Blockly.WorkspaceSvg): LevelNeed {
   const maps = LEVELS.map(level => levelTypes(workspace, level));
   const uses = new Map<string, Level>();
-  const need = (name: string, level: Level) => { const current = uses.get(name); uses.set(name, current && atLeast(current, level) ? current : level); };
+  const noteUse = (name: string, level: Level) => { const current = uses.get(name); uses.set(name, current && atLeast(current, level) ? current : level); };
   for (const b of workspace.getAllBlocks(false)) {
     const index = maps.findIndex(map => map.has(b.type));
     // Name the most specific (Pro) category, e.g. Sprites rather than Builder's combined Game.
-    if (index > 0) need(maps.at(-1)!.get(b.type) ?? maps[index].get(b.type)!, LEVELS[index]);
+    if (index > 0) noteUse(maps.at(-1)!.get(b.type) ?? maps[index].get(b.type)!, LEVELS[index]);
   }
   const scene = readScene(workspace);
   // One world bigger than the stage (screens added in Stage view) and several worlds (a game's levels) are Builder tools.
-  if ((scene.worlds?.length ?? 0) > 1) need('Levels', 'builder');
-  else if (scene.worlds?.length) need('Big world', 'builder');
-  if (moduleState(workspace).imports.length) need('Modules', 'pro');
-  if (scene.watchers?.length) need('Watch values', 'builder');
-  if (scene.sprites.some(s => s.motion && (s.motion.body && s.motion.body !== 'off' || s.motion.controller && s.motion.controller !== 'none' || (s.motion.lifetime ?? 0) > 0))) need('Physics', 'builder');
+  if ((scene.worlds?.length ?? 0) > 1) noteUse('Levels', 'builder');
+  else if (scene.worlds?.length) noteUse('Big world', 'builder');
+  if (moduleState(workspace).imports.length) noteUse('Modules', 'pro');
+  if (scene.watchers?.length) noteUse('Watch values', 'builder');
+  if (scene.sprites.some(s => s.motion && (s.motion.body && s.motion.body !== 'off' || s.motion.controller && s.motion.controller !== 'none' || (s.motion.lifetime ?? 0) > 0))) noteUse('Physics', 'builder');
   const list = [...uses].map(([name, level]) => ({ name, level }));
   const level = list.reduce<Level>((max, use) => atLeast(use.level, max) ? use.level : max, 'starter');
   return { level, uses: list.sort((a, b) => LEVELS.indexOf(b.level) - LEVELS.indexOf(a.level) || a.name.localeCompare(b.name)) };

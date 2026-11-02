@@ -151,9 +151,9 @@ export function installQuickTools(workspace: Blockly.WorkspaceSvg, host: { find(
 
   // Actions use Blockly's own menu items, so they behave as Duplicate, Delete and Clean up do in a
   // block's long-press menu (and Clean up keeps to the scripts in the open tab, as script tabs make it).
-  const item = (id: string) => Blockly.ContextMenuRegistry.registry.getItem(id) as Item | null;
-  const allowed = (id: string, scope: Scope) => { try { return item(id)?.preconditionFn?.(scope, new Event('pointerdown')) === 'enabled'; } catch { return false; } };
-  const act = (id: string, scope: Scope) => item(id)?.callback?.(scope, new Event('pointerdown'), new Event('pointerdown'), new Blockly.utils.Coordinate(0, 0));
+  const menuItem = (id: string) => Blockly.ContextMenuRegistry.registry.getItem(id) as Item | null;
+  const allowed = (id: string, scope: Scope) => { try { return menuItem(id)?.preconditionFn?.(scope, new Event('pointerdown')) === 'enabled'; } catch { return false; } };
+  const runMenuItem = (id: string, scope: Scope) => menuItem(id)?.callback?.(scope, new Event('pointerdown'), new Event('pointerdown'), new Blockly.utils.Coordinate(0, 0));
   const selected = (): Blockly.BlockSvg | null => {
     const node = Blockly.getSelected();
     if (!(node instanceof Blockly.BlockSvg) || node.isDeadOrDying()) return null;
@@ -185,14 +185,14 @@ export function installQuickTools(workspace: Blockly.WorkspaceSvg, host: { find(
     el('quick-find').setAttribute('aria-expanded', String(!document.getElementById('block-search')?.hidden));
     add.disabled = !block || knownFavourite(block);
   };
-  const later = () => { if (!pending) { pending = true; requestAnimationFrame(refresh); } };
+  const refreshSoon = () => { if (!pending) { pending = true; requestAnimationFrame(refresh); } };
 
-  el('quick-undo').addEventListener('click', () => { workspace.undo(false); later(); });
-  el('quick-redo').addEventListener('click', () => { workspace.undo(true); later(); });
-  el('quick-duplicate').addEventListener('click', () => { const block = selected(); if (block && !block.isInFlyout) act('blockDuplicate', { block }); later(); });
-  el('quick-delete').addEventListener('click', () => { const block = selected(); if (block && !block.isInFlyout) act('blockDelete', { block }); later(); });
-  el('quick-tidy').addEventListener('click', () => { act('cleanWorkspace', { workspace }); say('Scripts tidied up. Undo puts them back.'); later(); });
-  el('quick-find').addEventListener('click', () => { host.find(); later(); });
+  el('quick-undo').addEventListener('click', () => { workspace.undo(false); refreshSoon(); });
+  el('quick-redo').addEventListener('click', () => { workspace.undo(true); refreshSoon(); });
+  el('quick-duplicate').addEventListener('click', () => { const block = selected(); if (block && !block.isInFlyout) runMenuItem('blockDuplicate', { block }); refreshSoon(); });
+  el('quick-delete').addEventListener('click', () => { const block = selected(); if (block && !block.isInFlyout) runMenuItem('blockDelete', { block }); refreshSoon(); });
+  el('quick-tidy').addEventListener('click', () => { runMenuItem('cleanWorkspace', { workspace }); say('Scripts tidied up. Undo puts them back.'); refreshSoon(); });
+  el('quick-find').addEventListener('click', () => { host.find(); refreshSoon(); });
   el('quick-find').setAttribute('aria-controls', 'block-search');
 
   // Favourites: each shows as its block does in the palette, its colour and symbol and its words.
@@ -263,12 +263,12 @@ export function installQuickTools(workspace: Blockly.WorkspaceSvg, host: { find(
       say(pasted ? `Added ${label}. Connect it to your program. Undo removes it.` : `There is no room for another ${label}.`);
     } catch (error) { say(error instanceof Error ? error.message : String(error)); }
     finally { Blockly.Events.setGroup(false); }
-    later();
+    refreshSoon();
   };
   const forget = (index: number) => {
     state.favourites = state.favourites.filter((_, i) => i !== index); save();
     say('Removed from your favourites.');
-    removing(removingFavourites); later();
+    removing(removingFavourites); refreshSoon();
   };
   const favourite = (block: Blockly.Block) => {
     const saved = favouriteOf(block);
@@ -281,7 +281,7 @@ export function installQuickTools(workspace: Blockly.WorkspaceSvg, host: { find(
     // A block kept from its long-press menu while the panel is minimized opens the panel, to show where it went.
     if (state.minimized) showMinimized(false);
     save(); say(`Added ${describe(saved).label} to your favourites.`);
-    later();
+    refreshSoon();
   };
   add.addEventListener('click', () => { const block = selected(); if (block) favourite(block); });
   edit.addEventListener('click', () => removing(!removingFavourites));
@@ -294,17 +294,17 @@ export function installQuickTools(workspace: Blockly.WorkspaceSvg, host: { find(
   const changed = (event: Blockly.Events.Abstract) => {
     if (event.type === Blockly.Events.BLOCK_DRAG) panel.toggleAttribute('data-block-drag', (event as Blockly.Events.BlockDrag).isStart === true);
     if (event.type === Blockly.Events.FINISHED_LOADING) render();
-    later();
+    refreshSoon();
   };
   workspace.addChangeListener(changed);
-  document.addEventListener('focusin', later);
+  document.addEventListener('focusin', refreshSoon);
 
   render(); showMinimized(state.minimized); refresh();
   return {
     /** Labels follow the project (a sprite's name in a favourite's menu); call after the level or project changes. */
-    refresh: () => { render(); later(); layout(); },
+    refresh: () => { render(); refreshSoon(); layout(); },
     dispose() {
-      resized.disconnect(); workspace.removeChangeListener(changed); document.removeEventListener('focusin', later);
+      resized.disconnect(); workspace.removeChangeListener(changed); document.removeEventListener('focusin', refreshSoon);
       clearTimeout(statusTimer); controls.delete(workspace); panel.remove();
     },
   };

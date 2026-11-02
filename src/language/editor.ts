@@ -156,13 +156,13 @@ export function installLanguageEditor(workspace: Blockly.WorkspaceSvg) {
     block.moveTo(new Blockly.utils.Coordinate((metrics.viewLeft + metrics.viewWidth / 3) / workspace.scale, (metrics.viewTop + 40) / workspace.scale));
     block.select(); workspace.centerOnBlock(block.id);
   };
-  const free = (base: string) => { const taken = new Set([...workspace.getProcedureMap().getProcedures().map(f => f.getName()), ...allSymbols(workspace).map(s => s.name)]); let name = base; for (let n = 2; taken.has(name); n++) name = `${base}${n}`; return name; };
+  const unusedName = (base: string) => { const taken = new Set([...workspace.getProcedureMap().getProcedures().map(f => f.getName()), ...allSymbols(workspace).map(s => s.name)]); let name = base; for (let n = 2; taken.has(name); n++) name = `${base}${n}`; return name; };
   async function makeVariable() {
     const selectedBlock = Blockly.common.getSelected();
     const context = selectedBlock instanceof Blockly.Block ? enclosingFunction(selectedBlock) : undefined;
     const owner = context?.functionId && workspace.getProcedureMap().get(context.functionId);
     const answer = await askName({
-      title: 'Make a variable', value: free('score'), confirm: 'Create', hint: 'Adds a “set” block for it. Rename or delete variables later with Manage variables.',
+      title: 'Make a variable', value: unusedName('score'), confirm: 'Create', hint: 'Adds a “set” block for it. Rename or delete variables later with Manage variables.',
       scopes: owner ? [{ label: 'Whole project', value: '' }, { label: `Only inside ${owner.getName()}`, value: owner.getId() }] : undefined,
       validate: (value, scope) => nameError(value) ?? (allSymbols(workspace).some(s => s.name === value && (s.owner ?? '') === scope) || !scope && workspace.getProcedureMap().getProcedures().some(f => f.getName() === value) ? `“${value}” is already used. Choose another name.` : null),
     });
@@ -175,7 +175,7 @@ export function installLanguageEditor(workspace: Blockly.WorkspaceSvg) {
   }
   async function makeFunction() {
     const answer = await askName({
-      title: 'Make a function', value: free('do_something'), confirm: 'Create', hint: 'Adds a “define” block. Its call block appears in Functions. Add parameters later with Manage functions.',
+      title: 'Make a function', value: unusedName('do_something'), confirm: 'Create', hint: 'Adds a “define” block. Its call block appears in Functions. Add parameters later with Manage functions.',
       validate: value => nameError(value) ?? (workspace.getProcedureMap().getProcedures().some(f => f.getName() === value) || allSymbols(workspace).some(s => s.kind === 'project' && s.name === value) ? `“${value}” is already used. Choose another name.` : null),
     });
     if (!answer) return;

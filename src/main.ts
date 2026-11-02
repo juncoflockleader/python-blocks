@@ -141,7 +141,7 @@ const runner = new PythonRunner(event => {
       if (event.command.state.result) { eventReady = false; sceneEditor?.stop(); updateEventControls(); guide.gameOver(event.command.state.result.won); }
       gameView.accept(event.command.state);
     }
-    stage.acceptScene(event.command); paint(); sceneEditor?.live(); }
+    stage.acceptScene(event.command); paint(); sceneEditor?.showReadout(); }
   if (event.type === 'draw') { stage.accept(event.command); paint(); }
   if (event.type === 'stdout') { outputPanel.hidden = false; output.textContent = (output.textContent + event.text + '\n').slice(-20_000); announceOutput('print'); }
   if (event.type === 'status') status.textContent = event.message;
@@ -289,11 +289,11 @@ const guide = installGuide({
       return insertRecipe(workspace, lesson, select ?? sceneEditor?.selected() ?? '', other).map(block => block.id);
     } finally { Blockly.Events.setGroup(group); }
   },
-  keep() {
+  keepProject() {
     saveCurrentProject();
     try { localStorage.setItem(KEPT_KEY, JSON.stringify({ title: projectTitle.textContent ?? '', project: snapshot(workspace), cloud: accountControls.identity() })); return true; } catch { return false; }
   },
-  restore() {
+  restoreProject() {
     let kept: { title: string; project: unknown; cloud?: string | null } | null = null;
     try { kept = JSON.parse(localStorage.getItem(KEPT_KEY) ?? 'null'); } catch { kept = null; }
     if (!kept || !installProject(prepareProject(JSON.stringify(kept.project)).project, kept.cloud ?? null)) return false;
@@ -301,7 +301,7 @@ const guide = installGuide({
     try { localStorage.removeItem(KEPT_KEY); } catch { /* the kept copy stays until it can be removed */ }
     return true;
   },
-  kept() { try { return localStorage.getItem(KEPT_KEY) !== null; } catch { return false; } },
+  hasKeptProject() { try { return localStorage.getItem(KEPT_KEY) !== null; } catch { return false; } },
   play() { element('#run').click(); },
   tabLabel(text) { const label = element('#tab-help').firstChild; if (label) label.textContent = text; },
 });
@@ -313,13 +313,13 @@ const accountControls = installAccount({
     if (!installProject(prepared.project, id)) return false;
     setTitle(title); offerLevel(); return true;
   },
-  fresh() {
+  newProject() {
     if (!installProject(prepareProject(JSON.stringify(EMPTY_PROJECT)).project)) return false;
     setTitle('My project'); return true;
   },
   rename: title => setTitle(title),
   title: () => projectTitle.textContent ?? '',
-  store: () => { if (!pythonEditor?.flush()) return false; saveCurrentProject(); return autosaveEnabled && !pythonEditor.unstored; },
+  saveToBrowser: () => { if (!pythonEditor?.flush()) return false; saveCurrentProject(); return autosaveEnabled && !pythonEditor.unstored; },
   lessonActive: () => !!guide.active,
   status: text => { notice.textContent = text; },
   stopSaving: () => { autosaveEnabled = false; },
@@ -592,7 +592,7 @@ function startRun(captured: Compilation, focus = false, debug = false) {
   if (focus) element('#stage').focus({ preventScroll: true });
 }
 async function acceptedCompilation() {
-  if (pythonEditor?.active && !(await pythonEditor.apply())) return null;
+  if (pythonEditor?.active && !(await pythonEditor.applyToBlocks())) return null;
   updateCode(); return compilation;
 }
 run.addEventListener('click', async () => {
