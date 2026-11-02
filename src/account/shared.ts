@@ -2,10 +2,12 @@
  * (stored per account), and the limits on names, passwords and saved work. */
 
 /** The project in the editor, its title, the lesson position and the project kept beside a lesson,
- * the level, the Blocks or Stage view, Academy progress, and which saved program the editor holds. */
+ * the level, the Blocks or Stage view, Academy progress, which saved program the editor holds, and
+ * Quick tools (where the panel sits, whether it is minimized, and the learner's favourite blocks). */
 export const SYNCED_KEYS = [
   'python-blocks.project.v1', 'python-blocks.title.v1', 'python-blocks.guide.v1', 'python-blocks.guide.kept.v1',
   'python-blocks-level', 'python-blocks.view.v1', 'python-blocks.academy.v1', 'python-blocks.cloud.v1',
+  'python-blocks.quick-tools.v1',
 ] as const;
 export type SyncedKey = typeof SYNCED_KEYS[number];
 export const isSyncedKey = (key: string): key is SyncedKey => (SYNCED_KEYS as readonly string[]).includes(key);

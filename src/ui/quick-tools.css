@@ -1,0 +1,30 @@
+/* Quick tools (quick-tools.ts): a floating panel over the workspace, moved by its grip and minimized to
+   one button. Its z-index matches the workspace's corner tools: the palette's flyout (20), the block
+   search and the script tabs (6) stay above it. Every control is 44 px for a finger. */
+.quick-tools { position: absolute; left: 0; top: 0; z-index: 5; width: 300px; box-sizing: border-box; padding: 4px 6px 6px; display: flex; flex-direction: column; gap: 4px; background: #f7f9f2f2; border: 1px solid #cbd4b4; border-radius: 14px; box-shadow: 0 8px 24px #26382f2e; transition: opacity .15s; }
+.quick-tools [hidden] { display: none !important; }
+.quick-tools[data-minimized] { width: auto; padding: 0; border: 0; background: none; box-shadow: none; }
+.quick-tools[data-block-drag] { opacity: .3; pointer-events: none; }
+.quick-tools-bar, .quick-favourites-head { display: flex; align-items: center; gap: 4px; }
+.quick-tools-body { display: flex; flex-direction: column; gap: 4px; }
+.quick-tools-grip { flex: 1; min-width: 0; min-height: 44px; padding: 0 8px; justify-content: flex-start !important; border: 0; border-radius: 10px; background: transparent; color: #26382f; font: 700 14px 'DM Sans', system-ui, sans-serif; cursor: grab; touch-action: none; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.quick-tools-grip:hover { background: #e9eedf; }
+.quick-tools-restore { touch-action: none; cursor: grab; background: #fafbf6ee; box-shadow: 0 2px 8px #26382f33; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none; }
+.quick-tools[data-moving] .quick-tools-grip, .quick-tools[data-moving] .quick-tools-restore { cursor: grabbing; }
+.quick-tools-actions { display: flex; justify-content: space-between; gap: 4px; }
+.quick-favourites-head { border-top: 1px solid #dce1d2; padding-top: 4px; }
+.quick-favourites-head h3 { flex: 1; min-width: 0; margin: 0 0 0 8px; font: 700 12px 'DM Sans', system-ui, sans-serif; color: #4e5f49; }
+.quick-tools[data-removing] #quick-favourites-edit { border-color: #b4442a; box-shadow: inset 0 0 0 1px #b4442a; color: #8a2f1b; }
+.quick-favourites-empty { margin: 0 8px 4px; font-size: 12px; line-height: 1.4; color: #4e5f49; }
+.quick-inline-icon::before { width: 14px; height: 14px; flex-basis: 14px; vertical-align: -2px; }
+.quick-favourites { margin: 0; padding: 0; list-style: none; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; }
+/* A favourite looks like its block: the block's colour, its white symbol and its words, a hat's rounded top. */
+.quick-favourite { width: 100%; min-height: 44px; padding: 4px 8px; display: flex; align-items: center; gap: 6px; border: 0; border-radius: 8px; background: var(--block); color: #fff; font: 700 13px 'DM Sans', system-ui, sans-serif; text-align: start; cursor: pointer; box-shadow: inset 0 -3px 0 #0000002e; }
+.quick-favourite > svg { flex: 0 0 auto; }
+.quick-favourite > span { min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.quick-favourite:hover { filter: brightness(1.06); }
+.quick-favourite-hat { border-radius: 16px 16px 8px 8px; }
+.quick-tools[data-removing] .quick-favourite { outline: 2px dashed #b4442a; outline-offset: 1px; filter: saturate(.55); }
+.quick-tools-status { margin: 0 8px 2px; font-size: 12px; line-height: 1.35; color: #2b5a4b; }
+.quick-tools-status:empty { display: none; }
+@media (forced-colors: active) { .quick-favourite { forced-color-adjust: none; } }

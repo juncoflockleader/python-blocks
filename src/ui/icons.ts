@@ -7,23 +7,23 @@ import './icons.css';
 const actions: Record<string, IconName> = {};
 const actionGroups: Partial<Record<IconName, string>> = {
   save: 'save',
-  search: 'block-search-toggle ideas-find', minus: 'zoom-out stage-zoom-out world-wide-less world-tall-less', more: 'menu-button help-nav-more', book: 'examples-open menu-examples',
-  sliders: 'sprite-more', brush: 'tray-paint world-paint-tile', alert: 'stage-badge', learn: 'lessons-open menu-lessons help-nav-builds', sprout: 'academy-open menu-academy',
+  search: 'block-search-toggle quick-find ideas-find', minus: 'quick-tools-minimize zoom-out stage-zoom-out world-wide-less world-tall-less', more: 'menu-button help-nav-more', book: 'examples-open menu-examples',
+  sliders: 'sprite-more quick-tidy', brush: 'tray-paint world-paint-tile', alert: 'stage-badge', learn: 'lessons-open menu-lessons help-nav-builds', sprout: 'academy-open menu-academy',
   folder: 'open python-recover',
   download: 'guide-timing academy-export export-project export export-playable recover python-download python-recovery-download module-export module-save-copy pilot-download pilot-download-backup pilot-recovery',
   upload: 'import-project module-import scene-import',
   play: 'debug-resume run play-run pilot-start phone-play lesson-start-go academy-start academy-continue-go lesson-finish-play',
   stop: 'debug-stop stop play-stop',
   restart: 'example scene-reset game-restart guide-another',
-  undo: 'language-undo world-undo python-discard pilot-return lesson-finish-return guide-kept-return',
-  redo: 'language-redo world-redo',
+  undo: 'language-undo quick-undo world-undo python-discard pilot-return lesson-finish-return guide-kept-return',
+  redo: 'language-redo quick-redo world-redo',
   pause: 'debug-pause',
   close: 'lessons-close academy-close lesson-start-cancel guide-confirm-cancel debug-close block-search-clear export-cancel examples-close name-sheet-cancel level-keep migration-cancel language-close lambda-close events-close modules-close module-inspector-close python-cancel question-cancel world-close stock-close assist-cancel',
   plus: 'script-tab-add zoom-in stage-zoom-in world-wide-more world-tall-more stage-add-right stage-add-down name-sheet-confirm parameter-add lambda-parameter-add scene-add world-new watch-add',
-  trash: 'function-delete handler-delete module-remove python-recovery-remove scene-delete data-remove world-delete pilot-clear',
-  copy: 'function-copy handler-copy scene-copy world-copy',
+  trash: 'quick-delete function-delete handler-delete module-remove python-recovery-remove scene-delete data-remove world-delete pilot-clear',
+  copy: 'quick-duplicate function-copy handler-copy scene-copy world-copy',
   check: 'guide-confirm-start sprite-settings-done level-switch migration-apply function-apply variable-apply handler-apply lambda-apply python-apply motion-use-preset pilot-finish',
-  edit: 'module-rename python-edit lesson-finish-close',
+  edit: 'quick-favourites-edit module-rename python-edit lesson-finish-close',
   target: 'zoom-reset function-find handler-find lambda-find scene-locate scene-script-find',
   eye: 'debug-start module-inspect python-inspect assist-review guide-show',
   blocks: 'python-blocks python-use-blocks view-blocks', stage: 'view-stage',
@@ -45,11 +45,13 @@ const actionGroups: Partial<Record<IconName, string>> = {
   keyboard: 'scene-input-example',
   game: 'scene-game-example scene-star-game touch-toggle',
   pen: 'scene-drawing-example',
-  move: 'scene-motion-example',
+  move: 'scene-motion-example quick-tools-grip',
   message: 'scene-story-example assist-send',
   physics: 'scene-behavior-example data-behavior',
   library: 'world-stock', spriteAdd: 'scene-stock',
   eraser: 'appearance-clear',
+  // Quick tools: the button it minimizes to, and keeping a block as a favourite (its grip shows move).
+  toolbox: 'quick-tools-restore', star: 'quick-favourite-add',
   resize: 'play-expand',
   up: 'debug-out',
   clock: 'pilot-timer', assist: 'assist-enable menu-assist', lock: 'assist-disable',
@@ -108,7 +110,7 @@ function decorate(element: HTMLElement, icon: IconName) {
 
 function menuIcon(label: string): IconName | undefined {
   const rules: [RegExp, IconName][] = [
-    [/^undo/i, 'undo'], [/^redo/i, 'redo'], [/^duplicate|^copy/i, 'copy'],
+    [/favourite/i, 'star'], [/^undo/i, 'undo'], [/^redo/i, 'redo'], [/^duplicate|^copy/i, 'copy'],
     [/^delete|^remove comment/i, 'trash'], [/comment/i, 'message'],
     [/^collapse|^expand/i, 'layers'], [/^disable/i, 'stop'], [/^enable/i, 'play'],
     [/^clean up/i, 'sliders'], [/help/i, 'help'], [/^paste/i, 'notes'],
@@ -162,8 +164,8 @@ export function installIcons(root: HTMLElement = document.body) {
       }
       decorate(caption, name); return;
     }
-    // Thumbnails, controller A/B and the Sound editor's own icons already are visual icons.
-    if (element.matches('.stock-card, #scene-cards button, #sound-dialog button, .sprite-sound-play, [data-control="a"], [data-control="b"]')) return;
+    // Thumbnails, controller A/B, the Sound editor's own icons and Quick tools favourites (their block's symbol) already are visual icons.
+    if (element.matches('.stock-card, #scene-cards button, #sound-dialog button, .sprite-sound-play, [data-control="a"], [data-control="b"], .quick-favourite')) return;
     const label = element.tagName === 'SUMMARY'
       ? [...element.childNodes].filter(node => node.nodeType === Node.TEXT_NODE).map(node => node.textContent).join('').trim()
       : element.textContent?.trim() ?? '';

@@ -46,6 +46,7 @@ import { installAccount } from './account/ui';
 import { installScriptTabs } from './scripts/tab-strip';
 import { installMagic } from './guide/magic';
 import { installValueSheet } from './ui/value-sheet';
+import { installQuickTools } from './ui/quick-tools';
 import './academy/academy.css';
 import { atLeast, installLevels, levelNames, findBlock, requiredLevel, storedLevel, toolboxFor, LEVEL_KEY, type Level } from './ui/levels';
 import { installHelpSections, installInputHints, installLevelControl, installMenu, installPaletteHint, installPythonPlacement, installTabs, installViewSwitch, keepShellInPlace, shellMarkup, trackKeyboard } from './ui/shell';
@@ -236,6 +237,8 @@ const blockSearch = installBlockSearch(workspace, () => toolboxFor(level), {
   match: query => rankIdeas(query, level).map(recipe => recipeCard(recipe, cards, { compact: true })),
   preferred: () => level === 'starter',
 });
+// Quick tools: a floating panel of editing actions and favourite blocks over the workspace (ui/quick-tools.ts).
+const quickTools = installQuickTools(workspace, { find: () => element('#block-search-toggle').click() });
 const playView = installPlayView(() => sceneEditor?.releaseInput());
 element('#phone-play').addEventListener('click', () => element('#play-expand').click());
 const helpDot = () => { if (tabs.current !== 'help') tabs.mark('help', true); };
@@ -337,7 +340,7 @@ const levelControl = installLevelControl(next => {
   workspace.updateToolbox(toolboxFor(next)); workspace.getFlyout()?.hide(); paletteSearch.refresh();
   // The palette may change width (Builder and Pro use two columns on tablets): let Blockly re-measure it.
   Blockly.svgResize(workspace); paletteHint.refresh();
-  blockSearch.refresh();
+  blockSearch.refresh(); quickTools.refresh();
   debuggerView?.refresh();
   renumberBlocks();
 });
@@ -363,7 +366,7 @@ const pythonPlacement = installPythonPlacement(() => Blockly.svgResize(workspace
 viewSwitch = installViewSwitch(view => {
   Blockly.hideChaff(); pythonPlacement.refresh();
   // The workspace was hidden in Stage view: let Blockly measure it again.
-  if (view === 'blocks') { Blockly.svgResize(workspace); paletteHint.refresh(); }
+  if (view === 'blocks') { Blockly.svgResize(workspace); paletteHint.refresh(); quickTools.refresh(); }
   sceneEditor?.view.refresh();
 });
 // "Go to script" centres a script in the workspace, so it opens Blocks view first.
@@ -659,4 +662,4 @@ element<HTMLInputElement>('#project-file').addEventListener('change', async even
     else if (installProject(prepared.project)) { setTitle(file.name.replace(/\.python-blocks\.json$|\.json$/i, '') || 'My project'); offerLevel(); }
   } catch (error) { notice.textContent = `Could not open project: ${error instanceof Error ? error.message : error}. Your current work is unchanged.`; }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeCaptions(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); academy.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); scriptTabsControl.dispose(); magic?.dispose(); valueSheet.dispose(); blockSearch.dispose(); paletteSearch.dispose(); lessonStage.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeCaptions(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); academy.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); scriptTabsControl.dispose(); magic?.dispose(); valueSheet.dispose(); blockSearch.dispose(); quickTools.dispose(); paletteSearch.dispose(); lessonStage.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
