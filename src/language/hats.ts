@@ -1,6 +1,6 @@
 import * as Blockly from 'blockly/core';
 import { backdrops, keys } from '../scene/model';
-import { sceneState } from '../scene/state';
+import { readScene, sceneState } from '../scene/state';
 import { allSymbols, eventNameError, handlerSignatures, nameError, type Handler, type Signature } from './functions';
 import type { FunctionState } from '../blocks/core/functions';
 
@@ -24,7 +24,7 @@ export const isEventHat = (block: Blockly.Block): block is HatBlock => block.typ
 function spriteMenu(any: boolean) {
   return function (this: Blockly.FieldDropdown): Blockly.MenuOption[] {
     const block = this.getSourceBlock();
-    const options = block ? sceneState(block.workspace).sprites.map(s => [s.name, s.id] as [string, string]) : [];
+    const options = block ? readScene(block.workspace).sprites.map(s => [s.name, s.id] as [string, string]) : [];
     if (any) return [['any sprite', ''], ...options];
     return options.length ? options : [['no sprites yet', '']];
   };
@@ -42,11 +42,11 @@ const tooltips: Record<HatKind, string> = {
 };
 function backdropMenu(this: Blockly.FieldDropdown): Blockly.MenuOption[] {
   const block = this.getSourceBlock();
-  return [['any backdrop', ''], ...(block ? backdrops(sceneState(block.workspace)).map(a => [a.name, a.id] as [string, string]) : [])];
+  return [['any backdrop', ''], ...(block ? backdrops(readScene(block.workspace)).map(a => [a.name, a.id] as [string, string]) : [])];
 }
 function worldMenu(this: Blockly.FieldDropdown): Blockly.MenuOption[] {
   const block = this.getSourceBlock();
-  return [['any world', ''], ...(block ? (sceneState(block.workspace).worlds ?? []).map(w => [w.name, w.id] as [string, string]) : [])];
+  return [['any world', ''], ...(block ? (readScene(block.workspace).worlds ?? []).map(w => [w.name, w.id] as [string, string]) : [])];
 }
 
 Blockly.Blocks[HAT_TYPE] = {

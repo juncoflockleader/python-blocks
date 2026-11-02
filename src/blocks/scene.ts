@@ -1,6 +1,6 @@
 import * as Blockly from 'blockly/core';
 import { FRAMES_ANIMATION, backdrops, costumes, keys, rotationStyles, validAnimationName } from '../scene/model';
-import { sceneState } from '../scene/state';
+import { readScene } from '../scene/state';
 import { effectOptions } from '../scene/effects';
 import { motionNumbers } from '../scene/motion';
 
@@ -14,7 +14,7 @@ export class SceneReferenceField extends Blockly.FieldDropdown {
   constructor(readonly kind: 'sprite' | 'costume' | 'backdrop' | 'world' | 'sound') {
     super(function () {
       const field = this as SceneReferenceField, block = field.getSourceBlock();
-      const state = block && sceneState(block.workspace);
+      const state = block && readScene(block.workspace);
       const values = state ? (kind === 'sound' ? state.sounds ?? [] : kind === 'world' ? state.worlds ?? [] : kind === 'sprite' ? state.sprites : kind === 'backdrop' ? backdrops(state) : costumes(state)) : [];
       const current = field.candidate ?? field.getValue();
       const options: [string, string][] = values.map(v => [v.name, v.id]);
@@ -28,7 +28,7 @@ export class SceneReferenceField extends Blockly.FieldDropdown {
     this.candidate = value; this.getOptions(false); return value;
   }
   override saveState(full = false) {
-    const state = this.getSourceBlock() && sceneState(this.getSourceBlock()!.workspace), id = this.getValue();
+    const state = this.getSourceBlock() && readScene(this.getSourceBlock()!.workspace), id = this.getValue();
     const found = state && (this.kind === 'sound' ? state.sounds ?? [] : this.kind === 'world' ? state.worlds ?? [] : this.kind === 'sprite' ? state.sprites : this.kind === 'backdrop' ? backdrops(state) : costumes(state)).find(v => v.id === id);
     const reference = found ?? (this.cached?.id === id ? this.cached : undefined);
     return reference && (full || !found) ? { id: reference.id, name: reference.name } : id;
@@ -41,7 +41,7 @@ export class SceneReferenceField extends Blockly.FieldDropdown {
 export class AnimationField extends Blockly.FieldDropdown {
   constructor(value = 'walk') {
     super(function () {
-      const field = this as AnimationField, block = field.getSourceBlock(), state = block && sceneState(block.workspace);
+      const field = this as AnimationField, block = field.getSourceBlock(), state = block && readScene(block.workspace);
       const names = [...new Set((state?.sprites ?? []).flatMap(s => (s.animations ?? []).map(a => a.name)))].sort((a, b) => a.localeCompare(b));
       const options: [string, string][] = [...names, FRAMES_ANIMATION].map(n => [n, n]);
       const current = field.getValue();

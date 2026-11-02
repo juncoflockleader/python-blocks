@@ -1,5 +1,5 @@
 import * as Blockly from 'blockly/core';
-import { sceneState } from '../../scene/state';
+import { readScene } from '../../scene/state';
 import { describeEvent } from '../../language/event-names';
 import { allSymbols, createFunctionModel, isScopedDefinition, signatureOf, SymbolField, type FunctionBlock, type Signature, type Symbol } from '../../language/functions';
 
@@ -25,7 +25,7 @@ const shared = {
     if (isScopedDefinition(this)) {
       this.setFieldValue(`(${this.signature.parameters.map(p => p.name).join(', ')})`, 'PARAMETERS');
       if (this.type === 'py_handler') {
-        this.setFieldValue(describeEvent(this.signature.handler, sceneState(this.workspace)), 'EVENT');
+        this.setFieldValue(describeEvent(this.signature.handler, readScene(this.workspace)), 'EVENT');
         this.setFieldValue(`#${(this.signature.handler?.order ?? 0) + 1}`, 'ORDER');
       } else this.setFieldValue(this.signature.async ? 'define async' : 'define', 'ACTION');
       return;

@@ -202,6 +202,8 @@
 .guide-lesson-active .guide-title-row + .guide-step { font-weight: 500; font-size: 14.5px; line-height: 1.55; }
 .guide-lesson-active .guide-checklist { font-size: 14px; line-height: 1.55; }
 .guide-why-box { display: grid; gap: 6px; }
+/* A lesson's Why stays closed until its button is pressed; closed, the box takes no row, so no gap, in the step. */
+.guide-why-box:has(> .guide-why[hidden]) { display: none; }
 .guide-lesson-active .guide-why { padding: 8px 10px; border-radius: 10px; background: #fff8ec; font-size: 13.5px; }
 
 /* A lesson step, one moment at a time (docs/learner-experience-plan.md §3.17): one frame (the panel itself), the
@@ -224,6 +226,8 @@
 .guide-tool-label { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
 .guide-lesson-active .guide-title-row { align-items: center; }
 .guide-lesson-active .guide-choices { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+/* Half width, a long guess wraps; it keeps the touch height without growing the step much. */
+.guide-lesson-active .guide-choice { padding-block: 4px; }
 .guide-choice[hidden] { display: none; }
 .guide-lesson-active .guide-check { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; margin: 0; }
 .guide-lesson-active .guide-actions { flex-wrap: nowrap; margin-top: 4px; }

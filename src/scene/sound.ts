@@ -24,7 +24,7 @@ export function validateSounds(sounds: unknown): asserts sounds is Sound[] {
   for (const s of sounds) {
     if (!s || typeof s.id !== 'string' || !/^[A-Za-z0-9_-]{1,48}$/.test(s.id) || ids.has(s.id) || typeof s.name !== 'string' || !s.name.trim() || s.name !== s.name.trim() || s.name.length > 48 || /[\x00-\x1f]/.test(s.name)) throw new Error('Sounds need distinct IDs and names of 1–48 characters.');
     if (s.kind === 'clip' && s.stock !== undefined) { if (typeof s.stock !== 'string' || !/^effects\/[a-z-]{1,24}@[1-9][0-9]{0,3}$/.test(s.stock) || s.data !== undefined) throw new Error('A library sound needs a known reference and no recorded data.'); }
-    else if (s.kind === 'clip') decodeWave(s.data as string);
+    else if (s.kind === 'clip') waveBytes(s.data as string);
     else if (s.kind !== 'song' || !validSong(s)) throw new Error('Songs need a tempo of 30–300 BPM, up to 64 beats / 60 seconds and 256 notes (up to 16 simultaneous).');
     ids.add(s.id);
   }
@@ -41,12 +41,20 @@ export function encodeWave(samples: Float32Array): string {
   let binary = ''; for (let i = 0; i < bytes.length; i += 8192) binary += String.fromCharCode(...bytes.subarray(i, i + 8192));
   return 'data:audio/wav;base64,' + btoa(binary);
 }
-export function decodeWave(data: string): Float32Array {
+/** The bytes of a WAV data URL in the project format. Plain loops: a minute of sound is 2.6 MB,
+ * and a project's clips are checked on every load. */
+function waveBytes(data: string): Uint8Array {
   if (typeof data !== 'string' || data.length > 3_529_000 || !/^data:audio\/wav;base64,[A-Za-z0-9+/]+={0,2}$/.test(data)) throw new Error('Use an imported or recorded WAV sound of up to 60 seconds.');
-  const bytes = Uint8Array.from(atob(data.slice(22)), c => c.charCodeAt(0)), v = new DataView(bytes.buffer);
+  const binary = atob(data.slice(22)), bytes = new Uint8Array(binary.length), v = new DataView(bytes.buffer);
+  for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
   const word = (offset: number, text: string) => [...text].every((c, i) => bytes[offset + i] === c.charCodeAt(0));
   if (bytes.length < 46 || !word(0, 'RIFF') || v.getUint32(4, true) !== bytes.length - 8 || !word(8, 'WAVE') || !word(12, 'fmt ') || v.getUint32(16, true) !== 16 || v.getUint16(20, true) !== 1 || v.getUint16(22, true) !== 1 || v.getUint32(24, true) !== SOUND_RATE || v.getUint32(28, true) !== SOUND_RATE * 2 || v.getUint16(32, true) !== 2 || v.getUint16(34, true) !== 16 || !word(36, 'data') || v.getUint32(40, true) !== bytes.length - 44 || (bytes.length - 44) % 2 || bytes.length > 44 + SOUND_RATE * SOUND_SECONDS * 2) throw new Error('Invalid sound data. Import it through Sounds to convert it to the project format.');
-  return Float32Array.from({ length: (bytes.length - 44) / 2 }, (_, i) => v.getInt16(44 + i * 2, true) / 32768);
+  return bytes;
+}
+export function decodeWave(data: string): Float32Array {
+  const bytes = waveBytes(data), v = new DataView(bytes.buffer), samples = new Float32Array((bytes.length - 44) / 2);
+  for (let i = 0; i < samples.length; i++) samples[i] = v.getInt16(44 + i * 2, true) / 32768;
+  return samples;
 }
 /** Deterministic original instruments, mixed at a modest per-note level. */
 export function synthesize(song: Pick<Song, 'tempo' | 'beats' | 'notes'>): Float32Array {

@@ -30,7 +30,8 @@ test('dynamic argument editing preserves removed shadows, maps arity errors, and
   await open(page);
   await page.locator('g[data-id="dynamic-call"] .blocklyMutatorIcon').click();
   await page.screenshot({ path: testInfo.outputPath('dynamic-arguments.png'), fullPage: true });
-  const container = page.locator('.blocklyBubbleCanvas path[aria-label="Begin stack, positional arguments"]').locator('..');
+  // By block type: Blockly ends block labels with a comma except on Apple platforms.
+  const container = page.locator('.blocklyBubbleCanvas g.py_call_arguments');
   await container.locator('g.blocklyDraggable').last().click(); await page.keyboard.press('Delete');
   await expect(page.locator('#python')).toContainText('(difference)(10)');
   await page.locator('g[data-id="dynamic-call"] .blocklyMutatorIcon').click();

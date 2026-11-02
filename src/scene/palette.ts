@@ -1,6 +1,6 @@
 import * as Blockly from 'blockly/core';
 import { numberInput } from '../blocks/core';
-import { sceneState } from './state';
+import { readScene } from './state';
 import type { SceneState } from './model';
 
 export function installScenePalette(workspace: Blockly.WorkspaceSvg, selected: () => string) {
@@ -9,7 +9,7 @@ export function installScenePalette(workspace: Blockly.WorkspaceSvg, selected: (
     return { primary: primary?.id ?? '', other: scene.sprites.find(s => s.id !== primary?.id)?.id ?? primary?.id ?? '' };
   };
   const sprites = (): Blockly.utils.toolbox.FlyoutItemInfo[] => {
-    const scene = sceneState(workspace), target = targets(scene);
+    const scene = readScene(workspace), target = targets(scene);
     const cost = { shadow: { type: 'scene_costume', fields: { COSTUME_ID: 'bird' } } };
     const defaults: Record<string, Blockly.serialization.blocks.ConnectionState> = {
       SPRITE: { block: { type: 'scene_sprite', fields: { SPRITE_ID: target.primary } } },
@@ -48,7 +48,7 @@ export function installScenePalette(workspace: Blockly.WorkspaceSvg, selected: (
     ];
   };
   workspace.registerToolboxCategoryCallback('PY_SENSING', (): Blockly.utils.toolbox.FlyoutItemInfo[] => {
-    const scene = sceneState(workspace), target = targets(scene);
+    const scene = readScene(workspace), target = targets(scene);
     const values: Record<string, Blockly.serialization.blocks.ConnectionState> = {
       SPRITE: { block: { type: 'scene_sprite', fields: { SPRITE_ID: target.primary } } },
       OTHER: { block: { type: 'scene_sprite', fields: { SPRITE_ID: target.other } } },
@@ -60,7 +60,7 @@ export function installScenePalette(workspace: Blockly.WorkspaceSvg, selected: (
     return specs.map(([type, names]) => ({ kind: 'block', type, inputs: Object.fromEntries(names.map(name => [name, values[name]])) }));
   });
   workspace.registerToolboxCategoryCallback('PY_WORLDS', (): Blockly.utils.toolbox.FlyoutItemInfo[] => {
-    const state = sceneState(workspace), target = targets(state), values: Record<string, Blockly.serialization.blocks.ConnectionState> = {
+    const state = readScene(workspace), target = targets(state), values: Record<string, Blockly.serialization.blocks.ConnectionState> = {
       WORLD: { shadow: { type: 'scene_world', fields: { WORLD_ID: state.world ?? '' } } },
       SPRITE: { block: { type: 'scene_sprite', fields: { SPRITE_ID: target.primary } } },
       X: numberInput(0), Y: numberInput(0), COLUMN: numberInput(0), ROW: numberInput(0),

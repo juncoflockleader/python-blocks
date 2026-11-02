@@ -7,7 +7,7 @@ import { blockNumber, captioned } from './block-captions';
 import { allSymbols } from '../language/functions';
 import { moduleState } from '../language/modules';
 import { handlerSignatures, type FunctionBlock } from '../language/functions';
-import { sceneState } from '../scene/state';
+import { readScene } from '../scene/state';
 
 /** Progressive disclosure. The level is editor state (one per browser), never
  * part of a project, and it only filters what the palette and menus offer:
@@ -167,7 +167,7 @@ export function installLevels(workspace: Blockly.WorkspaceSvg, selected: () => s
     return symbol ? (item.type === 'py_set' ? `set ${symbol.name}` : symbol.name) : undefined;
   };
   const hats = (kinds: readonly HatKind[]) => (): Item[] => {
-    const scene = sceneState(workspace), primary = scene.sprites.find(s => s.id === selected()) ?? scene.sprites[0];
+    const scene = readScene(workspace), primary = scene.sprites.find(s => s.id === selected()) ?? scene.sprites[0];
     const other = scene.sprites.find(s => s.id !== primary?.id);
     // Existing handlers follow the hats, so a learner can jump back to a script they made.
     const scripts = handlerSignatures(workspace).map((handler): Item => {
@@ -216,7 +216,7 @@ export function requiredLevel(workspace: Blockly.WorkspaceSvg): LevelNeed {
     // Name the most specific (Pro) category, e.g. Sprites rather than Builder's combined Game.
     if (index > 0) need(maps.at(-1)!.get(b.type) ?? maps[index].get(b.type)!, LEVELS[index]);
   }
-  const scene = sceneState(workspace);
+  const scene = readScene(workspace);
   // One world bigger than the stage (screens added in Stage view) and several worlds (a game's levels) are Builder tools.
   if ((scene.worlds?.length ?? 0) > 1) need('Levels', 'builder');
   else if (scene.worlds?.length) need('Big world', 'builder');
