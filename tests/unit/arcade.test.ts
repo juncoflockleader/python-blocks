@@ -63,6 +63,31 @@ describe('arcade examples', () => {
       'rock-blaster-shot-size': '80', 'rock-blaster-rock-size': '60', 'rock-blaster-rock-start-y': '100', 'rock-blaster-rock-looks-1': 'ball', 'rock-blaster-rock-looks-2': 'ball', 'rock-blaster-rock-looks-3': 'ball',
     });
   }, 60_000);
+  it('Rock Blaster: each sprite is set up by functions in its own tab, the one place that reads its setup Settings', () => {
+    const w = paletteWorkspace(); spaces.push(w);
+    const { project } = prepareProject(readFileSync('content/examples/rock-blaster.json', 'utf8'));
+    restore(w, project);
+    const setup = { dress_ship: 'ship', ship_to_start: 'ship', dress_shot: 'shots', fire_shot: 'shots', make_rock: 'rocks', split_rock: 'rocks' };
+    expect(Object.fromEntries(Object.keys(setup).map(name => [name, project.workspace.scriptTabs!.scripts[`${name}_function_block`]]))).toEqual(setup);
+    // The Python functions whose bodies name a setting or call a function.
+    const lines = compile(w).source!.split('\n');
+    const users = (name: string) => {
+      const found = new Set<string>(); let inside = '';
+      for (const line of lines) {
+        const def = /^(?:async )?def (\w+)/.exec(line);
+        if (def) inside = def[1]; else if (!/^\s/.test(line)) inside = ''; else if (inside && new RegExp(`\\b${name}\\b`).test(line)) found.add(inside);
+      }
+      return [...found].sort();
+    };
+    expect(Object.fromEntries(['SHIP_SIZE', 'SHIP_START_DIRECTION', 'SHIP_START_X', 'SHIP_START_Y', 'SHOT_LOOK', 'SHOT_SIZE', 'ROCK_SIZE', 'ROCK_START_Y', 'PIECE_SIZE', 'SPLIT_PIECES'].map(name => [name, users(name)]))).toEqual({
+      SHIP_SIZE: ['dress_ship'], SHIP_START_DIRECTION: ['dress_ship'], SHIP_START_X: ['ship_to_start'], SHIP_START_Y: ['ship_to_start'], SHOT_LOOK: ['dress_shot'], SHOT_SIZE: ['dress_shot'],
+      ROCK_SIZE: ['make_rock'], ROCK_START_Y: ['make_rock'], PIECE_SIZE: ['split_rock'], SPLIT_PIECES: ['split_rock'],
+    });
+    // The ship goes back to its start the same way at the start and after a rock hits it.
+    expect(Object.fromEntries(Object.keys(setup).map(name => [name, users(name)]))).toEqual({
+      dress_ship: ['on_start'], ship_to_start: ['on_rock_hits_ship', 'on_start'], dress_shot: ['on_start'], fire_shot: ['on_space_key'], make_rock: ['new_wave'], split_rock: ['on_rock_overlap'],
+    });
+  });
   it('Snake: the head moves a square at a time, turns, and the wall ends the game', () => {
     play('snake', [
       { wait: 0.62 }, { expect: { sprite: 'Head', x: -10 } }, { key: 'ArrowUp' }, { wait: 0.25 }, { expect: { sprite: 'Head', y: [30, 90] } },

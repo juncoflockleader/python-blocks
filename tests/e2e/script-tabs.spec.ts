@@ -155,13 +155,17 @@ test('the magic book: notes become a guide to the numbers, ready to change', asy
   expect(errors).toEqual([]);
 });
 
-test('Rock Blaster opens on its Settings too: one setting changes both arrows, the shot shoots stars, and a rock can be a star', async ({ page }) => {
+test('Rock Blaster opens on its Settings too: one setting changes both arrows, the shot shoots stars, a rock can be a star, and each sprite is set up in its tab', async ({ page }) => {
   const errors: string[] = []; page.on('pageerror', e => errors.push(e.message));
   await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
   await openExample(page, 'rock-blaster');
   await expect.poll(() => tabNames(page)).toEqual(['Settings', 'Game & waves', 'Ship', 'Shots', 'Rocks']);
   await expect(tab(page, 'Settings')).toHaveAttribute('aria-pressed', 'true');
   await expect.poll(() => onScreen(page)).toEqual(['settings_program_block']);
+  // Each sprite's tab holds the functions that set it up, beside its scripts.
+  await expect(tab(page, 'Ship').locator('.script-tab-count')).toHaveText('4');
+  await tab(page, 'Rocks').click();
+  await expect.poll(() => onScreen(page)).toEqual(['make_rock_function_block', 'on_rock_hits_ship_handler_block', 'on_rock_overlap_handler_block', 'split_rock_function_block']);
   await openTab(page, 'magic');
   await expect(page.locator('.magic-tab-heading')).toHaveText(['Settings', 'Shots']);
   const turning = page.locator('.magic-entry', { hasText: 'Turning speed' });
@@ -176,6 +180,7 @@ test('Rock Blaster opens on its Settings too: one setting changes both arrows, t
   await expect(page.locator('#python')).toContainText('SHOT_LOOK = "star"');
   await expect(page.locator('#python')).toContainText('ROCK_LOOKS = ["star", "stock-rock-lumpy", "stock-rock-round"]');
   for (const line of ['.turn(-(TURN_SPEED))', '.turn(TURN_SPEED)', '.costume(SHOT_LOOK)', '.costume(SHIP_LOOK)', '.costume(SHIP_FLYING_LOOK)', '.set("size", SHIP_SIZE)']) await expect(page.locator('#python')).toContainText(line);
+  for (const line of ['def dress_ship():', 'def ship_to_start():', 'def fire_shot():', 'def make_rock(look):', 'def split_rock(rock):', 'split_rock(_pb_scene.current_sprite)']) await expect(page.locator('#python')).toContainText(line);
   expect(errors).toEqual([]);
 });
 
