@@ -9,6 +9,7 @@ import { validPassword } from '../src/account/shared.ts';
  *   node server/cli.ts add-user <username> [--name "Display name"] [--admin]
  *   node server/cli.ts set-password <username>
  *   node server/cli.ts list-users
+ *   node server/cli.ts backup <file>   (a consistent copy of the database, safe while the server runs)
  * The password is read from PASSWORD, or asked for twice without being shown. DATA_DIR chooses the database as for the server. */
 const [command, username, ...rest] = process.argv.slice(2);
 const db = openDatabase(path.resolve(process.cwd(), process.env.DATA_DIR ?? 'data', 'python-blocks.sqlite'));
@@ -54,11 +55,15 @@ try {
     const next = await password(); if (!validPassword(next)) throw new Error('A password needs 4–128 characters.');
     db.prepare('UPDATE users SET password_hash = ?, disabled = 0 WHERE id = ?').run(await hashPassword(next), row.id); endAllSessions(db, row.id);
     console.log(`Set the password for ${username}.`);
+  } else if (command === 'backup' && username) {
+    // VACUUM INTO writes one self-contained file from a single read transaction, so the copy is whole even mid-write.
+    db.exec(`VACUUM INTO '${path.resolve(username).replace(/'/g, "''")}'`);
+    console.log(`Backed up to ${path.resolve(username)}.`);
   } else if (command === 'list-users') {
     for (const row of db.prepare('SELECT username, display_name, role, disabled FROM users ORDER BY username').all() as { username: string; display_name: string; role: string; disabled: number }[])
       console.log(`${row.username}\t${row.display_name}\t${row.role}${row.disabled ? '\t(turned off)' : ''}`);
   } else {
-    console.log('Use: add-user <username> [--name "Display name"] [--admin] | set-password <username> | list-users');
+    console.log('Use: add-user <username> [--name "Display name"] [--admin] | set-password <username> | list-users | backup <file>');
     process.exitCode = 1;
   }
 } catch (error) { console.error(error instanceof Error ? error.message : error); process.exitCode = 1; }

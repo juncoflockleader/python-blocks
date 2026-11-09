@@ -1,0 +1,10 @@
+[Unit]
+Description=Back up the Python Blocks database each night
+
+[Timer]
+OnCalendar=*-*-* 10:30:00 UTC
+RandomizedDelaySec=15min
+Persistent=true
+
+[Install]
+WantedBy=timers.target

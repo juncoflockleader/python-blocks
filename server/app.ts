@@ -1,6 +1,6 @@
 import { createReadStream, existsSync, readFileSync, statSync } from 'node:fs';
 import { readFile, stat } from 'node:fs/promises';
-import { randomUUID } from 'node:crypto';
+import { createHash, randomUUID, timingSafeEqual } from 'node:crypto';
 import path from 'node:path';
 import type { IncomingMessage, ServerResponse } from 'node:http';
 import type { TLSSocket } from 'node:tls';
@@ -12,11 +12,12 @@ import { LIMITS, isSyncedKey, validDisplayName, validPassword, validUsername, ty
 
 /** The Python Blocks server: it serves the built app only to signed-in learners (everyone else gets
  * the sign-in page), and an API for accounts, saved programs, synced browser state, coins and the
- * admin page. Accounts are made by an admin; there is no sign-up. */
+ * admin page. Accounts are made by an admin; there is no sign-up. Without `dist` it is the API alone,
+ * behind the Cloudflare Worker (worker/) that serves the site's pages and files. */
 export interface AppOptions {
   db: Database;
-  /** The built app (vite build). */
-  dist: string;
+  /** The built app (vite build). Leave it out to answer only /api/. */
+  dist?: string;
   /** The lessons and Academy units, for the coin rewards. */
   content: string;
   /** Secure cookies: true behind HTTPS, false for plain http on one machine, 'auto' from the request. */
@@ -25,6 +26,11 @@ export interface AppOptions {
   trustProxy?: boolean;
   /** The site's own address (pythonblocks.org): www.<it> is sent there, so sign-in cookies belong to one address. */
   canonicalHost?: string;
+  /** The site's origin when its pages are served from another host (https://pythonblocks.org): changes from them are accepted. */
+  siteOrigin?: string;
+  /** Known only to the site's proxy: every request but /api/health must carry it in X-PB-Proxy, so the API
+   * cannot be called around the proxy, and the address it forwards can be trusted. */
+  proxySecret?: string;
   now?: () => number;
   log?: (line: string) => void;
 }
@@ -51,7 +57,9 @@ const HEADERS = {
 
 export function createApp(options: AppOptions) {
   const { db } = options, now = options.now ?? Date.now, log = options.log ?? (() => {});
-  const dist = path.resolve(options.dist), rewards = loadRewards(options.content), throttle = new Throttle();
+  const dist = options.dist === undefined ? null : path.resolve(options.dist), rewards = loadRewards(options.content), throttle = new Throttle();
+  const digest = (value: string) => createHash('sha256').update(value).digest();
+  const proxied = (req: IncomingMessage) => !options.proxySecret || timingSafeEqual(digest(String(req.headers['x-pb-proxy'] ?? '')), digest(options.proxySecret));
   const send = (res: ServerResponse, status: number, body?: unknown, headers: Record<string, string | string[]> = {}) => {
     res.writeHead(status, { ...HEADERS, 'Cache-Control': 'no-store', ...(body === undefined ? {} : { 'Content-Type': 'application/json' }), ...headers });
     res.end(body === undefined ? undefined : JSON.stringify(body));
@@ -71,6 +79,9 @@ export function createApp(options: AppOptions) {
     .map(row => ({ amount: row.amount, kind: row.kind, award: row.award, note: row.note, createdAt: row.created_at, title: row.kind === 'award' ? rewards.get(row.award ?? '')?.title ?? row.award ?? '' : 'From your teacher' }));
   const userRow = (id: number) => db.prepare('SELECT * FROM users WHERE id = ?').get(id) as UserRow | undefined;
   const me = (user: AccountUser) => ({ user, coins: balance(user.id) });
+  const syncedValues = (userId: number) => Object.fromEntries((db.prepare('SELECT key, value FROM user_data WHERE user_id = ?').all(userId) as { key: string; value: string }[]).map(row => [row.key, row.value]));
+  /** What the editor starts with: the learner's account and their synced browser state. */
+  const boot = (user: AccountUser) => ({ ...me(user), values: syncedValues(user.id) });
   const field = <T>(body: unknown, name: string, check: (value: unknown) => value is T, message: string): T => {
     const value = (body as Record<string, unknown> | null)?.[name];
     if (!check(value)) throw new HttpError(400, message);
@@ -130,7 +141,8 @@ export function createApp(options: AppOptions) {
   });
 
   // ── Synced browser state: each key's latest value ──
-  route('GET', '/api/data', 'user', ctx => ({ values: Object.fromEntries((db.prepare('SELECT key, value FROM user_data WHERE user_id = ?').all(ctx.user!.id) as { key: string; value: string }[]).map(row => [row.key, row.value])) }));
+  route('GET', '/api/boot', 'user', ctx => boot(ctx.user!));
+  route('GET', '/api/data', 'user', ctx => ({ values: syncedValues(ctx.user!.id) }));
   route('PUT', '/api/data', 'user', ctx => {
     const values = (ctx.body as { values?: unknown })?.values;
     if (!values || typeof values !== 'object' || Array.isArray(values)) throw new HttpError(400, 'Send values by key.');
@@ -235,7 +247,7 @@ export function createApp(options: AppOptions) {
 
   // ── Files: only the sign-in page and its files before signing in ──
   let publicFiles = new Set<string>(), publicStamp = -1;
-  const signInFiles = () => {
+  const signInFiles = (dist: string) => {
     const page = path.join(dist, 'login.html');
     const stamp = existsSync(page) ? statSync(page).mtimeMs : 0;
     if (stamp !== publicStamp) {
@@ -247,10 +259,9 @@ export function createApp(options: AppOptions) {
   };
   const pages: Record<string, string> = { '/': '/index.html', '/login': '/login.html', '/admin': '/admin.html' };
   /** The editor's page, with the learner's account and saved work in it, so the editor starts with them at once. */
-  async function serveApp(ctx: Context) {
-    const html = await readFile(path.join(dist, 'index.html'), 'utf8'), user = ctx.user!;
-    const values = Object.fromEntries((db.prepare('SELECT key, value FROM user_data WHERE user_id = ?').all(user.id) as { key: string; value: string }[]).map(row => [row.key, row.value]));
-    const data = JSON.stringify({ user, coins: balance(user.id), values }).replace(/</g, '\\u003c');
+  async function serveApp(ctx: Context, dist: string) {
+    const html = await readFile(path.join(dist, 'index.html'), 'utf8');
+    const data = JSON.stringify(boot(ctx.user!)).replace(/</g, '\\u003c');
     const script = `<script id="pb-account" type="application/json">${data}</script>`;
     // Before the app's own scripts: in the head, or straight after the doctype. Both insert with a function:
     // a replacement string would read $` $' $& and $$ in the learner's work (Blockly's block ids have them)
@@ -259,7 +270,7 @@ export function createApp(options: AppOptions) {
     ctx.res.writeHead(200, { ...HEADERS, 'Content-Type': MIME['.html'], 'Cache-Control': 'no-store', 'Content-Length': String(page.length) });
     ctx.res.end(ctx.req.method === 'HEAD' ? undefined : page);
   }
-  async function serveFile(ctx: Context, file: string) {
+  async function serveFile(ctx: Context, dist: string, file: string) {
     const full = path.resolve(dist, `.${file}`);
     if (!full.startsWith(dist + path.sep)) return send(ctx.res, 404, { error: 'Not found.' });
     let info; try { info = await stat(full); } catch { info = null; }
@@ -287,6 +298,7 @@ export function createApp(options: AppOptions) {
     if (options.canonicalHost && req.headers.host === `www.${options.canonicalHost}`) {
       res.writeHead(301, { Location: `https://${options.canonicalHost}${url.pathname}${url.search}`, 'Cache-Control': 'no-store' }); res.end(); return;
     }
+    if (!proxied(req) && url.pathname !== '/api/health') return send(res, 403, { error: 'Not from this site.' });
     const token = readCookie(req), at = now();
     const session = sessionUser(db, token, at);
     if (session?.extended) res.setHeader('Set-Cookie', cookie(req, token!, SESSION_DAYS * 24 * 3600));
@@ -302,7 +314,7 @@ export function createApp(options: AppOptions) {
           // Requests that change things come from this site's own pages, as JSON.
           const origin = req.headers.origin;
           const host = (() => { try { return origin ? new URL(origin).host : null; } catch { return ''; } })();
-          if (origin && host !== req.headers.host) throw new HttpError(403, 'Not from this site.');
+          if (origin && host !== req.headers.host && origin !== options.siteOrigin) throw new HttpError(403, 'Not from this site.');
           if (req.method !== 'DELETE' || req.headers['content-length']) {
             if (!String(req.headers['content-type'] ?? '').startsWith('application/json')) throw new HttpError(415, 'Send JSON.');
             ctx.body = await readJson(req, r.limit);
@@ -311,10 +323,11 @@ export function createApp(options: AppOptions) {
         const result = await r.handle(ctx, m!.slice(1).map(decodeURIComponent));
         return send(res, result === undefined ? 204 : 200, result);
       }
+      if (!dist) throw new HttpError(404, 'Not found.');
       if (req.method !== 'GET' && req.method !== 'HEAD') throw new HttpError(405, 'Not allowed.');
       let file = pages[url.pathname] ?? decodeURIComponent(url.pathname);
       if (!ctx.user) {
-        if (file === '/login.html' || signInFiles().has(file)) return await serveFile(ctx, file);
+        if (file === '/login.html' || signInFiles(dist).has(file)) return await serveFile(ctx, dist, file);
         // A page asks to sign in; anything else is refused.
         if (file.endsWith('.html') || String(req.headers.accept ?? '').includes('text/html')) {
           const next = url.pathname === '/' ? '' : `?next=${encodeURIComponent(url.pathname + url.search)}`;
@@ -324,8 +337,8 @@ export function createApp(options: AppOptions) {
       }
       if (file === '/login.html') { res.writeHead(302, { ...HEADERS, Location: '/', 'Cache-Control': 'no-store' }); res.end(); return; }
       if (file === '/admin.html' && ctx.user.role !== 'admin') { res.writeHead(302, { ...HEADERS, Location: '/', 'Cache-Control': 'no-store' }); res.end(); return; }
-      if (file === '/index.html') return await serveApp(ctx);
-      return await serveFile(ctx, file);
+      if (file === '/index.html') return await serveApp(ctx, dist);
+      return await serveFile(ctx, dist, file);
     } catch (error) {
       if (error instanceof HttpError) return send(res, error.status, { error: error.message });
       if (error instanceof URIError) return send(res, 400, { error: 'Bad address.' });

@@ -1,0 +1,17 @@
+# A copy of the database each night (python-blocks-backup.timer): 7 days on the box, 30 in R2.
+[Unit]
+Description=Back up the Python Blocks database
+
+[Service]
+Type=oneshot
+User=pyblocks
+Group=pyblocks
+WorkingDirectory=/opt/python-blocks
+EnvironmentFile=/etc/python-blocks.env
+Environment=RCLONE_CONFIG=/etc/python-blocks-rclone.conf XDG_CACHE_HOME=/var/lib/python-blocks/.cache
+ExecStart=/bin/sh /opt/python-blocks/deploy/linode/backup.sh
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+ReadWritePaths=/var/lib/python-blocks

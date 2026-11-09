@@ -1,0 +1,25 @@
+# The Python Blocks API on the Linode box, behind the pythonblocks.org Cloudflare Worker. Requests reach it
+# through the Cloudflare Tunnel (api.pythonblocks.org -> 127.0.0.1:8788). Settings: /etc/python-blocks.env.
+[Unit]
+Description=Python Blocks API
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+User=pyblocks
+Group=pyblocks
+WorkingDirectory=/opt/python-blocks
+EnvironmentFile=/etc/python-blocks.env
+ExecStart=/opt/node-24/bin/node server/main.ts
+Restart=always
+RestartSec=2
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+PrivateTmp=true
+PrivateDevices=true
+ReadWritePaths=/var/lib/python-blocks
+MemoryMax=300M
+
+[Install]
+WantedBy=multi-user.target

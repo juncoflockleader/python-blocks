@@ -23,6 +23,9 @@ Then open http://127.0.0.1:8787, sign in as the admin, and add learners from **A
 | `DIST_DIR`, `CONTENT_DIR` | `dist`, `content` | The built app, and the lessons and units the coin rewards are read from. |
 | `COOKIE_SECURE` | `auto` | Session cookies are `Secure` over HTTPS. `auto` decides per request; `true` or `false` forces it. |
 | `TRUST_PROXY` | off | `1` behind a reverse proxy, so the client's address (for sign-in throttling) and HTTPS come from `X-Forwarded-For` and `X-Forwarded-Proto`. |
+| `API_ONLY` | off | `1` to answer only `/api/`, with the pages and files served elsewhere (the Cloudflare Worker, below). |
+| `SITE_ORIGIN` | none | The site's origin when its pages come from another host (`https://pythonblocks.org`): changes from them are accepted. |
+| `PROXY_SECRET` | none | Every request but `/api/health` must carry it in `X-PB-Proxy`, so the API can be reached only through the proxy that knows it. |
 | `ADMIN_USERNAME`, `ADMIN_PASSWORD` | none | Make the first admin when there is none. |
 
 Accounts can also be managed on the command line, for the first admin or if the admin page is out of reach (the password comes from `PASSWORD`, or is asked for twice and not shown as you type):
@@ -39,11 +42,17 @@ pnpm accounts set-password ada
 pnpm accounts list-users
 ```
 
+```bash
+pnpm accounts backup backup.sqlite
+```
+
+The backup is one whole file, safe to take while the server runs.
+
 When the server sends the editor's page to a signed-in learner, it puts their account and synced work in the page (a JSON script, `#pb-account`), so the editor starts with them at once, with no extra request. Opened without the server (`pnpm dev`, `pnpm preview` and the browser tests), the page has no account, and the app runs on its own: work kept in that browser only. That is a development mode, not a way to deploy: the server is what keeps the app private. To work on the account features, run `pnpm build` and `pnpm serve` (the server reads `dist/` on every request, so a new build needs no restart).
 
 ## Deploy it
 
-Any machine with Node 24 or later can run it: a small VPS, or a host such as Fly.io or Render with a persistent disk for `DATA_DIR`. Build the app, copy the repository (with `dist/`), and run `pnpm serve` (or `node server/main.ts`) under a service manager. Put HTTPS in front of it with a reverse proxy and set `TRUST_PROXY=1`. With Caddy:
+On one machine: any computer with Node 24 or later can run the whole thing. Build the app, copy the repository (with `dist/`), and run `pnpm serve` (or `node server/main.ts`) under a service manager, or use the [Dockerfile](../Dockerfile) with a persistent disk for `DATA_DIR`. Put HTTPS in front of it with a reverse proxy and set `TRUST_PROXY=1`. With Caddy:
 
 ```
 blocks.example.org {
@@ -51,35 +60,84 @@ blocks.example.org {
 }
 ```
 
-### On Fly.io
+The server sets the cross-origin isolation headers the editor needs (`Cross-Origin-Opener-Policy: same-origin`, `Cross-Origin-Embedder-Policy: require-corp`) itself, so the proxy needs no extra configuration.
 
-The repository has a [Dockerfile](../Dockerfile) and [fly.toml](../fly.toml) for Fly.io: one machine (shared CPU, 512 MB) in San Jose with a 1 GB volume, `pb_data`, mounted at `/data` for the database (Fly keeps daily snapshots of it for five days). The machine sleeps when nobody is using it and wakes on the next visit in a second or two. `CANONICAL_HOST` sends `www.pythonblocks.org` to `pythonblocks.org`, so sign-in cookies belong to one address. The first time:
+### pythonblocks.org: Cloudflare and Linode
+
+```
+browser ─► pythonblocks.org (Cloudflare)
+             ├─ the built app's files, served straight from Cloudflare (public/_headers adds the isolation headers)
+             └─ Worker python-blocks (worker/index.ts), only for /, /login, /admin, /api/* and videos
+                  ├─ /api/* ─► api.pythonblocks.org ─(Cloudflare Tunnel yaowan-play)─► Linode 127.0.0.1:8788
+                  └─ pages: asks the backend who is signed in (/api/boot); signed out → /login,
+                     signed in → the editor's page with #pb-account, as the server above does it
+```
+
+**The frontend** is a Cloudflare Worker with the built app as its static files ([wrangler.jsonc](../wrangler.jsonc)). The Worker runs only for the pages, the API and the videos:
+
+- `/api/*` goes to the backend with `X-PB-Proxy` (the Worker secret `PROXY_SECRET`) and the learner's address from `CF-Connecting-IP`.
+- The editor and admin pages need a session.
+- A video answers the byte ranges Safari asks for. Cloudflare's static files send the whole file even when a range is asked for.
+- `www` goes to the bare domain.
+
+The API stays at `pythonblocks.org/api`, on the same origin as the pages, so the app and its session cookie are the same as with the one-machine server.
+
+**The backend** shares the arcade's Linode box (`~/creds/linode.ip`, SSH as root with `~/.ssh/id_ed25519`) with the game server and keeps to its own:
+
+| What | Where |
+| --- | --- |
+| Node 24 | `/opt/node-24` (the game server keeps `/usr/bin/node`) |
+| User | `pyblocks` |
+| Code | `/opt/python-blocks` |
+| Database | `/var/lib/python-blocks/python-blocks.sqlite` |
+| Port | `127.0.0.1:8788` |
+| Settings | `/etc/python-blocks.env` (`API_ONLY`, `SITE_ORIGIN`, `PROXY_SECRET`, …) |
+| Service | `python-blocks.service` |
+
+The box's firewall allows only SSH. The Cloudflare Tunnel `yaowan-play` brings `api.pythonblocks.org` to port 8788, beside the arcade's `play.yaowan.studio`. The files for the box are in [deploy/linode](../deploy/linode).
+
+Deploy each half from this Mac:
 
 ```bash
-fly apps create python-blocks
+pnpm deploy:frontend
 ```
 
 ```bash
-fly volumes create pb_data --app python-blocks --region sjc --size 1
+pnpm deploy:backend
 ```
+
+- **Frontend:** builds and runs `wrangler deploy`, with the token from `~/creds/cloudflare.worker.api`.
+- **Backend:** copies `server/`, `content/`, `deploy/linode/` and the shared limits to the box, restarts the service and checks its health.
+
+**Backups:** `python-blocks-backup.timer` runs every night. It copies the database with `node server/cli.ts backup` and keeps 7 days on the box and 30 in the R2 bucket `python-blocks` (`/etc/python-blocks-rclone.conf`). To restore one:
+
+1. Stop `python-blocks`.
+2. Put the unzipped file at `/var/lib/python-blocks/python-blocks.sqlite`, owned by `pyblocks`.
+3. Start the service.
+
+**Accounts:** make or change them on the box. Each command asks for the password twice, without showing it.
 
 ```bash
-fly deploy --ha=false
+ssh -t root@$(cat ~/creds/linode.ip) "cd /opt/python-blocks && sudo -u pyblocks sh -c 'set -a; . /etc/python-blocks.env; /opt/node-24/bin/node server/cli.ts add-user <username> --name \"Your name\" --admin'"
 ```
 
-Then make the first admin on the machine (it asks for the password twice, without showing it; `set-password <username>` changes it the same way):
+**Setting it up again:**
 
-```bash
-fly ssh console --app python-blocks --pty -C "sh -c 'cd /app && node server/cli.ts add-user <username> --name \"Your name\" --admin'"
-```
+1. Run [deploy/linode/setup.sh](../deploy/linode/setup.sh) on the box as root.
+2. Write the two settings files from their `.example`s. A new `PROXY_SECRET` (`openssl rand -hex 32`, kept in `~/creds/python-blocks.proxy.secret`) goes in `/etc/python-blocks.env` and in the Worker:
 
-After a change, `fly deploy` again. For the domain, `fly certs add pythonblocks.org` and `fly certs add www.pythonblocks.org`, then point the domain's DNS at the app: an `A` and an `AAAA` record for the bare domain to the addresses `fly ips list` shows, and a `CNAME` for `www` to `python-blocks.fly.dev`. `fly certs show pythonblocks.org` says when the certificate is ready. `fly logs` shows the server's log, and `fly ssh console` opens a shell on the machine (`/data/python-blocks.sqlite` is the database).
+   ```bash
+   npx wrangler secret put PROXY_SECRET
+   ```
 
-The server sets the cross-origin isolation headers the editor needs (`Cross-Origin-Opener-Policy: same-origin`, `Cross-Origin-Embedder-Policy: require-corp`) itself, so the proxy needs no extra configuration. To back up the database while it runs, use SQLite's own backup (`sqlite3 data/python-blocks.sqlite ".backup backup.sqlite"`), or stop the server and copy the file.
+3. Add `api.pythonblocks.org` → `http://localhost:8788` to the tunnel's public hostnames.
+4. Run both deploys.
 
 ## What is private
 
-Before signing in, the server serves only the sign-in page (`/login`) and the files that page loads, read from `dist/login.html`. Every other page, script, picture, lesson and Python file needs a session: a page request is sent to `/login?next=…`, anything else gets 401. The admin page (`/admin`) and the admin API need the admin role.
+Before signing in, the one-machine server serves only the sign-in page (`/login`) and the files that page loads, read from `dist/login.html`. Every other page, script, picture, lesson and Python file needs a session: a page request is sent to `/login?next=…`, anything else gets 401. The admin page (`/admin`) and the admin API need the admin role.
+
+On pythonblocks.org the Worker keeps the pages behind sign-in in the same way: the editor, and the admin page for admins only. The built files themselves (scripts, lessons, pictures, Pyodide) are public, served from Cloudflare's cache. Accounts, saved programs, synced work and coins are only in the API, which needs a session.
 
 - **Passwords** are stored as `scrypt` hashes (N 32768, r 8, p 1: 32 MB and a moment of work each) with their own random salt. Each hash records its cost, so a password hashed at an older cost still works and is hashed again at the current one when its owner next signs in. A wrong password and a missing username take the same time.
 - **Sessions** are a random token in an `HttpOnly`, `SameSite=Lax` cookie that lasts 30 days from its last use; the database keeps only its SHA-256 hash. Changing or resetting a password, or turning an account off, ends the account's other sessions.

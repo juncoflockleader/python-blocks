@@ -204,3 +204,44 @@ describe('server', () => {
     expect(coins.balance).toBe(300); expect(coins.history[0]).toMatchObject({ amount: 20, kind: 'admin', note: 'Great helping', title: 'From your teacher' });
   });
 });
+
+/** The API on its own, as on Linode behind the Cloudflare Worker: no files, only requests with the
+ * Worker's secret, and changes from the site's pages on their own origin. */
+describe('server behind the Worker', () => {
+  let api: Server, apiBase = '';
+  const apiDb = openDatabase(':memory:'), secret = 'worker-secret', site = 'https://blocks.test';
+  beforeAll(async () => {
+    await addUser(apiDb, 'ada', 'Ada', 'bananas', 'learner');
+    const app = createApp({ db: apiDb, content: path.resolve('content'), secureCookies: true, trustProxy: true, siteOrigin: site, proxySecret: secret });
+    api = createServer((req, res) => { void app(req, res); });
+    await new Promise<void>(resolve => api.listen(0, '127.0.0.1', resolve));
+    const address = api.address(); apiBase = `http://127.0.0.1:${typeof address === 'object' && address ? address.port : 0}`;
+  });
+  afterAll(() => { api.close(); });
+  const call = (method: string, url: string, headers: Record<string, string> = {}, body?: unknown) =>
+    fetch(`${apiBase}${url}`, { method, redirect: 'manual', headers: { ...json, ...headers }, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
+
+  it('answers only requests the Worker sends, except the health check', async () => {
+    expect((await call('GET', '/api/health')).status).toBe(200);
+    expect((await call('GET', '/api/me')).status).toBe(403);
+    expect((await call('GET', '/api/me', { 'x-pb-proxy': 'guess' })).status).toBe(403);
+    expect((await call('POST', '/api/login', {}, { username: 'ada', password: 'bananas' })).status).toBe(403);
+    expect((await call('GET', '/api/me', { 'x-pb-proxy': secret })).status).toBe(401);
+  });
+
+  it('serves no pages or files, only the API', async () => {
+    for (const url of ['/', '/login', '/admin', '/assets/app-1.js']) expect((await call('GET', url, { 'x-pb-proxy': secret, accept: 'text/html' })).status, url).toBe(404);
+  });
+
+  it('starts the editor from /api/boot, and takes changes from the site\'s own pages', async () => {
+    const proxy = { 'x-pb-proxy': secret, 'x-forwarded-for': '203.0.113.9', 'x-forwarded-proto': 'https' };
+    const login = await call('POST', '/api/login', { ...proxy, origin: site }, { username: 'ada', password: 'bananas' });
+    expect(login.status).toBe(200);
+    expect(login.headers.get('set-cookie')).toMatch(/; Secure$/);
+    const cookie = (login.headers.get('set-cookie') ?? '').split(';')[0], me = { ...proxy, cookie };
+    expect((await call('PUT', '/api/data', { ...me, origin: site }, { values: { 'python-blocks.title.v1': 'Rocket' } })).status).toBe(204);
+    expect(await (await call('GET', '/api/boot', me)).json()).toEqual({ user: { id: 1, username: 'ada', displayName: 'Ada', role: 'learner' }, coins: 0, values: { 'python-blocks.title.v1': 'Rocket' } });
+    expect((await call('PATCH', '/api/me', { ...me, origin: 'https://elsewhere.example' }, { displayName: 'X' })).status).toBe(403);
+    expect((await call('GET', '/api/boot', proxy)).status).toBe(401);
+  });
+});
