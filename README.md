@@ -138,7 +138,7 @@ Use this scaffold locally with your own projects. A worker provides responsivene
 | `pnpm exec playwright install chromium` | Install the browser used by end-to-end tests |
 | `pnpm test:e2e` | Test the production app (run `pnpm build` first) |
 
-Deploy with the server: it serves `dist/` (including `pyodide/`) only to signed-in learners, with the cross-origin isolation headers and `.wasm` types the editor needs. See [docs/server.md](docs/server.md) for settings, HTTPS behind a reverse proxy, and backups.
+Deploy with the server: it serves `dist/` (including `pyodide/`) only to signed-in learners, with the cross-origin isolation headers and `.wasm` types the editor needs. pythonblocks.org splits it in two: the built app and its pages on Cloudflare (`pnpm deploy:frontend`, a Worker in [worker/](worker)) and the API on a Linode box behind a Cloudflare Tunnel (`pnpm deploy:backend`). See [docs/server.md](docs/server.md) for settings, both setups, and backups.
 
 ## Design and source map
 

@@ -1,0 +1,27 @@
+// pythonblocks.org on Cloudflare: the built app as static files, and worker/index.ts for the pages and
+// the API, which it passes to the backend on Linode. Deploy with pnpm deploy:frontend (scripts/deploy-frontend.sh).
+{
+  "name": "python-blocks",
+  "account_id": "ada13d3ac6727700281ae0353561179a",
+  "main": "worker/index.ts",
+  "compatibility_date": "2026-10-01",
+  "workers_dev": false,
+  "routes": [
+    { "pattern": "pythonblocks.org", "custom_domain": true },
+    { "pattern": "www.pythonblocks.org", "custom_domain": true }
+  ],
+  "assets": {
+    "directory": "./dist",
+    "binding": "ASSETS",
+    // Files are served by their exact paths; the pages' own addresses (/, /login, /admin) are the Worker's.
+    "html_handling": "none",
+    "not_found_handling": "none",
+    // The pages and the API, and the videos, for their ranges (worker/index.ts).
+    "run_worker_first": ["/", "/index.html", "/login", "/login.html", "/admin", "/admin.html", "/api/*", "/*.mp4", "/*.webm"]
+  },
+  "vars": {
+    "API_ORIGIN": "https://api.pythonblocks.org",
+    "SITE_HOST": "pythonblocks.org"
+  }
+  // PROXY_SECRET is a Worker secret (wrangler secret put), the backend's PROXY_SECRET.
+}

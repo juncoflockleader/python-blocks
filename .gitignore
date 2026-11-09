@@ -14,3 +14,4 @@ __pycache__/
 public/player/
 /data/
 /.test-server-data/
+.wrangler/

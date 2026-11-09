@@ -1,0 +1,13 @@
+# /etc/python-blocks-rclone.conf on the Linode box (owner root, group pyblocks, mode 640): where backup.sh
+# copies the nightly backups, the R2 bucket python-blocks, with an R2 access key limited to it.
+[r2]
+type = s3
+provider = Cloudflare
+access_key_id =
+secret_access_key =
+endpoint = https://<account id>.r2.cloudflarestorage.com
+acl = private
+no_check_bucket = true
+# R2 answers an upload with a version id, and rclone 1.60 (Ubuntu 24.04) then checks the upload by that
+# version, which R2 does not implement (501). The upload itself is fine, so skip the check.
+no_head = true

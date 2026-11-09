@@ -14,6 +14,8 @@
     "preview": "vite preview --host 127.0.0.1",
     "serve": "node server/main.ts",
     "accounts": "node server/cli.ts",
+    "deploy:frontend": "sh scripts/deploy-frontend.sh",
+    "deploy:backend": "sh scripts/deploy-backend.sh",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:python": "python3 -m unittest discover -s tests/python -v",
