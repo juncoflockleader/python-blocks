@@ -104,8 +104,10 @@ export function keepShellInPlace() {
 }
 export function installTabs(onChange: (tab: Tab) => void = () => {}) {
   const tabs = TABS.map(tab => document.getElementById(`tab-${tab}`) as HTMLButtonElement);
-  let current: Tab = 'sprite';
+  let current: Tab = 'sprite', pinned: Tab | null = null;
   const activate = (next: Tab, focus = false) => {
+    // While a tab is pinned (a classroom keeps its lesson in front, with the tabs put away), the others wait.
+    if (pinned && next !== pinned) return;
     current = next;
     for (const [index, tab] of TABS.entries()) {
       const selected = tab === next;
@@ -124,7 +126,7 @@ export function installTabs(onChange: (tab: Tab) => void = () => {}) {
       if (event.key === 'Home' || event.key === 'End') { event.preventDefault(); activate(TABS[event.key === 'Home' ? 0 : TABS.length - 1], true); }
     });
   }
-  return { activate, mark, get current() { return current; } };
+  return { activate, mark, get current() { return current; }, /** Keep one tab in front, or (null) let the tabs go again. */ pin(tab: Tab | null) { pinned = null; if (tab) { activate(tab); pinned = tab; } } };
 }
 
 /** The Help tab's sections. Nudges and an active guided-build step stay above them. */

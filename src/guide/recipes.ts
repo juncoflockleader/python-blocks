@@ -16,7 +16,12 @@ export type SpriteRef = '$sprite' | '$other';
  * and `loose` (academy problems only) leaves the stack on the workspace unsnapped, for the learner to put in place. */
 export interface RecipeHandler { kind: HatKind | 'program' | 'loose'; key?: string; sprite?: SpriteRef; other?: SpriteRef; message?: string; backdrop?: string }
 /** One top-level script: a handler made through the hat-block path, holding a stack. */
-export interface RecipePart { handler: RecipeHandler; stack: State[] }
+export interface RecipePart {
+  handler: RecipeHandler; stack: State[];
+  /** A script a classroom step makes for the learner and locks: `true` so none of it can be moved, changed or
+   * deleted, `"hat"` so only its "when …" block stays put (classroom/locks.ts). */
+  locked?: true | 'hat';
+}
 /** Input played while recording a preview: hold a key, or click a sprite. */
 export type DemoAction = { key: string; ms?: number } | { click: SpriteRef } | { wait: number };
 export interface Recipe {

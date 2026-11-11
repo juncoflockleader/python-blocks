@@ -37,6 +37,8 @@ import { insertRecipe, recipes, type Recipe } from './guide/recipes';
 import { recipeCard, type CardHost } from './guide/card';
 import { installIdeas, rankIdeas } from './guide/ideas';
 import { installGuide } from './guide/builds';
+import { installClassroom } from './classroom/shell';
+import { YOUR_BLOCKS } from './classroom/toolbox';
 import { installNudges, type FixKind } from './guide/nudges';
 import { installFixes, type RuntimeFault } from './guide/fixes';
 import { installGallery } from './guide/gallery';
@@ -264,17 +266,24 @@ const nudges = installNudges({
   picks: () => [['catch-the-star-game', 'Catch the star'], ['pen-patterns-game', 'Pen patterns'], ['scene-story-example', 'Story']].map(([id, title]) => ({ id, title, open: () => gallery.load(id) })),
 });
 // Block pictures in lesson text show the block's number in its category's picker, at the current level.
-setBlockNumbers((category, ref) => { const found = findBlock(workspace, level, category, ref); return found && { ...found, ...blockLook(workspace, ref) }; });
+// A classroom step shows only its own blocks, in one list; while it is open the editor's other tools are put away (classroom/shell.ts).
+const classroom = installClassroom(workspace, { level: () => level, pinLesson: on => tabs.pin(on ? 'help' : null), selected: () => sceneEditor?.selected() ?? '', select: id => sceneEditor?.select(id) });
+// In a classroom the number is the block's place in the step's own list.
+setBlockNumbers((category, ref) => {
+  if (classroom.open) { const number = classroom.number(ref); return number === undefined ? undefined : { category: YOUR_BLOCKS, number, ...blockLook(workspace, ref) }; }
+  const found = findBlock(workspace, level, category, ref); return found && { ...found, ...blockLook(workspace, ref) };
+});
 // In a lesson the stage steps back while the learner builds, so the step has room under it.
 const lessonStage = installLessonStage(() => sceneEditor?.reset());
 const guide = installGuide({
   workspace, level: () => level, setLevel: next => levelControl.set(next),
   compilation: () => compile(workspace),
   lessonMode: (on, puzzle) => lessonStage.lesson(on, puzzle),
+  classroom: step => { classroom.step(step); renumberBlocks(); },
   snapshot: () => snapshot(workspace),
   // A guided build works in the blocks, so it starts in Blocks view.
   load(project, title) { if (!installProject(prepareProject(JSON.stringify(project)).project)) return false; setTitle(title); viewSwitch?.show('blocks'); return true; },
-  select: id => sceneEditor?.select(id), prefer: id => { preferredTarget = id; }, showRecipe: recipe => ideas.show(recipe), reveal: list => { if (list) showHelp('builds'); else tabs.activate('help'); }, notify: helpDot,
+  select: id => { sceneEditor?.select(id); classroom.refresh(); }, prefer: id => { preferredTarget = id; }, showRecipe: recipe => ideas.show(recipe), reveal: list => { if (list) showHelp('builds'); else tabs.activate('help'); }, notify: helpDot,
   finished: build => { helpDot(); academy.finished(build); accountControls.finished(build); },
   progress: event => { academy.record(event); if (academy.mastered(event.build)) accountControls.mastered(event.build); },
   stopped: () => nudges.empty(!workspace.getTopBlocks(false).length),
@@ -286,7 +295,9 @@ const guide = installGuide({
     const group = Blockly.Events.getGroup(); Blockly.Events.setGroup(group || true);
     try {
       for (const id of replace) workspace.getBlockById(id)?.dispose(true);
-      return insertRecipe(workspace, lesson, select ?? sceneEditor?.selected() ?? '', other).map(block => block.id);
+      const added = insertRecipe(workspace, lesson, select ?? sceneEditor?.selected() ?? '', other);
+      classroom.reveal(added[0]);
+      return added.map(block => block.id);
     } finally { Blockly.Events.setGroup(group); }
   },
   keepProject() {
@@ -340,7 +351,7 @@ const levelControl = installLevelControl(next => {
   workspace.updateToolbox(toolboxFor(next)); workspace.getFlyout()?.hide(); paletteSearch.refresh();
   // The palette may change width (Builder and Pro use two columns on tablets): let Blockly re-measure it.
   Blockly.svgResize(workspace); paletteHint.refresh();
-  blockSearch.refresh(); quickTools.refresh();
+  blockSearch.refresh(); quickTools.refresh(); classroom.refresh();
   debuggerView?.refresh();
   renumberBlocks();
 });
@@ -662,4 +673,4 @@ element<HTMLInputElement>('#project-file').addEventListener('change', async even
     else if (installProject(prepared.project)) { setTitle(file.name.replace(/\.python-blocks\.json$|\.json$/i, '') || 'My project'); offerLevel(); }
   } catch (error) { notice.textContent = `Could not open project: ${error instanceof Error ? error.message : error}. Your current work is unchanged.`; }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeCaptions(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); academy.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); scriptTabsControl.dispose(); magic?.dispose(); valueSheet.dispose(); blockSearch.dispose(); quickTools.dispose(); paletteSearch.dispose(); lessonStage.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeCaptions(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); academy.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); scriptTabsControl.dispose(); magic?.dispose(); valueSheet.dispose(); blockSearch.dispose(); quickTools.dispose(); paletteSearch.dispose(); lessonStage.dispose(); classroom.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });

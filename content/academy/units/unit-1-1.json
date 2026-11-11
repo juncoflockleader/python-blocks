@@ -7,6 +7,7 @@
  },
  "title": "Tap and it talks",
  "level": "starter",
+ "classroom": true,
  "minutes": 25,
  "order": 1,
  "summary": "Make characters talk when you tap them or press a key. Learn signals, top-to-bottom order and costumes.",
@@ -331,7 +332,8 @@
         }
        }
       }
-     ]
+     ],
+     "locked": true
     },
     {
      "handler": {
@@ -371,7 +373,8 @@
         }
        }
       }
-     ]
+     ],
+     "locked": true
     },
     {
      "handler": {
@@ -412,7 +415,8 @@
         }
        }
       }
-     ]
+     ],
+     "locked": true
     }
    ],
    "checklist": [
@@ -426,7 +430,8 @@
    "check": {
     "ran": true
    },
-   "why": "Nothing happens until you tap or press a key. That is a <<signal>>."
+   "why": "Nothing happens until you tap or press a key. That is a <<signal>>.",
+   "toolbox": []
   },
   {
    "kind": "predict",
@@ -603,7 +608,8 @@
         }
        }
       }
-     ]
+     ],
+     "locked": true
     }
    ],
    "predict": {
@@ -640,7 +646,8 @@
      }
     ]
    },
-   "why": "A <<sprite>> only does what its own blocks say, when their signal comes."
+   "why": "A <<sprite>> only does what its own blocks say, when their signal comes.",
+   "toolbox": []
   },
   {
    "kind": "predict",
@@ -875,7 +882,8 @@
         }
        }
       }
-     ]
+     ],
+     "locked": true
     }
    ],
    "predict": {
@@ -913,7 +921,8 @@
      }
     ]
    },
-   "why": "The computer reads your blocks like you read a page: from the top down."
+   "why": "The computer reads your blocks like you read a page: from the top down.",
+   "toolbox": []
   },
   {
    "kind": "predict",
@@ -1065,7 +1074,8 @@
         }
        }
       }
-     ]
+     ],
+     "locked": true
     }
    ],
    "predict": {
@@ -1101,7 +1111,8 @@
      }
     ]
    },
-   "why": "Next costume goes round and round, like turning the pages of a tiny flip book."
+   "why": "Next costume goes round and round, like turning the pages of a tiny flip book.",
+   "toolbox": []
   },
   {
    "kind": "build",
@@ -1208,9 +1219,6 @@
    },
    "select": "robot",
    "other": "fox",
-   "highlight": {
-    "category": "events"
-   },
    "panel": {
     "backdrop": "backdrops/hills@1",
     "art": [
@@ -1236,7 +1244,6 @@
      ]
     ]
    },
-   "coach": "The key block is in Events. Tap it!",
    "text": "Make Robot say Jump! when you press [space].",
    "checklist": [
     {
@@ -1285,8 +1292,8 @@
     ]
    },
    "hints": [
-    "Pick Robot under the stage. Then drag ((Events#hat:key|when space key pressed)) out of {{Events}}.",
-    "Snap ((Looks#scene_say_for|sprite Robot say Jump! for 2 seconds)) from {{Looks}} under it, and type Jump!"
+    "Drag ((Events#hat:key|when space key pressed)) out of Your blocks.",
+    "Snap ((Looks#scene_say_for|sprite Robot say Jump! for 2 seconds)) under it, and type Jump!"
    ],
    "solution": {
     "parts": [
@@ -1333,7 +1340,12 @@
      }
     ]
    },
-   "why": "Taps, keys and the game starting are all signals. Each \"when\" block waits for its own one."
+   "why": "Taps, keys and the game starting are all signals. Each \"when\" block waits for its own one.",
+   "toolbox": [
+    "Events#hat:key",
+    "Events#hat:click",
+    "Looks#scene_say_for"
+   ]
   },
   {
    "kind": "quiz",
@@ -1480,7 +1492,8 @@
         }
        }
       }
-     ]
+     ],
+     "locked": true
     }
    ],
    "quiz": {
@@ -1540,7 +1553,8 @@
           }
          }
         }
-       ]
+       ],
+       "locked": true
       }
      ],
      "quiz": {
@@ -1595,7 +1609,8 @@
           }
          }
         }
-       ]
+       ],
+       "locked": true
       }
      ],
      "quiz": {
@@ -1610,7 +1625,8 @@
       "explain": "The blocks belong to Fox and listen for a tap on Fox. Tapping Robot does nothing."
      }
     }
-   ]
+   ],
+   "toolbox": []
   },
   {
    "kind": "complete",
@@ -1724,7 +1740,8 @@
       "kind": "click",
       "sprite": "$sprite"
      },
-     "stack": []
+     "stack": [],
+     "locked": "hat"
     },
     {
      "handler": {
@@ -1841,7 +1858,8 @@
      }
     ],
     "replacesPlant": 6
-   }
+   },
+   "toolbox": []
   },
   {
    "kind": "build",
@@ -1948,9 +1966,6 @@
    },
    "select": "robot",
    "other": "fox",
-   "highlight": {
-    "category": "events"
-   },
    "text": "Make Robot say Beep! when you tap Robot.",
    "game": {
     "script": [
@@ -1981,8 +1996,8 @@
     "solved": true
    },
    "hints": [
-    "Pick Robot under the stage first. Then drag ((Events#hat:click|when Robot clicked)) out of {{Events}}.",
-    "Under it, add ((Looks#scene_say_for|sprite Robot say Beep! for 2 seconds)) from {{Looks}} and type Beep!"
+    "Drag ((Events#hat:click|when Robot clicked)) out of Your blocks.",
+    "Under it, add ((Looks#scene_say_for|sprite Robot say Beep! for 2 seconds)) and type Beep!"
    ],
    "solution": {
     "parts": [
@@ -2027,7 +2042,12 @@
       ]
      }
     ]
-   }
+   },
+   "toolbox": [
+    "Events#hat:click",
+    "Events#hat:key",
+    "Looks#scene_say_for"
+   ]
   },
   {
    "kind": "quiz",
@@ -2238,7 +2258,8 @@
         }
        }
       }
-     ]
+     ],
+     "locked": true
     }
    ],
    "quiz": {
@@ -2360,7 +2381,8 @@
           }
          }
         }
-       ]
+       ],
+       "locked": true
       }
      ],
      "quiz": {
@@ -2479,7 +2501,8 @@
           }
          }
         }
-       ]
+       ],
+       "locked": true
       }
      ],
      "quiz": {
@@ -2494,7 +2517,8 @@
       "explain": "Top to bottom: Three, Two, then One comes last."
      }
     }
-   ]
+   ],
+   "toolbox": []
   },
   {
    "kind": "fix",
@@ -2641,7 +2665,8 @@
         }
        }
       }
-     ]
+     ],
+     "locked": "hat"
     }
    ],
    "game": {
@@ -2727,7 +2752,8 @@
      }
     ],
     "replacesPlant": 9
-   }
+   },
+   "toolbox": []
   },
   {
    "kind": "complete",
@@ -2938,7 +2964,8 @@
         }
        }
       }
-     ]
+     ],
+     "locked": "hat"
     }
    ],
    "game": {
@@ -3101,7 +3128,8 @@
      }
     ],
     "replacesPlant": 10
-   }
+   },
+   "toolbox": []
   },
   {
    "kind": "build",
@@ -3245,7 +3273,7 @@
     "solved": true
    },
    "hints": [
-    "Use ((Looks#scene_costume_set|set sprite Fox costume)) and choose Fox happy. It is in {{Looks}}.",
+    "Use ((Looks#scene_costume_set|set sprite Fox costume)) and choose Fox happy.",
     "Then add ((Looks#scene_say_for|sprite Fox say Yay! for 2 seconds)) under it."
    ],
    "solution": {
@@ -3312,7 +3340,13 @@
       ]
      }
     ]
-   }
+   },
+   "toolbox": [
+    "Events#hat:click",
+    "Looks#scene_costume_set",
+    "Looks#scene_next_costume",
+    "Looks#scene_say_for"
+   ]
   },
   {
    "kind": "build",
@@ -3546,7 +3580,12 @@
      }
     ]
    },
-   "why": "Two \"when\" blocks with the same signal both start at once. That is how two sprites can talk together."
+   "why": "Two \"when\" blocks with the same signal both start at once. That is how two sprites can talk together.",
+   "toolbox": [
+    "Events#hat:key",
+    "Events#hat:click",
+    "Looks#scene_say_for"
+   ]
   },
   {
    "kind": "quiz",
@@ -3674,7 +3713,8 @@
         }
        }
       }
-     ]
+     ],
+     "locked": true
     }
    ],
    "quiz": {
@@ -3725,7 +3765,8 @@
           }
          }
         }
-       ]
+       ],
+       "locked": true
       }
      ],
      "quiz": {
@@ -3739,7 +3780,8 @@
       "explain": "Happy, jump, first, then happy again on tap 4."
      }
     }
-   ]
+   ],
+   "toolbox": []
   },
   {
    "kind": "challenge",
@@ -3913,7 +3955,17 @@
    ],
    "check": {
     "all": []
-   }
+   },
+   "toolbox": [
+    "Events#hat:click",
+    "Events#hat:key",
+    "Looks#scene_say_for",
+    "Looks#scene_costume_set",
+    "Looks#scene_next_costume"
+   ],
+   "show": [
+    "sprites"
+   ]
   },
   {
    "kind": "build",
@@ -4257,6 +4309,11 @@
       ]
      }
     }
+   ],
+   "toolbox": [
+    "Events#hat:click",
+    "Events#hat:key",
+    "Looks#scene_say_for"
    ]
   },
   {
@@ -4468,7 +4525,8 @@
         }
        }
       }
-     ]
+     ],
+     "locked": true
     }
    ],
    "quiz": {
@@ -4515,7 +4573,8 @@
           }
          }
         }
-       ]
+       ],
+       "locked": true
       }
      ],
      "text": "Robot has three costumes: first, happy and jump. Each tap runs ((Looks#scene_next_costume|next costume of sprite Robot)).",
@@ -4570,7 +4629,8 @@
           }
          }
         }
-       ]
+       ],
+       "locked": true
       }
      ],
      "text": "These blocks are under when Robot clicked.",
@@ -4585,7 +4645,8 @@
       "explain": "The say block names Fox, so Fox talks when you tap Robot."
      }
     }
-   ]
+   ],
+   "toolbox": []
   },
   {
    "kind": "build",
@@ -4909,6 +4970,12 @@
       ]
      }
     }
+   ],
+   "toolbox": [
+    "Events#hat:key",
+    "Events#hat:click",
+    "Looks#scene_say_for",
+    "Looks#scene_costume_set"
    ]
   }
  ],
