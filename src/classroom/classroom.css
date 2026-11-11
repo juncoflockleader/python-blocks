@@ -1,0 +1,72 @@
+/* The classroom's narrowed editor (classroom/shell.ts, docs/learner-experience-plan.md §4.9). While :root has data-classroom,
+   the editor shows only what the open step needs. What is put away is gone, never greyed out. */
+
+/* Top bar: the unit's name, Undo and Redo, Run and Stop, the Academy map and the learner's coins stay. */
+:root[data-classroom] :is(#view-switch, #level-control, #examples-open, #lessons-open, .menu-wrap, .top-divider) { display: none; }
+/* Run code stays for trying things out; the one green button is the lesson's next move. */
+:root[data-classroom] #run { background: #fff; border-color: #b5ce74; }
+
+/* Blocks: the step's own blocks in one list that stays open, in place of the categories and the search tools. */
+:root[data-classroom] :is(.blocklyToolbox, #script-tabs, #script-tabs-empty, #block-search-toggle, #block-search, #quick-tools, #palette-more) { display: none !important; }
+.blocklyFlyout .classroom-blocks-title .blocklyFlyoutLabelText { font: 700 15px 'Space Grotesk', 'DM Sans', system-ui, sans-serif !important; fill: #1f6a60; }
+.classroom-blocks-title .blocklyFlyoutLabelBackground { fill: transparent; }
+
+/* Right column: the stage, the guide and the lesson. The other tabs, the Help sections and (unless the step
+   asks for them) the sprites under the stage are put away. */
+:root[data-classroom] .tab-bar { display: none; }
+:root[data-classroom] #panel-help > :not(#guide-active-slot) { display: none; }
+:root[data-classroom]:not([data-classroom-show~=sprites]) .sprite-tray { display: none; }
+:root[data-classroom] .tab-panels { display: flex; flex-direction: column; }
+:root[data-classroom] #panel-help { flex: 1 0 auto; display: flex; flex-direction: column; padding-bottom: 0; }
+:root[data-classroom] #guide-active-slot { flex: 1 0 auto; display: flex; flex-direction: column; }
+:root[data-classroom] #guide-active-slot .guide-active { flex: 1 0 auto; display: flex; flex-direction: column; margin-bottom: 0; }
+:root[data-classroom] #guide-active-slot .guide-active[hidden] { display: none; }
+
+/* The lesson card: its place in the unit is the guide's dots, and one row of buttons stays at the bottom of the
+   column, with the next move always the big green one at the right. */
+.guide-classroom #guide-progress, .guide-classroom .guide-chapters { display: none; }
+.guide-classroom .guide-head { margin-bottom: 8px; }
+.guide-classroom .guide-actions { position: sticky; bottom: 0; z-index: 2; margin-top: auto; padding: 10px 0 12px; background: linear-gradient(#fafbf600, #fafbf6 10px); align-items: center; }
+.guide-classroom .guide-actions .button:not([hidden]) { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+.guide-classroom .guide-actions .button { flex: none; padding-inline: 10px; }
+/* Back is its arrow alone, so the help button and the next move have the row. */
+.guide-classroom .guide-actions #guide-back { width: 44px; padding: 0; gap: 0; font-size: 0; }
+.guide-classroom .guide-actions :is(#guide-next, #guide-run, #guide-check-answer) { margin-left: auto; min-height: 52px; min-width: 120px; padding-inline: 14px; font-size: 15px; border-radius: 14px; border-width: 2px; border-color: #9db95a; }
+.guide-classroom .guide-actions :is(#guide-next, #guide-check-answer):disabled { opacity: .55; }
+.puzzle-actions[hidden] { display: none; }
+
+/* The guide: the Chick says the step's goal, over the stop's dots. It sits beside the small stage while the
+   learner builds, and steps aside while the game has the full stage. */
+.classroom-guide { display: none; }
+@media (min-width: 900px) {
+  :root[data-classroom][data-lesson-stage=small]:not([data-view=stage]) .right-column { grid-template-columns: 56% minmax(0, 1fr); grid-template-rows: auto auto minmax(0, 1fr); grid-template-areas: 'stage guide' 'tray tray' 'panels panels'; }
+  :root[data-classroom][data-lesson-stage=small]:not([data-view=stage]) .stage-panel { align-self: start; border-bottom: 1px solid #dce1d2; }
+  :root[data-classroom][data-lesson-stage=small]:not([data-view=stage]) .tab-panels { border-top: 0; }
+  :root[data-classroom][data-lesson-stage=small]:not([data-view=stage]) .classroom-guide:not([hidden]) { grid-area: guide; display: grid; grid-template-columns: 44px minmax(0, 1fr); align-items: start; align-content: start; gap: 8px; min-width: 0; padding: 10px 10px 6px; }
+  /* Sprites a step brings back sit in one row under the stage and the guide. */
+  :root[data-classroom][data-lesson-stage=small]:not([data-view=stage]) .sprite-tray { grid-area: tray; flex-wrap: nowrap; align-items: center; padding: 4px 8px; border-bottom: 1px solid #e4e7dd; overflow-x: auto; }
+  :root[data-classroom][data-lesson-stage=small]:not([data-view=stage]) .tray-cards { flex: 1 1 auto; flex-wrap: nowrap; }
+  /* Beside the stage the Chick says the goal, so the card under it starts with the step's words. */
+  :root[data-classroom][data-lesson-stage=small]:not([data-view=stage]) .guide-classroom #guide-step-title { display: none; }
+  :root[data-classroom][data-lesson-stage=small]:not([data-view=stage]) .guide-classroom .guide-title-row { justify-content: flex-end; }
+}
+.classroom-chick { width: 44px; height: 44px; image-rendering: pixelated; }
+.classroom-title { margin: 0; padding: 8px 10px; border: 2px solid #267c70; border-radius: 14px 14px 14px 4px; background: #fff; font: 700 15px/1.25 'Space Grotesk', 'DM Sans', system-ui, sans-serif; color: #26382f; overflow-wrap: anywhere; }
+.classroom-title:empty { display: none; }
+.classroom-place { grid-column: 1 / -1; margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; font-size: 12px; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; color: #1f6a60; }
+.classroom-dots { display: flex; flex-wrap: wrap; gap: 4px; margin: 0; padding: 0; list-style: none; }
+.classroom-dot { width: 22px; height: 22px; display: grid; place-items: center; border-radius: 50%; border: 2px solid #cbd4b4; background: #fff; color: #6f7767; font: 700 12px 'DM Sans', system-ui, sans-serif; letter-spacing: 0; }
+.classroom-dot-done { border-color: #267c70; background: #267c70; color: #fff; }
+.classroom-dot-now { border-color: #9db95a; background: #c7df8c; color: #2b4123; }
+
+/* A check that does not pass yet is something the guide saw, not a mistake: warm amber, never red. */
+.guide-classroom .puzzle-results-title.puzzle-bad, .guide-classroom .puzzle-fail .puzzle-mark, .guide-classroom .puzzle-saw { color: #8a5a1c; }
+
+/* When a step brings the sprites back it is to pick one: the library, Paint and Sounds stay away. */
+:root[data-classroom] .sprite-tray .tray-button { display: none; }
+/* The list takes room from the workspace, so the lesson's column gives a little back. */
+@media (min-width: 900px) { :root[data-classroom] .shell-body { --right: clamp(340px, 34vw, 520px); } }
+/* The row is three buttons wide in a narrow column: the help button is its words alone, and on a narrow
+   screen so is the next move. */
+.guide-classroom .guide-actions #guide-hint::before { display: none; }
+@media (max-width: 1150px) { .guide-classroom .guide-actions :is(#guide-next, #guide-run, #guide-check-answer) :is(svg), .guide-classroom .guide-actions :is(#guide-next, #guide-run, #guide-check-answer)::before { display: none; } }

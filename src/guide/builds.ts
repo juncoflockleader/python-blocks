@@ -12,6 +12,8 @@ import { recipeById, type Recipe, type RecipePart } from './recipes';
 import { atLeast, levelNames, type Level } from '../ui/levels';
 import { handlerSignatures, type FunctionBlock } from '../language/functions';
 import { keepAction } from '../account/session';
+import { stopAt } from '../classroom/stops';
+import { lockScript, unlockAll } from '../classroom/locks';
 
 /** A guided build: a short, checked tutorial that ends in a playable game.
  * Steps are checked against the workspace (and whether it ran or finished),
@@ -66,6 +68,22 @@ export interface BuildStep {
   mastery?: boolean;
   /** Other versions of the step (other names and numbers): a wrong guess moves on to the next, and a mastery problem picks one by chance. */
   variants?: Partial<BuildStep>[];
+  // ── Classrooms (a unit with `classroom`) ──
+  /** A practice problem's level, 1 to 3: a classroom makes one stop of each level's problems (classroom/stops.ts). */
+  tier?: 1 | 2 | 3;
+  /** The only blocks the step offers, each named as lesson text names a block ("Events#hat:click"), in one flat
+   * list in place of the categories; none for a step that is watched, guessed or mended (classroom/toolbox.ts). */
+  toolbox?: string[];
+  /** What a classroom hides that this step needs back: the sprites under the stage, to choose whose blocks to make. */
+  show?: 'sprites'[];
+}
+/** What the editor narrows to while a classroom step is open (classroom/shell.ts). */
+export interface ClassroomStep {
+  blocks: string[]; show: string[]; level: Level;
+  /** The sprite the step is about: with the sprites put away it stays the selected one, so "when … clicked" is for it. */
+  sprite?: string;
+  /** The step's goal, and where it is: its stop, and each step of that stop as done, open or still locked. */
+  title: string; stop: string; place: string; dots: ('done' | 'now' | 'locked')[];
 }
 export interface Chapter { title: string; idea: string; steps: number }
 export interface Build {
@@ -74,6 +92,9 @@ export interface Build {
   kind?: 'build' | 'lesson' | 'unit'; chapters?: Chapter[]; learn?: string[];
   /** An academy unit's place: chapter 1, unit 1 is "1.1"; a capstone is the chapter's big project. */
   unit?: { chapter: number; number: number; capstone?: boolean };
+  /** The unit runs as a classroom: each step shows only its own blocks, the editor's other tools are put away,
+   * and one button says what to do next (docs/learner-experience-plan.md §4.9). */
+  classroom?: boolean;
 }
 const modules = import.meta.glob<Build>(['../../content/builds/*.json', '!../../content/builds/*-game.json', '../../content/academy/units/*.json'], { eager: true, import: 'default' });
 // Lessons are listed before the shorter guided builds.
@@ -138,6 +159,8 @@ export interface GuideHost {
   snapshot?(): unknown;
   /** Academy progress: a step was done (its check passed), or an answer was tried (a quiz, or Check my answer), and how it went. */
   progress?(event: { build: Build; index: number; type: 'done' | 'tried'; ok?: boolean; hints: number; ms: number }): void;
+  /** A classroom step opened, or (null) no classroom is open: the editor narrows to the step, or is itself again. */
+  classroom?(step: ClassroomStep | null): void;
 }
 /** Active time per step (the tab hidden does not count) and whether "Show me
  * how" was used, so tester sessions can be compared with each build's minutes. */
@@ -179,7 +202,7 @@ export function installGuide(host: GuideHost) {
         <div id="guide-goal" class="guide-goal" role="status" hidden><p><span id="guide-goal-count"></span> <span id="guide-goal-label"></span></p><div id="guide-goal-pips" class="guide-goal-pips" aria-hidden="true"></div></div></div>
       <p id="guide-check" class="guide-check" role="status"></p>
       <div id="guide-hints" class="guide-hints" hidden><p id="guide-hint-text" class="guide-hint-text" role="status"></p></div>
-      <div class="guide-actions"><button id="guide-back" class="button secondary">Back</button><button id="guide-hint" class="button secondary" hidden></button><button id="guide-show" class="button secondary">Show me how</button><button id="guide-next" class="button primary">Next step</button><button id="guide-stop" class="button secondary">Leave build</button></div>
+      <div class="guide-actions"><button id="guide-back" class="button secondary">Back</button><button id="guide-hint" class="button secondary" hidden></button><button id="guide-show" class="button secondary">Show me how</button><button id="guide-run" class="button primary" type="button" hidden><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${iconMarkup('play')}</svg>Run code</button><button id="guide-next" class="button primary">Next step</button><button id="guide-stop" class="button secondary">Leave build</button></div>
       <div id="guide-finish" hidden><p id="guide-finish-text"></p><p id="guide-time" class="guide-time"></p><h4>Remix it</h4><ul id="guide-remix"></ul><div class="guide-actions"><button id="guide-next-build" class="button primary"></button><button id="guide-timing" class="button secondary">Download timing</button></div></div></div>`);
   document.body.insertAdjacentHTML('beforeend', `<dialog id="lesson-start" class="lesson-dialog" aria-labelledby="lesson-start-title"><div class="lesson-start">
       <div class="lesson-start-side"><img id="lesson-start-preview" class="lesson-preview" alt=""><h3>Chapters</h3><ol id="lesson-start-chapters" class="lesson-chapters"></ol></div>
@@ -207,6 +230,8 @@ export function installGuide(host: GuideHost) {
   const hintLevel = new Map<number, number>();
   const lesson = () => active?.kind === 'lesson' || active?.kind === 'unit';
   const unit = () => active?.kind === 'unit';
+  const classroom = () => !!active?.classroom;
+  let narrowed = false;
   /** A unit with each step's chosen version; a mastery problem not yet chosen gets one by chance. */
   function versions(build: Build) {
     if (build.kind !== 'unit') return build;
@@ -331,10 +356,52 @@ export function installGuide(host: GuideHost) {
       segment.style.setProperty('--filled', `${filled}%`); return segment;
     }));
   }
+  /** Tell the editor which classroom step is open, so it narrows to it: the step's own blocks, and where the step
+   * is in its stop. Leaving a classroom takes its locks off the blocks left on the workspace. */
+  function room() {
+    if (!active || !classroom()) {
+      if (narrowed) { narrowed = false; unlockAll(host.workspace); host.classroom?.(null); }
+      renderActions(); return;
+    }
+    const step = active.steps[index], where = stopAt(active, index)!;
+    narrowed = true;
+    host.classroom?.({
+      blocks: step.toolbox ?? [], show: step.show ?? [], level: active.level, sprite: step.select, title: step.title ?? '', stop: where.stop.title, place: `${where.step + 1} of ${where.stop.steps}`,
+      dots: Array.from({ length: where.stop.steps }, (_, i) => { const at = where.stop.first + i; return at === index ? 'now' : at < index || reached.has(at) ? 'done' : 'locked'; }),
+    });
+  }
+  /** Put a step's scripts on the workspace, locking the ones it says to (classroom/locks.ts). */
+  function plant(step: BuildStep) {
+    const ids = host.insert(step.plant!, `${active!.title}: step ${index + 1}`, step.select, step.other);
+    step.plant!.forEach((part, i) => { if (part.locked) lockScript(host.workspace.getBlockById(ids[i]), part.locked); });
+    // What a classroom made for the learner is not theirs to undo away.
+    if (classroom()) host.workspace.clearUndo();
+    planted[index] = ids; save();
+  }
+  /** A classroom shows one next move at a time, in one place: Check my answer for a checked problem, Run code when
+   * running is all that is left, and Next step once the step is done (greyed while a guess or an answer is wanted). */
+  let acting = false;
+  function renderActions() {
+    const check = el('guide-check-answer'), run = el('guide-run'), next = el('guide-next'), home = el('guide-try').parentElement!;
+    el('guide-active').classList.toggle('guide-classroom', !!active && classroom());
+    if (!active || !classroom()) {
+      if (acting) { acting = false; home.append(check); home.hidden = false; check.hidden = false; run.hidden = true; if (active) next.hidden = false; }
+      return;
+    }
+    acting = true;
+    const step = active.steps[index];
+    const move = done ? 'next' : step.game || step.puzzle ? 'check' : passes(step.check, host.workspace, { ...facts, ran: true }) ? 'run' : 'next';
+    if (check.parentElement !== next.parentElement) next.before(check);
+    home.hidden = !step.puzzle;
+    next.hidden = move !== 'next'; check.hidden = move !== 'check'; run.hidden = move !== 'run';
+  }
+  el('guide-run').addEventListener('click', () => host.play());
   function render() {
-    if (!active) { el('guide-active').hidden = true; el('guide-list').hidden = false; clearHighlight(); stagePicture(null); hideClip(); lessonRoom(false); return; }
+    if (!active) { el('guide-active').hidden = true; el('guide-list').hidden = false; clearHighlight(); stagePicture(null); hideClip(); lessonRoom(false); room(); return; }
     const step = active.steps[index], isLesson = lesson();
     lessonRoom(isLesson, !!step.puzzle);
+    // A classroom narrows the editor before the step's project opens, so the project is laid out in the room it will have.
+    room();
     // A quiz remembers its answer, and a mastery problem its one try.
     facts = { ran: false, finished: null, score: 0, level: 0, predicted: answers[index] !== undefined, answered: !!step.quiz && answers[index] === step.quiz.answer, tried: answers[index] !== undefined || mastery[index] !== undefined, solved: step.mastery && step.game ? mastery[index] === true : false }; done = false; early = false;
     el('guide-list').hidden = true; el('guide-active').hidden = false; el('guide-finish').hidden = true;
@@ -368,7 +435,9 @@ export function installGuide(host: GuideHost) {
     el('guide-restart').hidden = !step.project;
     if (step.select) host.select(step.select);
     host.prefer(step.other);
-    if (step.plant && !step.project && !planted[index]) { planted[index] = host.insert(step.plant, `${active.title}: step ${index + 1}`, step.select, step.other); save(); }
+    if (step.plant && !step.project && !planted[index]) plant(step);
+    // The step's own blocks follow the sprite it chose.
+    if (classroom()) room();
     el('guide-planted').hidden = !step.plant || !!step.puzzle;   // a puzzle's plant only empties the Program block
     el('guide-planted').textContent = step.kind === 'fix' ? 'We made these blocks for you, but there is a bug. Can you fix it?' : 'We made these blocks for you. Read them before you run them.';
     renderChecklist(); renderPredict(); renderHints(); renderClip(true); renderPuzzle();
@@ -610,11 +679,13 @@ export function installGuide(host: GuideHost) {
   function openProject(step: BuildStep) {
     delete work[index];
     host.load(structuredClone(step.project), active!.title); loadedFor = index;
-    if (step.plant) { planted[index] = host.insert(step.plant, `${active!.title}: step ${index + 1}`, step.select, step.other); save(); }
+    if (step.plant) plant(step);
   }
   el('guide-restart').addEventListener('click', () => {
     const step = active?.steps[index]; if (!step?.project) return;
     openProject(step);
+    // In a classroom a problem started over is checked again; what was recorded for it stays.
+    if (classroom() && !step.mastery) { reached.delete(index); facts.solved = false; }
     el('guide-results').hidden = true; el('guide-results-list').replaceChildren(); evaluate();
   });
   el('guide-check-answer').addEventListener('click', async () => {
@@ -658,7 +729,7 @@ export function installGuide(host: GuideHost) {
       : shown);
     const next = ladder[level];
     // After the last rung an idea card can be opened again; the lesson's own blocks are added once.
-    if (next) button.textContent = next === 'show' ? 'Show me how' : level === 0 ? 'Give me a hint' : 'Another hint';
+    if (next) button.textContent = next === 'show' ? 'Show me how' : level === 0 ? (classroom() ? 'I’m stuck' : 'Give me a hint') : 'Another hint';
     else button.textContent = step.recipe ? 'Show the idea again' : 'All help shown';
     button.disabled = !next && !step.recipe;
   }
@@ -686,13 +757,16 @@ export function installGuide(host: GuideHost) {
     if (!active) return;
     const step = active.steps[index], ok = passes(step.check, host.workspace, facts) || reached.has(index);
     if (ok) reached.add(index);
-    if (ok && !done) { host.notify(); host.progress?.({ build: active, index, type: 'done', hints: hintLevel.get(index) ?? 0, ms: timing?.steps[index] ?? 0 }); if (lesson() && !rendering) cheer(); }
+    const just = ok && !done;
     done = ok;
     el('guide-check').textContent = ok ? (lesson() ? 'You did it! Press Next step.' : 'Done! Go to the next step.') : lesson() ? 'Do everything on the list to go on.' : 'When this step is done, it gets a check mark.';
     el('guide-check').classList.toggle('guide-done', ok);
     el<HTMLButtonElement>('guide-next').disabled = !ok;
     el('guide-next').textContent = index === active.steps.length - 1 ? 'Finish' : 'Next step';
     if (lesson()) renderChecklist();
+    // The buttons settle first, so the cheer is placed beside the Next step it offers.
+    renderActions();
+    if (just) { host.notify(); host.progress?.({ build: active, index, type: 'done', hints: hintLevel.get(index) ?? 0, ms: timing?.steps[index] ?? 0 }); if (lesson() && !rendering) cheer(); }
   }
   /** A lesson step just got done: a cheer beside Next step, which it also offers. */
   function cheer() {
@@ -743,7 +817,7 @@ export function installGuide(host: GuideHost) {
       note: 'Active time excludes time while the tab was hidden. Nothing is uploaded.', revision: host.revision, browser: navigator.userAgent,
     }, null, 2);
     const tries = mastery;
-    active = null; timing = null; since = null; planted = {}; answers = {}; variants = {}; mastery = {}; save(); host.prefer(undefined); host.tabLabel('Help');
+    active = null; timing = null; since = null; planted = {}; answers = {}; variants = {}; mastery = {}; save(); host.prefer(undefined); host.tabLabel('Help'); room();
     if (build.kind === 'lesson' || build.kind === 'unit') celebrate(build, total, next, tries);
     host.finished(build);
   }
@@ -843,7 +917,7 @@ export function installGuide(host: GuideHost) {
     /** The running game's level (its world's number); a step can ask for a level reached. */
     level(value: number) { if (active && value > (facts.level ?? 0)) { facts.level = value; evaluate(); } },
     dispose() {
-      save(); clearTimeout(timer); clearTimeout(looseTimer); clearTimeout(coachTimer); stopReading(); closePop(); stopChecking(); stopGameCheck(); stagePicture(null); hideClip(); lessonRoom(false); host.workspace.removeChangeListener(changed); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('pagehide', save);
+      save(); clearTimeout(timer); clearTimeout(looseTimer); clearTimeout(coachTimer); stopReading(); closePop(); stopChecking(); stopGameCheck(); stagePicture(null); hideClip(); lessonRoom(false); host.classroom?.(null); host.workspace.removeChangeListener(changed); document.removeEventListener('visibilitychange', visibility); window.removeEventListener('pagehide', save);
       clearHighlight(); slot.replaceChildren(); el('guide-active')?.remove(); el('lesson-start')?.remove(); el('lesson-finish')?.remove();
     },
   };

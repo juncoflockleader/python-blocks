@@ -45,6 +45,9 @@ test('the map shows eight chapters, and Unit 1.1 starts in the lesson panel with
   // A unit never lowers the level the learner chose (these tests start at Pro).
   await expect(page.locator('#level-name')).toHaveText('Pro');
   await expect(page.locator('#scene-cards button')).toHaveText([/Fox/, /Robot/]);
+  // Unit 1.1 is a classroom (classroom.spec.ts): Lessons and Examples are put away until the unit is left.
+  await expect(page.locator('#lessons-open')).toBeHidden();
+  await page.locator('#guide-stop').click();
   // Units are in the Academy, not among the lessons.
   await page.locator('#lessons-open').click();
   await expect(page.locator('#lessons-list')).not.toContainText('Tap and it talks');
