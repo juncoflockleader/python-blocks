@@ -134,8 +134,12 @@ export interface GuideHost {
   /** The Help tab shows a dot when the guide changes while another tab is open. */
   notify(): void;
   finished(build: Build): void;
-  /** The learner left a build before its end; the editor re-evaluates its empty-workspace prompt. */
-  stopped?(): void;
+  /** The learner left a build before its end; the editor re-evaluates its empty-workspace prompt.
+   * `home` is the build when it goes back to the chapter path (see `home`). */
+  stopped?(home?: Build | null): void;
+  /** Leaving or finishing this build goes back to the chapter path: the project from before it is
+   * put back in the editor, and the path opens (a classroom, or a unit opened from the path). */
+  home?(build: Build): boolean;
   /** Save a facilitator's timing record. */
   download(name: string, text: string): void;
   revision: string;
@@ -217,7 +221,7 @@ export function installGuide(host: GuideHost) {
       <div class="guide-actions lesson-actions"><span id="lesson-finish-time" class="lesson-note"></span><button id="lesson-finish-play" class="button secondary">Play again</button><button id="lesson-finish-return" class="button secondary">Return to my project</button><button id="lesson-finish-close" class="button secondary">Keep editing</button><button id="lesson-finish-next" class="button primary"></button></div></div></dialog>`);
   const el = <T extends HTMLElement = HTMLElement>(id: string) => document.getElementById(id) as T;
   let active: Build | null = null, index = 0, done = false, facts: RunFacts = { ran: false, finished: null }, highlighted: Element[] = [], timer = 0;
-  let timing: Timing | null = null, since: number | null = null, record = '', pending: Build | null = null, starting: Build | null = null, startingAt = 0;
+  let timing: Timing | null = null, since: number | null = null, record = '', pending: Build | null = null, starting: Build | null = null, startingAt = 0, leaving: Build | null = null;
   let planted: Record<string, string[]> = {}, answers: Record<string, number> = {}, early = false;
   // Academy units: each step's chosen version, the step whose own project is on the workspace, and how mastery problems went.
   let variants: Record<string, number> = {}, loadedFor = -1, mastery: Record<string, boolean> = {};
@@ -421,7 +425,7 @@ export function installGuide(host: GuideHost) {
     el('guide-why-box').hidden = !step.why; setRichText(el('guide-why'), step.why ?? '');
     el('guide-why-toggle').hidden = !isLesson || !step.why; el('guide-why').hidden = isLesson; el('guide-why-toggle').setAttribute('aria-expanded', 'false');
     // A lesson's Leave sits by its progress, so its one row of buttons is Back, a hint and Next.
-    el('guide-stop').textContent = unit() ? 'Leave unit' : isLesson ? 'Leave lesson' : 'Leave build';
+    el('guide-stop').textContent = host.home?.(active!) ? 'Back to map' : unit() ? 'Leave unit' : isLesson ? 'Leave lesson' : 'Leave build';
     (isLesson ? document.querySelector('#guide-active .guide-head')! : el('guide-next').parentElement!).append(el('guide-stop'));
     el<HTMLButtonElement>('guide-back').disabled = index === 0;
     // Lessons offer "Show me how" as the last rung of the hint ladder.
@@ -830,12 +834,19 @@ export function installGuide(host: GuideHost) {
     el('lesson-finish-learn').replaceChildren(...(build.chapters ?? []).map(chapter => { const li = item('li', ''); li.append(item('strong', '', chapter.title), item('span', '', chapter.idea)); return li; }));
     el('lesson-finish-remix').replaceChildren(...build.finish.remix.map(richItem));
     el('lesson-finish-time').textContent = `Time: ${minutesText(total)} (planned ${build.minutes} min)`;
-    el('lesson-finish-return').hidden = !host.hasKeptProject();
+    // A build that goes back to the chapter path has one way on: the path chooses what is next.
+    const home = !!host.home?.(build); leaving = home ? build : null;
+    el('lesson-finish-return').hidden = home || !host.hasKeptProject(); el('lesson-finish-play').hidden = home;
+    el('lesson-finish-close').textContent = home ? 'Back to map' : 'Keep editing'; el('lesson-finish-close').classList.toggle('primary', home); el('lesson-finish-close').classList.toggle('secondary', !home);
+    if (home) next = undefined;
     el('lesson-finish-next').hidden = !next; el('lesson-finish-next').textContent = next ? `Next: ${next.title}` : '';
     el('lesson-finish-next').onclick = () => { el<HTMLDialogElement>('lesson-finish').close(); if (next) begin(next); };
     el<HTMLDialogElement>('lesson-finish').showModal();
   }
   el('lesson-finish-close').addEventListener('click', () => { el<HTMLDialogElement>('lesson-finish').close(); showKept(); });
+  // However the finish sheet of such a build closes, the learner's own project comes back and the path opens.
+  el('lesson-finish').addEventListener('close', () => { const build = leaving; leaving = null; if (build) goHome(build); });
+  function goHome(build: Build) { host.restoreProject(); showKept(); host.stopped?.(build); }
   el('lesson-finish-play').addEventListener('click', () => { el<HTMLDialogElement>('lesson-finish').close(); host.play(); });
   const returnToKept = () => { if (host.restoreProject()) { el<HTMLDialogElement>('lesson-finish').close(); showKept(); host.reveal(true); } };
   el('lesson-finish-return').addEventListener('click', returnToKept);
@@ -858,10 +869,12 @@ export function installGuide(host: GuideHost) {
     el('guide-read').setAttribute('aria-pressed', 'true'); speech.speak(utterance);
   });
   el('guide-stop').addEventListener('click', () => {
+    const home = active && host.home?.(active) ? active : null;
     stopReading(); closePop(); stopChecking(); stopGameCheck(); stagePicture(null); hideClip();
     active = null; timing = null; since = null; planted = {}; answers = {}; variants = {}; mastery = {}; loadedFor = -1; reached = new Set(); save();
     for (const id of ['guide-next', 'guide-back', 'guide-show']) el(id).hidden = false;
-    clearConfirm(); host.prefer(undefined); host.tabLabel('Help'); render(); host.reveal(true); showKept(); host.stopped?.();
+    clearConfirm(); host.prefer(undefined); host.tabLabel('Help'); render(); host.reveal(true); showKept();
+    if (home) goHome(home); else host.stopped?.();
   });
   el('guide-timing').addEventListener('click', () => { if (record) host.download(`build-timing-${JSON.parse(record).build}.json`, record); });
   const changed = (event: Blockly.Events.Abstract) => {
@@ -888,7 +901,18 @@ export function installGuide(host: GuideHost) {
   return {
     get active() { return active; },
     /** Start a build; an academy unit can start at a later step (Continue on the map). */
-    begin(id: string, at = 0) { const build = buildById(id); if (build) { startingAt = Math.max(0, Math.min(at, build.steps.length - 1)); begin(build); } },
+    /** `direct` skips the start sheet (the chapter path has said what the stop is): the project in the
+     * editor is kept as the sheet would keep it; when it cannot be kept, the sheet asks after all. */
+    begin(id: string, at = 0, direct = false) {
+      const build = buildById(id); if (!build) return;
+      const from = Math.max(0, Math.min(at, build.steps.length - 1));
+      if (direct && (!host.workspace.getTopBlocks(false).length || host.keepProject())) { el<HTMLDialogElement>('lesson-start').close(); starting = null; begin(build, from, true, null, true); return; }
+      startingAt = from; begin(build);
+    },
+    /** Go to a step of the open build (another stop on the chapter path). */
+    go(at: number) { if (!active) return; clock(); index = Math.max(0, Math.min(at, active.steps.length - 1)); render(); save(); host.reveal(); },
+    /** The open build's step. */
+    get index() { return index; },
     ran() {
       if (!active) return;
       hideClip();

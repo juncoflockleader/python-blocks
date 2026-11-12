@@ -7,7 +7,9 @@ import { finishUnit, loadProgress, readProgress, record, saveProgress, unitStatu
  * played, read, practised and mastered in the lesson panel (builds.ts runs units
  * like lessons). The map shows every chapter and unit with its progress, a
  * Continue card, and a view for grown-ups with time, mastery and hints per unit
- * and the progress file to export or import (docs/learner-experience-plan.md §4). */
+ * and the progress file to export or import (docs/learner-experience-plan.md §4).
+ * The Academy button opens the chapter path (classroom/path-view.ts); this list of
+ * every chapter is its Chapters button. */
 export interface AcademyHost {
   /** Start a unit at a step (its start sheet comes first). */
   start(id: string, at: number): void;
@@ -141,7 +143,6 @@ export function installAcademy(host: AcademyHost) {
     if (on) renderParents();
   });
   const open = () => { progress = loadProgress(); const active = host.active(); if (active?.kind === 'unit') selected = active.id; renderMap(); if (!dialog.open) dialog.showModal(); };
-  for (const id of ['academy-open', 'menu-academy']) document.getElementById(id)?.addEventListener('click', open);
   document.getElementById('academy-close')!.addEventListener('click', () => dialog.close());
   return {
     open,

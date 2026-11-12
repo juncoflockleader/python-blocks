@@ -4,6 +4,8 @@ import { prepareProject, restore, snapshot } from '../../src/project';
 import { builds, version, type BuildStep } from '../../src/guide/builds';
 import { appendRecipe, placement, type Recipe, type RecipePart } from '../../src/guide/recipes';
 import { stopAt, stopsOf } from '../../src/classroom/stops';
+import { chapterPath, stopOf } from '../../src/classroom/path';
+import type { Progress } from '../../src/academy/progress';
 import { missingBlocks, offered, stepBlockNumber, stepToolbox, typesIn, YOUR_BLOCKS } from '../../src/classroom/toolbox';
 import { isLocked, lockScript, unlockAll } from '../../src/classroom/locks';
 import { HAT_TYPE } from '../../src/language/hats';
@@ -137,5 +139,56 @@ describe('classroom locks', () => {
     for (const [i, base] of unit.steps.entries()) for (const step of versions(base)) {
       if (step.kind === 'predict' || step.kind === 'quiz' || step.kind === 'play') expect(lock(step).every(mode => mode === true), `step ${i + 1}`).toBe(true);
     }
+  });
+});
+
+describe('the chapter path', () => {
+  const chapter = units.filter(unit => unit.unit?.chapter === 1).sort((a, b) => a.unit!.number - b.unit!.number);
+  /** A progress record with these steps done, per unit. */
+  const having = (done: Record<string, number[]>): Progress => ({ format: 'python-blocks-academy', version: 1, learner: { id: 'l', name: '' },
+    units: Object.fromEntries(Object.entries(done).map(([id, steps]) => [id, { started: 1, updated: 1, steps: Object.fromEntries(steps.map(i => [i, { done: true }])) }])) });
+  const upTo = (count: number) => Array.from({ length: count }, (_, i) => i);
+  const states = (progress: Progress) => chapterPath(chapter, progress).stops.map(stop => stop.state);
+
+  it('a new learner starts at the first Story, and every stop after it is locked', () => {
+    const path = chapterPath(chapter, having({}));
+    expect(path.stops).toHaveLength(19); expect(path.needed).toBe(16); expect(path.done).toBe(0);
+    expect(path.now).toMatchObject({ kind: 'story', next: 0, slot: 0, unit: { id: 'unit-1-1' } });
+    expect(path.stops.map(stop => stop.state)).toEqual(['now', ...Array(18).fill('locked')]);
+  });
+  it('a stop is done when all its steps are, the next needed stop is "now", and a part-done stop opens at its first step not done', () => {
+    const path = chapterPath(chapter, having({ 'unit-1-1': upTo(6) }));
+    expect(path.stops.slice(0, 6).map(stop => stop.state)).toEqual(['done', 'now', 'locked', 'locked', 'locked', 'locked']);
+    expect(path.now).toMatchObject({ title: 'Puzzles 1', done: 1, next: 6, slot: 1 });
+    // A stop that is done opens at its first step, to play again.
+    expect(path.stops[0]).toMatchObject({ done: 5, next: 0 });
+    expect(path.done).toBe(1);
+  });
+  it('a Bonus opens when the stop before it is done, sits beside the path, and never holds it up', () => {
+    const before = chapterPath(chapter, having({ 'unit-1-1': upTo(14) }));
+    expect(before.stops.slice(0, 7).map(stop => stop.state)).toEqual(['done', 'done', 'done', 'done', 'open', 'now', 'locked']);
+    expect(before.stops.slice(3, 7).map(stop => [stop.title, stop.slot])).toEqual([['Puzzles 3', 3], ['Bonus', 3], ['Star check', 4], ['Story', 5]]);
+    // Skipped: the Star check is done, the Bonus is still open, and the path goes on to the next unit.
+    const skipped = chapterPath(chapter, having({ 'unit-1-1': [...upTo(14), 15, 16, 17] }));
+    expect(skipped.stops.slice(4, 8).map(stop => stop.state)).toEqual(['open', 'done', 'now', 'locked']);
+    expect(skipped.now).toMatchObject({ kind: 'story', unit: { id: 'unit-1-2' }, slot: 5 });
+    expect(skipped.done).toBe(5);
+    // A Bonus further on stays locked.
+    expect(skipped.stops[10]).toMatchObject({ kind: 'bonus', state: 'locked' });
+  });
+  it('a stop done out of turn (from the list of chapters) stays done, and the path still asks for the first one missing', () => {
+    expect(states(having({ 'unit-1-2': upTo(5) })).slice(0, 8)).toEqual(['now', 'locked', 'locked', 'locked', 'locked', 'locked', 'done', 'locked']);
+  });
+  it('a finished chapter has no stop left to do', () => {
+    const all = chapterPath(chapter, having(Object.fromEntries(chapter.map(unit => [unit.id, upTo(unit.steps.length)]))));
+    expect(all.now).toBeNull(); expect(all.done).toBe(16);
+    expect(all.stops.every(stop => stop.state === 'done')).toBe(true);
+    expect(all.stops.at(-1)).toMatchObject({ kind: 'project', slot: 15 });
+  });
+  it('knows the stop a step is in', () => {
+    const path = chapterPath(chapter, having({}));
+    expect(stopOf(path, 'unit-1-1', 9)).toMatchObject({ title: 'Puzzles 2' });
+    expect(stopOf(path, 'unit-1-2', 14)).toMatchObject({ title: 'Bonus', unit: { id: 'unit-1-2' } });
+    expect(stopOf(path, 'unit-1-1', 18)).toBeUndefined();
   });
 });

@@ -754,7 +754,22 @@ Unit 1.1's steps offer none, three, four or five blocks (five only in the Bonus)
 
 Verification: [unit tests](../tests/unit/classroom.test.ts) check the stops, that every block a step lists is in the picker, and, to keep narrowing honest, that **every answer can be built from its step's own blocks and what the step put on the workspace, in every version** (it found one: a version of the last Star check problem needed a costume block its list did not have); they also cover the locks, saved and taken off. [Browser tests](../tests/e2e/classroom.spec.ts) cover a build step (three blocks, the tools put away, the dots, help to the end, Run code, Next step), dragging a block out of the list and a failing check, locked and loose blocks with Start over, Undo and leaving, the Bonus's sprites, a guess step, and that the list, the workspace, the step and its next move fit at 1080 × 700, 1024 × 768 and 1366 × 768.
 
-Not built yet (the plan's later phases): the chapter path that replaces the map dialog, stars for a stop (which need "Show me how" recorded per step), recorded narration in place of the browser's voice, clips, the class view, and Units 1.2 to 1.4 as classrooms. Program output and Python errors have no place in a classroom step yet; Unit 1.1's blocks cannot raise one.
+Not built yet (the plan's later phases): stars for a stop (which need "Show me how" recorded per step), recorded narration in place of the browser's voice, clips, the class view, and Units 1.2 to 1.4 as classrooms. Program output and Python errors have no place in a classroom step yet; Unit 1.1's blocks cannot raise one.
+
+### 4.10 The chapter path: the Academy's front door (built 2026-11-11)
+
+On the live site a signed-in learner opened Unit 1.1 as a classroom, but got there through the old map (a dialog listing eight chapters), a start sheet, and a Leave unit button that dropped them in the open editor. The **chapter path** is the front door the classroom plan's first mock shows: the **Academy** button opens it, full screen.
+
+| Part | What | Where |
+| --- | --- | --- |
+| One path of stops | A chapter is its units' stops in order, winding over a meadow: Chapter 1 is 19 (each unit's Story, three puzzle stops, Bonus and Star check, then the big project). A stop is **done** when all its steps are (gold, a tick, tap to play it again), **now** (the first needed stop not done: large, with the Chick and a line above it), or **locked**. A Bonus hangs under the path, opens when the stop before it is done, and never holds the path up. Nothing new is recorded: the path is worked out from the steps the Academy already marks done. | [path.ts](../src/classroom/path.ts) |
+| One next move | The bar under the path says which stop is next ("Stop 6 of 19 in this chapter", a dot for each stop, the stop's name and its unit) and has one large **Start** or **Continue** button. It goes straight into the stop's first step not done, with no start sheet; the project in the editor is kept as the sheet would keep it. The path scrolls sideways and opens with the stop to do next in the middle. | [path-view.ts](../src/classroom/path-view.ts), [path.css](../src/classroom/path.css) |
+| Back to map | In a classroom, and in any unit opened from the path, Leave unit is **Back to map**: the project from before the unit goes back in the editor and the path opens. A finished unit's sheet has one button, Back to map, and the path has the next stop ready. From inside a unit the Academy button shows the path too; another stop of the same unit opens in place. | `home` in [builds.ts](../src/guide/builds.ts) |
+| Chapters | The old map (every chapter and unit, any of them startable, and the view for grown-ups) is the path's **Chapters** button. **Close** goes back to the editor. | [academy.ts](../src/academy/academy.ts) |
+
+The site still opens in the editor; the path is one tap away. Units 1.2 to 1.4 are on the path and open from it, but run in the full editor until they are made classrooms. Stops have no stars yet, and the path shows the first chapter that has units and is not finished (only Chapter 1 has units).
+
+Verification: [unit tests](../tests/unit/classroom.test.ts) cover the path's states (a new learner, a part-done stop, the Bonus open and skipped, a stop done out of turn, a finished chapter). [Browser tests](../tests/e2e/path.spec.ts) cover the path for a new learner, Start going straight in and Back to map putting the earlier project back, playing a done stop again, the Bonus, going on to the next unit, a finished chapter, and that the bar, the stop to do next and Continue fit at 1024 × 700, 1366 × 768 and 820 × 1180; [the Academy tests](../tests/e2e/academy.spec.ts) cover a finished unit going back to the path.
 
 ## 5. Track D: assets
 
