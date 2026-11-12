@@ -19,7 +19,7 @@ const progress = (count: number, unit = 'unit-1-1') => {
 async function continueAt(page: Page, count: number, unit = 'unit-1-1') {
   await page.addInitScript(([key, value]) => { if (!sessionStorage.getItem('seeded')) { localStorage.setItem(key, value); sessionStorage.setItem('seeded', '1'); } }, [KEY, JSON.stringify(progress(count, unit))]);
   await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
-  await page.locator('#academy-open').click();
+  await page.locator('#academy-open').click(); await page.locator('#path-chapters').click();
   await page.locator('#academy-continue-go').click(); await page.locator('#lesson-start-go').click();
   await expect(page.locator('#guide-active')).toBeVisible();
   await page.locator('.pop .pop-close').click({ timeout: 1000 }).catch(() => {});
@@ -28,7 +28,7 @@ const saved = (page: Page) => page.evaluate(key => JSON.parse(localStorage.getIt
 
 test('the map shows eight chapters, and Unit 1.1 starts in the lesson panel with its own sprites', async ({ page }) => {
   await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
-  await page.locator('#academy-open').click();
+  await page.locator('#academy-open').click(); await page.locator('#path-chapters').click();
   await expect(page.locator('.academy-chapter h3')).toHaveText(['Chapter 1 · Signals', 'Chapter 2 · Loops', 'Chapter 3 · Decisions', 'Chapter 4 · Functions', 'Chapter 5 · Collections', 'Chapter 6 · Recursion', 'Chapter 7 · Algorithms', 'Chapter 8 · Systems']);
   for (const id of ['unit-1-1', 'unit-1-2', 'unit-1-3', 'unit-1-4']) await expect(page.locator(`#academy-unit-${id}`)).toBeEnabled();
   await expect(page.locator('#academy-unit-unit-1-4')).toContainText('1.4Big project: Greeting card');
@@ -47,7 +47,8 @@ test('the map shows eight chapters, and Unit 1.1 starts in the lesson panel with
   await expect(page.locator('#scene-cards button')).toHaveText([/Fox/, /Robot/]);
   // Unit 1.1 is a classroom (classroom.spec.ts): Lessons and Examples are put away until the unit is left.
   await expect(page.locator('#lessons-open')).toBeHidden();
-  await page.locator('#guide-stop').click();
+  // Leaving a classroom goes back to the chapter path (path.spec.ts).
+  await page.locator('#guide-stop').click(); await page.locator('#path-close').click();
   // Units are in the Academy, not among the lessons.
   await page.locator('#lessons-open').click();
   await expect(page.locator('#lessons-list')).not.toContainText('Tap and it talks');
@@ -118,11 +119,17 @@ test('mastery is one try without hints, and the finish sheet says how it went', 
   const unit = (await saved(page)).units['unit-1-1'];
   expect(unit.finished).toBeGreaterThan(0);
   expect([15, 16, 17].map(i => unit.steps[i].tries)).toEqual([1, 1, 1]);
+  // A classroom's finish sheet has one way on: back to the chapter path, which has the next stop ready.
+  await expect(page.locator('#lesson-finish .lesson-actions button:visible')).toHaveText(['Back to map']);
+  await page.locator('#lesson-finish-close').click();
+  await expect(page.locator('#chapter-path')).toBeVisible();
+  await expect(page.locator('#path-next-text')).toContainText('1.2 · Keys move things');
+  expect(await page.evaluate(() => localStorage.getItem('python-blocks.guide.kept.v1'))).toBeNull();
 });
 
 test('grown-ups see time, steps, mastery and hints per unit, and the progress file exports and imports', async ({ page }) => {
   await continueAt(page, 9);
-  await page.locator('#academy-open').click();
+  await page.locator('#academy-open').click(); await page.locator('#path-chapters').click();
   await expect(page.locator('#academy-continue')).toContainText('Continue · 1.1 Tap and it talks');
   await expect(page.locator('.academy-parts li')).toHaveText([/Play\s*1 of 1/, /Guide\s*4 of 4/, /Practice\s*4 of 9/, /Challenge\s*0 of 1/, /Mastery\s*0 of 3/]);
   await page.locator('#academy-grownups').click();
@@ -203,7 +210,7 @@ test('Unit 1.4: the big project builds one card, and going back to Play keeps it
 test('a finished big project is starred on the map', async ({ page }) => {
   const record = progress(7, 'unit-1-4'); (record.units['unit-1-4'] as Record<string, unknown>).finished = Date.now();
   await page.addInitScript(([key, value]) => localStorage.setItem(key, value), [KEY, JSON.stringify(record)]);
-  await page.goto('/'); await page.locator('#academy-open').click();
+  await page.goto('/'); await page.locator('#academy-open').click(); await page.locator('#path-chapters').click();
   await expect(page.locator('#academy-unit-unit-1-4 .academy-pip')).toHaveClass(/academy-pip-star/);
   await page.locator('#academy-unit-unit-1-4').click();
   await expect(page.locator('#academy-unit')).toContainText('★ Mastered');

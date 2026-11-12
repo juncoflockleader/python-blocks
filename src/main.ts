@@ -38,6 +38,7 @@ import { recipeCard, type CardHost } from './guide/card';
 import { installIdeas, rankIdeas } from './guide/ideas';
 import { installGuide } from './guide/builds';
 import { installClassroom } from './classroom/shell';
+import { installPath } from './classroom/path-view';
 import { YOUR_BLOCKS } from './classroom/toolbox';
 import { installNudges, type FixKind } from './guide/nudges';
 import { installFixes, type RuntimeFault } from './guide/fixes';
@@ -255,7 +256,23 @@ const gallery = installGallery({
 });
 // Lessons and guided builds have their own catalogue, apart from Examples.
 const lessons = installLessons({ start: id => guide.begin(id), play: id => gallery.play(id) });
-const academy = installAcademy({ start: (id, at) => guide.begin(id, at), active: () => guide.active, reveal: () => tabs.activate('help'), download: (name, text) => download(name, text, 'application/json') });
+const academy = installAcademy({ start: (id, at) => { path.close(); guide.begin(id, at); }, active: () => guide.active, reveal: () => { path.close(); tabs.activate('help'); }, download: (name, text) => download(name, text, 'application/json') });
+// The Academy's front door is the chapter path: one path of stops, and Continue. A unit opened from it
+// (and any classroom) goes back to it when it is left or finished.
+// (Which unit that is lasts as long as the tab, so a reload in the middle of it changes nothing.)
+const PATH_UNIT_KEY = 'python-blocks.path-unit';
+const pathUnit = { get: () => { try { return sessionStorage.getItem(PATH_UNIT_KEY); } catch { return null; } }, set(id: string | null) { try { if (id) sessionStorage.setItem(PATH_UNIT_KEY, id); else sessionStorage.removeItem(PATH_UNIT_KEY); } catch { /* it goes back to the editor instead */ } } };
+const path = installPath({
+  start(unit, at) {
+    if (guide.active?.id === unit) { guide.go(at); return; }
+    // With another lesson open, its start sheet asks first, as it does from the list of chapters.
+    pathUnit.set(unit); guide.begin(unit, at, !guide.active);
+  },
+  active: () => guide.active ? { unit: guide.active.id, index: guide.index } : null,
+  chapters: () => academy.open(),
+  coins: () => { const count = document.getElementById('account-coin-count'); return count && count.textContent ? count.textContent : null; },
+});
+for (const id of ['academy-open', 'menu-academy']) document.getElementById(id)?.addEventListener('click', () => path.open());
 const ideas = installIdeas({
   ...cards, show: recipe => ideas.show(recipe), reveal: () => showHelp('ideas'),
   askAi: wish => { if (level === 'starter') return null; showHelp('more'); assist?.prepare(wish); element<HTMLDetailsElement>('#assist-panel').scrollIntoView({ block: 'start' }); return 'Your wish is in AI assist (Help → More). Review what will be shared, then Send.'; },
@@ -286,7 +303,8 @@ const guide = installGuide({
   select: id => { sceneEditor?.select(id); classroom.refresh(); }, prefer: id => { preferredTarget = id; }, showRecipe: recipe => ideas.show(recipe), reveal: list => { if (list) showHelp('builds'); else tabs.activate('help'); }, notify: helpDot,
   finished: build => { helpDot(); academy.finished(build); accountControls.finished(build); },
   progress: event => { academy.record(event); if (academy.mastered(event.build)) accountControls.mastered(event.build); },
-  stopped: () => nudges.empty(!workspace.getTopBlocks(false).length),
+  home: build => build.kind === 'unit' && (!!build.classroom || pathUnit.get() === build.id),
+  stopped: home => { nudges.empty(!workspace.getTopBlocks(false).length); if (home) { pathUnit.set(null); path.open(); } },
   download: (name, text) => download(name, text, 'application/json'),
   revision: typeof __APP_REVISION__ === 'string' ? __APP_REVISION__ : 'development (revision unavailable)',
   copyWorld() { const state = sceneState(workspace); duplicateWorld(state); changeScene(workspace, state); },
@@ -673,4 +691,4 @@ element<HTMLInputElement>('#project-file').addEventListener('change', async even
     else if (installProject(prepared.project)) { setTitle(file.name.replace(/\.python-blocks\.json$|\.json$/i, '') || 'My project'); offerLevel(); }
   } catch (error) { notice.textContent = `Could not open project: ${error instanceof Error ? error.message : error}. Your current work is unchanged.`; }
 });
-if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeCaptions(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); academy.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); scriptTabsControl.dispose(); magic?.dispose(); valueSheet.dispose(); blockSearch.dispose(); quickTools.dispose(); paletteSearch.dispose(); lessonStage.dispose(); classroom.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });
+if (import.meta.hot) import.meta.hot.dispose(() => { disposeIcons(); disposeCaptions(); disposeInputHints(); disposeKeyboard(); disposeHatGuard(); paletteHint.dispose(); menu.dispose(); gallery.dispose(); lessons.dispose(); academy.dispose(); fixes.dispose(); guide.dispose(); nudges.dispose(); levelControl.dispose(); pythonPlacement.dispose(); viewSwitch?.dispose(); scriptTabsControl.dispose(); magic?.dispose(); valueSheet.dispose(); blockSearch.dispose(); quickTools.dispose(); paletteSearch.dispose(); lessonStage.dispose(); classroom.dispose(); path.dispose(); debuggerView?.dispose(); assist?.dispose(); pilot.dispose(); exportController?.abort(); pythonEditor?.dispose(); window.removeEventListener('pagehide', saveCurrentProject); playView.dispose(); runner.dispose(); soundEditor.dispose(); soundList.dispose(); soundPlayer.dispose(); stage.dispose(); resizeObserver.disconnect(); disposeLanguageEditor(); sceneEditor?.dispose(); workspace.dispose(); });

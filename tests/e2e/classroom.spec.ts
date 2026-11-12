@@ -18,7 +18,7 @@ const progress = (count: number, unit = 'unit-1-1') => {
 async function continueAt(page: Page, count: number, unit = 'unit-1-1') {
   await page.addInitScript(([key, value]) => { if (!sessionStorage.getItem('seeded')) { localStorage.setItem(key, value); sessionStorage.setItem('seeded', '1'); } }, [KEY, JSON.stringify(progress(count, unit))]);
   await page.goto('/'); await expect(page.locator('#run')).toBeEnabled();
-  await page.locator('#academy-open').click();
+  await page.locator('#academy-open').click(); await page.locator('#path-chapters').click();
   await page.locator('#academy-continue-go').click(); await page.locator('#lesson-start-go').click();
   await expect(page.locator('#guide-active')).toBeVisible();
   await page.locator('.pop .pop-close').click({ timeout: 1000 }).catch(() => {});
@@ -122,12 +122,12 @@ test('blocks a step makes are locked, loose ones are not, and leaving the classr
   await expect(say).toHaveCount(1); await expect(hat).toHaveClass(/blocklyNotDeletable/);
   await page.locator('#top-history button').first().click();
   await expect(hat).toHaveCount(1); await expect(say).toHaveCount(1);
-  // Leaving: the whole editor is back, and the blocks left behind are free.
-  await page.locator('#guide-stop').click();
+  // Leaving goes back to the chapter path; under it the whole editor is back, with the project from before the unit and no locks.
+  await page.locator('#guide-stop').click(); await page.locator('#path-close').click();
   expect(await room(page)).toBeUndefined();
   for (const selector of ['#level-control', '#examples-open', '#lessons-open', '#menu-button', '.blocklyToolbox', '.tab-bar', '#sprite-tray']) await expect(page.locator(selector), selector).toBeVisible();
   await expect(page.locator('#classroom-guide')).toBeHidden();
-  await expect(hat).not.toHaveClass(/blocklyNotDeletable/);
+  await expect(hat).toHaveCount(0); await expect(page.locator('.blocklyNotDeletable')).toHaveCount(0);
   await page.locator('#tab-sprite').click();
   await expect(page.locator('#panel-sprite')).toBeVisible();
 });
